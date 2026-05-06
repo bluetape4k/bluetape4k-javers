@@ -99,7 +99,7 @@ jobs:
           gradle-version: wrapper
           cache-read-only: true
       - name: Test javers-core
-        run: ./gradlew :javers-core:test --no-daemon
+        run: ./gradlew :javers-core:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -126,7 +126,7 @@ jobs:
           gradle-version: wrapper
           cache-read-only: true
       - name: Test javers-persistence-redis
-        run: ./gradlew :javers-persistence-redis:test --no-daemon
+        run: ./gradlew :javers-persistence-redis:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -154,7 +154,7 @@ jobs:
           gradle-version: wrapper
           cache-read-only: true
       - name: Test javers-persistence-kafka
-        run: ./gradlew :javers-persistence-kafka:test --no-daemon
+        run: ./gradlew :javers-persistence-kafka:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
