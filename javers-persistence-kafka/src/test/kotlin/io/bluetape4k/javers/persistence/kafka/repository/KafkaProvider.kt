@@ -19,7 +19,7 @@ internal object KafkaProvider {
 
     val kafka: KafkaServer = KafkaServer.Launcher.kafka
 
-    val producerProperties: Map<String, Any?> by lazy {
+    val producerProperties: Map<String, Any> by lazy {
         mapOf(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers,
             ProducerConfig.CLIENT_ID_CONFIG to UUID.randomUUID().encodeUrl62(),
@@ -34,7 +34,7 @@ internal object KafkaProvider {
         )
     }
 
-    val consumerProperties: Map<String, Any?> by lazy {
+    val consumerProperties: Map<String, Any> by lazy {
         mapOf(
             ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to kafka.bootstrapServers,
             ConsumerConfig.GROUP_ID_CONFIG to "tc-" + UUID.randomUUID().encodeUrl62(),
@@ -45,14 +45,14 @@ internal object KafkaProvider {
     val consumerFactory: ConsumerFactory<String, String> by lazy {
         DefaultKafkaConsumerFactory(
             consumerProperties,
-            StringDeserializer(),
-            StringDeserializer()
+            { StringDeserializer() },
+            { StringDeserializer() }
         )
     }
 
     val kafkaTemplate: KafkaTemplate<String, String> by lazy {
-        KafkaTemplate(producerFactory, true).apply {
-            defaultTopic = TEST_TOPIC
+        KafkaTemplate(producerFactory, true).also {
+            it.setDefaultTopic(TEST_TOPIC)
         }
     }
 }
