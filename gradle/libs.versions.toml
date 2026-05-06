@@ -1,0 +1,151 @@
+# @formatter:off
+# Gradle Version Catalog for bluetape4k-javers
+
+[versions]
+bluetape4k = "1.7.0-SNAPSHOT"
+
+kotlin = "2.3.21"
+kotlinx-coroutines = "1.10.2"
+kotlinx-atomicfu = "0.32.1"
+
+javers = "7.11.0"
+
+lettuce = "6.8.2.RELEASE"
+redisson = "4.3.1"
+
+kafka4 = "4.2.0"
+spring-kafka4 = "4.0.5"
+
+mongo-driver = "5.6.4"
+
+caffeine = "3.2.3"
+cache2k = "2.6.1.Final"
+
+protobuf = "4.34.0"
+
+slf4j = "2.0.17"
+logback = "1.5.32"
+
+junit-jupiter = "6.0.3"
+kluent = "1.73"
+mockk = "1.14.9"
+awaitility = "4.3.0"
+testcontainers = "2.0.5"
+
+# Plugin versions
+detekt = "1.23.8"
+dependency-management = "1.1.7"
+dokka = "2.2.0"
+kover = "0.9.8"
+test-logger = "4.0.0"
+nmcp = "1.4.4"
+
+# ────────────────────────────────────────────────────────────────────────────
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-noarg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
+
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+nmcp = { id = "com.gradleup.nmcp", version.ref = "nmcp" }
+nmcp-aggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
+
+# ────────────────────────────────────────────────────────────────────────────
+[libraries]
+jetbrains-annotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
+
+# Kotlin
+kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test" }
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+
+# Kotlinx Coroutines
+kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
+
+# bluetape4k — consumed from Maven Central snapshots
+bluetape4k-bom = { module = "io.github.bluetape4k:bluetape4k-bom", version.ref = "bluetape4k" }
+bluetape4k-core = { module = "io.github.bluetape4k:bluetape4k-core" }
+bluetape4k-io = { module = "io.github.bluetape4k:bluetape4k-io" }
+bluetape4k-coroutines = { module = "io.github.bluetape4k:bluetape4k-coroutines" }
+bluetape4k-jackson2 = { module = "io.github.bluetape4k:bluetape4k-jackson2" }
+bluetape4k-protobuf = { module = "io.github.bluetape4k:bluetape4k-protobuf" }
+bluetape4k-cache-core = { module = "io.github.bluetape4k:bluetape4k-cache-core" }
+bluetape4k-hibernate = { module = "io.github.bluetape4k:bluetape4k-hibernate" }
+bluetape4k-idgenerators = { module = "io.github.bluetape4k:bluetape4k-idgenerators" }
+bluetape4k-lettuce = { module = "io.github.bluetape4k:bluetape4k-lettuce" }
+bluetape4k-redisson = { module = "io.github.bluetape4k:bluetape4k-redisson" }
+bluetape4k-kafka = { module = "io.github.bluetape4k:bluetape4k-kafka" }
+bluetape4k-logging = { module = "io.github.bluetape4k:bluetape4k-logging" }
+bluetape4k-junit5 = { module = "io.github.bluetape4k:bluetape4k-junit5" }
+bluetape4k-testcontainers = { module = "io.github.bluetape4k:bluetape4k-testcontainers" }
+
+# Javers
+javers-core = { module = "org.javers:javers-core", version.ref = "javers" }
+
+# Logging
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+jcl-over-slf4j = { module = "org.slf4j:jcl-over-slf4j", version.ref = "slf4j" }
+jul-to-slf4j = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
+log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+# Kafka
+kafka-clients = { module = "org.apache.kafka:kafka-clients", version.ref = "kafka4" }
+spring-kafka = { module = "org.springframework.kafka:spring-kafka", version.ref = "spring-kafka4" }
+spring-kafka-test = { module = "org.springframework.kafka:spring-kafka-test", version.ref = "spring-kafka4" }
+
+# Redis
+lettuce-core = { module = "io.lettuce:lettuce-core", version.ref = "lettuce" }
+redisson = { module = "org.redisson:redisson", version.ref = "redisson" }
+
+# MongoDB
+mongo-bson = { module = "org.mongodb:bson", version.ref = "mongo-driver" }
+mongo-bson-kotlin = { module = "org.mongodb:bson-kotlin", version.ref = "mongo-driver" }
+mongo-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongo-driver" }
+mongodb-driver-sync = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongo-driver" }
+mongodb-driver-kotlin-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongo-driver" }
+mongodb-driver-kotlin-sync = { module = "org.mongodb:mongodb-driver-kotlin-sync", version.ref = "mongo-driver" }
+
+# Codecs
+kryo5 = { module = "com.esotericsoftware:kryo", version = "5.6.2" }
+fory-kotlin = { module = "org.apache.fory:fory-kotlin", version = "0.15.0" }
+
+# Compression
+lz4-java = { module = "at.yawk.lz4:lz4-java", version = "1.11.0" }
+snappy-java = { module = "org.xerial.snappy:snappy-java", version = "1.1.10.8" }
+zstd-jni = { module = "com.github.luben:zstd-jni", version = "1.5.7-7" }
+
+# Protobuf
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
+protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobuf" }
+
+# Cache
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
+caffeine-jcache = { module = "com.github.ben-manes.caffeine:jcache", version.ref = "caffeine" }
+cache2k-api = { module = "org.cache2k:cache2k-api", version.ref = "cache2k" }
+cache2k-core = { module = "org.cache2k:cache2k-core", version.ref = "cache2k" }
+cache2k-jcache = { module = "org.cache2k:cache2k-jcache", version.ref = "cache2k" }
+
+# Test
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-jupiter" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-engine = { module = "org.junit.platform:junit-platform-engine" }
+kluent = { module = "org.amshove.kluent:kluent", version.ref = "kluent" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+awaitility-kotlin = { module = "org.awaitility:awaitility-kotlin", version.ref = "awaitility" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers = { module = "org.testcontainers:testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
