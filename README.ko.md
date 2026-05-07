@@ -1,5 +1,10 @@
 # Module bluetape4k javers modules
 
+[![CI](https://github.com/bluetape4k/bluetape4k-javers/actions/workflows/ci.yml/badge.svg)](https://github.com/bluetape4k/bluetape4k-javers/actions/workflows/ci.yml)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin)](https://kotlinlang.org)
+[![JVM](https://img.shields.io/badge/JVM-21-ED8B00?logo=openjdk)](https://openjdk.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 [English](./README.md) | 한국어
 
 [Javers](https://javers.org) 는 객체에 대한 Audit과 Diff 를 지원해주는 Framework 입니다. 기본적으로 메모리, MongoDB, JDBC 에 Audit 정보를 저장할 수 있는
