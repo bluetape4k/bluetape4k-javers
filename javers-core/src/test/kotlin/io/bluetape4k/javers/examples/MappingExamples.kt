@@ -4,10 +4,10 @@ import io.bluetape4k.javers.createEntityInstanceId
 import io.bluetape4k.javers.getEntityTypeMapping
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
-import org.amshove.kluent.shouldBeEmpty
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldBeInstanceOf
-import org.amshove.kluent.shouldNotBeEqualTo
+import io.bluetape4k.assertions.shouldBeEmpty
+import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeInstanceOf
+import io.bluetape4k.assertions.shouldNotBeEqualTo
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.diff.custom.CustomValueComparator

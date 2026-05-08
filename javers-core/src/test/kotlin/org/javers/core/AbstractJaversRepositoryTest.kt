@@ -11,13 +11,13 @@ import io.bluetape4k.javers.repository.jql.queryByValueObject
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldBeGreaterThan
-import org.amshove.kluent.shouldBeInstanceOf
-import org.amshove.kluent.shouldBeLessOrEqualTo
-import org.amshove.kluent.shouldContainSame
-import org.amshove.kluent.shouldHaveSize
-import org.amshove.kluent.shouldNotBeNull
+import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeGreaterThan
+import io.bluetape4k.assertions.shouldBeInstanceOf
+import io.bluetape4k.assertions.shouldBeLessOrEqualTo
+import io.bluetape4k.assertions.shouldContainSame
+import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldNotBeNull
 import org.javers.common.date.DateProvider
 import org.javers.core.commit.CommitMetadata
 import org.javers.core.diff.changetype.ValueChange
@@ -278,7 +278,7 @@ abstract class AbstractJaversRepositoryTest {
 
             log.trace { "change=${javers.jsonConverter.toJson(this)}" }
 
-            this shouldBeInstanceOf ValueChange::class.java
+            this shouldBeInstanceOf ValueChange::class
 //            affectedGlobalId shouldBeEqualTo GlobalIdTestBuilder.instanceId("John", DummyUser::class)
 //
 //            with(this as ValueChange) {
@@ -340,10 +340,10 @@ abstract class AbstractJaversRepositoryTest {
         val change = changes[0]
 
         Assumptions.assumeTrue { change is CollectionChange<*> }
-        change shouldBeInstanceOf CollectionChange::class.java
+        change shouldBeInstanceOf CollectionChange::class
         if (change is CollectionChange<*>) {
             val elementChange = change.changes[0]
-            elementChange shouldBeInstanceOf ValueAdded::class.java
+            elementChange shouldBeInstanceOf ValueAdded::class
 
             if (elementChange is ValueAdded) {
                 elementChange.index shouldBeEqualTo 1
