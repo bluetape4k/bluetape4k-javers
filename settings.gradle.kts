@@ -16,3 +16,6 @@ include(
     "javers-persistence-kafka",
     "javers-persistence-redis",
 )
+
+include("bluetape4k-javers-bom")
+project(":bluetape4k-javers-bom").projectDir = file("bom")
