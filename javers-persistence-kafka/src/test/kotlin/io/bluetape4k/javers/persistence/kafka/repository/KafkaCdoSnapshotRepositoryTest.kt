@@ -1,7 +1,7 @@
 package io.bluetape4k.javers.persistence.kafka.repository
 
 import io.bluetape4k.logging.KLogging
-import org.amshove.kluent.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeEqualTo
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.metamodel.`object`.SnapshotType

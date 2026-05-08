@@ -27,7 +27,6 @@ slf4j = "2.0.17"
 logback = "1.5.32"
 
 junit-jupiter = "6.0.3"
-kluent = "1.73"
 mockk = "1.14.9"
 awaitility = "4.3.0"
 testcontainers = "2.0.5"
@@ -142,7 +141,7 @@ cache2k-jcache = { module = "org.cache2k:cache2k-jcache", version.ref = "cache2k
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-jupiter" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine" }
-kluent = { module = "org.amshove.kluent:kluent", version.ref = "kluent" }
+bluetape4k-assertions = { module = "io.github.bluetape4k:bluetape4k-assertions", version.ref = "bluetape4k" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 awaitility-kotlin = { module = "org.awaitility:awaitility-kotlin", version.ref = "awaitility" }
 testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }

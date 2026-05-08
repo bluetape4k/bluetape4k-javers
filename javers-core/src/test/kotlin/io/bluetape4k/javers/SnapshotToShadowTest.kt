@@ -1,8 +1,8 @@
 package io.bluetape4k.javers
 
 import io.bluetape4k.javers.repository.caffeine.CaffeineCdoSnapshotRepository
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldNotBeNull
+import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldNotBeNull
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.model.SnapshotEntity

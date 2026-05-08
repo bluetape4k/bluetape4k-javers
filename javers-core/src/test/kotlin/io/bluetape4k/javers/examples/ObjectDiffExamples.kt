@@ -7,11 +7,11 @@ import io.bluetape4k.javers.diff.isObjectRemoved
 import io.bluetape4k.javers.diff.objectsByChangeType
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldBeInstanceOf
-import org.amshove.kluent.shouldBeTrue
-import org.amshove.kluent.shouldContainSame
-import org.amshove.kluent.shouldHaveSize
+import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeInstanceOf
+import io.bluetape4k.assertions.shouldBeTrue
+import io.bluetape4k.assertions.shouldContainSame
+import io.bluetape4k.assertions.shouldHaveSize
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.diff.changetype.NewObject
