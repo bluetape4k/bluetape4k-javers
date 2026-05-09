@@ -26,6 +26,7 @@ dependencies {
 
     testImplementation(libs.bluetape4k.junit5)
     testImplementation(libs.bluetape4k.testcontainers)
+    testImplementation(libs.guava)
 
     // Cache for Javers repository
     compileOnly(libs.caffeine)
