@@ -121,7 +121,7 @@ mongodb-driver-kotlin-sync = { module = "org.mongodb:mongodb-driver-kotlin-sync"
 
 # Codecs
 kryo5 = { module = "com.esotericsoftware:kryo", version = "5.6.2" }  # https://mvnrepository.com/artifact/com.esotericsoftware/kryo
-fory-kotlin = { module = "org.apache.fory:fory-kotlin", version = "0.15.0" }  # https://mvnrepository.com/artifact/org.apache.fory/fory-kotlin
+fory-kotlin = { module = "org.apache.fory:fory-kotlin", version = "0.17.0" }  # https://mvnrepository.com/artifact/org.apache.fory/fory-kotlin
 
 # Compression
 lz4-java = { module = "at.yawk.lz4:lz4-java", version.ref = "lz4" }
