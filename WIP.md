@@ -1,13 +1,18 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-05-09 KST
+Snapshot: 2026-05-13 KST
 Scope: open GitHub issues assigned to `debop`, created on or after 2026-01-01.
 Open count: 3 issues.
 
+## Recently Completed
+
+- `bluetape4k-javers-bom` and localized BOM README files are merged by PR #10 and PR #11.
+- JaVers implementation backlog was captured in repository docs by PR #12.
+- Nightly smoke/full split, lessons guidance, dependency governance, compatibility guard, and Kover policy maintenance are merged through PR #14 through PR #24.
+
 ## Current Direction
 
-The JaVers backlog is a strict phase chain. Do not start examples before the
-Exposed repository and DDD helper layer are usable.
+The JaVers backlog is a strict phase chain. Do not start examples before the Exposed repository and DDD helper layer are usable.
 
 ## Priority Queue
 

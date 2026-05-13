@@ -1,4 +1,4 @@
-# Module bluetape4k javers modules
+# bluetape4k-javers
 
 [![CI](https://github.com/bluetape4k/bluetape4k-javers/actions/workflows/ci.yml/badge.svg)](https://github.com/bluetape4k/bluetape4k-javers/actions/workflows/ci.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF?logo=kotlin)](https://kotlinlang.org)
@@ -7,16 +7,74 @@
 
 [English](./README.md) | 한국어
 
-[Javers](https://javers.org) 는 객체에 대한 Audit과 Diff 를 지원해주는 Framework 입니다. 기본적으로 메모리, MongoDB, JDBC 에 Audit 정보를 저장할 수 있는
-기능을 제공합니다.
+![bluetape4k JaVers 감사 작업대 일러스트](./docs/assets/javers-workbench.png)
 
-Bluetape4k Javers 에서는 위의 저장소 이외에, Redis 와 Kafka 를 통해 Event Sourcing 방식으로 CDC 를 지원할 수 있도록 해줍니다. 유사한 기능으로 Hibernate Enver
-가 있습니다
+[JaVers](https://javers.org) 객체 감사(audit)와 diff를 위한 Kotlin/JVM 통합 라이브러리입니다.
+CDO snapshot과 event-sourced change stream을 위해 Redis, Kafka persistence 선택지를 제공합니다.
+
+## 프로젝트 목적
+
+`bluetape4k-javers`는 JaVers의 기본 in-memory, MongoDB, JDBC 저장소 선택지를 확장합니다.
+cache-backed read, Redis persistence, Kafka event stream, 향후 Exposed 기반 repository layer가
+필요한 Kotlin 서비스의 audit/diff 인프라를 목표로 합니다.
+
+## 제공 기능
+
+- **JaVers core helper** — extension, codec, cache-backed repository 구성 요소
+- **Redis persistence** — Lettuce/Redisson 기반 snapshot 저장 경로
+- **Kafka persistence** — event stream 기반 CDO snapshot persistence
+- **BOM 지원** — 소비자 dependency version 정렬을 위한 `bluetape4k-javers-bom`
+- **구현 backlog** — Exposed persistence, DDD helper, CQRS/Event Sourcing 예제 phase chain
+
+## 아키텍처
+
+```mermaid
+flowchart TD
+    APP["Kotlin service"]
+    DOMAIN["Domain objects"]
+    JAVERS["JaVers audit/diff engine"]
+    CORE["javers-core\ncodec + repository helper"]
+    REDIS["javers-persistence-redis\nLettuce / Redisson snapshot"]
+    KAFKA["javers-persistence-kafka\nsnapshot event stream"]
+    BOM["bluetape4k-javers-bom"]
+    FUTURE["planned: javers-exposed\nplanned: javers-ddd\nplanned: CQRS demo"]
+
+    APP --> DOMAIN --> JAVERS --> CORE
+    CORE --> REDIS
+    CORE --> KAFKA
+    BOM -. aligns .-> CORE
+    FUTURE -. extends .-> CORE
+```
+
+## 모듈
+
+| 모듈 | Artifact | 역할 |
+|---|---|---|
+| `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extension, codec, cache-backed repository |
+| `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
+| `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence |
+| `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
+
+## 요구사항
+
+- JDK 21+
+- Kotlin 2.3+
+- JaVers 7.11.0
+
+## 빌드
+
+```bash
+./gradlew build -x test
+./gradlew build
+./gradlew :javers-core:test
+./gradlew :javers-persistence-redis:test
+./gradlew :javers-persistence-kafka:test
+```
 
 ## 참고 자료
 
-- [Javers](https://javers.org)
-- [Javers Feature Overview](https://javers.org/features)
-- [Javers VS Envers Comparison](https://javers.org/blog/2017/12/javers-vs-envers-comparision.html)
+- [JaVers](https://javers.org)
+- [JaVers Feature Overview](https://javers.org/features)
+- [JaVers VS Envers Comparison](https://javers.org/blog/2017/12/javers-vs-envers-comparision.html)
 - [Using JaVers for Data Model Auditing in Spring Data](https://www.baeldung.com/spring-data-javers-audit)
 - [Spring Data에서 데이터 모델 감사를 위해 JaVers 사용](https://recordsoflife.tistory.com/486)
