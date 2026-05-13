@@ -14,6 +14,10 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 | `javers-core` | Javers extensions, codecs, cache-backed repositories |
 | `javers-persistence-kafka` | Kafka-backed CDO snapshot persistence |
 | `javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
+| `bom/` | `bluetape4k-javers-bom` consumer BOM |
+
+Root README visual assets live under `docs/assets/` and should be shared by
+`README.md` and `README.ko.md` through the same relative path.
 
 ## Commands
 
