@@ -4,7 +4,7 @@ configurations {
 
 dependencies {
     api(libs.bluetape4k.core)
-    api(libs.bluetape4k.jackson2)
+    api(libs.bluetape4k.jackson3)
     api(libs.bluetape4k.idgenerators)
 
     testImplementation(libs.bluetape4k.junit5)

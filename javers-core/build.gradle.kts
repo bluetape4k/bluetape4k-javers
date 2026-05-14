@@ -17,7 +17,7 @@ dependencies {
     api(libs.javers.core)
 
     api(libs.bluetape4k.io)
-    api(libs.bluetape4k.jackson2)
+    api(libs.bluetape4k.jackson3)
     implementation(libs.bluetape4k.cache.core)
     implementation(libs.bluetape4k.protobuf)
     implementation(libs.bluetape4k.hibernate)

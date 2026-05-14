@@ -81,6 +81,7 @@ bluetape4k-core = { module = "io.github.bluetape4k:bluetape4k-core" }
 bluetape4k-io = { module = "io.github.bluetape4k:bluetape4k-io" }
 bluetape4k-coroutines = { module = "io.github.bluetape4k:bluetape4k-coroutines" }
 bluetape4k-jackson2 = { module = "io.github.bluetape4k:bluetape4k-jackson2" }
+bluetape4k-jackson3 = { module = "io.github.bluetape4k:bluetape4k-jackson3" }
 bluetape4k-protobuf = { module = "io.github.bluetape4k:bluetape4k-protobuf" }
 bluetape4k-cache-core = { module = "io.github.bluetape4k:bluetape4k-cache-core" }
 bluetape4k-hibernate = { module = "io.github.bluetape4k:bluetape4k-hibernate" }
