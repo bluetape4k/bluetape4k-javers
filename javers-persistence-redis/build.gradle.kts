@@ -5,7 +5,7 @@ configurations {
 dependencies {
     api(libs.bluetape4k.io)
     api(libs.bluetape4k.protobuf)
-    api(libs.bluetape4k.jackson2)
+    api(libs.bluetape4k.jackson3)
     api(libs.bluetape4k.idgenerators)
     compileOnly(libs.bluetape4k.hibernate)
     compileOnly(libs.bluetape4k.cache.core)
