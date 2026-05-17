@@ -17,7 +17,7 @@ abstract class AbstractJaversCommitTest {
     abstract fun newJavers(): Javers
 
     @Test
-    fun `ShallowReferenceType entity snapshot is not committed`() {
+    open fun `ShallowReferenceType entity snapshot is not committed`() {
         val javers = newJavers()
         val reference = ShallowPhone(1L, "123", CategoryC(1, "some"))
         val entity = SnapshotEntity(id = 1).apply {
@@ -44,7 +44,7 @@ abstract class AbstractJaversCommitTest {
     }
 
     @Test
-    fun `changes in a property annotated with @ShallowReference are not committed as a snapshot`() {
+    open fun `changes in a property annotated with @ShallowReference are not committed as a snapshot`() {
         val javers = newJavers()
         val entity = PhoneWithShallowCategory(1).apply {
             shallowCategory = CategoryC(1, "old shallow")
