@@ -34,18 +34,18 @@ import kotlin.concurrent.withLock
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * [CdoSnapshotRepository]의 공통 구현을 제공하는 추상 클래스.
+ * Abstract class providing common implementation for [CdoSnapshotRepository].
  *
- * ## 동작/계약
- * - [JaversCodec]를 사용하여 [CdoSnapshot] ↔ 인코딩 형식 [T] 변환을 수행한다
- * - [persist] 시 lock으로 스레드 안전성을 보장하고, [Snowflake] 기반 시퀀스를 할당한다
- * - [QueryParams] 기반 필터링(author, date, version, commitId 등)을 공통으로 처리한다
- * - 하위 클래스는 [getKeys], [contains], [getSeq], [updateCommitId], [getSnapshotSize],
- *   [saveSnapshot], [loadSnapshots]를 구현해야 한다
+ * ## Behavior / Contract
+ * - Uses a [JaversCodec] to convert [CdoSnapshot] ↔ encoded format [T].
+ * - [persist] is thread-safe via a lock, and assigns a [Snowflake]-based sequence number.
+ * - Common [QueryParams]-based filtering (author, date, version, commitId, etc.) is handled here.
+ * - Subclasses must implement [getKeys], [contains], [getSeq], [updateCommitId],
+ *   [getSnapshotSize], [saveSnapshot], and [loadSnapshots].
  *
- * @param T 인코딩된 스냅샷 데이터의 타입 (예: String, ByteArray)
- * @property codec 스냅샷 인코딩/디코딩에 사용할 [JaversCodec]
- * @property commitIdSupplier 커밋 시퀀스 번호를 생성하는 [Snowflake]
+ * @param T the type of encoded snapshot data (e.g. String, ByteArray)
+ * @property codec the [JaversCodec] used to encode/decode snapshots
+ * @property commitIdSupplier the [Snowflake] used to generate commit sequence numbers
  */
 abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected val codec: JaversCodec<T>,
@@ -76,7 +76,10 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected var head: CommitId? = null
 
     protected fun encode(snapshot: CdoSnapshot): T {
-        val jsonObject = jsonConverter?.toJsonElement(snapshot) as JsonObject
+        val converter = requireNotNull(jsonConverter) {
+            "JsonConverter is not set. Ensure Javers called setJsonConverter() before encoding."
+        }
+        val jsonObject = converter.toJsonElement(snapshot) as JsonObject
         return doEncode(jsonObject)
     }
 
