@@ -6,14 +6,14 @@ import io.bluetape4k.io.compressor.Compressors
 
 
 /**
- * [BinaryJaversCodec] 결과를 [Compressor]로 추가 압축하는 코덱.
+ * A codec that compresses the output of [BinaryJaversCodec] using a [Compressor].
  *
- * ## 동작/계약
- * - encode: innerCodec 직렬화 → 압축
- * - decode: 압축 해제 → innerCodec 역직렬화
+ * ## Behavior / Contract
+ * - encode: serialize via innerCodec → compress
+ * - decode: decompress → deserialize via innerCodec
  *
  * ```kotlin
- * val codec = CompressableBinaryJaversCodec(
+ * val codec = CompressibleBinaryJaversCodec(
  *     BinaryJaversCodec(BinarySerializers.Kryo),
  *     Compressors.LZ4
  * )
@@ -21,10 +21,10 @@ import io.bluetape4k.io.compressor.Compressors
  * val decoded = codec.decode(compressed)
  * ```
  *
- * @property innerCodec 바이너리 직렬화를 수행하는 내부 코덱
- * @property compressor 압축/해제에 사용할 [Compressor] (기본값: GZip)
+ * @property innerCodec the inner codec that performs binary serialization
+ * @property compressor the [Compressor] used for compression/decompression (default: GZip)
  */
-class CompressableBinaryJaversCodec(
+class CompressibleBinaryJaversCodec(
     private val innerCodec: BinaryJaversCodec,
     private val compressor: Compressor = Compressors.GZip,
 ): JaversCodec<ByteArray> {
