@@ -17,7 +17,7 @@ abstract class AbstractJaversCommitTest {
     abstract fun newJavers(): Javers
 
     @Test
-    fun `ShallowReferenceType 엔티티의 snapshot은 commit하지 않습니다`() {
+    open fun `ShallowReferenceType entity snapshot is not committed`() {
         val javers = newJavers()
         val reference = ShallowPhone(1L, "123", CategoryC(1, "some"))
         val entity = SnapshotEntity(id = 1).apply {
@@ -30,20 +30,21 @@ abstract class AbstractJaversCommitTest {
         // WHEN
         var commit = javers.commit("", entity)
 
-        // THEN
+        // THEN: initial commit captures the entity snapshot
         commit.snapshots.forEach { log.debug { it } }
         commit.snapshots.size shouldBeEqualTo 1
 
+        // Changing a shallow reference should not produce a new snapshot
         reference.number = "other"
 
         commit = javers.commit("", entity)
 
         commit.snapshots.forEach { log.debug { it } }
-        commit.snapshots.isEmpty()
+        commit.snapshots shouldBeEqualTo emptyList()
     }
 
     @Test
-    fun `@ShallowReference가 지정된 property의 변화는 snapshot으로 commit되지 않습니다`() {
+    open fun `changes in a property annotated with @ShallowReference are not committed as a snapshot`() {
         val javers = newJavers()
         val entity = PhoneWithShallowCategory(1).apply {
             shallowCategory = CategoryC(1, "old shallow")
@@ -51,14 +52,16 @@ abstract class AbstractJaversCommitTest {
 
         var commit = javers.commit("", entity)
 
+        // THEN: initial commit captures the entity snapshot
         commit.snapshots.forEach { log.debug { it } }
         commit.snapshots.size shouldBeEqualTo 1
 
+        // Changing a @ShallowReference property should not produce a new snapshot
         entity.shallowCategory?.name = "new shallow"
 
         commit = javers.commit("", entity)
 
         commit.snapshots.forEach { log.debug { it } }
-        commit.snapshots.isEmpty()
+        commit.snapshots shouldBeEqualTo emptyList()
     }
 }
