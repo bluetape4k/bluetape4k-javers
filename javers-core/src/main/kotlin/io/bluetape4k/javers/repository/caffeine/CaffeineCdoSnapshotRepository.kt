@@ -12,12 +12,13 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 /**
- * Caffeine 캐시 기반의 인메모리 [CdoSnapshot] 저장소.
+ * Caffeine-cache-backed in-memory [CdoSnapshot] repository.
  *
- * ## 동작/계약
- * - [Cache] 인스턴스를 사용하여 GlobalId별 스냅샷 목록을 메모리에 보관한다
- * - 스냅샷은 최신순으로 리스트 앞쪽에 삽입된다 (index 0)
- * - lock으로 동시 쓰기 안전성을 보장한다
+ * ## Behavior / Contract
+ * - Uses a [Cache] instance to hold snapshot lists per GlobalId in memory.
+ * - Snapshots are inserted at the front of the list (index 0) so the newest entry comes first.
+ * - Both [saveSnapshot] and [loadSnapshots] are protected by a lock to prevent
+ *   [java.util.ConcurrentModificationException] during concurrent access.
  *
  * ```kotlin
  * val repo = CaffeineCdoSnapshotRepository()
@@ -26,7 +27,7 @@ import kotlin.concurrent.withLock
  *     .build()
  * ```
  *
- * @param codec 스냅샷 인코딩/디코딩에 사용할 [JaversCodec] (기본값: LZ4 압축 문자열)
+ * @param codec the [JaversCodec] used to encode/decode snapshots (default: LZ4-compressed string)
  */
 class CaffeineCdoSnapshotRepository(
     codec: JaversCodec<String> = JaversCodecs.LZ4String,
@@ -37,7 +38,7 @@ class CaffeineCdoSnapshotRepository(
     private val lock = ReentrantLock()
 
     /**
-     * [CdoSnapshot] 컬렉션을 저장하는 Cache (key=globalId, value=collection of encoded snapshot)
+     * Cache holding encoded snapshot lists per GlobalId (key=globalId, value=list of encoded snapshots).
      */
     private val snapshotCache: Cache<String, MutableList<String>> by lazy {
         caffeine {
@@ -46,7 +47,7 @@ class CaffeineCdoSnapshotRepository(
     }
 
     /**
-     * [CommitId] - Sequence Number를 캐시합니다.
+     * Cache holding the sequence number for each [CommitId].
      */
     private val commitSeqCache: Cache<CommitId, Long> by lazy {
         caffeine {
@@ -82,6 +83,9 @@ class CaffeineCdoSnapshotRepository(
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
-        return snapshotCache.getIfPresent(globalIdValue)?.mapNotNull { decode(it) } ?: emptyList()
+        val encoded = lock.withLock {
+            snapshotCache.getIfPresent(globalIdValue)?.toList() ?: emptyList()
+        }
+        return encoded.mapNotNull { decode(it) }
     }
 }
