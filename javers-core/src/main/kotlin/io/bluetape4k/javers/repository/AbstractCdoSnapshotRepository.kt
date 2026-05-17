@@ -17,6 +17,7 @@ import io.bluetape4k.javers.metamodel.isParent
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
+import io.bluetape4k.logging.warn
 import io.bluetape4k.support.toOptional
 import org.javers.core.commit.Commit
 import org.javers.core.commit.CommitId
@@ -73,6 +74,7 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected abstract fun getSnapshotSize(globalIdValue: String): Int
     protected fun getSnapshotSize(globalId: GlobalId): Int = getSnapshotSize(globalId.value())
 
+    @Volatile
     protected var head: CommitId? = null
 
     protected fun encode(snapshot: CdoSnapshot): T {
@@ -91,13 +93,25 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected fun doEncode(jsonObject: JsonObject): T = codec.encode(jsonObject)
     protected fun doDecode(data: T): JsonObject? = codec.decode(data)
 
+    /**
+     * Loads all snapshots from the repository, sorted by sequence number in descending order.
+     *
+     * ## OOM Warning
+     * This method materializes every snapshot into memory before filtering.
+     * For large repositories this is an unbounded memory allocation.
+     * When the key count exceeds 10,000, a warning is logged.
+     * Prefer JQL query-based access ([getSnapshots], [getStateHistory]) for production use.
+     */
     protected fun getAll(): List<CdoSnapshot> {
-        return getKeys()
-            .flatMap {
-                loadSnapshots(it)
-            }.sortedByDescending { getSeq(it.commitMetadata.id) }
-            .apply {
-                log.debug { "load all snapshot. size=${this.size}" }
+        val keys = getKeys()
+        if (keys.size > 10_000) {
+            log.warn { "getAll() is loading ${keys.size} keys — this may cause OutOfMemoryError for large repositories. Use query-based JQL instead." }
+        }
+        return keys
+            .flatMap { loadSnapshots(it) }
+            .sortedByDescending { getSeq(it.commitMetadata.id) }
+            .also {
+                log.debug { "Loaded all snapshots. size=${it.size}" }
             }
     }
 

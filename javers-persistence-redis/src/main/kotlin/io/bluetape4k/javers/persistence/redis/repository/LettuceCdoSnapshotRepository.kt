@@ -15,15 +15,21 @@ import io.bluetape4k.support.asLongOrNull
 import io.lettuce.core.RedisClient
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /**
- * Lettuce 기반 Redis [CdoSnapshot] 저장소.
+ * Lettuce-based Redis [CdoSnapshot] repository.
  *
- * ## 동작/계약
- * - GlobalId별 스냅샷을 Redis LIST(`javers:{name}:snapshot:{globalId}`)에 LPUSH로 최신순 저장한다
- * - [saveSnapshot]은 MULTI/EXEC 트랜잭션으로 LIST 저장 + HSET GlobalId 등록을 원자적으로 수행한다
- * - 트랜잭션 실패 시 DISCARD 후 예외를 로깅한다
- * - 코덱 기본값은 [JaversCodecs.LZ4Fory] (LZ4 압축 + Fory 직렬화)이다
+ * ## Behavior / Contract
+ * - Snapshots are stored newest-first in a Redis LIST keyed as `javers:{name}:snapshot:{globalId}`.
+ * - [saveSnapshot] uses a MULTI/EXEC transaction to atomically LPUSH the snapshot and HSET the GlobalId index.
+ * - The entire MULTI/EXEC sequence is serialized with a [ReentrantLock] because the shared synchronous
+ *   Lettuce connection is not thread-safe for pipelined transactions — concurrent callers would otherwise
+ *   interleave commands between `multi()` and `exec()`.
+ * - On transaction failure, DISCARD is attempted (failures during DISCARD are logged separately),
+ *   and the original exception is propagated so that [persist] does not advance the audit-log head.
+ * - The default codec is [JaversCodecs.LZ4Fory] (LZ4 + Fory serialization).
  *
  * ```kotlin
  * val repo = LettuceCdoSnapshotRepository("user", redisClient)
@@ -34,9 +40,9 @@ import org.javers.core.metamodel.`object`.CdoSnapshot
  * val snapshots = javers.findSnapshots(queryByClass<Person>())
  * ```
  *
- * @param name 저장소 이름 (Redis key prefix에 사용)
- * @param client Lettuce [RedisClient] 인스턴스
- * @param codec [CdoSnapshot]을 encode/decode 할 [JaversCodec] 인스턴스
+ * @param name repository name used as a Redis key prefix
+ * @param client Lettuce [RedisClient] instance
+ * @param codec the [JaversCodec] used to encode/decode [CdoSnapshot]
  */
 class LettuceCdoSnapshotRepository(
     val name: String,
@@ -50,17 +56,26 @@ class LettuceCdoSnapshotRepository(
         private const val SNAPSHOT_SUFFIX = "snapshot:"
     }
 
-    // Cache Key에 해당하는 [GlobalId.value()] 값을 저장하는 Set
+    // Redis HASH key storing [GlobalId.value()] entries for fast key lookup
     private val cacheSetKey: String = "javers:$name:$CACHE_KEY_SET"
 
-    // HSET CommitId SEQUENCE NO 를 보관하는 Set
+    // Redis HASH key storing CommitId → sequence number mappings
     private val sequenceSetKey: String = "javers:$name:$SEQUENCE_SET"
 
-    // [CdoSnapshot]을 저장할 Redis LIST Key 값의 prefix 입니다.
-    // globalId 마다 List<CdoSnapshot> 을 저장합니다.
+    // Prefix for Redis LIST keys that store snapshots per GlobalId
     private val snapshotPrefix = "javers:$name:$SNAPSHOT_SUFFIX"
 
+    // Read-only connection shared across all read operations.
     private val commands by lazy {
+        LettuceClients.commands(client, codec = LettuceBinaryCodecs.lz4Fory())
+    }
+
+    // Dedicated connection used exclusively for MULTI/EXEC in saveSnapshot.
+    // Keeping it separate from `commands` prevents read-path commands (lrange, hget, etc.)
+    // from being queued into an open transaction on the same Lettuce connection.
+    // `transactionLock` serializes concurrent saveSnapshot calls on this connection.
+    private val transactionLock = ReentrantLock()
+    private val writeCommands by lazy {
         LettuceClients.commands(client, codec = LettuceBinaryCodecs.lz4Fory())
     }
 
@@ -94,18 +109,18 @@ class LettuceCdoSnapshotRepository(
     override fun saveSnapshot(snapshot: CdoSnapshot) {
         val key = makeSnapshotKey(snapshot.globalId.value())
         val value = encode(snapshot)
-
-        try {
-            commands.multi()
-            // 최신 Snapshot 을 저장합니다.
-            commands.lpush(key, value)
-            // 전체 Cache Item의 GlobalId 를 빠르게 조회하기 위해 따로 저장한다
-            commands.hset(cacheSetKey, snapshot.globalId.value(), snapshot.version)
-            commands.exec()
-            log.debug { "Save snapshot key=$key, version=${snapshot.version}" }
-        } catch (e: Exception) {
-            log.error(e) { "Fail to save snapshot. snapshot globalId=${snapshot.globalId.value()}" }
-            commands.discard()
+        transactionLock.withLock {
+            try {
+                writeCommands.multi()
+                writeCommands.lpush(key, value)
+                writeCommands.hset(cacheSetKey, snapshot.globalId.value(), snapshot.version)
+                writeCommands.exec()
+                log.debug { "Saved snapshot key=$key, version=${snapshot.version}" }
+            } catch (e: Exception) {
+                runCatching { writeCommands.discard() }
+                    .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
+                throw RuntimeException("Failed to save snapshot. globalId=${snapshot.globalId.value()}", e)
+            }
         }
     }
 
@@ -118,10 +133,10 @@ class LettuceCdoSnapshotRepository(
     }
 
     /**
-     * Make snapshot key (eg. `javers:user:snapshots:id`)
+     * Builds the Redis LIST key for the given GlobalId value.
      *
-     * @param id [CdoSnapshot]의 GlobalId 값 (eg. `User/1` )
-     * @return Snapshot 을 기록하는 Redis List 의 Key 값 (eg. `javers:user:snapshots:User/1`)
+     * @param id the [CdoSnapshot] GlobalId value (e.g. `User/1`)
+     * @return the Redis key (e.g. `javers:user:snapshot:User/1`)
      */
     private fun makeSnapshotKey(id: String): String {
         return snapshotPrefix + id
