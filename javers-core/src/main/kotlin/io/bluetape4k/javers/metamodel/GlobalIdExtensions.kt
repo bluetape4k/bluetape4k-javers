@@ -7,11 +7,12 @@ import org.javers.core.metamodel.type.EntityType
 import org.javers.core.metamodel.type.ManagedType
 
 /**
- * 현재 [GlobalId]가 [childCandidate]의 부모인지 확인한다.
+ * Returns true if this [GlobalId] is the parent of [childCandidate].
  *
- * ## 동작/계약
- * - 현재 ID가 [InstanceId]이고 [childCandidate]가 [ValueObjectId]이며, 그 소유자가 현재 ID인 경우 true
- * - 그 외에는 false
+ * ## Behavior / Contract
+ * - Returns true when this ID is an [InstanceId], [childCandidate] is a [ValueObjectId],
+ *   and the child's owner is this ID.
+ * - Returns false otherwise.
  */
 fun GlobalId.isParent(childCandidate: GlobalId): Boolean {
     if (this !is InstanceId || childCandidate !is ValueObjectId) {
@@ -21,11 +22,12 @@ fun GlobalId.isParent(childCandidate: GlobalId): Boolean {
 }
 
 /**
- * 현재 [GlobalId]가 [parentCandidate] 타입의 자식인지 확인한다.
+ * Returns true if this [GlobalId] is a child of [parentCandidate].
  *
- * ## 동작/계약
- * - [parentCandidate]가 [EntityType]이고 현재 ID가 [ValueObjectId]이며, 그 소유자가 해당 엔티티 타입인 경우 true
- * - 그 외에는 false
+ * ## Behavior / Contract
+ * - Returns true when [parentCandidate] is an [EntityType], this ID is a [ValueObjectId],
+ *   and its owner matches the given entity type.
+ * - Returns false otherwise.
  */
 fun GlobalId.isChild(parentCandidate: ManagedType): Boolean {
     if (parentCandidate !is EntityType || this !is ValueObjectId) {

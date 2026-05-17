@@ -15,13 +15,13 @@ import org.redisson.api.RedissonClient
 import org.redisson.client.codec.LongCodec
 
 /**
- * Redisson 기반 Redis [CdoSnapshot] 저장소.
+ * Redisson-backed Redis [CdoSnapshot] repository.
  *
- * ## 동작/계약
- * - [RListMultimap]으로 GlobalId별 스냅샷 바이트 배열을 관리한다
- * - [loadSnapshots]는 Multimap에서 조회 후 역순 정렬하여 최신순으로 반환한다
- * - CommitId → Sequence 매핑은 [RMap]에 [LongCodec]으로 저장한다
- * - 코덱 기본값은 [JaversCodecs.LZ4Fory] (LZ4 압축 + Fory 직렬화)이다
+ * ## Behavior / Contract
+ * - Snapshot byte arrays are stored per GlobalId in an [RListMultimap].
+ * - [loadSnapshots] retrieves entries from the multimap and returns them in reverse order (most-recent first).
+ * - CommitId → sequence number mappings are stored in an [RMap] with [LongCodec].
+ * - The default codec is [JaversCodecs.LZ4Fory] (LZ4 compression + Fory serialization).
  *
  * ```kotlin
  * val repo = RedissonCdoSnapshotRepository("user", redissonClient)
@@ -32,9 +32,9 @@ import org.redisson.client.codec.LongCodec
  * val snapshots = javers.findSnapshots(queryByClass<Person>())
  * ```
  *
- * @param name 저장소 이름 (Redis key prefix에 사용)
- * @param redisson [RedissonClient] 인스턴스
- * @param codec [CdoSnapshot]을 encode/decode 할 [JaversCodec] 인스턴스
+ * @param name Repository name used as the Redis key prefix
+ * @param redisson [RedissonClient] instance
+ * @param codec [JaversCodec] used to encode and decode [CdoSnapshot] instances
  */
 class RedissonCdoSnapshotRepository(
     val name: String,
@@ -51,13 +51,13 @@ class RedissonCdoSnapshotRepository(
     private val snapshotName: String = "javers:$name:$SNAPSHOT"
 
     /**
-     * GlobalId 별로 Snapshot 컬렉션을 매핑합니다.
+     * Multimap storing snapshot byte arrays per GlobalId.
      */
     private val snapshots: RListMultimap<String, ByteArray> =
         redisson.getListMultimap(snapshotName, RedissonCodecs.LZ4ForyComposite)
 
     /**
-     * CommitId: Sequence Number 매핑을 저장하는 Map
+     * Map storing CommitId to sequence number mappings.
      */
     private val commitIdSequences: RMap<String, Long> =
         redisson.getMap(sequenceName, LongCodec())
@@ -95,7 +95,7 @@ class RedissonCdoSnapshotRepository(
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
-        // NOTE: 최신 데이터가 처음에 오도록 역순 정렬해야 합니다. (Stack처럼 사용합니다)
+        // NOTE: Entries must be reversed so the most-recent snapshot comes first (stack-like access).
         val loaded = snapshots.getAll(globalIdValue)
             .mapNotNull { value ->
                 log.debug { "value size=${value.size}" }
