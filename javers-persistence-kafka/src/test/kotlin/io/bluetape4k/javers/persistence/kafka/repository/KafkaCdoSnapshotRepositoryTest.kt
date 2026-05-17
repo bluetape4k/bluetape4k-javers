@@ -9,6 +9,10 @@ import org.javers.core.model.PrimitiveEntity
 import org.javers.core.model.SnapshotEntity
 import org.javers.core.repository.AbstractJaversCommitTest
 import org.junit.jupiter.api.Test
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.SendResult
+import java.util.concurrent.CompletableFuture
+import kotlin.test.assertFailsWith
 
 /**
  * NOTE: **Redis나 MongoDB와 같이 테스트는 할 수 없고, snapshot 저장을 수행하는 테스트만 해야 한다**
@@ -68,5 +72,26 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
 
         snapshot.state.getPropertyValue("floatField") shouldBeEqualTo 1.1F
         snapshot.state.getPropertyValue("LongField") shouldBeEqualTo 10L
+    }
+
+    @Test
+    fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
+        // Build a KafkaTemplate whose sendDefault always returns a failed future.
+        // KafkaTemplate requires a ProducerFactory; supply the real one but override sendDefault
+        // so that no actual broker call is made.
+        val failingTemplate = object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
+            override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> =
+                CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))
+        }
+        failingTemplate.setDefaultTopic(KafkaProvider.TEST_TOPIC)
+
+        val repo = KafkaCdoSnapshotRepository(failingTemplate)
+        val javersInstance = JaversBuilder.javers()
+            .registerJaversRepository(repo)
+            .build()
+
+        assertFailsWith<RuntimeException> {
+            javersInstance.commit("author", SnapshotEntity(1))
+        }
     }
 }
