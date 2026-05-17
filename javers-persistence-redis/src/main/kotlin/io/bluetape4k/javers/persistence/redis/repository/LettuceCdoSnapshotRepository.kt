@@ -65,11 +65,17 @@ class LettuceCdoSnapshotRepository(
     // Prefix for Redis LIST keys that store snapshots per GlobalId
     private val snapshotPrefix = "javers:$name:$SNAPSHOT_SUFFIX"
 
-    // Serializes MULTI/EXEC sequences: the shared synchronous Lettuce connection is not
-    // thread-safe for transactions — concurrent callers can interleave commands.
-    private val transactionLock = ReentrantLock()
-
+    // Read-only connection shared across all read operations.
     private val commands by lazy {
+        LettuceClients.commands(client, codec = LettuceBinaryCodecs.lz4Fory())
+    }
+
+    // Dedicated connection used exclusively for MULTI/EXEC in saveSnapshot.
+    // Keeping it separate from `commands` prevents read-path commands (lrange, hget, etc.)
+    // from being queued into an open transaction on the same Lettuce connection.
+    // `transactionLock` serializes concurrent saveSnapshot calls on this connection.
+    private val transactionLock = ReentrantLock()
+    private val writeCommands by lazy {
         LettuceClients.commands(client, codec = LettuceBinaryCodecs.lz4Fory())
     }
 
@@ -105,13 +111,13 @@ class LettuceCdoSnapshotRepository(
         val value = encode(snapshot)
         transactionLock.withLock {
             try {
-                commands.multi()
-                commands.lpush(key, value)
-                commands.hset(cacheSetKey, snapshot.globalId.value(), snapshot.version)
-                commands.exec()
+                writeCommands.multi()
+                writeCommands.lpush(key, value)
+                writeCommands.hset(cacheSetKey, snapshot.globalId.value(), snapshot.version)
+                writeCommands.exec()
                 log.debug { "Saved snapshot key=$key, version=${snapshot.version}" }
             } catch (e: Exception) {
-                runCatching { commands.discard() }
+                runCatching { writeCommands.discard() }
                     .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
                 throw RuntimeException("Failed to save snapshot. globalId=${snapshot.globalId.value()}", e)
             }
