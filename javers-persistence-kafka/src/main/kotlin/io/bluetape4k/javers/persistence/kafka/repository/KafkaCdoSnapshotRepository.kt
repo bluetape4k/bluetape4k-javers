@@ -3,30 +3,31 @@ package io.bluetape4k.javers.persistence.kafka.repository
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import io.bluetape4k.logging.KLogging
-import io.bluetape4k.logging.error
 import io.bluetape4k.logging.trace
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.springframework.kafka.core.KafkaTemplate
 
 /**
- * JaVers [CdoSnapshot]을 Kafka 토픽으로 발행하는 쓰기 전용 저장소.
+ * Write-only JaVers repository that publishes [CdoSnapshot] to a Kafka topic.
  *
- * ## 동작/계약
- * - [saveSnapshot]에서 [KafkaTemplate.sendDefault]로 GlobalId를 key, 인코딩된 스냅샷을 value로 발행한다
- * - 발행 실패 시 예외를 로깅하고 삼킨다 (조용한 실패)
- * - 조회 메서드([loadSnapshots], [getKeys] 등)는 항상 빈 컬렉션/0을 반환한다
- * - 코덱은 [JaversCodecs.String] (비압축 JSON 문자열)을 사용한다
+ * ## Behavior / Contract
+ * - [saveSnapshot] publishes to the default topic via [KafkaTemplate.sendDefault],
+ *   using the GlobalId as the key and the encoded snapshot as the value.
+ * - Publish failures are propagated as [RuntimeException] so that [persist] sees the failure
+ *   and does not advance the audit-log head on error.
+ * - Read methods ([loadSnapshots], [getKeys], etc.) always return empty collections or zero.
+ * - The codec is [JaversCodecs.String] (uncompressed JSON string).
  *
  * ```kotlin
  * val repo = KafkaCdoSnapshotRepository(kafkaTemplate)
  * val javers = JaversBuilder.javers()
  *     .registerJaversRepository(repo)
  *     .build()
- * // javers.commit("author", entity) → Kafka 토픽으로 스냅샷 발행
+ * // javers.commit("author", entity) → publishes snapshot to Kafka topic
  * ```
  *
- * @property kafkaOperations [KafkaTemplate] 인스턴스
+ * @property kafkaOperations the [KafkaTemplate] instance used for publishing
  */
 class KafkaCdoSnapshotRepository(
     private val kafkaOperations: KafkaTemplate<String, String>,
@@ -47,13 +48,16 @@ class KafkaCdoSnapshotRepository(
     override fun getSnapshotSize(globalIdValue: String): Int = 0
 
     override fun saveSnapshot(snapshot: CdoSnapshot) {
+        val key = snapshot.globalId.value()
+        val value = encode(snapshot)
+        log.trace { "Produce snapshot. key=$key, value=$value" }
         try {
-            val key = snapshot.globalId.value()
-            val value = encode(snapshot)
-            log.trace { "Produce snapshot. key=$key, value=$value" }
             kafkaOperations.sendDefault(key, value).get()
-        } catch (e: Throwable) {
-            log.error(e) { "Fail to procude snapshot. key=${snapshot.globalId.value()}" }
+        } catch (e: InterruptedException) {
+            Thread.currentThread().interrupt()
+            throw RuntimeException("Kafka publish interrupted for key=$key", e)
+        } catch (e: Exception) {
+            throw RuntimeException("Kafka publish failed for key=$key", e)
         }
     }
 
