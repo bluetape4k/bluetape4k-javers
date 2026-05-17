@@ -17,6 +17,7 @@ import io.bluetape4k.javers.metamodel.isParent
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
+import io.bluetape4k.logging.warn
 import io.bluetape4k.support.toOptional
 import org.javers.core.commit.Commit
 import org.javers.core.commit.CommitId
@@ -73,6 +74,7 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected abstract fun getSnapshotSize(globalIdValue: String): Int
     protected fun getSnapshotSize(globalId: GlobalId): Int = getSnapshotSize(globalId.value())
 
+    @Volatile
     protected var head: CommitId? = null
 
     protected fun encode(snapshot: CdoSnapshot): T {
