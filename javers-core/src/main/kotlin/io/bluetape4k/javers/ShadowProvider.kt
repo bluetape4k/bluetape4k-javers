@@ -8,11 +8,12 @@ import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * [Javers] 인스턴스로부터 [ShadowFactory]를 생성·캐싱하여 제공하는 싱글턴 Provider.
+ * Singleton provider that creates and caches [ShadowFactory] instances per [Javers] instance.
  *
- * ## 동작/계약
- * - [Javers] 인스턴스별로 [ShadowFactory]를 [ConcurrentHashMap]에 캐싱한다
- * - 내부 [TypeMapper]는 Reflection으로 추출한다
+ * ## Behavior / Contract
+ * - A [ShadowFactory] is cached in a [ConcurrentHashMap] per [Javers] instance.
+ * - The internal [TypeMapper] is extracted via reflection on the first call.
+ * - Throws [IllegalStateException] if Javers internals change and the `typeMapper` field is not found.
  *
  * ```kotlin
  * val factory = ShadowProvider.getShadowFactory(javers)
@@ -25,11 +26,13 @@ object ShadowProvider: KLogging() {
     private val shadowFactories = ConcurrentHashMap<Javers, ShadowFactory>()
 
     /**
-     * 지정한 [javers]에 대응하는 [ShadowFactory]를 반환한다.
+     * Returns the [ShadowFactory] corresponding to the given [javers] instance.
      *
-     * ## 동작/계약
-     * - 동일한 [Javers] 인스턴스에 대해 항상 같은 [ShadowFactory]를 반환한다
-     * - 최초 호출 시 [Javers] 내부 [TypeMapper]를 Reflection으로 추출하여 생성한다
+     * ## Behavior / Contract
+     * - Always returns the same [ShadowFactory] for the same [Javers] instance.
+     * - On the first call, extracts the internal [TypeMapper] from [Javers] via reflection.
+     *
+     * @param javers the [Javers] instance whose shadow factory is needed
      */
     fun getShadowFactory(javers: Javers): ShadowFactory {
         return shadowFactories.computeIfAbsent(javers) {
@@ -38,11 +41,14 @@ object ShadowProvider: KLogging() {
     }
 
     /**
-     * [Javers] 내부의 [TypeMapper]를 Reflection을 통해 추출한다.
+     * Extracts the internal [TypeMapper] from [Javers] via reflection.
+     *
+     * @throws IllegalStateException if the `typeMapper` field cannot be found in the Javers class
      */
     private fun getTypeMapper(javers: Javers): TypeMapper {
         return typeMappers.computeIfAbsent(javers) {
-            val field: Field = javers.javaClass.declaredFields.find { it.name == "typeMapper" }!!
+            val field: Field = javers.javaClass.declaredFields.find { it.name == "typeMapper" }
+                ?: error("Javers internals changed: 'typeMapper' field not found in ${javers.javaClass.name}")
             field.isAccessible = true
             field.get(javers) as TypeMapper
         }
