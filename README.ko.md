@@ -28,7 +28,7 @@ cache-backed read, Redis persistence, Kafka event stream, 향후 Exposed 기반 
 
 ## 아키텍처
 
-![Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)
+![javers Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)
 
 ## 모듈
 
