@@ -28,23 +28,7 @@ cache-backed read, Redis persistence, Kafka event stream, 향후 Exposed 기반 
 
 ## 아키텍처
 
-```mermaid
-flowchart TD
-    APP["Kotlin service"]
-    DOMAIN["Domain objects"]
-    JAVERS["JaVers audit/diff engine"]
-    CORE["javers-core\ncodec + repository helper"]
-    REDIS["javers-persistence-redis\nLettuce / Redisson snapshot"]
-    KAFKA["javers-persistence-kafka\nsnapshot event stream"]
-    BOM["bluetape4k-javers-bom"]
-    FUTURE["planned: javers-exposed\nplanned: javers-ddd\nplanned: CQRS demo"]
-
-    APP --> DOMAIN --> JAVERS --> CORE
-    CORE --> REDIS
-    CORE --> KAFKA
-    BOM -. aligns .-> CORE
-    FUTURE -. extends .-> CORE
-```
+![Architecture 1](docs/images/readme-diagrams/root-readme-ko-diagram-01.svg)
 
 ## 모듈
 

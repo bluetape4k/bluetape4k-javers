@@ -8,19 +8,7 @@ individual versions.
 
 ## Architecture
 
-```mermaid
-graph TB
-    Consumer[Consumer Project]
-    BOM[bluetape4k-javers-bom<br/>java-platform]
-    Core[javers-core<br/>audit/diff core]
-    Redis[javers-persistence-redis]
-    Kafka[javers-persistence-kafka]
-
-    Consumer -->|platform import| BOM
-    BOM -.->|version constraints| Core
-    BOM -.->|version constraints| Redis
-    BOM -.->|version constraints| Kafka
-```
+![Architecture 1](../docs/images/readme-diagrams/bom-diagram-01.svg)
 
 The BOM is a Gradle `java-platform` that publishes only `<dependencyManagement>` constraints — no runtime classes.
 
