@@ -7,19 +7,7 @@
 
 ## Architecture
 
-```mermaid
-graph TB
-    Consumer[소비 프로젝트]
-    BOM[bluetape4k-javers-bom<br/>java-platform]
-    Core[javers-core<br/>audit/diff 코어]
-    Redis[javers-persistence-redis]
-    Kafka[javers-persistence-kafka]
-
-    Consumer -->|platform import| BOM
-    BOM -.->|버전 constraint| Core
-    BOM -.->|버전 constraint| Redis
-    BOM -.->|버전 constraint| Kafka
-```
+![Architecture diagram](../docs/images/readme-diagrams/bom-architecture-01.png)
 
 BOM은 Gradle `java-platform` 으로 `<dependencyManagement>` constraint 만 게시한다.
 
