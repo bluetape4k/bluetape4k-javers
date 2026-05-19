@@ -33,23 +33,7 @@ streams, and a future Exposed-backed repository layer.
 
 ## Architecture
 
-```mermaid
-flowchart TD
-    APP["Kotlin service"]
-    DOMAIN["Domain objects"]
-    JAVERS["JaVers audit/diff engine"]
-    CORE["javers-core\ncodecs + repository helpers"]
-    REDIS["javers-persistence-redis\nLettuce / Redisson snapshots"]
-    KAFKA["javers-persistence-kafka\nsnapshot event stream"]
-    BOM["bluetape4k-javers-bom"]
-    FUTURE["planned: javers-exposed\nplanned: javers-ddd\nplanned: CQRS demo"]
-
-    APP --> DOMAIN --> JAVERS --> CORE
-    CORE --> REDIS
-    CORE --> KAFKA
-    BOM -. aligns .-> CORE
-    FUTURE -. extends .-> CORE
-```
+![Architecture 1](docs/images/readme-diagrams/root-readme-en-diagram-01.svg)
 
 ## Modules
 
