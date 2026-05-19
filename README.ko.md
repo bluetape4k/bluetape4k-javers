@@ -28,7 +28,7 @@ cache-backed read, Redis persistence, Kafka event stream, 향후 Exposed 기반 
 
 ## 아키텍처
 
-![Architecture 1](docs/images/readme-diagrams/root-readme-ko-diagram-01.svg)
+![Architecture 1](docs/images/readme-diagrams/root-readme-ko-diagram-01.png)
 
 ## 모듈
 
