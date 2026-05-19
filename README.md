@@ -33,7 +33,7 @@ streams, and a future Exposed-backed repository layer.
 
 ## Architecture
 
-![Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)
+![javers Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)
 
 ## Modules
 
