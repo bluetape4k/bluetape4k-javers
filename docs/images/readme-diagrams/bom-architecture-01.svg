@@ -24,34 +24,32 @@
 <rect class="frame" x="32" y="28" width="980" height="470" rx="28"/>
 <text class="title" x="66" y="82">bom Architecture</text>
 <text class="subtitle" x="70" y="118">Architecture nodes and edges from the original Mermaid source</text>
-<path class="line" d="M522 220 C522 303 689 303 689 386"/>
-<path class="line" d="M522 220 C522 303 355 303 355 386"/>
-<path class="line" d="M522 220 C522 220 856 220 856 220"/>
-<path class="line" d="M188 220 C188 220 522 220 522 220"/>
+<path class="line" d="M672 220 C672 303 539 303 539 386"/>
+<path class="line" d="M372 220 C372 303 505 303 505 386"/>
+<path class="line" d="M672 220 C672 220 706 220 706 220"/>
+<path class="line" d="M338 220 C338 220 372 220 372 220"/>
 <g transform="translate(48,170)">
   <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#E8F3FF" stroke="#5B8DEF"/>
   <text class="smallLabel" x="140" y="45" text-anchor="middle">Consumer Project</text>
 </g>
 <g transform="translate(382,170)">
   <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#EAF7EF" stroke="#58A978"/>
-  <text class="smallLabel" x="140" y="33" text-anchor="middle">bluetape4k-javers-bom</text>
-<text class="smallLabel" x="140" y="59" text-anchor="middle">java-platform</text>
+  <text class="smallLabel" x="140" y="33" text-anchor="middle">bluetape4k-javers-bo</text>
+<text class="smallLabel" x="140" y="59" text-anchor="middle">m java-platform</text>
 </g>
 <g transform="translate(716,170)">
   <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#FFF3D9" stroke="#D6A441"/>
-  <text class="smallLabel" x="140" y="33" text-anchor="middle">javers-core audit/diff</text>
-<text class="smallLabel" x="140" y="59" text-anchor="middle">core</text>
+  <text class="smallLabel" x="140" y="33" text-anchor="middle">javers-core</text>
+<text class="smallLabel" x="140" y="59" text-anchor="middle">audit/diff core</text>
 </g>
 <g transform="translate(215,336)">
   <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#FDECEF" stroke="#DC6B82"/>
-  <text class="smallLabel" x="140" y="45" text-anchor="middle">javers-persistence-redis</text>
+  <text class="smallLabel" x="140" y="33" text-anchor="middle">javers-persistence-r</text>
+<text class="smallLabel" x="140" y="59" text-anchor="middle">edis</text>
 </g>
 <g transform="translate(549,336)">
   <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#E9F7F6" stroke="#45A7A1"/>
-  <text class="smallLabel" x="140" y="45" text-anchor="middle">javers-persistence-kafka</text>
+  <text class="smallLabel" x="140" y="33" text-anchor="middle">javers-persistence-k</text>
+<text class="smallLabel" x="140" y="59" text-anchor="middle">afka</text>
 </g>
-<text class="small" x="355" y="212" text-anchor="middle">platform import</text>
-<text class="small" x="689" y="212" text-anchor="middle">version constrain.</text>
-<text class="small" x="438.5" y="295" text-anchor="middle">version constrain.</text>
-<text class="small" x="605.5" y="295" text-anchor="middle">version constrain.</text>
 </svg>
