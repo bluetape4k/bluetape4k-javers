@@ -30,6 +30,16 @@ cache-backed read, Redis persistence, Kafka event stream, 향후 Exposed 기반 
 
 ![javers Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)
 
+<!-- README_VISUAL_OVERVIEW:START -->
+## Overview Diagram
+
+![Bluetape4k JaVers overview diagram](docs/images/readme-diagrams/root-readme-overview-01.png)
+
+## Module Composition Chart
+
+![Bluetape4k JaVers module composition chart](docs/images/readme-charts/root-readme-module-chart-01.png)
+<!-- README_VISUAL_OVERVIEW:END -->
+
 ## 모듈
 
 | 모듈 | Artifact | 역할 |
