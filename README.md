@@ -31,6 +31,16 @@ streams, and a future Exposed-backed repository layer.
 - **Implementation backlog** — documented phase chain for Exposed persistence,
   DDD helpers, and CQRS/Event Sourcing examples.
 
+<!-- README_VISUAL_OVERVIEW:START -->
+## Overview Diagram
+
+![Bluetape4k JaVers overview diagram](docs/images/readme-diagrams/root-readme-overview-01.png)
+
+## Module Composition Chart
+
+![Bluetape4k JaVers module composition chart](docs/images/readme-charts/root-readme-module-chart-01.png)
+<!-- README_VISUAL_OVERVIEW:END -->
+
 ## Architecture
 
 ![javers Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)
