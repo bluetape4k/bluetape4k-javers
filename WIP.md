@@ -1,6 +1,6 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-05-18 KST
+Snapshot: 2026-05-22 KST
 Scope: open GitHub issues assigned to `debop`, created on or after 2026-01-01.
 Open count: 4 issues.
 
@@ -19,10 +19,13 @@ Open count: 4 issues.
   - PR #48: Runtime safety — @Volatile head, locked loadSnapshots, dedicated Lettuce MULTI/EXEC connection, Kafka 30 s publish timeout, write-only WARN logging, getAll() OOM guard.
   - PR #49: Test fixes — no-op assertion corrected, JCacheCommitTest added, Kafka write-only @Disabled overrides and publish-failure coverage added.
 - QMD matched the 0.1.0 pre-release fix lesson; GitHub issue state is the source of truth for this refresh.
+- Milestone `0.1.1` has zero open issues after #60 and #63; it is ready for release.
 
 ## Current Direction
 
 Redis persistence correctness and JaVers feature phase chain.
+
+The 0.1.1 release gate is clear. Keep #62 as the next correctness item unless it is explicitly assigned to a release milestone.
 
 Fix persistent repository head restoration before expanding Redis-backed examples.
 Do not start examples before the Exposed repository and DDD helper layer are usable (#3 → #4 → #5).
