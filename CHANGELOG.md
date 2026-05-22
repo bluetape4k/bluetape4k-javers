@@ -5,6 +5,17 @@ All notable changes to `bluetape4k-javers` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.1.1] - 2026-05-22
+
+### Changed
+
+- Opened and prepared the 0.1.1 release line after the 0.1.0 tag ([#60](https://github.com/bluetape4k/bluetape4k-javers/issues/60)).
+- Refreshed WIP from live GitHub issue state and kept the 0.2.0 feature lane separate from the 0.1.1 release gate ([#63](https://github.com/bluetape4k/bluetape4k-javers/issues/63)).
+- Prepared the 0.1.1 release line to consume `io.github.bluetape4k:bluetape4k-bom:1.9.0`.
+- Refreshed README overview visuals and dependency catalog maintenance since 0.1.0.
+
 ## [0.1.0] - 2026-05-17
 
 ### Added
