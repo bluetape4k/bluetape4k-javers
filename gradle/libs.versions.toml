@@ -11,7 +11,6 @@ kotlinx-atomicfu = "0.32.1"  # https://mvnrepository.com/artifact/org.jetbrains.
 javers = "7.11.0"  # https://mvnrepository.com/artifact/org.javers/javers-core
 
 lettuce = "6.8.2.RELEASE"  # https://mvnrepository.com/artifact/io.lettuce/lettuce-core
-redisson = "4.4.0"  # https://mvnrepository.com/artifact/org.redisson/redisson
 
 kafka4 = "4.2.0"  # https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
 spring-kafka4 = "4.0.5"  # https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
@@ -23,7 +22,6 @@ caffeine = "3.2.4"  # https://mvnrepository.com/artifact/com.github.ben-manes.ca
 cache2k = "2.6.1.Final"  # https://mvnrepository.com/artifact/org.cache2k/cache2k-api
 
 protobuf = "4.34.1"  # https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
-guava = "33.6.0-jre"  # https://mvnrepository.com/artifact/com.google.guava/guava
 
 slf4j = "2.0.18"  # https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 logback = "1.5.32"  # https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
@@ -97,7 +95,7 @@ bluetape4k-testcontainers = { module = "io.github.bluetape4k:bluetape4k-testcont
 javers-core = { module = "org.javers:javers-core", version.ref = "javers" }
 
 # Logging
-slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+slf4j-api = { module = "org.slf4j:slf4j-api" }  # version from bt4k catalog
 jcl-over-slf4j = { module = "org.slf4j:jcl-over-slf4j", version.ref = "slf4j" }
 jul-to-slf4j = { module = "org.slf4j:jul-to-slf4j", version.ref = "slf4j" }
 log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j", version.ref = "slf4j" }
@@ -110,7 +108,7 @@ spring-kafka-test = { module = "org.springframework.kafka:spring-kafka-test", ve
 
 # Redis
 lettuce-core = { module = "io.lettuce:lettuce-core", version.ref = "lettuce" }
-redisson = { module = "org.redisson:redisson", version.ref = "redisson" }
+redisson = { module = "org.redisson:redisson" }  # version from bt4k catalog
 
 # MongoDB
 mongo-bson = { module = "org.mongodb:bson", version.ref = "mongo-driver" }
@@ -122,18 +120,18 @@ mongodb-driver-kotlin-sync = { module = "org.mongodb:mongodb-driver-kotlin-sync"
 
 # Codecs
 kryo5 = { module = "com.esotericsoftware:kryo", version = "5.6.2" }  # https://mvnrepository.com/artifact/com.esotericsoftware/kryo
-fory-kotlin = { module = "org.apache.fory:fory-kotlin", version = "0.17.0" }  # https://mvnrepository.com/artifact/org.apache.fory/fory-kotlin
+fory-kotlin = { module = "org.apache.fory:fory-kotlin" }  # version from bt4k catalog
 
 # Compression
 lz4-java = { module = "at.yawk.lz4:lz4-java", version.ref = "lz4" }
 snappy-java = { module = "org.xerial.snappy:snappy-java", version = "1.1.10.8" }  # https://mvnrepository.com/artifact/org.xerial.snappy/snappy-java
-zstd-jni = { module = "com.github.luben:zstd-jni", version = "1.5.7-8" }  # https://mvnrepository.com/artifact/com.github.luben/zstd-jni
+zstd-jni = { module = "com.github.luben:zstd-jni" }  # version from bt4k catalog
 
 # Protobuf
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
 
 # Misc
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
+guava = { module = "com.google.guava:guava" }  # version from bt4k catalog
 protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin", version.ref = "protobuf" }
 
 # Cache
