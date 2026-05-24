@@ -87,13 +87,14 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
 
     @Test
     fun `rebuilt repository has no head because Kafka persistence is write only`() {
-        val repository = KafkaCdoSnapshotRepository(KafkaProvider.kafkaTemplate)
+        val kafkaTemplate = successfulKafkaTemplate()
+        val repository = KafkaCdoSnapshotRepository(kafkaTemplate)
         val javersInstance = newJavers(repository)
         val commit = javersInstance.commit("author", SnapshotEntity(1))
 
         repository.getHeadId() shouldBeEqualTo commit.id
 
-        val rebuiltRepository = KafkaCdoSnapshotRepository(KafkaProvider.kafkaTemplate)
+        val rebuiltRepository = KafkaCdoSnapshotRepository(kafkaTemplate)
         newJavers(rebuiltRepository)
 
         rebuiltRepository.getHeadId().shouldBeNull()
@@ -124,4 +125,15 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         JaversBuilder.javers()
             .registerJaversRepository(repository)
             .build()
+
+    private fun successfulKafkaTemplate(): KafkaTemplate<String, String> {
+        return object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
+            override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> {
+                @Suppress("UNCHECKED_CAST")
+                return CompletableFuture.completedFuture(null) as CompletableFuture<SendResult<String, String>>
+            }
+        }.also {
+            it.setDefaultTopic(KafkaProvider.TEST_TOPIC)
+        }
+    }
 }

@@ -26,22 +26,38 @@ class LettuceJaversCommitTest: AbstractJaversCommitTest() {
 
     @Test
     fun `repository restores head commit id after rebuild`() {
-        val repositoryName = "bluetape4k:lettuce:head-restore:${System.nanoTime()}"
+        flushRedis()
+        val repositoryName = "bluetape4k:lettuce:head-restore"
         val repository = LettuceCdoSnapshotRepository(repositoryName, lettuceClient)
         val javers = newJavers(repository)
-        val commit = javers.commit("author", SnapshotEntity(1))
+        val entity = SnapshotEntity(1).apply {
+            intProperty = 100
+        }
+        val commit = javers.commit("author", entity)
 
         repository.getHeadId() shouldBeEqualTo commit.id
 
         val rebuiltRepository = LettuceCdoSnapshotRepository(repositoryName, lettuceClient)
-        newJavers(rebuiltRepository)
+        val rebuiltJavers = newJavers(rebuiltRepository)
 
         rebuiltRepository.getHeadId() shouldBeEqualTo commit.id
+
+        entity.intProperty = 101
+        val nextCommit = rebuiltJavers.commit("author", entity)
+
+        nextCommit.snapshots.size shouldBeEqualTo 1
+        rebuiltRepository.getHeadId() shouldBeEqualTo nextCommit.id
     }
 
     private fun newJavers(repository: LettuceCdoSnapshotRepository): Javers {
         return JaversBuilder.javers()
             .registerJaversRepository(repository)
             .build()
+    }
+
+    private fun flushRedis() {
+        lettuceClient.connect().use {
+            it.sync().flushdb()
+        }
     }
 }
