@@ -87,10 +87,16 @@ class RedissonCdoSnapshotRepository(
 
     override fun loadHeadId(): CommitId? {
         val latestCommitId = commitIdSequences.readAllEntrySet()
-            .maxByOrNull { it.value }
-            ?.key
+            .asSequence()
+            .mapNotNull { entry ->
+                val commitId = runCatching { CommitId.valueOf(entry.key) }.getOrNull()
+                    ?: return@mapNotNull null
+                commitId to entry.value
+            }
+            .maxByOrNull { (_, sequence) -> sequence }
+            ?.first
 
-        return latestCommitId?.let(CommitId::valueOf)
+        return latestCommitId
             .also { log.trace { "Loaded head commitId=$it" } }
     }
 

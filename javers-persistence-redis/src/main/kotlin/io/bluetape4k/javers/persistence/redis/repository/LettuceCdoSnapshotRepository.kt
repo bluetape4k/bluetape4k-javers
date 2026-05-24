@@ -103,13 +103,16 @@ class LettuceCdoSnapshotRepository(
     override fun loadHeadId(): CommitId? {
         val latestCommitId = commands.hgetall(sequenceSetKey)
             .asSequence()
-            .mapNotNull { (commitId, sequence) ->
-                sequence.asLongOrNull()?.let { commitId to it }
+            .mapNotNull { (commitIdValue, sequenceValue) ->
+                val sequence = sequenceValue.asLongOrNull() ?: return@mapNotNull null
+                val commitId = runCatching { CommitId.valueOf(commitIdValue) }.getOrNull()
+                    ?: return@mapNotNull null
+                commitId to sequence
             }
             .maxByOrNull { (_, sequence) -> sequence }
             ?.first
 
-        return latestCommitId?.let(CommitId::valueOf)
+        return latestCommitId
             .also { log.trace { "Loaded head commitId=$it" } }
     }
 

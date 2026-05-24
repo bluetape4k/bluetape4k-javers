@@ -26,17 +26,27 @@ class RedissonJaversCommitTest: AbstractJaversCommitTest() {
 
     @Test
     fun `repository restores head commit id after rebuild`() {
-        val repositoryName = "bluetape4k:redisson:head-restore:${System.nanoTime()}"
+        redisson.keys.flushdb()
+        val repositoryName = "bluetape4k:redisson:head-restore"
         val repository = RedissonCdoSnapshotRepository(repositoryName, redisson)
         val javers = newJavers(repository)
-        val commit = javers.commit("author", SnapshotEntity(1))
+        val entity = SnapshotEntity(1).apply {
+            intProperty = 100
+        }
+        val commit = javers.commit("author", entity)
 
         repository.getHeadId() shouldBeEqualTo commit.id
 
         val rebuiltRepository = RedissonCdoSnapshotRepository(repositoryName, redisson)
-        newJavers(rebuiltRepository)
+        val rebuiltJavers = newJavers(rebuiltRepository)
 
         rebuiltRepository.getHeadId() shouldBeEqualTo commit.id
+
+        entity.intProperty = 101
+        val nextCommit = rebuiltJavers.commit("author", entity)
+
+        nextCommit.snapshots.size shouldBeEqualTo 1
+        rebuiltRepository.getHeadId() shouldBeEqualTo nextCommit.id
     }
 
     private fun newJavers(repository: RedissonCdoSnapshotRepository): Javers {
