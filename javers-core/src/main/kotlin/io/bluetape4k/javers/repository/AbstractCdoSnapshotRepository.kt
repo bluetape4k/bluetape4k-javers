@@ -43,6 +43,8 @@ import kotlin.jvm.optionals.getOrNull
  * - Common [QueryParams]-based filtering (author, date, version, commitId, etc.) is handled here.
  * - Subclasses must implement [getKeys], [contains], [getSeq], [updateCommitId],
  *   [getSnapshotSize], [saveSnapshot], and [loadSnapshots].
+ * - Persistent subclasses may override [loadHeadId] to restore the latest persisted
+ *   head commit after a repository rebuild.
  *
  * @param T the type of encoded snapshot data (e.g. String, ByteArray)
  * @property codec the [JaversCodec] used to encode/decode snapshots
@@ -71,11 +73,21 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected abstract fun getSeq(commitId: CommitId): Long
     protected abstract fun updateCommitId(commitId: CommitId, sequence: Long)
 
+    /**
+     * Restores the latest head commit from persistent storage.
+     *
+     * Return `null` when the repository is empty or does not support head restoration.
+     */
+    protected open fun loadHeadId(): CommitId? = null
+
     protected abstract fun getSnapshotSize(globalIdValue: String): Int
     protected fun getSnapshotSize(globalId: GlobalId): Int = getSnapshotSize(globalId.value())
 
     @Volatile
     protected var head: CommitId? = null
+
+    @Volatile
+    private var headLoaded: Boolean = false
 
     protected fun encode(snapshot: CdoSnapshot): T {
         val converter = requireNotNull(jsonConverter) {
@@ -199,13 +211,25 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
             }
             log.trace { "${commit.snapshots.size} snapshot(s) persisted" }
             head = commit.id
+            headLoaded = true
             head?.let {
                 updateCommitId(it, commitIdSupplier.nextId())
             }
         }
     }
 
-    override fun getHeadId(): CommitId? = head
+    override fun getHeadId(): CommitId? {
+        if (headLoaded) {
+            return head
+        }
+        return lock.withLock {
+            if (!headLoaded) {
+                head = head ?: loadHeadId()
+                headLoaded = true
+            }
+            head
+        }
+    }
 
     private fun applyQueryParams(
         snapshots: Sequence<CdoSnapshot>,

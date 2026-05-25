@@ -1,10 +1,13 @@
 package io.bluetape4k.javers.persistence.redis.repository
 
+import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.testcontainers.storage.RedisServer
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
+import org.javers.core.model.SnapshotEntity
 import org.javers.core.repository.AbstractJaversCommitTest
+import org.junit.jupiter.api.Test
 
 class RedissonJaversCommitTest: AbstractJaversCommitTest() {
 
@@ -18,6 +21,25 @@ class RedissonJaversCommitTest: AbstractJaversCommitTest() {
 
         val repository = RedissonCdoSnapshotRepository("bluetape4k:redisson", redisson)
 
+        return newJavers(repository)
+    }
+
+    @Test
+    fun `repository restores head commit id after rebuild`() {
+        val repositoryName = "bluetape4k:redisson:head-restore:${System.nanoTime()}"
+        val repository = RedissonCdoSnapshotRepository(repositoryName, redisson)
+        val javers = newJavers(repository)
+        val commit = javers.commit("author", SnapshotEntity(1))
+
+        repository.getHeadId() shouldBeEqualTo commit.id
+
+        val rebuiltRepository = RedissonCdoSnapshotRepository(repositoryName, redisson)
+        newJavers(rebuiltRepository)
+
+        rebuiltRepository.getHeadId() shouldBeEqualTo commit.id
+    }
+
+    private fun newJavers(repository: RedissonCdoSnapshotRepository): Javers {
         return JaversBuilder.javers()
             .registerJaversRepository(repository)
             .build()
