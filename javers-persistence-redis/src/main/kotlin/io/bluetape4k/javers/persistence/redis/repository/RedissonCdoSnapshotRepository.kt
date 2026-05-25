@@ -13,6 +13,8 @@ import org.redisson.api.RListMultimap
 import org.redisson.api.RMap
 import org.redisson.api.RedissonClient
 import org.redisson.client.codec.LongCodec
+import org.redisson.client.codec.StringCodec
+import org.redisson.codec.CompositeCodec
 
 /**
  * Redisson-backed Redis [CdoSnapshot] repository.
@@ -20,7 +22,7 @@ import org.redisson.client.codec.LongCodec
  * ## Behavior / Contract
  * - Snapshot byte arrays are stored per GlobalId in an [RListMultimap].
  * - [loadSnapshots] retrieves entries from the multimap and returns them in reverse order (most-recent first).
- * - CommitId → sequence number mappings are stored in an [RMap] with [LongCodec].
+ * - CommitId → sequence number mappings are stored in an [RMap] using string keys and long values.
  * - The default codec is [JaversCodecs.LZ4Fory] (LZ4 compression + Fory serialization).
  *
  * ```kotlin
@@ -60,7 +62,7 @@ class RedissonCdoSnapshotRepository(
      * Map storing CommitId to sequence number mappings.
      */
     private val commitIdSequences: RMap<String, Long> =
-        redisson.getMap(sequenceName, LongCodec())
+        redisson.getMap(sequenceName, CompositeCodec(StringCodec.INSTANCE, LongCodec.INSTANCE))
 
     override fun getKeys(): Set<String> {
         return snapshots.keySet().sorted().toSet()
@@ -81,6 +83,15 @@ class RedissonCdoSnapshotRepository(
 
     override fun updateCommitId(commitId: CommitId, sequence: Long) {
         commitIdSequences.fastPut(commitId.value(), sequence)
+    }
+
+    override fun loadHeadId(): CommitId? {
+        val latestCommitId = commitIdSequences.readAllEntrySet()
+            .maxByOrNull { it.value }
+            ?.key
+
+        return latestCommitId?.let(CommitId::valueOf)
+            .also { log.trace { "Loaded head commitId=$it" } }
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int {

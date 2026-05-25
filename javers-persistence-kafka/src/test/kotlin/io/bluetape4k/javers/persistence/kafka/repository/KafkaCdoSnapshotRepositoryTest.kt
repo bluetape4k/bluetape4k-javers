@@ -1,7 +1,9 @@
 package io.bluetape4k.javers.persistence.kafka.repository
 
-import io.bluetape4k.logging.KLogging
+import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeNull
+import io.bluetape4k.logging.KLogging
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.metamodel.`object`.SnapshotType
@@ -13,7 +15,6 @@ import org.junit.jupiter.api.Test
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
 import java.util.concurrent.CompletableFuture
-import kotlin.test.assertFailsWith
 
 /**
  * NOTE: **Redis나 MongoDB와 같이 테스트는 할 수 없고, snapshot 저장을 수행하는 테스트만 해야 한다**
@@ -85,6 +86,20 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     override fun `changes in a property annotated with @ShallowReference are not committed as a snapshot`() {}
 
     @Test
+    fun `rebuilt repository has no head because Kafka persistence is write only`() {
+        val repository = KafkaCdoSnapshotRepository(KafkaProvider.kafkaTemplate)
+        val javersInstance = newJavers(repository)
+        val commit = javersInstance.commit("author", SnapshotEntity(1))
+
+        repository.getHeadId() shouldBeEqualTo commit.id
+
+        val rebuiltRepository = KafkaCdoSnapshotRepository(KafkaProvider.kafkaTemplate)
+        newJavers(rebuiltRepository)
+
+        rebuiltRepository.getHeadId().shouldBeNull()
+    }
+
+    @Test
     fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
         // Build a KafkaTemplate whose sendDefault always returns a failed future.
         // KafkaTemplate requires a ProducerFactory; supply the real one but override sendDefault
@@ -104,4 +119,9 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
             javersInstance.commit("author", SnapshotEntity(1))
         }
     }
+
+    private fun newJavers(repository: KafkaCdoSnapshotRepository): Javers =
+        JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
 }

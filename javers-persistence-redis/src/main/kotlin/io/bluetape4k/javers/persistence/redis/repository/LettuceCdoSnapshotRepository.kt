@@ -100,6 +100,19 @@ class LettuceCdoSnapshotRepository(
         commands.hset(sequenceSetKey, commitId.value(), sequence.toString())
     }
 
+    override fun loadHeadId(): CommitId? {
+        val latestCommitId = commands.hgetall(sequenceSetKey)
+            .asSequence()
+            .mapNotNull { (commitId, sequence) ->
+                sequence.asLongOrNull()?.let { commitId to it }
+            }
+            .maxByOrNull { (_, sequence) -> sequence }
+            ?.first
+
+        return latestCommitId?.let(CommitId::valueOf)
+            .also { log.trace { "Loaded head commitId=$it" } }
+    }
+
     override fun getSnapshotSize(globalIdValue: String): Int {
         val snapshotSize = commands.llen(makeSnapshotKey(globalIdValue)).asInt()
         log.trace { "Get snapshot size=${snapshotSize}, globalId=$globalIdValue" }
