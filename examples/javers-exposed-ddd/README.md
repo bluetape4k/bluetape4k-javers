@@ -2,7 +2,7 @@
 
 English | [한국어](./README.ko.md)
 
-Command-side CQRS example for JaVers, Exposed JDBC, and the `javers-ddd`
+CQRS example for JaVers, Exposed JDBC, Kafka, Redis, and the `javers-ddd`
 helpers.
 
 ## Flow
@@ -13,13 +13,30 @@ sequenceDiagram
     participant Handler as OrderCommandHandler
     participant Store as Exposed order table
     participant Audit as ExposedCdoSnapshotRepository
-    participant Publisher as DomainEventPublisher
+    participant Kafka as Kafka topic
+    participant Consumer as OrderProjectionEventConsumer
+    participant Redis as Redis OrderSummary
+    participant Query as OrderQueryService
 
     Client->>Handler: PlaceOrderCommand
     Handler->>Store: insert/update Order
     Handler->>Audit: JaVers commit
-    Handler->>Publisher: OrderPlaced
-    Publisher-->>Client: event published
+    Handler->>Kafka: OrderPlaced
+    Consumer->>Kafka: poll event
+    Consumer->>Redis: upsert OrderSummary
+    Client->>Query: findSummary(orderId)
+    Query->>Redis: get summary
+    Redis-->>Client: OrderSummary
+```
+
+```mermaid
+flowchart LR
+    command[Command side] --> exposed[(Exposed order table)]
+    command --> audit[(JaVers snapshots)]
+    command --> kafka[[Kafka order events]]
+    kafka --> consumer[Projection consumer]
+    consumer --> redis[(Redis read model)]
+    query[Read API] --> redis
 ```
 
 ## What This Example Covers
@@ -28,10 +45,12 @@ sequenceDiagram
 - `OrderPlaced` and `OrderMarkedPaid` domain events.
 - Exposed-backed source-of-truth order persistence.
 - JaVers snapshots persisted through `ExposedCdoSnapshotRepository`.
-- Command handler tests with H2.
+- Kafka-backed domain event publication.
+- Redis-backed `OrderSummary` projection.
+- `OrderQueryService` read-side lookup API.
+- H2 command handler tests plus Kafka and Redis Testcontainers projection flow.
 
-Kafka consumers, Redis projections, and benchmark results are handled by the
-next slices of parent issue #5.
+Benchmark results are handled by the next slice of parent issue #5.
 
 ## Run
 
