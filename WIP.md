@@ -1,8 +1,8 @@
 # WIP - bluetape4k-javers
 
 Snapshot: 2026-05-27 KST
-Scope: 0.2.0 Exposed integration hardening.
-Open count: 1 issue.
+Scope: 0.2.0 Exposed integration hardening completed.
+Open count: 0 issues.
 
 ## Current Evidence
 
@@ -13,8 +13,8 @@ Open count: 1 issue.
 - #89 merged by PR #92: Kafka to Redis projection flow.
 - #90 merged by PR #93: Envers comparison benchmark results.
 - #5 parent is closed by the final tracking PR after #88, #89, and #90 landed.
-- #95 opened to move `javers-exposed` database smoke coverage onto the shared
-  `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix.
+- #95 merged by PR #96: `javers-exposed` database smoke coverage now uses the
+  shared `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix.
 
 ## Active Queue
 
@@ -24,7 +24,7 @@ Open count: 1 issue.
 | Done | [#89](https://github.com/bluetape4k/bluetape4k-javers/issues/89) Kafka to Redis projection flow | L | Merged by PR #92. |
 | Done | [#90](https://github.com/bluetape4k/bluetape4k-javers/issues/90) Envers comparison benchmark results | L | Merged by PR #93. |
 | Done | [#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5) CQRS/Event Sourcing demo | L | Parent closed after all split issues landed. |
-| Active | [#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95) shared Exposed JDBC DB matrix for `javers-exposed` | M | Reuses `AbstractExposedTest`, `ENABLE_DIALECTS_METHOD`, and `withTables`. |
+| Done | [#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95) shared Exposed JDBC DB matrix for `javers-exposed` | M | Merged by PR #96. |
 
 ## Dependency Map
 
@@ -41,14 +41,14 @@ Open count: 1 issue.
 
 ## Current Direction
 
-Finish #95 by replacing raw Testcontainers setup with the shared Exposed JDBC
-test matrix and keeping unsupported dialect-specific scenarios guarded with
+No active issue remains in `bluetape4k-javers` after the Exposed integration
+hardening lane. Keep future unsupported dialect-specific scenarios guarded with
 JUnit `Assumptions`.
 
 ## WIP Limits
 
 | Lane | Limit | Current next |
 |---|---:|---|
-| Correctness | 1 | #95 |
+| Correctness | 1 | none in current queue |
 | JaVers implementation | 1 | done through #4 |
 | Examples | 1 | done through #5 |
