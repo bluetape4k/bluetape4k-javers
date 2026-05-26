@@ -23,6 +23,7 @@ cache-backed read, Redis persistence, Kafka event stream, Exposed 기반 reposit
 - **JaVers core helper** — extension, codec, cache-backed repository 구성 요소
 - **Exposed JDBC persistence** — SQL-backed JaVers CDO snapshot을 위한 Exposed schema와 repository
 - **DDD helper** — JaVers audit workflow를 위한 aggregate root, domain event, repository, publisher adapter
+- **CQRS command-side 예제** — `examples/javers-exposed-ddd` 아래 Exposed + JaVers + DDD helper 주문 command flow
 - **Redis persistence** — Lettuce/Redisson 기반 snapshot 저장 경로
 - **Kafka persistence** — event stream 기반 CDO snapshot persistence
 - **BOM 지원** — 소비자 dependency version 정렬을 위한 `bluetape4k-javers-bom`
@@ -53,6 +54,7 @@ cache-backed read, Redis persistence, Kafka event stream, Exposed 기반 reposit
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extension, codec, cache-backed repository |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | JaVers audit workflow용 DDD aggregate/domain-event helper |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
+| `javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (쓰기 전용 이벤트 스트림; 읽기는 항상 빈 결과 반환) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
@@ -71,6 +73,7 @@ cache-backed read, Redis persistence, Kafka event stream, Exposed 기반 reposit
 ./gradlew :javers-core:test
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
+./gradlew :javers-exposed-ddd:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
 ```

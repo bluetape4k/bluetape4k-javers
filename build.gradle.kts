@@ -37,6 +37,9 @@ fun bt4kVersion(alias: String): String {
         .ifBlank { version.strictVersion }
 }
 
+fun Project.isExampleProject(): Boolean {
+    return projectDir.relativeTo(rootProject.projectDir).invariantSeparatorsPath.startsWith("examples/")
+}
 
 val centralPublishing = resolveCentralPublishingConfig()
 val centralUser: String = centralPublishing.username
@@ -81,12 +84,14 @@ subprojects {
     }
 
     plugins.withId("com.gradleup.nmcp") {
-        extensions.configure<NmcpExtension>("nmcp") {
-            publishAllPublicationsToCentralPortal {
-                username.set(centralUser)
-                password.set(centralPassword)
-                publishingType.set("AUTOMATIC")
-                uploadSnapshotsParallelism.set(centralSnapshotsParallelism)
+        if (!isExampleProject()) {
+            extensions.configure<NmcpExtension>("nmcp") {
+                publishAllPublicationsToCentralPortal {
+                    username.set(centralUser)
+                    password.set(centralPassword)
+                    publishingType.set("AUTOMATIC")
+                    uploadSnapshotsParallelism.set(centralSnapshotsParallelism)
+                }
             }
         }
     }
@@ -272,56 +277,58 @@ subprojects {
         testImplementation(rootLibs.mockk)
     }
 
-    publishing {
-        publications {
-            create<MavenPublication>("BluetapeJavers") {
-                val sourcesJar by tasks.registering(Jar::class) {
-                    archiveClassifier.set("sources")
-                    from(sourceSets["main"].allSource)
-                }
-                val javadocJar by tasks.registering(Jar::class) {
-                    archiveClassifier.set("javadoc")
-                    from(layout.buildDirectory.asFile.get().resolve("javadoc"))
-                }
-                from(components["java"])
-                artifact(sourcesJar)
-                artifact(javadocJar)
+    if (!isExampleProject()) {
+        publishing {
+            publications {
+                create<MavenPublication>("BluetapeJavers") {
+                    val sourcesJar by tasks.registering(Jar::class) {
+                        archiveClassifier.set("sources")
+                        from(sourceSets["main"].allSource)
+                    }
+                    val javadocJar by tasks.registering(Jar::class) {
+                        archiveClassifier.set("javadoc")
+                        from(layout.buildDirectory.asFile.get().resolve("javadoc"))
+                    }
+                    from(components["java"])
+                    artifact(sourcesJar)
+                    artifact(javadocJar)
 
-                pom {
-                    name.set(project.name)
-                    description.set("Javers auditing & diff toolkit for Kotlin — core, Redis/Kafka persistence, and Exposed integration")
-                    url.set("https://github.com/bluetape4k/bluetape4k-javers")
-                    licenses {
-                        license {
-                            name.set("The Apache License, Version 2.0")
-                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                        }
-                    }
-                    developers {
-                        developer {
-                            id.set("debop")
-                            name.set("Sunghyouk Bae")
-                            email.set("sunghyouk.bae@gmail.com")
-                        }
-                    }
-                    scm {
-                        connection.set("scm:git:git://github.com/bluetape4k/bluetape4k-javers.git")
-                        developerConnection.set("scm:git:ssh://github.com/bluetape4k/bluetape4k-javers.git")
+                    pom {
+                        name.set(project.name)
+                        description.set("Javers auditing & diff toolkit for Kotlin — core, Redis/Kafka persistence, and Exposed integration")
                         url.set("https://github.com/bluetape4k/bluetape4k-javers")
+                        licenses {
+                            license {
+                                name.set("The Apache License, Version 2.0")
+                                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                            }
+                        }
+                        developers {
+                            developer {
+                                id.set("debop")
+                                name.set("Sunghyouk Bae")
+                                email.set("sunghyouk.bae@gmail.com")
+                            }
+                        }
+                        scm {
+                            connection.set("scm:git:git://github.com/bluetape4k/bluetape4k-javers.git")
+                            developerConnection.set("scm:git:ssh://github.com/bluetape4k/bluetape4k-javers.git")
+                            url.set("https://github.com/bluetape4k/bluetape4k-javers")
+                        }
                     }
                 }
             }
-        }
-        repositories {
-            mavenCentral()
-            maven {
-                name = "central-snapshots"
-                url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+            repositories {
+                mavenCentral()
+                maven {
+                    name = "central-snapshots"
+                    url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+                }
             }
         }
-    }
 
-    configurePublishingSigning("BluetapeJavers")
+        configurePublishingSigning("BluetapeJavers")
+    }
 }
 
 extensions.configure<NmcpAggregationExtension>("nmcpAggregation") {
@@ -334,7 +341,9 @@ extensions.configure<NmcpAggregationExtension>("nmcpAggregation") {
 }
 
 dependencies {
-    subprojects.forEach { add("nmcpAggregation", project(it.path)) }
+    subprojects
+        .filter { !it.isExampleProject() }
+        .forEach { add("nmcpAggregation", project(it.path)) }
 }
 
 dependencies {
