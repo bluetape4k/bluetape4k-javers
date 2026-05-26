@@ -114,7 +114,61 @@ jobs:
           path: '**/build/reports/kover/'
           retention-days: 14
 
-  # ── 3. javers-persistence-redis (Testcontainers) ─────────────────────────
+  # ── 3. javers-exposed (Testcontainers DBs) ───────────────────────────────
+  test-javers-exposed:
+    name: Test / javers-exposed
+    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+
+      - name: Test javers-exposed
+        run: |
+          for attempt in 1 2 3; do
+            ./gradlew :javers-exposed:test --no-daemon && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 3 ] && sleep 10 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+          DOCKER_HOST: "unix:///var/run/docker.sock"
+
+      - name: Generate Kover XML report
+        if: always()
+        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-javers-exposed
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 14
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-javers-exposed
+          path: '**/build/reports/kover/'
+          retention-days: 14
+
+  # ── 4. javers-persistence-redis (Testcontainers) ─────────────────────────
   test-persistence-redis:
     name: Test / javers-persistence-redis
     if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
@@ -168,7 +222,7 @@ jobs:
           path: '**/build/reports/kover/'
           retention-days: 14
 
-  # ── 4. javers-persistence-kafka (Testcontainers) ─────────────────────────
+  # ── 5. javers-persistence-kafka (Testcontainers) ─────────────────────────
   test-persistence-kafka:
     name: Test / javers-persistence-kafka
     if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
@@ -222,7 +276,7 @@ jobs:
           path: '**/build/reports/kover/'
           retention-days: 14
 
-  # ── 5. 커버리지 집계 ──────────────────────────────────────────────────────
+  # ── 6. 커버리지 집계 ──────────────────────────────────────────────────────
   coverage-report:
     name: Coverage Report
 
@@ -230,6 +284,7 @@ jobs:
     timeout-minutes: 10
     needs:
       - test-javers-core
+      - test-javers-exposed
       - test-persistence-redis
       - test-persistence-kafka
     if: ${{ always() && ((github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full')) }}
@@ -250,7 +305,7 @@ jobs:
           path: coverage-artifacts/
           retention-days: 30
 
-  # ── 6. 결과 집계 ──────────────────────────────────────────────────────────
+  # ── 7. 결과 집계 ──────────────────────────────────────────────────────────
   nightly-status:
     name: Nightly Status
     runs-on: ubuntu-latest
@@ -258,6 +313,7 @@ jobs:
     needs:
       - build
       - test-javers-core
+      - test-javers-exposed
       - test-persistence-redis
       - test-persistence-kafka
       - coverage-report

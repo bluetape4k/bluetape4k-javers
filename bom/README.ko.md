@@ -14,7 +14,7 @@ BOM은 Gradle `java-platform` 으로 `<dependencyManagement>` constraint 만 게
 ## 핵심 기능
 
 - 모든 `bluetape4k-javers` 모듈 버전 중앙 관리
-- Javers audit/diff + Redis/Kafka 백엔드 버전 일관성 보장
+- Javers audit/diff + Exposed/Redis/Kafka 백엔드 버전 일관성 보장
 - `bluetape4k-dependencies` 가 상위에서 통합
 
 ## 관리 모듈
@@ -22,6 +22,7 @@ BOM은 Gradle `java-platform` 으로 `<dependencyManagement>` constraint 만 게
 | 모듈 | 설명 |
 |------|------|
 | `bluetape4k-javers-core` | Javers audit/diff 코어 연동 |
+| `bluetape4k-javers-exposed` | Exposed JDBC 기반 JaversRepository |
 | `bluetape4k-javers-persistence-redis` | Redis 기반 JaversRepository |
 | `bluetape4k-javers-persistence-kafka` | Kafka 감사 로그 producer/consumer |
 
@@ -42,6 +43,7 @@ dependencyManagement {
 
 dependencies {
     implementation("io.github.bluetape4k.javers:bluetape4k-javers-core")
+    implementation("io.github.bluetape4k.javers:bluetape4k-javers-exposed")
     implementation("io.github.bluetape4k.javers:bluetape4k-javers-persistence-redis")
 }
 ```
