@@ -50,7 +50,32 @@ flowchart LR
 - `OrderQueryService` read-side lookup API.
 - H2 command handler tests plus Kafka and Redis Testcontainers projection flow.
 
-Benchmark results are handled by the next slice of parent issue #5.
+## Benchmark
+
+The Envers comparison benchmark is a local documentation benchmark, not a
+release-wide performance claim. It runs on H2 and measures the simple example
+shape used in this module. Lower milliseconds per operation is better.
+
+Command:
+
+```bash
+./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
+  --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Environment and raw results are stored in
+[`docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json`](../../docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json).
+
+| Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
+|---|---:|---:|
+| insert | 1.049 | 3.627 |
+| update | 1.383 | 2.848 |
+| audit-query | 8.010 | 105.339 |
+
+On this H2 run Envers is faster for the narrow persistence benchmark. The
+JaVers + Exposed example is still useful when the application needs explicit
+aggregate commits, commit metadata, domain-event integration, and a CQRS
+projection path rather than only entity revision tables.
 
 ## Run
 
