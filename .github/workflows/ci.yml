@@ -77,6 +77,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       javers-core: ${{ steps.filter.outputs.javers-core }}
+      javers-exposed: ${{ steps.filter.outputs.javers-exposed }}
       javers-kafka: ${{ steps.filter.outputs.javers-kafka }}
       javers-redis: ${{ steps.filter.outputs.javers-redis }}
     steps:
@@ -87,6 +88,8 @@ jobs:
           filters: |
             javers-core:
               - 'javers-core/**'
+            javers-exposed:
+              - 'javers-exposed/**'
             javers-kafka:
               - 'javers-persistence-kafka/**'
             javers-redis:
@@ -147,7 +150,43 @@ jobs:
           path: '**/build/test-results/test/*.xml'
           retention-days: 7
 
-  # 5. javers-persistence-redis tests (Testcontainers Redis)
+  # 5. javers-exposed tests (Exposed JDBC + Testcontainers databases)
+  test-javers-exposed:
+    name: Test / javers-exposed
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build, changes]
+    if: ${{ needs.changes.outputs['javers-exposed'] == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+      - name: Test javers-exposed
+        run: |
+          for attempt in 1 2 3; do
+            ./gradlew :javers-exposed:test --no-daemon && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 3 ] && sleep 10 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+          DOCKER_HOST: "unix:///var/run/docker.sock"
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-javers-exposed
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+
+  # 6. javers-persistence-redis tests (Testcontainers Redis)
   test-persistence-redis:
     name: Test / javers-persistence-redis
     runs-on: ubuntu-latest
@@ -183,7 +222,7 @@ jobs:
           path: '**/build/test-results/test/*.xml'
           retention-days: 7
 
-  # 6. javers-persistence-kafka tests (Testcontainers Kafka)
+  # 7. javers-persistence-kafka tests (Testcontainers Kafka)
   test-persistence-kafka:
     name: Test / javers-persistence-kafka
     runs-on: ubuntu-latest
@@ -219,7 +258,7 @@ jobs:
           path: '**/build/test-results/test/*.xml'
           retention-days: 7
 
-  # 7. Status gate
+  # 8. Status gate
   ci-status:
     name: CI Status
     runs-on: ubuntu-latest
@@ -229,6 +268,7 @@ jobs:
       - build
       - changes
       - test-javers-core
+      - test-javers-exposed
       - test-persistence-redis
       - test-persistence-kafka
     if: always()

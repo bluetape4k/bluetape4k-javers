@@ -10,7 +10,7 @@ English | [한국어](./README.ko.md)
 ![Bluetape4k JaVers audit workbench](./docs/assets/javers-workbench.png)
 
 Kotlin/JVM integrations for [JaVers](https://javers.org) object auditing and
-diffing, with Redis and Kafka persistence options for CDO snapshots and
+diffing, with Exposed JDBC, Redis, and Kafka persistence options for CDO snapshots and
 event-sourced change streams.
 
 ## Project Purpose
@@ -18,12 +18,14 @@ event-sourced change streams.
 `bluetape4k-javers` extends JaVers beyond its built-in in-memory, MongoDB, and
 JDBC storage choices. It focuses on Kotlin-friendly audit/diff infrastructure
 for services that need cache-backed reads, Redis persistence, Kafka event
-streams, and a future Exposed-backed repository layer.
+streams, and an Exposed-backed repository layer.
 
 ## What It Provides
 
 - **JaVers core helpers** — extensions, codecs, and cache-backed repository
   building blocks.
+- **Exposed JDBC persistence** — Exposed schema and repository for SQL-backed
+  JaVers CDO snapshots.
 - **Redis persistence** — Lettuce and Redisson based snapshot storage paths.
 - **Kafka persistence** — event-stream backed CDO snapshot persistence.
 - **BOM support** — `bluetape4k-javers-bom` for aligned consumer dependency
@@ -54,6 +56,7 @@ streams, and a future Exposed-backed repository layer.
 | Module | Artifact | Purpose |
 |---|---|---|
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extensions, codecs, cache-backed repositories |
+| `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
@@ -70,6 +73,7 @@ streams, and a future Exposed-backed repository layer.
 ./gradlew build -x test
 ./gradlew build
 ./gradlew :javers-core:test
+./gradlew :javers-exposed:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
 ```

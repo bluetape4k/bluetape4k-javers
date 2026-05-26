@@ -20,7 +20,7 @@ publishing {
             from(components["javaPlatform"])
             pom {
                 name.set("bluetape4k-javers-bom")
-                description.set("BOM for bluetape4k-javers — Javers audit/diff with Redis and Kafka backends")
+                description.set("BOM for bluetape4k-javers — Javers audit/diff with Exposed, Redis, and Kafka backends")
                 url.set("https://github.com/bluetape4k/bluetape4k-javers")
                 licenses {
                     license {
