@@ -24,7 +24,9 @@ Touch:
 1. Register `javers-ddd` module.
 2. Add module dependencies:
    - `api(project(":javers-core"))`
-   - `api(project(":javers-exposed"))` for Phase 2 integration surface.
+   - `testImplementation(project(":javers-exposed"))` to verify Phase 2
+     integration without forcing Exposed as a transitive runtime dependency of
+     all DDD helper consumers.
    - `compileOnly(libs.spring.kafka)` for Spring/Kafka adapter APIs.
    - `compileOnly(libs.bluetape4k.nats)` for NATS adapter API.
    - test dependencies for H2, MockK, bluetape4k assertions, and Exposed.

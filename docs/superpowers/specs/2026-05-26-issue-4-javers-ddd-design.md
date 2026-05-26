@@ -98,6 +98,9 @@ transaction semantics.
 - Spring/Kafka/NATS adapters add optional compile-time surfaces. Keep them
   `compileOnly` and document that consumers must add the matching runtime
   dependency when using those adapters.
+- Keep `javers-exposed` as a test/integration dependency for this module rather
+  than a transitive API dependency; consumers can combine both artifacts through
+  the BOM when they need Exposed persistence.
 - JaVers shadow reconstruction requires aggregate classes to be JaVers-managed
   entities with stable ids. README examples must make that clear.
 - The first version does not replace an outbox for exactly-once external

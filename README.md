@@ -26,6 +26,8 @@ streams, and an Exposed-backed repository layer.
   building blocks.
 - **Exposed JDBC persistence** — Exposed schema and repository for SQL-backed
   JaVers CDO snapshots.
+- **DDD helpers** — aggregate root, domain event, repository, and publisher
+  adapters for JaVers-backed audit workflows.
 - **Redis persistence** — Lettuce and Redisson based snapshot storage paths.
 - **Kafka persistence** — event-stream backed CDO snapshot persistence.
 - **BOM support** — `bluetape4k-javers-bom` for aligned consumer dependency
@@ -56,6 +58,7 @@ streams, and an Exposed-backed repository layer.
 | Module | Artifact | Purpose |
 |---|---|---|
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extensions, codecs, cache-backed repositories |
+| `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | DDD aggregate/domain-event helpers for JaVers audit workflows |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
@@ -73,6 +76,7 @@ streams, and an Exposed-backed repository layer.
 ./gradlew build -x test
 ./gradlew build
 ./gradlew :javers-core:test
+./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
