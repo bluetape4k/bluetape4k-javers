@@ -50,7 +50,33 @@ flowchart LR
 - `OrderQueryService` read-side 조회 API
 - H2 command handler 테스트와 Kafka/Redis Testcontainers projection flow
 
-Benchmark 결과는 parent issue #5의 다음 slice에서 다룹니다.
+## Benchmark
+
+Envers 비교 benchmark는 로컬 문서화용 benchmark이며, release 전체 성능
+주장이 아닙니다. H2에서 이 예제의 단순 persistence shape만 측정합니다.
+milliseconds per operation 값은 낮을수록 좋습니다.
+
+명령:
+
+```bash
+./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
+  --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+환경과 원시 결과는
+[`docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json`](../../docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)에
+저장되어 있습니다.
+
+| Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
+|---|---:|---:|
+| insert | 1.049 | 3.627 |
+| update | 1.383 | 2.848 |
+| audit-query | 8.010 | 105.339 |
+
+이번 H2 실행에서는 좁은 persistence benchmark 기준 Envers가 더 빠릅니다.
+JaVers + Exposed 예제의 가치는 단순 entity revision table만이 아니라 명시적
+aggregate commit, commit metadata, domain event integration, CQRS projection
+경로가 필요할 때에 있습니다.
 
 ## 실행
 

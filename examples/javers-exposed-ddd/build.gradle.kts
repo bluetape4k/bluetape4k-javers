@@ -17,4 +17,6 @@ dependencies {
     testImplementation(libs.bluetape4k.testcontainers)
     testImplementation(libs.h2)
     testImplementation(libs.testcontainers.kafka)
+    // The central catalog does not expose hibernate-envers yet; keep this benchmark-only pin narrow.
+    testImplementation("org.hibernate.orm:hibernate-envers:7.3.4.Final")
 }
