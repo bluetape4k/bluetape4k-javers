@@ -1,8 +1,8 @@
 # WIP - bluetape4k-javers
 
 Snapshot: 2026-05-27 KST
-Scope: 0.2.0 CQRS/Event Sourcing example split after #4, #88, and #89 merge.
-Open count: 2 issues (#5 parent, #90).
+Scope: 0.2.0 CQRS/Event Sourcing example split completed.
+Open count: 0 issues.
 
 ## Current Evidence
 
@@ -11,8 +11,8 @@ Open count: 2 issues (#5 parent, #90).
 - #4 merged by PR #87: `javers-ddd` aggregate/domain-event helpers.
 - #88 merged by PR #91: command-side `examples/javers-exposed-ddd` scaffold.
 - #89 merged by PR #92: Kafka to Redis projection flow.
-- #5 is the parent CQRS/Event Sourcing example issue.
-- #5 has been split into #88, #89, and #90.
+- #90 merged by PR #93: Envers comparison benchmark results.
+- #5 parent is closed by the final tracking PR after #88, #89, and #90 landed.
 
 ## Active Queue
 
@@ -20,13 +20,13 @@ Open count: 2 issues (#5 parent, #90).
 |---|---|---:|---|
 | Done | [#88](https://github.com/bluetape4k/bluetape4k-javers/issues/88) command-side CQRS example scaffold | M | Merged by PR #91. |
 | Done | [#89](https://github.com/bluetape4k/bluetape4k-javers/issues/89) Kafka to Redis projection flow | L | Merged by PR #92. |
-| P1 | [#90](https://github.com/bluetape4k/bluetape4k-javers/issues/90) Envers comparison benchmark results | L | Active. Fresh H2 benchmark data generated under `docs/benchmark/`. |
-| Parent | [#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5) CQRS/Event Sourcing demo | L | Close after #88, #89, and #90 land. |
+| Done | [#90](https://github.com/bluetape4k/bluetape4k-javers/issues/90) Envers comparison benchmark results | L | Merged by PR #93. |
+| Done | [#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5) CQRS/Event Sourcing demo | L | Parent closed after all split issues landed. |
 
 ## Dependency Map
 
 ```text
-#5 examples/javers-exposed-ddd parent
+#5 examples/javers-exposed-ddd parent (complete)
   -> #88 command-side Exposed + JaVers + DDD helper flow
       -> #89 Kafka event consumer + Redis projection
           -> #90 Envers comparison benchmark results
@@ -34,12 +34,8 @@ Open count: 2 issues (#5 parent, #90).
 
 ## Current Direction
 
-Work #90 next. Keep the PR limited to:
-
-- Envers vs JaVers + Exposed documentation benchmark,
-- raw benchmark artifact under `docs/benchmark/`,
-- README.md / README.ko.md benchmark summary,
-- no production API tuning.
+No active issue remains in `bluetape4k-javers` for the 0.2.0 CQRS/Event
+Sourcing example lane.
 
 ## WIP Limits
 
@@ -47,4 +43,4 @@ Work #90 next. Keep the PR limited to:
 |---|---:|---|
 | Correctness | 1 | none in current queue |
 | JaVers implementation | 1 | done through #4 |
-| Examples | 1 | #90 active |
+| Examples | 1 | done through #5 |
