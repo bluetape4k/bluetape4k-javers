@@ -26,6 +26,10 @@ cache-backed read, Redis persistence, Kafka event stream, 향후 Exposed 기반 
 - **BOM 지원** — 소비자 dependency version 정렬을 위한 `bluetape4k-javers-bom`
 - **구현 backlog** — Exposed persistence, DDD helper, CQRS/Event Sourcing 예제 phase chain
 
+## Persistence 선택지
+
+![JaVers persistence options relationship diagram](./docs/assets/javers-persistence-options.png)
+
 ## 아키텍처
 
 ![javers Architecture diagram](docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)

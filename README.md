@@ -31,6 +31,10 @@ streams, and a future Exposed-backed repository layer.
 - **Implementation backlog** — documented phase chain for Exposed persistence,
   DDD helpers, and CQRS/Event Sourcing examples.
 
+## Persistence Options
+
+![JaVers persistence options relationship diagram](./docs/assets/javers-persistence-options.png)
+
 <!-- README_VISUAL_OVERVIEW:START -->
 ## Overview Diagram
 
