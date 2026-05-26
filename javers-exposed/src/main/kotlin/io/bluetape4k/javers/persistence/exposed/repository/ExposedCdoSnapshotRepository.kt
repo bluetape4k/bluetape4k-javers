@@ -16,7 +16,6 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.insert
-import org.jetbrains.exposed.v1.jdbc.insertIgnore
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
@@ -112,14 +111,7 @@ class ExposedCdoSnapshotRepository(
         val encodedSnapshot = encode(snapshot)
         val metadata = snapshot.commitMetadata
         inTransaction {
-            CommitTable.insertIgnore {
-                it[commitId] = metadata.id.value()
-                it[author] = metadata.author
-                it[commitDate] = metadata.commitDate
-                it[commitDateInstant] = metadata.commitDateInstant?.toString()
-                it[properties] = metadata.properties.toJsonObject().toString()
-                it[sequence] = 0L
-            }
+            saveCommitMetadataIfAbsent(snapshot)
 
             CdoSnapshotTable.insert {
                 it[globalId] = snapshot.globalId.value()
@@ -130,6 +122,30 @@ class ExposedCdoSnapshotRepository(
                 it[changedProperties] = snapshot.changed.toJsonArray().toString()
                 it[managedType] = snapshot.managedType.name
             }
+        }
+    }
+
+    private fun saveCommitMetadataIfAbsent(snapshot: CdoSnapshot) {
+        val metadata = snapshot.commitMetadata
+        val commitIdValue = metadata.id.value()
+        val exists = CommitTable
+            .selectAll()
+            .where { CommitTable.commitId eq commitIdValue }
+            .limit(1)
+            .empty()
+            .not()
+
+        if (exists) {
+            return
+        }
+
+        CommitTable.insert {
+            it[commitId] = commitIdValue
+            it[author] = metadata.author
+            it[commitDate] = metadata.commitDate
+            it[commitDateInstant] = metadata.commitDateInstant?.toString()
+            it[properties] = metadata.properties.toJsonObject().toString()
+            it[sequence] = 0L
         }
     }
 
