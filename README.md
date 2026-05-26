@@ -28,6 +28,8 @@ streams, and an Exposed-backed repository layer.
   JaVers CDO snapshots.
 - **DDD helpers** — aggregate root, domain event, repository, and publisher
   adapters for JaVers-backed audit workflows.
+- **CQRS command-side example** — Exposed + JaVers + DDD helper order command
+  flow under `examples/javers-exposed-ddd`.
 - **Redis persistence** — Lettuce and Redisson based snapshot storage paths.
 - **Kafka persistence** — event-stream backed CDO snapshot persistence.
 - **BOM support** — `bluetape4k-javers-bom` for aligned consumer dependency
@@ -60,6 +62,7 @@ streams, and an Exposed-backed repository layer.
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extensions, codecs, cache-backed repositories |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | DDD aggregate/domain-event helpers for JaVers audit workflows |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
+| `javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
@@ -78,6 +81,7 @@ streams, and an Exposed-backed repository layer.
 ./gradlew :javers-core:test
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
+./gradlew :javers-exposed-ddd:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
 ```

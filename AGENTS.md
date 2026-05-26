@@ -14,6 +14,7 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 | `javers-core` | Javers extensions, codecs, cache-backed repositories |
 | `javers-ddd` | DDD aggregate and domain-event helpers for JaVers workflows |
 | `javers-exposed` | Exposed JDBC CDO snapshot persistence |
+| `examples/javers-exposed-ddd` | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
 | `javers-persistence-kafka` | Kafka-backed CDO snapshot persistence |
 | `javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `bom/` | `bluetape4k-javers-bom` consumer BOM |
@@ -29,6 +30,7 @@ Root README visual assets live under `docs/assets/` and should be shared by
 ./gradlew :javers-core:test
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
+./gradlew :javers-exposed-ddd:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
 ```
