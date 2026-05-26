@@ -33,3 +33,5 @@ local.properties
 .omx/
 
 **/.profileconfig.json
+
+.codegraph/
