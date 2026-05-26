@@ -61,6 +61,7 @@ rootProject.name = "bluetape4k-javers"
 
 include(
     "javers-core",
+    "javers-ddd",
     "javers-exposed",
     "javers-persistence-kafka",
     "javers-persistence-redis",

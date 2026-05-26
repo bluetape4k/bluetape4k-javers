@@ -16,6 +16,7 @@ The BOM is a Gradle `java-platform` that publishes only `<dependencyManagement>`
 
 - Centralized version management for all `bluetape4k-javers` modules
 - Single source of truth for Javers audit/diff stack with Exposed, Redis, and Kafka backends
+- Includes the DDD helper layer for aggregate/domain-event workflows
 - Aggregated by `bluetape4k-dependencies` for cross-ecosystem version coordination
 
 ## Modules Managed
@@ -23,6 +24,7 @@ The BOM is a Gradle `java-platform` that publishes only `<dependencyManagement>`
 | Module | Description |
 |--------|-------------|
 | `bluetape4k-javers-core` | Javers audit/diff core integration |
+| `bluetape4k-javers-ddd` | DDD aggregate and domain-event helper layer |
 | `bluetape4k-javers-exposed` | Exposed JDBC-backed JaversRepository |
 | `bluetape4k-javers-persistence-redis` | Redis-backed JaversRepository |
 | `bluetape4k-javers-persistence-kafka` | Kafka audit-log producer/consumer |
@@ -44,6 +46,7 @@ dependencyManagement {
 
 dependencies {
     implementation("io.github.bluetape4k.javers:bluetape4k-javers-core")
+    implementation("io.github.bluetape4k.javers:bluetape4k-javers-ddd")
     implementation("io.github.bluetape4k.javers:bluetape4k-javers-exposed")
     implementation("io.github.bluetape4k.javers:bluetape4k-javers-persistence-redis")
 }

@@ -1,12 +1,27 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-05-24 KST
-Scope: patch/minor milestone discovery plus open GitHub issue queue.
-Open count: 4 issues.
+Snapshot: 2026-05-26 KST
+Scope: 0.2.0 feature phase chain after #3/#77 merge and #4 implementation.
+Open count: tracked from GitHub at work start; #4 is implemented in the current branch and waits for PR review/merge.
+
+## 2026-05-26 Issue #4 Update
+
+Current evidence:
+
+- #77 README persistence diagram merged by PR #85.
+- #3 `javers-exposed` merged by PR #86.
+- #4 `javers-ddd` implementation is complete in this branch:
+  - new `javers-ddd` module,
+  - `AggregateRoot`, `DomainEvent`, `AggregateRepository`,
+  - Spring ApplicationEvent, Kafka, and NATS publisher adapters,
+  - H2 + `ExposedCdoSnapshotRepository` aggregate repository tests,
+  - CI/Nightly wiring.
+
+Next implementation item after #4 merge: #5 CQRS/Event Sourcing example.
 
 ## 2026-05-24 Milestone Refresh
 
-Current evidence: latest tags `0.1.2`, `0.1.1`, `0.1.0`. GitHub has one
+Historical evidence: latest tags `0.1.2`, `0.1.1`, `0.1.0`. GitHub had one
 unmilestoned bug (#62) and three `0.2.0` feature issues (#3, #4, #5).
 
 | Lane | Candidate milestone | Current candidates | Decision |
@@ -14,7 +29,8 @@ unmilestoned bug (#62) and three `0.2.0` feature issues (#3, #4, #5).
 | Patch | `0.1.3` | #62 | Persistent repository head restoration is a patch/correctness issue. Assign it before continuing feature phases. |
 | Minor | `0.2.0` | #3 -> #4 -> #5 | Keep the existing phase chain: Exposed snapshot repository, DDD helper layer, then CQRS/Event Sourcing example. |
 
-Recommended order: #62, then #3, #4, and #5.
+Current order: #62 remains the correctness lane; #3 and #77 are done; #4 is
+implemented; #5 waits for #4 merge.
 
 ## New Milestone Queue - 2026-05-24
 
@@ -69,6 +85,9 @@ Minor candidates:
   - PR #49: Test fixes — no-op assertion corrected, JCacheCommitTest added, Kafka write-only @Disabled overrides and publish-failure coverage added.
 - QMD matched the 0.1.0 pre-release fix lesson; GitHub issue state is the source of truth for this refresh.
 - Milestone `0.1.1` has zero open issues after #60 and #63; it is ready for release.
+- PR #85 completed #77 README persistence options diagram.
+- PR #86 completed #3 `javers-exposed`.
+- Current branch implements #4 `javers-ddd`; keep #5 blocked until #4 is merged.
 
 ## Current Direction
 
@@ -76,17 +95,16 @@ Redis persistence correctness and JaVers feature phase chain.
 
 The 0.1.1 release gate is clear. Keep #62 as the next correctness item unless it is explicitly assigned to a release milestone.
 
-Fix persistent repository head restoration before expanding Redis-backed examples.
-Do not start examples before the Exposed repository and DDD helper layer are usable (#3 → #4 → #5).
+Do not start examples before the DDD helper layer is merged (#4 → #5).
 
 ## Priority Queue
 
 | Priority | Issue | Difficulty | Notes |
 |---|---|---:|---|
 | P1 | [#62](https://github.com/bluetape4k/bluetape4k-javers/issues/62) Persistent JaVers repositories lose head commit across rebuilds | M | Lettuce/Redisson store snapshots and commit sequences but `getHeadId()` is only in-memory. Add restart regression coverage. |
-| P2 | [#3](https://github.com/bluetape4k/bluetape4k-javers/issues/3) javers-exposed | L | Phase 2. Implements Exposed JDBC `CdoSnapshotRepository`; prerequisite for the lane. |
-| P2 | [#4](https://github.com/bluetape4k/bluetape4k-javers/issues/4) javers-ddd | M | Phase 3. Aggregate/domain-event helpers after `#3`. |
-| P3 | [#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5) CQRS/Event Sourcing demo | M | Phase 4 example after `#4`. |
+| Done | [#3](https://github.com/bluetape4k/bluetape4k-javers/issues/3) javers-exposed | L | Phase 2 merged by PR #86. |
+| In review | [#4](https://github.com/bluetape4k/bluetape4k-javers/issues/4) javers-ddd | M | Phase 3 implemented in current branch; merge before #5. |
+| P3 | [#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5) CQRS/Event Sourcing demo | M | Phase 4 example after #4 merge. |
 
 ## Dependency Map
 
@@ -94,9 +112,9 @@ Do not start examples before the Exposed repository and DDD helper layer are usa
 #62 persistent repository head restoration
   -> Redis-backed production safety before more examples
 
-#3 javers-exposed
-  -> #4 javers-ddd
-      -> #5 examples/javers-exposed-ddd
+#3 javers-exposed (done)
+  -> #4 javers-ddd (current branch)
+      -> #5 examples/javers-exposed-ddd (next after merge)
 ```
 
 ## WIP Limits
@@ -104,5 +122,5 @@ Do not start examples before the Exposed repository and DDD helper layer are usa
 | Lane | Limit | Current next |
 |---|---:|---|
 | Correctness | 1 | `#62` |
-| JaVers implementation | 1 | `#3` (after correctness check) |
-| Examples | 0 until implementation closes | `#5` waits. |
+| JaVers implementation | 1 | `#4` merge/review |
+| Examples | 0 until #4 closes | `#5` waits. |
