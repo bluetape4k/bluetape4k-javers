@@ -9,42 +9,7 @@ publisher adapter를 제공합니다.
 
 ## 아키텍처
 
-```mermaid
-classDiagram
-    class AggregateRoot~ID~ {
-        <<interface>>
-        +ID id
-    }
-    class DomainEvent {
-        <<interface>>
-        +Any aggregateId
-        +Instant occurredOn
-        +Map attributes
-    }
-    class AggregateRepository~T, ID~ {
-        +save(T aggregate, String author) T
-        +save(T aggregate, String author, DomainEvent event) T
-        +load(ID id) T
-        +loadHistory(ID id) List~CdoSnapshot~
-        #persist(T aggregate) T
-        #findById(ID id) T
-    }
-    class DomainEventPublisher {
-        <<interface>>
-        +publish(DomainEvent event)
-        +publishAll(Iterable events)
-    }
-    class SpringApplicationEventDomainEventPublisher
-    class KafkaDomainEventPublisher
-    class NatsDomainEventPublisher
-
-    AggregateRoot <|.. AggregateRepository
-    AggregateRepository --> DomainEventPublisher
-    AggregateRepository --> DomainEvent
-    SpringApplicationEventDomainEventPublisher ..|> DomainEventPublisher
-    KafkaDomainEventPublisher ..|> DomainEventPublisher
-    NatsDomainEventPublisher ..|> DomainEventPublisher
-```
+![javers-ddd architecture](docs/images/readme-diagrams/javers-ddd-architecture-01.png)
 
 ## 기능
 
@@ -110,3 +75,9 @@ Spring/Kafka/NATS adapter는 optional surface로 컴파일됩니다. 해당 adap
 `AggregateRepository`는 source persistence와 JaVers commit이 성공한 뒤 event를
 발행합니다. 이 기능은 즉시 전달 helper이며 durable outbox 구현이 아닙니다.
 정확히 한 번 외부 전달이나 replay가 필요하다면 transactional outbox를 사용하세요.
+
+## 빌드
+
+```bash
+./gradlew :javers-ddd:test
+```

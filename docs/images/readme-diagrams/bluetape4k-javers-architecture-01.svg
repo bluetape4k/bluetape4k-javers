@@ -1,71 +1,128 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1044" height="692" viewBox="0 0 1044 692" role="img" aria-label="javers Architecture">
-<defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#1f2937" flood-opacity="0.10"/></filter>
-  <marker id="openArrow" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M 1 1 L 10 5 L 1 9" fill="none" stroke="#758297" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
-  <marker id="inherit" markerWidth="14" markerHeight="12" refX="12" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M 0 1 L 12 6 L 0 11 Z" fill="#ffffff" stroke="#758297" stroke-width="1.8"/></marker>
-  <style>
-    .canvas{fill:#f7f9fc}.frame{fill:#fff;stroke:#d8e0ea;stroke-width:1.5}
-    .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:43px;font-weight:400;fill:#102033}
-    .subtitle{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:15px;font-weight:400;fill:#536273}
-    .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:25px;font-weight:400;fill:#102033}
-    .smallLabel{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:21px;font-weight:400;fill:#102033}
-    .mono{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:12px;font-weight:400;fill:#102033}
-    .small{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:12px;font-weight:400;fill:#536273}
-    .strong{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:13px;font-weight:400;fill:#102033}
-    .card{stroke-width:2.1;filter:url(#shadow)}.compartment{stroke-width:1.5;fill:none}
-    .line{stroke:#758297;stroke-width:2.1;fill:none;marker-end:url(#openArrow)}
-    .plainLine{stroke:#758297;stroke-width:2.1;fill:none}
-    .dashed{stroke:#758297;stroke-width:2.1;stroke-dasharray:7 6;fill:none;marker-end:url(#openArrow)}
-    .inheritLine{stroke:#758297;stroke-width:2.2;fill:none;marker-end:url(#inherit)}
-    .implLine{stroke:#758297;stroke-width:2.2;stroke-dasharray:8 7;fill:none;marker-end:url(#inherit)}
-  </style>
-</defs>
-<rect class="canvas" width="1044" height="692"/>
-<rect class="frame" x="32" y="28" width="980" height="636" rx="28"/>
-<text class="title" x="66" y="82">javers Architecture</text>
-<text class="subtitle" x="70" y="118">Architecture nodes and edges from the original Mermaid source</text>
-<path class="line" d="M338 386 C338 386 706 386 706 386"/>
-<path class="line" d="M338 386 C338 386 372 386 372 386"/>
-<path class="line" d="M338 220 C338 220 372 220 372 220"/>
-<g transform="translate(48,170)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#E8F3FF" stroke="#5B8DEF"/>
-  <text class="smallLabel" x="140" y="45" text-anchor="middle">Kotlin service</text>
-</g>
-<g transform="translate(382,170)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#EAF7EF" stroke="#58A978"/>
-  <text class="smallLabel" x="140" y="45" text-anchor="middle">Domain objects</text>
-</g>
-<g transform="translate(716,170)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#FFF3D9" stroke="#D6A441"/>
-  <text class="smallLabel" x="140" y="33" text-anchor="middle">JaVers audit/diff</text>
-<text class="smallLabel" x="140" y="59" text-anchor="middle">engine</text>
-</g>
-<g transform="translate(48,336)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#FDECEF" stroke="#DC6B82"/>
-  <text class="smallLabel" x="140" y="33" text-anchor="middle">javers-core codecs +</text>
-<text class="smallLabel" x="140" y="59" text-anchor="middle">repository helpers</text>
-</g>
-<g transform="translate(382,336)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#E9F7F6" stroke="#45A7A1"/>
-  <text class="smallLabel" x="140" y="21" text-anchor="middle">javers-persistence-r</text>
-<text class="smallLabel" x="140" y="47" text-anchor="middle">edis Lettuce /</text>
-<text class="smallLabel" x="140" y="73" text-anchor="middle">Redisson snapshots</text>
-</g>
-<g transform="translate(716,336)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
-  <text class="smallLabel" x="140" y="21" text-anchor="middle">javers-persistence-k</text>
-<text class="smallLabel" x="140" y="47" text-anchor="middle">afka snapshot event</text>
-<text class="smallLabel" x="140" y="73" text-anchor="middle">stream</text>
-</g>
-<g transform="translate(215,502)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#F7F1E7" stroke="#B88A44"/>
-  <text class="smallLabel" x="140" y="33" text-anchor="middle">bluetape4k-javers-bo</text>
-<text class="smallLabel" x="140" y="59" text-anchor="middle">m</text>
-</g>
-<g transform="translate(549,502)">
-  <rect class="card" x="0" y="0" width="280" height="100" rx="14" fill="#EEF6D9" stroke="#8BA84D"/>
-  <text class="smallLabel" x="140" y="21" text-anchor="middle">planned:</text>
-<text class="smallLabel" x="140" y="47" text-anchor="middle">javers-exposed</text>
-<text class="smallLabel" x="140" y="73" text-anchor="middle">planned: javers-ddd</text>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="930" viewBox="0 0 1500 930" role="img" aria-labelledby="title desc">
+  <title id="title">Bluetape4k JaVers architecture</title>
+  <desc id="desc">Layered architecture diagram for bluetape4k-javers 0.2.0 modules, showing service entrypoints, DDD helpers, Exposed persistence, Redis, Kafka, SQL storage, and the BOM.</desc>
+  <defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#203040" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M1,1 L8,4.5 L1,8 Z" fill="#56708C"/>
+    </marker>
+    <style>
+      .canvas{fill:#F7FAFC}
+      .frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:46px;fill:#22344A;font-weight:400}
+      .subtitle{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:18px;fill:#536476;font-weight:400}
+      .layer{fill:#F3F7FB;stroke:#D7E2EC;stroke-width:2}
+      .layer-title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:26px;fill:#22344A;font-weight:400}
+      .card-title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:23px;fill:#22344A;font-weight:400}
+      .detail{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:14px;fill:#42556B;font-weight:400}
+      .small{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:13px;fill:#627184;font-weight:400}
+      .card{filter:url(#shadow);stroke-width:2}
+      .line{fill:none;stroke:#56708C;stroke-width:2.4;marker-end:url(#arrow)}
+      .line-ddd{fill:none;stroke:#58A978;stroke-width:2.4;marker-end:url(#arrow)}
+      .line-db{fill:none;stroke:#DB7890;stroke-width:2.4;marker-end:url(#arrow)}
+      .line-event{fill:none;stroke:#D9AA4D;stroke-width:2.4;marker-end:url(#arrow)}
+      .line-cache{fill:none;stroke:#45A7A1;stroke-width:2.4;marker-end:url(#arrow)}
+      .govern{fill:none;stroke:#8A72D6;stroke-width:2.2;stroke-dasharray:8 7;marker-end:url(#arrow)}
+      .pill{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1}
+    </style>
+  </defs>
+  <rect class="canvas" width="1500" height="930"/>
+  <rect class="frame" x="34" y="30" width="1432" height="870" rx="28"/>
+  <text class="title" x="72" y="88">Bluetape4k JaVers architecture</text>
+  <text class="subtitle" x="76" y="121">0.2.0 module layout: JaVers helpers, DDD adapters, Exposed SQL persistence, Redis projection, and Kafka event stream.</text>
+
+  <rect class="layer" x="72" y="152" width="1356" height="122" rx="18"/>
+  <text class="layer-title" x="104" y="195">Application</text>
+  <g transform="translate(340,174)">
+    <rect class="card" x="0" y="0" width="260" height="72" rx="12" fill="#E8F3FF" stroke="#75A9E8"/>
+    <text class="card-title" x="130" y="30" text-anchor="middle">Kotlin service</text>
+    <text class="detail" x="130" y="52" text-anchor="middle">domain commands and queries</text>
+  </g>
+  <g transform="translate(690,174)">
+    <rect class="card" x="0" y="0" width="280" height="72" rx="12" fill="#EAF7EF" stroke="#69B888"/>
+    <text class="card-title" x="140" y="30" text-anchor="middle">JaVers audit API</text>
+    <text class="detail" x="140" y="52" text-anchor="middle">commit, diff, shadow, JQL</text>
+  </g>
+  <g transform="translate(1060,174)">
+    <rect class="card" x="0" y="0" width="240" height="72" rx="12" fill="#F7F1E7" stroke="#B88A44"/>
+    <text class="card-title" x="120" y="30" text-anchor="middle">Consumer BOM</text>
+    <text class="detail" x="120" y="52" text-anchor="middle">version alignment</text>
+  </g>
+
+  <rect class="layer" x="72" y="308" width="1356" height="142" rx="18"/>
+  <text class="layer-title" x="104" y="334">Libraries</text>
+  <g transform="translate(170,342)">
+    <rect class="card" x="0" y="0" width="240" height="78" rx="12" fill="#E8F3FF" stroke="#75A9E8"/>
+    <text class="card-title" x="120" y="30" text-anchor="middle">javers-core</text>
+    <text class="detail" x="120" y="52" text-anchor="middle">codecs and repository SPI</text>
+  </g>
+  <g transform="translate(470,342)">
+    <rect class="card" x="0" y="0" width="240" height="78" rx="12" fill="#EAF7EF" stroke="#69B888"/>
+    <text class="card-title" x="120" y="30" text-anchor="middle">javers-ddd</text>
+    <text class="detail" x="120" y="52" text-anchor="middle">AggregateRoot, events</text>
+  </g>
+  <g transform="translate(770,342)">
+    <rect class="card" x="0" y="0" width="240" height="78" rx="12" fill="#FCE7F3" stroke="#DB7890"/>
+    <text class="card-title" x="120" y="30" text-anchor="middle">javers-exposed</text>
+    <text class="detail" x="120" y="52" text-anchor="middle">Exposed CDO repository</text>
+  </g>
+  <g transform="translate(1070,342)">
+    <rect class="card" x="0" y="0" width="240" height="78" rx="12" fill="#FFF3D9" stroke="#D9AA4D"/>
+    <text class="card-title" x="120" y="30" text-anchor="middle">event adapters</text>
+    <text class="detail" x="120" y="52" text-anchor="middle">Redis and Kafka modules</text>
+  </g>
+
+  <rect class="layer" x="72" y="484" width="1356" height="146" rx="18"/>
+  <text class="layer-title" x="104" y="510">Infrastructure</text>
+  <g transform="translate(230,522)">
+    <rect class="card" x="0" y="0" width="250" height="78" rx="12" fill="#E9F7F6" stroke="#45A7A1"/>
+    <text class="card-title" x="125" y="30" text-anchor="middle">Redis backends</text>
+    <text class="detail" x="125" y="52" text-anchor="middle">Lettuce and Redisson</text>
+  </g>
+  <g transform="translate(625,522)">
+    <path class="card" d="M0 12 C0 4 250 4 250 12 L250 66 C250 76 0 76 0 66 Z" fill="#FFFFFF" stroke="#DB7890"/>
+    <path d="M0 12 C0 22 250 22 250 12" fill="none" stroke="#DB7890" stroke-width="2"/>
+    <text class="card-title" x="125" y="35" text-anchor="middle">SQL database</text>
+    <text class="detail" x="125" y="57" text-anchor="middle">CommitTable, CdoSnapshotTable</text>
+  </g>
+  <g transform="translate(1015,522)">
+    <rect class="card" x="0" y="0" width="250" height="78" rx="12" fill="#FFF3D9" stroke="#D9AA4D"/>
+    <text class="card-title" x="125" y="30" text-anchor="middle">Kafka topic</text>
+    <text class="detail" x="125" y="52" text-anchor="middle">snapshot event stream</text>
+  </g>
+
+  <rect class="layer" x="72" y="664" width="1356" height="142" rx="18"/>
+  <text class="layer-title" x="104" y="688">Example application</text>
+  <g transform="translate(430,698)">
+    <rect class="card" x="0" y="0" width="310" height="78" rx="12" fill="#EEF6D9" stroke="#8BA84D"/>
+    <text class="card-title" x="155" y="30" text-anchor="middle">javers-exposed-ddd</text>
+    <text class="detail" x="155" y="52" text-anchor="middle">CQRS command-side example</text>
+  </g>
+  <g transform="translate(790,698)">
+    <rect class="card" x="0" y="0" width="310" height="78" rx="12" fill="#F1ECFF" stroke="#8A72D6"/>
+    <text class="card-title" x="155" y="30" text-anchor="middle">Redis projection</text>
+    <text class="detail" x="155" y="52" text-anchor="middle">query-side read model</text>
+  </g>
+
+  <path class="line" d="M600 210 H690"/>
+  <path class="line-ddd" d="M690 246 V300 H590 V342"/>
+  <path class="line" d="M830 246 V300 H290 V342"/>
+  <path class="line-db" d="M830 246 V300 H890 V342"/>
+  <path class="line-cache" d="M290 420 V472 H355 V522"/>
+  <path class="line-db" d="M890 420 V472 H750 V522"/>
+  <path class="line-event" d="M1190 420 V472 H1140 V522"/>
+  <path class="line-ddd" d="M590 420 V650 H585 V698"/>
+  <path class="line-db" d="M890 420 V650 H585 V698"/>
+  <path class="line-event" d="M1190 600 V650 H945 V698"/>
+  <path class="line-cache" d="M355 600 V650 H945 V698"/>
+  <path class="govern" d="M1180 246 V300 H290 V342"/>
+  <path class="govern" d="M1180 246 V300 H890 V342"/>
+  <path class="govern" d="M1180 246 V300 H1190 V342"/>
+
+  <g transform="translate(76,832)">
+    <rect class="pill" x="0" y="0" width="1348" height="34" rx="10"/>
+    <text class="small" x="674" y="22" text-anchor="middle">Graphviz evidence: bluetape4k-javers-architecture-01.dot, .plain, and -sketch.svg. Final SVG refines the source-derived routes for README readability.</text>
+  </g>
 </svg>

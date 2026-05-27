@@ -2,14 +2,52 @@
 
 [English](./README.md) | 한국어
 
-[Javers](https://javers.org) 는 객체에 대한 Audit과 Diff 를 지원해주는 Framework 입니다. 기본적으로 메모리, MongoDB, JDBC 에 Audit 정보를 저장할 수 있는 기능을 제공합니다.
+Redis를 JaVers CDO snapshot 저장소로 사용하기 위한 repository 모듈입니다.
+기본 JaVers store 대신 Redis에 audit history를 저장하고 싶을 때 사용합니다.
 
-Bluetape4k Javers 에서는 위의 저장소 이외에, Redis 와 Kafka 를 통해 Event Sourcing 방식으로 CDC 를 지원할 수 있도록 해줍니다. 유사한 기능으로 Hibernate Enver 가 있습니다
+## 아키텍처
+
+![Redis persistence sequence](docs/images/readme-diagrams/javers-redis-sequence-01.png)
+
+## 기능
+
+- Lettuce 기반 `LettuceCdoSnapshotRepository`.
+- Redisson 기반 `RedissonCdoSnapshotRepository`.
+- JaVers global id별 encoded snapshot 저장.
+- repository instance rebuild 후에도 head를 복원할 수 있는 commit id sequence 추적.
+- `javers-core`의 shared codec 지원.
+
+## 사용 예
+
+```kotlin
+val repository = LettuceCdoSnapshotRepository(
+    name = "orders",
+    commands = redisCommands,
+)
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repository)
+    .build()
+```
+
+Redis를 audit snapshot store로 사용할 때 이 모듈을 사용하세요. CQRS read model은
+JaVers snapshot data와 분리된 application projection으로 유지하는 편이 좋습니다.
+
+## 의존성
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.javers:javers-persistence-redis")
+}
+```
+
+## 빌드
+
+```bash
+./gradlew :javers-persistence-redis:test
+```
 
 ## 참고 자료
 
-- [Javers](https://javers.org)
-- [Javers Feature Overview](https://javers.org/features)
-- [Javers VS Envers Comparison](https://javers.org/blog/2017/12/javers-vs-envers-comparision.html)
-- [Using JaVers for Data Model Auditing in Spring Data](https://www.baeldung.com/spring-data-javers-audit)
-- [Spring Data에서 데이터 모델 감사를 위해 JaVers 사용](https://recordsoflife.tistory.com/486)
+- [JaVers](https://javers.org)
+- [Redis](https://redis.io/)

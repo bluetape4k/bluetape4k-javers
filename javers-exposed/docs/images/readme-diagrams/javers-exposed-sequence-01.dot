@@ -1,0 +1,24 @@
+digraph JaversExposedSequence {
+  graph [rankdir=LR, bgcolor="transparent", splines=ortho, nodesep=0.8, ranksep=0.7];
+  node [shape=box, style="rounded,filled", fontname="Arial", fontsize=12, margin="0.16,0.08"];
+  edge [color="#56708C", penwidth=2, arrowsize=0.8, fontname="Arial", fontsize=10];
+
+  app [label="Application", fillcolor="#E8F3FF", color="#75A9E8"];
+  javers [label="JaVers", fillcolor="#EAF7EF", color="#69B888"];
+  repo [label="ExposedCdoSnapshotRepository", fillcolor="#FCE7F3", color="#DB7890"];
+  tx [label="Exposed transaction", fillcolor="#F1ECFF", color="#8A72D6"];
+  commit [label="CommitTable", fillcolor="#FFFFFF", color="#DB7890"];
+  snapshot [label="CdoSnapshotTable", fillcolor="#FFFFFF", color="#DB7890"];
+  db [label="SQL database", shape=cylinder, fillcolor="#E9F7F6", color="#45A7A1"];
+
+  app -> javers [label="commit aggregate"];
+  javers -> repo [label="persist(commit)"];
+  repo -> tx [label="transaction(database)"];
+  tx -> commit [label="insert metadata if absent"];
+  tx -> snapshot [label="insert encoded snapshot"];
+  snapshot -> db [label="write rows"];
+  app -> javers [label="query snapshots"];
+  javers -> repo [label="loadSnapshots(globalId)"];
+  repo -> tx [label="select order by version desc"];
+  tx -> snapshot [label="read state"];
+}

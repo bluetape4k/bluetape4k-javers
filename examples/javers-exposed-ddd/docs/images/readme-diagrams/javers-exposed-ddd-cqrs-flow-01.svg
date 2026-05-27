@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560" role="img" aria-labelledby="title desc">
+  <title id="title">javers-exposed-ddd CQRS flow</title>
+  <desc id="desc">CQRS flow diagram replacing README Mermaid with source SVG and PNG assets.</desc>
+  <defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#203040" flood-opacity="0.10"/></filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth"><path d="M1,1 L8,4.5 L1,8 Z" fill="#56708C"/></marker>
+    <style>
+      .canvas{fill:#F7FAFC}.frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:42px;fill:#22344A;font-weight:400}
+      .subtitle,.detail{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:15px;fill:#536476;font-weight:400}
+      .label{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:24px;fill:#22344A;font-weight:400}
+      .card{filter:url(#shadow);stroke-width:2}.line{fill:none;stroke:#56708C;stroke-width:2.4;marker-end:url(#arrow)}
+      .line-event{fill:none;stroke:#D9AA4D;stroke-width:2.4;marker-end:url(#arrow)}.line-query{fill:none;stroke:#8A72D6;stroke-width:2.4;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect class="canvas" width="1400" height="560"/>
+  <rect class="frame" x="34" y="28" width="1332" height="504" rx="28"/>
+  <text class="title" x="72" y="84">javers-exposed-ddd CQRS flow</text>
+  <text class="subtitle" x="76" y="116">Command writes to SQL snapshots, Kafka events, and the Redis projection.</text>
+  <g transform="translate(88,230)">
+    <rect class="card" x="0" y="0" width="200" height="86" rx="14" fill="#EAF7EF" stroke="#69B888"/>
+    <text class="label" x="100" y="38" text-anchor="middle">Command side</text>
+    <text class="detail" x="100" y="62" text-anchor="middle">OrderCommandHandler</text>
+  </g>
+  <g transform="translate(390,112)">
+    <path class="card" d="M0 14 C0 4 240 4 240 14 L240 74 C240 88 0 88 0 74 Z" fill="#FFFFFF" stroke="#DB7890"/>
+    <path d="M0 14 C0 26 240 26 240 14" fill="none" stroke="#DB7890" stroke-width="2"/>
+    <text class="label" x="120" y="43" text-anchor="middle">Exposed order table</text>
+    <text class="detail" x="120" y="66" text-anchor="middle">source of truth</text>
+  </g>
+  <g transform="translate(390,238)">
+    <path class="card" d="M0 14 C0 4 240 4 240 14 L240 74 C240 88 0 88 0 74 Z" fill="#FFFFFF" stroke="#F07AA8"/>
+    <path d="M0 14 C0 26 240 26 240 14" fill="none" stroke="#F07AA8" stroke-width="2"/>
+    <text class="label" x="120" y="43" text-anchor="middle">JaVers snapshots</text>
+    <text class="detail" x="120" y="66" text-anchor="middle">audit history</text>
+  </g>
+  <g transform="translate(390,364)">
+    <rect class="card" x="0" y="0" width="240" height="88" rx="14" fill="#FFF3D9" stroke="#D9AA4D"/>
+    <text class="label" x="120" y="39" text-anchor="middle">Kafka order events</text>
+    <text class="detail" x="120" y="63" text-anchor="middle">domain event stream</text>
+  </g>
+  <g transform="translate(748,364)">
+    <rect class="card" x="0" y="0" width="240" height="88" rx="14" fill="#E9F7F6" stroke="#45A7A1"/>
+    <text class="label" x="120" y="39" text-anchor="middle">Projection consumer</text>
+    <text class="detail" x="120" y="63" text-anchor="middle">poll and apply</text>
+  </g>
+  <g transform="translate(1080,238)">
+    <path class="card" d="M0 14 C0 4 230 4 230 14 L230 74 C230 88 0 88 0 74 Z" fill="#FFFFFF" stroke="#45A7A1"/>
+    <path d="M0 14 C0 26 230 26 230 14" fill="none" stroke="#45A7A1" stroke-width="2"/>
+    <text class="label" x="115" y="43" text-anchor="middle">Redis read model</text>
+    <text class="detail" x="115" y="66" text-anchor="middle">OrderSummary</text>
+  </g>
+  <g transform="translate(748,112)">
+    <rect class="card" x="0" y="0" width="240" height="88" rx="14" fill="#F1ECFF" stroke="#8A72D6"/>
+    <text class="label" x="120" y="39" text-anchor="middle">Read API</text>
+    <text class="detail" x="120" y="63" text-anchor="middle">OrderQueryService</text>
+  </g>
+  <path class="line" d="M288 273 H340 V156 H390"/>
+  <path class="line" d="M288 273 H390"/>
+  <path class="line-event" d="M288 273 H340 V408 H390"/>
+  <path class="line-event" d="M630 408 H748"/>
+  <path class="line-event" d="M988 408 H1035 V282 H1080"/>
+  <path class="line-query" d="M988 156 H1035 V282 H1080"/>
+</svg>

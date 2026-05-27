@@ -1,0 +1,18 @@
+digraph javers_ddd_architecture {
+  graph [rankdir = TB, bgcolor = "transparent", nodesep = 0.65, ranksep = 0.75, splines = ortho];
+  node [shape = box, style = "rounded,filled", color = "#9FB2C5", fillcolor = "#FFFFFF", fontname = "Helvetica", fontsize = 12];
+  edge [color = "#56708C", penwidth = 2, arrowsize = 0.8];
+  aggregate [label = "AggregateRoot<ID>\n+ id", fillcolor = "#E8F3FF"];
+  event [label = "DomainEvent\n+ aggregateId\n+ occurredOn\n+ attributes", fillcolor = "#EAF7EF"];
+  repository [label = "AggregateRepository<T, ID>\n+ save\n+ load\n+ loadHistory\n# persist\n# findById", fillcolor = "#FCE7F3"];
+  publisher [label = "DomainEventPublisher\n+ publish\n+ publishAll", fillcolor = "#FFF3D9"];
+  spring [label = "Spring application event adapter", fillcolor = "#E9F7F6"];
+  kafka [label = "Kafka event adapter", fillcolor = "#F1ECFF"];
+  nats [label = "NATS event adapter", fillcolor = "#EEF6D9"];
+  aggregate -> repository [label = "audited by"];
+  repository -> event [label = "commit properties"];
+  repository -> publisher [label = "publishes after save"];
+  spring -> publisher [style = dashed, label = "implements"];
+  kafka -> publisher [style = dashed, label = "implements"];
+  nats -> publisher [style = dashed, label = "implements"];
+}

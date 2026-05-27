@@ -1,0 +1,33 @@
+digraph exposed_ddd_cqrs_flow {
+  graph [
+    rankdir = LR,
+    bgcolor = "transparent",
+    nodesep = 0.65,
+    ranksep = 0.75,
+    splines = ortho
+  ];
+  node [
+    shape = box,
+    style = "rounded,filled",
+    color = "#9FB2C5",
+    fillcolor = "#FFFFFF",
+    fontname = "Helvetica",
+    fontsize = 12
+  ];
+  edge [color = "#56708C", penwidth = 2, arrowsize = 0.8];
+
+  command [label = "Command side", fillcolor = "#EAF7EF"];
+  exposed [label = "Exposed order table", shape = cylinder, fillcolor = "#FFFFFF"];
+  audit [label = "JaVers snapshots", shape = cylinder, fillcolor = "#FFFFFF"];
+  kafka [label = "Kafka order events", fillcolor = "#FFF3D9"];
+  consumer [label = "Projection consumer", fillcolor = "#E9F7F6"];
+  redis [label = "Redis read model", shape = cylinder, fillcolor = "#FFFFFF"];
+  query [label = "Read API", fillcolor = "#F1ECFF"];
+
+  command -> exposed;
+  command -> audit;
+  command -> kafka;
+  kafka -> consumer;
+  consumer -> redis;
+  query -> redis;
+}

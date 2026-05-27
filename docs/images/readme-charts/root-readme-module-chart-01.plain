@@ -1,0 +1,15 @@
+graph 1 6.5712 2.8056
+node core 3.099 2.5556 1.0451 0.5 "javers-core" rounded,filled box #9FB2C5 #E8F3FF
+node bom 0.96007 2.5556 1.9201 0.5 "bluetape4k-javers-bom" rounded,filled box #9FB2C5 #F7F1E7
+node ddd 1.2656 1.4028 1.0035 0.5 "javers-ddd" rounded,filled box #9FB2C5 #EAF7EF
+node exposed 3.099 1.4028 1.3576 0.5 "javers-exposed" rounded,filled box #9FB2C5 #FCE7F3
+node adapters 5.5017 1.4028 2.1389 0.5 "Redis and Kafka adapters" rounded,filled box #9FB2C5 #FFF3D9
+node example 3.099 0.25 2.4514 0.5 "examples/javers-exposed-ddd" rounded,filled box #9FB2C5 #E9F7F6
+edge core ddd 4 2.7057 2.3003 2.4374 2.1357 2.0792 1.9159 1.7872 1.7367 solid #56708C
+edge core exposed 4 3.099 2.3031 3.099 2.1594 3.099 1.9729 3.099 1.8081 solid #56708C
+edge core adapters 4 3.6144 2.3003 3.9743 2.1318 4.4576 1.9056 4.845 1.7242 solid #56708C
+edge bom core 4 1.9251 2.5556 2.0901 2.5556 2.2551 2.5556 2.4201 2.5556 dashed #8A72D6
+edge ddd example 4 1.6589 1.1475 1.9272 0.98294 2.2853 0.76316 2.5774 0.58396 solid #56708C
+edge exposed example 4 3.099 1.1503 3.099 1.0066 3.099 0.82012 3.099 0.65529 solid #56708C
+edge adapters example 4 4.9863 1.1475 4.6264 0.97907 4.1431 0.75278 3.7557 0.57138 solid #56708C
+stop
