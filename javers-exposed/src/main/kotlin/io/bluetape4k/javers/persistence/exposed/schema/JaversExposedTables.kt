@@ -11,6 +11,8 @@ import org.jetbrains.exposed.v1.javatime.datetime
  * indexing, inspection, and future SQL pushdown.
  */
 object CdoSnapshotTable: LongIdTable("javers_snapshot") {
+    const val GLOBAL_ID_VERSION_INDEX = "ux_javers_snapshot_global_id_version"
+
     val globalId = varchar("global_id", 200).index()
     val commitId = varchar("commit_id", 50).index()
     val version = long("version")
@@ -20,7 +22,7 @@ object CdoSnapshotTable: LongIdTable("javers_snapshot") {
     val managedType = varchar("managed_type", 200).index()
 
     init {
-        uniqueIndex("ux_javers_snapshot_global_id_version", globalId, version)
+        uniqueIndex(GLOBAL_ID_VERSION_INDEX, globalId, version)
     }
 }
 
@@ -31,10 +33,12 @@ object CdoSnapshotTable: LongIdTable("javers_snapshot") {
  * `CommitId` after rebuilding a persistent repository instance.
  */
 object CommitTable: LongIdTable("javers_commit") {
+    const val SEQUENCE_INDEX = "ix_javers_commit_sequence"
+
     val commitId = varchar("commit_id", 50).uniqueIndex()
     val author = varchar("author", 200)
     val commitDate = datetime("commit_date")
     val commitDateInstant = varchar("commit_date_instant", 64).nullable()
     val properties = text("properties")
-    val sequence = long("sequence").default(0L)
+    val sequence = long("sequence").default(0L).index(SEQUENCE_INDEX)
 }

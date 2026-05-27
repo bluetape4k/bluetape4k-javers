@@ -13,6 +13,8 @@ JaVers commit과 encoded snapshot을 저장하는 `AbstractCdoSnapshotRepository
 - CDO snapshot version마다 `javers_snapshot` row를 저장합니다.
 - JaVers JSON converter로 snapshot을 복원할 수 있도록 전체 encoded
   `CdoSnapshot` payload를 저장합니다.
+- snapshot history 조회 hot path를 위해 `(global_id, version)` unique index를
+  유지하고, repository head 복원을 위해 commit sequence index를 사용합니다.
 - repository instance를 다시 만들 때 head commit id를 복원합니다.
 - Exposed JDBC를 통해 H2, PostgreSQL, MySQL을 지원합니다.
 

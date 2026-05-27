@@ -13,6 +13,8 @@ managed through JetBrains Exposed.
 - Stores one row per CDO snapshot version in `javers_snapshot`.
 - Persists the full encoded `CdoSnapshot` payload so JaVers can reconstruct
   snapshots with its configured JSON converter.
+- Keeps a unique `(global_id, version)` index for the hot snapshot history load
+  path and an index on commit sequence for repository head restoration.
 - Restores the repository head commit id after a repository instance rebuild.
 - Supports H2, PostgreSQL, and MySQL through Exposed JDBC.
 
