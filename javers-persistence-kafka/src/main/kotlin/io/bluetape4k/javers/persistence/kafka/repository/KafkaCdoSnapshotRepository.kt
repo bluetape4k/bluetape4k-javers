@@ -3,8 +3,10 @@ package io.bluetape4k.javers.persistence.kafka.repository
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import io.bluetape4k.logging.KLogging
+import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
 import io.bluetape4k.logging.warn
+import kotlinx.atomicfu.atomic
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.springframework.kafka.core.KafkaTemplate
@@ -22,7 +24,8 @@ import java.util.concurrent.TimeUnit
  * - Publish failures are propagated as [RuntimeException] so that [persist] sees the failure
  *   and does not advance the audit-log head on error.
  * - **This repository is write-only.** All read methods ([getKeys], [contains], [getSeq],
- *   [getSnapshotSize], [loadSnapshots]) return empty/false/0 and log a warning on each call.
+ *   [getSnapshotSize], [loadSnapshots]) return empty/false/0. The first read-path call logs
+ *   a warning to make the contract visible; repeated read-path calls log at debug level.
  *   Use a separate read-side repository (e.g. Redis, RDBMS) for query operations.
  * - The codec is [JaversCodecs.String] (uncompressed JSON string).
  *
@@ -44,18 +47,20 @@ class KafkaCdoSnapshotRepository(
 
     companion object: KLogging()
 
+    private val readContractWarningLogged = atomic(false)
+
     override fun getKeys(): Set<String> {
-        log.warn { "KafkaCdoSnapshotRepository is write-only; getKeys() always returns empty" }
+        logReadContract("getKeys()", "empty")
         return emptySet()
     }
 
     override fun contains(globalIdValue: String): Boolean {
-        log.warn { "KafkaCdoSnapshotRepository is write-only; contains() always returns false" }
+        logReadContract("contains()", "false")
         return false
     }
 
     override fun getSeq(commitId: CommitId): Long {
-        log.warn { "KafkaCdoSnapshotRepository is write-only; getSeq() always returns 0" }
+        logReadContract("getSeq()", "0")
         return 0L
     }
 
@@ -64,7 +69,7 @@ class KafkaCdoSnapshotRepository(
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int {
-        log.warn { "KafkaCdoSnapshotRepository is write-only; getSnapshotSize() always returns 0" }
+        logReadContract("getSnapshotSize()", "0")
         return 0
     }
 
@@ -83,7 +88,16 @@ class KafkaCdoSnapshotRepository(
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
-        log.warn { "KafkaCdoSnapshotRepository is write-only; loadSnapshots() always returns empty" }
+        logReadContract("loadSnapshots()", "empty")
         return emptyList()
+    }
+
+    private fun logReadContract(operation: String, result: String) {
+        val message = "KafkaCdoSnapshotRepository is write-only; $operation always returns $result"
+        if (readContractWarningLogged.compareAndSet(expect = false, update = true)) {
+            log.warn { message }
+        } else {
+            log.debug { message }
+        }
     }
 }

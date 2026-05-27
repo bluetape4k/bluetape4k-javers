@@ -14,7 +14,7 @@ event를 소비할 수 있게 하며, repository read method는 빈 값이나 �
 
 - Encoded JaVers snapshot을 발행하는 `KafkaCdoSnapshotRepository`.
 - Kafka topic과 key mapping 설정.
-- write-only contract가 보이도록 read path에서 warning log 출력.
+- write-only contract가 보이도록 첫 read path에서 warning log 출력, 반복 메시지는 debug로 완화.
 - Kafka send 실패 propagation.
 - `javers-core` codec 재사용.
 

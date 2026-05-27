@@ -1,17 +1,25 @@
 package io.bluetape4k.javers.persistence.kafka.repository
 
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.read.ListAppender
 import io.bluetape4k.assertions.assertFailsWith
+import io.bluetape4k.assertions.shouldBeEmpty
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.logging.KLogging
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
+import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.SnapshotType
 import org.javers.core.model.PrimitiveEntity
 import org.javers.core.model.SnapshotEntity
 import org.javers.core.repository.AbstractJaversCommitTest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
 import java.util.concurrent.CompletableFuture
@@ -101,6 +109,32 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     }
 
     @Test
+    fun `read path keeps write only contract and warns once per repository`() {
+        val repository = KafkaCdoSnapshotRepository(successfulKafkaTemplate())
+        val (logger, appender) = attachLogAppender()
+
+        try {
+            repeat(2) {
+                repository.invokeGetKeys().shouldBeEmpty()
+                repository.invokeContains("global-id").shouldBeFalse()
+                repository.invokeGetSeq(CommitId.valueOf("1.0")) shouldBeEqualTo 0L
+                repository.invokeGetSnapshotSize("global-id") shouldBeEqualTo 0
+                repository.loadSnapshots("global-id").shouldBeEmpty()
+            }
+        } finally {
+            logger.detachAppender(appender)
+            appender.stop()
+        }
+
+        val contractLogs = appender.list.filter {
+            it.formattedMessage.contains("KafkaCdoSnapshotRepository is write-only;")
+        }
+
+        contractLogs.count { it.level == Level.WARN } shouldBeEqualTo 1
+        contractLogs.count { it.level == Level.DEBUG } shouldBeEqualTo 9
+    }
+
+    @Test
     fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
         // Build a KafkaTemplate whose sendDefault always returns a failed future.
         // KafkaTemplate requires a ProducerFactory; supply the real one but override sendDefault
@@ -135,5 +169,37 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         }.also {
             it.setDefaultTopic(KafkaProvider.TEST_TOPIC)
         }
+    }
+
+    private fun attachLogAppender(): Pair<Logger, ListAppender<ILoggingEvent>> {
+        val logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger
+        val appender = ListAppender<ILoggingEvent>().apply { start() }
+        logger.addAppender(appender)
+        return logger to appender
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun KafkaCdoSnapshotRepository.invokeGetKeys(): Set<String> {
+        val method = KafkaCdoSnapshotRepository::class.java.getDeclaredMethod("getKeys")
+        method.isAccessible = true
+        return method.invoke(this) as Set<String>
+    }
+
+    private fun KafkaCdoSnapshotRepository.invokeContains(globalIdValue: String): Boolean {
+        val method = KafkaCdoSnapshotRepository::class.java.getDeclaredMethod("contains", String::class.java)
+        method.isAccessible = true
+        return method.invoke(this, globalIdValue) as Boolean
+    }
+
+    private fun KafkaCdoSnapshotRepository.invokeGetSeq(commitId: CommitId): Long {
+        val method = KafkaCdoSnapshotRepository::class.java.getDeclaredMethod("getSeq", CommitId::class.java)
+        method.isAccessible = true
+        return method.invoke(this, commitId) as Long
+    }
+
+    private fun KafkaCdoSnapshotRepository.invokeGetSnapshotSize(globalIdValue: String): Int {
+        val method = KafkaCdoSnapshotRepository::class.java.getDeclaredMethod("getSnapshotSize", String::class.java)
+        method.isAccessible = true
+        return method.invoke(this, globalIdValue) as Int
     }
 }
