@@ -14,7 +14,7 @@ consume audit events, while repository read methods return empty/default values.
 
 - `KafkaCdoSnapshotRepository` for publishing encoded JaVers snapshots.
 - Configurable Kafka topic and key mapping.
-- Explicit read-path warnings to make the write-only contract visible.
+- Explicit first read-path warning, with repeated write-only contract messages demoted to debug.
 - Failure propagation from Kafka send operations.
 - Codec reuse from `javers-core`.
 
