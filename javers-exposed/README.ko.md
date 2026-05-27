@@ -16,6 +16,22 @@ JaVers commit과 encoded snapshot을 저장하는 `AbstractCdoSnapshotRepository
 - repository instance를 다시 만들 때 head commit id를 복원합니다.
 - Exposed JDBC를 통해 H2, PostgreSQL, MySQL을 지원합니다.
 
+## Architecture
+
+![javers-exposed architecture](docs/images/readme-diagrams/javers-exposed-architecture-01.png)
+
+`ExposedCdoSnapshotRepository`는 공통
+`AbstractCdoSnapshotRepository`의 codec 및 query 동작을 확장하고, JaVers
+commit metadata와 encoded `CdoSnapshot` row를 Exposed table에 매핑합니다.
+
+## Persistence Flow
+
+![javers-exposed persistence sequence](docs/images/readme-diagrams/javers-exposed-sequence-01.png)
+
+쓰기 작업은 Exposed transaction 안에서 commit metadata를 필요할 때만
+삽입하고 encoded snapshot payload를 저장합니다. 조회 시에는 snapshot
+version 순서로 row를 읽고 decode하여 JaVers query에 돌려줍니다.
+
 ## 사용 예
 
 ```kotlin

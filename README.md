@@ -20,6 +20,11 @@ JDBC storage choices. It focuses on Kotlin-friendly audit/diff infrastructure
 for services that need cache-backed reads, Redis persistence, Kafka event
 streams, and an Exposed-backed repository layer.
 
+Use this repository when an application wants JaVers' object diff model together
+with the bluetape4k stack: Kotlin-first helpers, Exposed JDBC persistence,
+cache/stream adapters, and a CQRS example that shows how audit commits and
+domain events fit together.
+
 ## What It Provides
 
 - **JaVers core helpers** — extensions, codecs, and cache-backed repository
@@ -66,6 +71,40 @@ streams, and an Exposed-backed repository layer.
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
+
+## Dependency Setup
+
+Use the BOM when consuming more than one module:
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.0"))
+    implementation("io.github.bluetape4k.javers:javers-core")
+    implementation("io.github.bluetape4k.javers:javers-exposed")
+    implementation("io.github.bluetape4k.javers:javers-ddd")
+}
+```
+
+Add only the persistence adapters that the application actually uses. Kafka,
+Redis, and Exposed modules intentionally serve different storage and eventing
+roles.
+
+## Quick Start
+
+```kotlin
+val snapshotRepository = ExposedCdoSnapshotRepository(database)
+snapshotRepository.ensureSchema()
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(snapshotRepository)
+    .registerEntity(Order::class.java)
+    .build()
+```
+
+For DDD command handling, write the aggregate to the source-of-truth store,
+commit it to JaVers, then publish a domain event. The
+`examples/javers-exposed-ddd` module shows this path with Kafka events and a
+Redis read model.
 
 ## Requirements
 

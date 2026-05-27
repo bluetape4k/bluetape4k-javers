@@ -9,42 +9,7 @@ adapters for Spring application events, Spring Kafka, and NATS.
 
 ## Architecture
 
-```mermaid
-classDiagram
-    class AggregateRoot~ID~ {
-        <<interface>>
-        +ID id
-    }
-    class DomainEvent {
-        <<interface>>
-        +Any aggregateId
-        +Instant occurredOn
-        +Map attributes
-    }
-    class AggregateRepository~T, ID~ {
-        +save(T aggregate, String author) T
-        +save(T aggregate, String author, DomainEvent event) T
-        +load(ID id) T
-        +loadHistory(ID id) List~CdoSnapshot~
-        #persist(T aggregate) T
-        #findById(ID id) T
-    }
-    class DomainEventPublisher {
-        <<interface>>
-        +publish(DomainEvent event)
-        +publishAll(Iterable events)
-    }
-    class SpringApplicationEventDomainEventPublisher
-    class KafkaDomainEventPublisher
-    class NatsDomainEventPublisher
-
-    AggregateRoot <|.. AggregateRepository
-    AggregateRepository --> DomainEventPublisher
-    AggregateRepository --> DomainEvent
-    SpringApplicationEventDomainEventPublisher ..|> DomainEventPublisher
-    KafkaDomainEventPublisher ..|> DomainEventPublisher
-    NatsDomainEventPublisher ..|> DomainEventPublisher
-```
+![javers-ddd architecture](docs/images/readme-diagrams/javers-ddd-architecture-01.png)
 
 ## Features
 
@@ -111,3 +76,9 @@ runtime dependency when using those adapters.
 commit have succeeded. This is an immediate delivery helper, not a durable
 outbox implementation. Use a transactional outbox when exactly-once external
 delivery or replay is required.
+
+## Build
+
+```bash
+./gradlew :javers-ddd:test
+```

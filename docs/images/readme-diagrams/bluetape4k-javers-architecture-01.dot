@@ -1,0 +1,61 @@
+digraph javers_architecture {
+  graph [
+    rankdir = TB,
+    bgcolor = "transparent",
+    nodesep = 0.55,
+    ranksep = 0.75,
+    splines = ortho
+  ];
+  node [
+    shape = box,
+    style = "rounded,filled",
+    color = "#9FB2C5",
+    fillcolor = "#FFFFFF",
+    fontname = "Helvetica",
+    fontsize = 12
+  ];
+  edge [
+    color = "#56708C",
+    penwidth = 2,
+    arrowsize = 0.8,
+    fontname = "Helvetica",
+    fontsize = 10
+  ];
+
+  service [label = "Kotlin service\ncommands + queries", fillcolor = "#E8F3FF"];
+  api [label = "JaVers audit API\ncommit / diff / shadow / JQL", fillcolor = "#EAF7EF"];
+  bom [label = "bluetape4k-javers-bom\nversion alignment", fillcolor = "#F7F1E7"];
+
+  core [label = "javers-core\ncodecs + repository SPI", fillcolor = "#E8F3FF"];
+  ddd [label = "javers-ddd\nAggregateRoot + DomainEvent", fillcolor = "#EAF7EF"];
+  exposed [label = "javers-exposed\nExposed CDO repository", fillcolor = "#FCE7F3"];
+  adapters [label = "Redis + Kafka modules\npersistence adapters", fillcolor = "#FFF3D9"];
+
+  redis [label = "Redis backends\nLettuce / Redisson", fillcolor = "#E9F7F6"];
+  sql [label = "SQL database\nCommitTable + CdoSnapshotTable", shape = cylinder, fillcolor = "#FFFFFF"];
+  kafka [label = "Kafka topic\nsnapshot event stream", fillcolor = "#FFF3D9"];
+
+  example [label = "javers-exposed-ddd\nCQRS command side", fillcolor = "#EEF6D9"];
+  projection [label = "Redis projection\nquery read model", fillcolor = "#F1ECFF"];
+
+  { rank = same; service; api; bom; }
+  { rank = same; core; ddd; exposed; adapters; }
+  { rank = same; redis; sql; kafka; }
+  { rank = same; example; projection; }
+
+  service -> api;
+  api -> core;
+  api -> ddd;
+  api -> exposed;
+  core -> redis;
+  exposed -> sql;
+  adapters -> kafka;
+  adapters -> redis;
+  ddd -> example;
+  exposed -> example;
+  kafka -> projection;
+  redis -> projection;
+  bom -> core [style = dashed, color = "#8A72D6"];
+  bom -> exposed [style = dashed, color = "#8A72D6"];
+  bom -> adapters [style = dashed, color = "#8A72D6"];
+}

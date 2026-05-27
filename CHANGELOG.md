@@ -7,6 +7,36 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-27
+
+### Added
+
+- Added `javers-exposed`, an Exposed JDBC-backed JaVers CDO snapshot repository
+  with schema management and repository contract tests ([#3](https://github.com/bluetape4k/bluetape4k-javers/issues/3), [PR #86](https://github.com/bluetape4k/bluetape4k-javers/pull/86)).
+- Added `javers-ddd` aggregate root and domain event helpers for JaVers-friendly
+  DDD models ([#4](https://github.com/bluetape4k/bluetape4k-javers/issues/4), [PR #87](https://github.com/bluetape4k/bluetape4k-javers/pull/87)).
+- Added `examples/javers-exposed-ddd`, a CQRS/Event Sourcing example with
+  command-side persistence, Kafka events, Redis projection, and measured Envers
+  comparison notes ([#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5), [#88](https://github.com/bluetape4k/bluetape4k-javers/issues/88), [#89](https://github.com/bluetape4k/bluetape4k-javers/issues/89), [#90](https://github.com/bluetape4k/bluetape4k-javers/issues/90), [PR #91](https://github.com/bluetape4k/bluetape4k-javers/pull/91), [PR #92](https://github.com/bluetape4k/bluetape4k-javers/pull/92), [PR #93](https://github.com/bluetape4k/bluetape4k-javers/pull/93)).
+- Added a persistence relationship diagram to the root README to clarify the
+  repository/module split ([#77](https://github.com/bluetape4k/bluetape4k-javers/issues/77), [PR #85](https://github.com/bluetape4k/bluetape4k-javers/pull/85)).
+
+### Changed
+
+- Aligned the default bluetape4k dependencies catalog reference and consumed the
+  bluetape4k projects BOM 1.9.2 line ([PR #81](https://github.com/bluetape4k/bluetape4k-javers/pull/81), [PR #83](https://github.com/bluetape4k/bluetape4k-javers/pull/83)).
+- Moved `javers-exposed` database smoke coverage to the shared
+  `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix
+  ([#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95), [PR #96](https://github.com/bluetape4k/bluetape4k-javers/pull/96)).
+
+### Fixed
+
+- Restored persistent JaVers repository head recovery for persistent backends,
+  including Redis rebuild scenarios ([PR #78](https://github.com/bluetape4k/bluetape4k-javers/pull/78), [PR #80](https://github.com/bluetape4k/bluetape4k-javers/pull/80)).
+- Removed a dialect-specific `insertIgnore` dependency from the Exposed
+  repository commit metadata path so the mandatory database matrix remains
+  portable across H2, PostgreSQL, and MySQL_V8 ([#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95), [PR #96](https://github.com/bluetape4k/bluetape4k-javers/pull/96)).
+
 ## [0.1.1] - 2026-05-22
 
 ### Changed

@@ -18,6 +18,10 @@ CDO snapshot과 event-sourced change stream을 위해 Exposed JDBC, Redis, Kafka
 cache-backed read, Redis persistence, Kafka event stream, Exposed 기반 repository layer가
 필요한 Kotlin 서비스의 audit/diff 인프라를 목표로 합니다.
 
+JaVers의 object diff 모델을 쓰면서도 Kotlin-first helper, Exposed JDBC
+persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 bluetape4k
+서비스에 맞춘 저장소입니다.
+
 ## 제공 기능
 
 - **JaVers core helper** — extension, codec, cache-backed repository 구성 요소
@@ -58,6 +62,38 @@ cache-backed read, Redis persistence, Kafka event stream, Exposed 기반 reposit
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (쓰기 전용 이벤트 스트림; 읽기는 항상 빈 결과 반환) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
+
+## 의존성 설정
+
+여러 모듈을 함께 사용할 때는 BOM을 사용하세요:
+
+```kotlin
+dependencies {
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.0"))
+    implementation("io.github.bluetape4k.javers:javers-core")
+    implementation("io.github.bluetape4k.javers:javers-exposed")
+    implementation("io.github.bluetape4k.javers:javers-ddd")
+}
+```
+
+Kafka, Redis, Exposed 모듈은 역할이 다르므로 애플리케이션이 실제로 사용하는
+storage/eventing adapter만 추가하세요.
+
+## 빠른 시작
+
+```kotlin
+val snapshotRepository = ExposedCdoSnapshotRepository(database)
+snapshotRepository.ensureSchema()
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(snapshotRepository)
+    .registerEntity(Order::class.java)
+    .build()
+```
+
+DDD command flow에서는 source-of-truth 저장소에 aggregate를 저장하고 JaVers에
+commit한 뒤 domain event를 발행합니다. `examples/javers-exposed-ddd` 모듈은 이
+경로를 Kafka event와 Redis read model까지 포함해 보여줍니다.
 
 ## 요구사항
 

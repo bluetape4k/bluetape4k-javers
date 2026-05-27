@@ -1,0 +1,11 @@
+graph 1 13.917 1.0903
+node app 0.52778 0.43056 1.0556 0.5 Application rounded,filled box #9FB2C5 #E8F3FF
+node javers 3.5556 0.43056 0.75 0.5 JaVers rounded,filled box #9FB2C5 #EAF7EF
+node repository 7.8594 0.43056 2.0451 0.5 "Lettuce/Redisson\nCdoSnapshotRepository" rounded,filled box #9FB2C5 #E9F7F6
+node redis 12.519 0.43056 2.7951 0.63976 "Redis\nsnapshot lists + commit sequences" rounded,filled cylinder #9FB2C5 #FFFFFF
+edge app javers 4 1.0621 0.43056 1.0621 0.43056 3.0218 0.43056 3.0218 0.43056 "commit aggregate" 2.1181 0.54514 solid #56708C
+edge javers repository 4 3.9375 0.34722 3.9375 0.34722 6.6767 0.34722 6.6767 0.34722 "saveSnapshot/loadSnapshots" 5.3837 0.97569 solid #56708C
+edge repository javers 4 6.834 0.51389 6.834 0.51389 4.087 0.51389 4.087 0.51389 "CdoSnapshot list" 5.3837 0.11458 dashed #56708C
+edge repository redis 4 8.8877 0.34722 8.8877 0.34722 10.965 0.34722 10.965 0.34722 "encoded snapshots" 10.002 0.97569 solid #56708C
+edge redis repository 4 11.115 0.51389 11.115 0.51389 9.0402 0.51389 9.0402 0.51389 "history/head restore" 10.002 0.11458 dashed #56708C
+stop

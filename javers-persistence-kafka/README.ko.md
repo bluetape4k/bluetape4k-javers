@@ -2,14 +2,54 @@
 
 [English](./README.md) | 한국어
 
-[Javers](https://javers.org) 는 객체에 대한 Audit과 Diff 를 지원해주는 Framework 입니다. 기본적으로 메모리, MongoDB, JDBC 에 Audit 정보를 저장할 수 있는 기능을 제공합니다.
+Kafka로 JaVers CDO snapshot을 발행하는 모듈입니다. 이 모듈은 의도적으로
+write-only입니다. Snapshot을 Kafka record로 직렬화해 downstream system이 audit
+event를 소비할 수 있게 하며, repository read method는 빈 값이나 기본값을 반환합니다.
 
-Bluetape4k Javers 에서는 위의 저장소 이외에, Redis 와 Kafka 를 통해 Event Sourcing 방식으로 CDC 를 지원할 수 있도록 해줍니다. 유사한 기능으로 Hibernate Enver 가 있습니다
+## 아키텍처
+
+![Kafka persistence sequence](docs/images/readme-diagrams/javers-kafka-sequence-01.png)
+
+## 기능
+
+- Encoded JaVers snapshot을 발행하는 `KafkaCdoSnapshotRepository`.
+- Kafka topic과 key mapping 설정.
+- write-only contract가 보이도록 read path에서 warning log 출력.
+- Kafka send 실패 propagation.
+- `javers-core` codec 재사용.
+
+## 사용 예
+
+```kotlin
+val repository = KafkaCdoSnapshotRepository(
+    producer = producer,
+    topic = "order-audit-events",
+)
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repository)
+    .build()
+```
+
+Kafka를 audit event stream으로 사용할 때 이 모듈을 사용하세요. 애플리케이션이
+history read도 필요하다면 durable snapshot repository나 projection consumer와
+함께 사용해야 합니다.
+
+## 의존성
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.javers:javers-persistence-kafka")
+}
+```
+
+## 빌드
+
+```bash
+./gradlew :javers-persistence-kafka:test
+```
 
 ## 참고 자료
 
-- [Javers](https://javers.org)
-- [Javers Feature Overview](https://javers.org/features)
-- [Javers VS Envers Comparison](https://javers.org/blog/2017/12/javers-vs-envers-comparision.html)
-- [Using JaVers for Data Model Auditing in Spring Data](https://www.baeldung.com/spring-data-javers-audit)
-- [Spring Data에서 데이터 모델 감사를 위해 JaVers 사용](https://recordsoflife.tistory.com/486)
+- [JaVers](https://javers.org)
+- [Apache Kafka](https://kafka.apache.org/)

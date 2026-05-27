@@ -1,0 +1,11 @@
+graph 1 15.816 0.5
+node app 0.52778 0.25 1.0556 0.5 Application rounded,filled box #9FB2C5 #E8F3FF
+node javers 3.5556 0.25 0.75 0.5 JaVers rounded,filled box #9FB2C5 #EAF7EF
+node repository 6.9375 0.25 2.4722 0.5 KafkaCdoSnapshotRepository rounded,filled box #9FB2C5 #FFF3D9
+node topic 10.858 0.25 1.4306 0.5 "Kafka topic\nsnapshot events" rounded,filled box #9FB2C5 #FFFFFF
+node consumer 14.851 0.25 1.9306 0.5 "Downstream consumer" rounded,filled box #9FB2C5 #E9F7F6
+edge app javers 4 1.0621 0.25 1.0621 0.25 3.0218 0.25 3.0218 0.25 "commit aggregate" 2.1181 0.36458 solid #56708C
+edge javers repository 4 3.9369 0.25 3.9369 0.25 5.5441 0.25 5.5441 0.25 saveSnapshot 4.816 0.36458 solid #56708C
+edge repository topic 4 8.1779 0.25 8.1779 0.25 9.9855 0.25 9.9855 0.25 ProducerRecord 9.158 0.36458 solid #56708C
+edge topic consumer 4 11.576 0.25 11.576 0.25 13.726 0.25 13.726 0.25 "consume audit event" 12.729 0.36458 solid #56708C
+stop

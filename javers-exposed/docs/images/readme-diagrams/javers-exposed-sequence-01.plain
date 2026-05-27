@@ -1,0 +1,19 @@
+graph 1 19.569 2.3333
+node app 0.57667 1.0417 1.1533 0.5 Application rounded,filled box #75A9E8 #E8F3FF
+node javers 3.3463 1.0417 0.83042 0.5 JaVers rounded,filled box #69B888 #EAF7EF
+node repo 7.3035 1.0417 2.7992 0.5 ExposedCdoSnapshotRepository rounded,filled box #DB7890 #FCE7F3
+node tx 12.021 1.0417 1.8304 0.5 "Exposed transaction" rounded,filled box #8A72D6 #F1ECFF
+node commit 16.004 2.0833 1.2992 0.5 CommitTable rounded,filled box #DB7890 #FFFFFF
+node snapshot 16.004 0.38889 1.7471 0.5 CdoSnapshotTable rounded,filled box #DB7890 #FFFFFF
+node db 18.883 0.38889 1.3721 0.5 "SQL database" rounded,filled cylinder #45A7A1 #E9F7F6
+edge app javers 4 1.1573 0.95833 1.1573 0.95833 2.7713 0.95833 2.7713 0.95833 "commit aggregate" 2.0422 1.6528 solid #56708C
+edge app javers 4 1.1573 1.125 1.1573 1.125 2.7713 1.125 2.7713 1.125 "query snapshots" 2.0422 0.61111 solid #56708C
+edge javers repo 4 3.7661 1.125 3.7661 1.125 5.7458 1.125 5.7458 1.125 "persist(commit)" 4.8327 1.6528 solid #56708C
+edge javers repo 4 3.7661 0.95833 3.7661 0.95833 5.7458 0.95833 5.7458 0.95833 "loadSnapshots(globalId)" 4.8327 0.61111 solid #56708C
+edge repo tx 4 8.7061 0.95833 8.7061 0.95833 10.947 0.95833 10.947 0.95833 "transaction(database)" 9.9044 1.6528 solid #56708C
+edge repo tx 4 8.7061 1.125 8.7061 1.125 10.947 1.125 10.947 1.125 "select order by version desc" 9.9044 0.61111 solid #56708C
+edge tx commit 7 12.939 1.1667 14.114 1.1667 16 1.1667 16 1.1667 16 1.1667 16 1.6748 16 1.6748 "insert metadata if absent" 14.033 2.1667 solid #56708C
+edge tx snapshot 7 12.943 0.91667 13.884 0.91667 15.208 0.91667 15.208 0.91667 15.208 0.91667 15.208 0.79357 15.208 0.79357 "insert encoded snapshot" 14.033 1.125 solid #56708C
+edge tx snapshot 7 12.941 1.0417 13.904 1.0417 15.278 1.0417 15.278 1.0417 15.278 1.0417 15.278 0.79629 15.278 0.79629 "read state" 14.033 0.083333 solid #56708C
+edge snapshot db 4 16.884 0.38889 16.884 0.38889 18.039 0.38889 18.039 0.38889 "write rows" 17.537 0.47222 solid #56708C
+stop

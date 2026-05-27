@@ -16,6 +16,22 @@ managed through JetBrains Exposed.
 - Restores the repository head commit id after a repository instance rebuild.
 - Supports H2, PostgreSQL, and MySQL through Exposed JDBC.
 
+## Architecture
+
+![javers-exposed architecture](docs/images/readme-diagrams/javers-exposed-architecture-01.png)
+
+`ExposedCdoSnapshotRepository` extends the shared
+`AbstractCdoSnapshotRepository` codec and query behavior, then maps JaVers
+commit metadata and encoded `CdoSnapshot` rows to Exposed tables.
+
+## Persistence Flow
+
+![javers-exposed persistence sequence](docs/images/readme-diagrams/javers-exposed-sequence-01.png)
+
+Writes run inside an Exposed transaction: the repository inserts commit metadata
+when needed, stores the encoded snapshot payload, and later decodes rows ordered
+by snapshot version for JaVers queries.
+
 ## Usage
 
 ```kotlin

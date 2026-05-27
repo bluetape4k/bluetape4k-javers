@@ -1,0 +1,14 @@
+digraph javers_kafka_sequence {
+  graph [rankdir = LR, bgcolor = "transparent", nodesep = 0.55, ranksep = 0.75, splines = ortho];
+  node [shape = box, style = "rounded,filled", color = "#9FB2C5", fillcolor = "#FFFFFF", fontname = "Helvetica", fontsize = 12];
+  edge [color = "#56708C", penwidth = 2, arrowsize = 0.8];
+  app [label = "Application", fillcolor = "#E8F3FF"];
+  javers [label = "JaVers", fillcolor = "#EAF7EF"];
+  repository [label = "KafkaCdoSnapshotRepository", fillcolor = "#FFF3D9"];
+  topic [label = "Kafka topic\nsnapshot events", fillcolor = "#FFFFFF"];
+  consumer [label = "Downstream consumer", fillcolor = "#E9F7F6"];
+  app -> javers [label = "commit aggregate"];
+  javers -> repository [label = "saveSnapshot"];
+  repository -> topic [label = "ProducerRecord"];
+  topic -> consumer [label = "consume audit event"];
+}

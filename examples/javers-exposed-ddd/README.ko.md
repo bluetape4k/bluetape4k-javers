@@ -7,37 +7,9 @@ JaVers, Exposed JDBC, Kafka, Redis, `javers-ddd` helper를 함께 사용하는 C
 
 ## 흐름
 
-```mermaid
-sequenceDiagram
-    participant Client
-    participant Handler as OrderCommandHandler
-    participant Store as Exposed order table
-    participant Audit as ExposedCdoSnapshotRepository
-    participant Kafka as Kafka topic
-    participant Consumer as OrderProjectionEventConsumer
-    participant Redis as Redis OrderSummary
-    participant Query as OrderQueryService
+![javers-exposed-ddd command and projection sequence](docs/images/readme-diagrams/javers-exposed-ddd-sequence-01.png)
 
-    Client->>Handler: PlaceOrderCommand
-    Handler->>Store: insert/update Order
-    Handler->>Audit: JaVers commit
-    Handler->>Kafka: OrderPlaced
-    Consumer->>Kafka: poll event
-    Consumer->>Redis: upsert OrderSummary
-    Client->>Query: findSummary(orderId)
-    Query->>Redis: get summary
-    Redis-->>Client: OrderSummary
-```
-
-```mermaid
-flowchart LR
-    command[Command side] --> exposed[(Exposed order table)]
-    command --> audit[(JaVers snapshots)]
-    command --> kafka[[Kafka order events]]
-    kafka --> consumer[Projection consumer]
-    consumer --> redis[(Redis read model)]
-    query[Read API] --> redis
-```
+![javers-exposed-ddd CQRS flow](docs/images/readme-diagrams/javers-exposed-ddd-cqrs-flow-01.png)
 
 ## 포함 범위
 
