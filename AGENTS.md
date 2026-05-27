@@ -41,3 +41,14 @@ Root README visual assets live under `docs/assets/` and should be shared by
   changes.
 - Follow existing codec and cache-backed repository patterns.
 - For Redis/Kafka changes, verify the affected persistence module directly.
+
+## Cross-Repo Lesson Guards
+
+- Before issue, PR, workflow, release, or module-registration work, query GNO
+  for this repo in both `bluetape4k-github` and `bluetape4k-docs`.
+- For module additions, moves, or artifact renames, update README locale sets,
+  repo-local module lists, CI/Nightly coverage, coverage artifacts, and
+  BOM/catalog constraints together.
+- Run Redis/Kafka/Testcontainers-backed verification sequentially. Preserve
+  Kover XML/Codecov visibility without adding hard gates unless explicitly
+  decided.
