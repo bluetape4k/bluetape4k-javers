@@ -3,7 +3,7 @@
 ## Context
 
 The WIP queue still listed closed 0.1.0 release-prep issues (#29 through #32)
-after the release work had been completed. A qmd lookup pointed to the recent
+after the release work had been completed. A GNO lookup pointed to the recent
 0.1.0 pre-release fix lesson, then GitHub issue state was used as the source of
 truth for the current open queue.
 
@@ -29,5 +29,5 @@ correctness item before Redis-backed examples expand.
 
 ## Future Agents
 
-When auditing WIP files, prefer qmd for historical context, then reconcile with
+When auditing WIP files, prefer GNO for historical context, then reconcile with
 live GitHub state before editing queue counts or priorities.
