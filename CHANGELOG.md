@@ -7,6 +7,14 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-06-01
+
+### Changed
+
+- Updated `javers-exposed` to consume the release-train
+  `bluetape4k-exposed-bom` line through an implementation-scoped platform
+  import instead of exporting the BOM platform through API scope.
+
 ## [0.2.0] - 2026-05-27
 
 ### Added

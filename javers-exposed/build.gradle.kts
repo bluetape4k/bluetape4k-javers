@@ -10,7 +10,7 @@ dependencies {
     api(libs.bluetape4k.jackson3)
     api(libs.bluetape4k.idgenerators)
 
-    api(platform(bt4kLibrary("bluetape4k-exposed-bom")))
+    implementation(platform(bt4kLibrary("bluetape4k-exposed-bom")))
     api(bt4kLibrary("bluetape4k-exposed-jdbc"))
 
     api(libs.javers.core)
