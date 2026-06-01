@@ -1,8 +1,8 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-05-27 KST
-Scope: 0.2.0 Exposed integration hardening completed.
-Open count: 0 issues.
+Snapshot: 2026-06-01 KST
+Scope: 0.2.1 release-train dependency alignment.
+Open count: 0 blocking issues.
 
 ## Current Evidence
 
@@ -42,8 +42,10 @@ Open count: 0 issues.
 ## Current Direction
 
 No active issue remains in `bluetape4k-javers` after the Exposed integration
-hardening lane. Keep future unsupported dialect-specific scenarios guarded with
-JUnit `Assumptions`.
+hardening lane. The `0.2.1` patch lane only keeps `javers-exposed` aligned with
+the promoted `bluetape4k-exposed-bom` release and ensures that BOM platform is
+imported with `implementation(platform(...))`, not API scope. Keep future
+unsupported dialect-specific scenarios guarded with JUnit `Assumptions`.
 
 ## WIP Limits
 
