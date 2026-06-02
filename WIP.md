@@ -1,8 +1,8 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-06-01 KST
+Snapshot: 2026-06-02 KST
 Scope: post-0.2.1 release train version alignment.
-Open count: 0 blocking issues for the next minor lane.
+Open count: 15 issues.
 
 ## Current Evidence
 
