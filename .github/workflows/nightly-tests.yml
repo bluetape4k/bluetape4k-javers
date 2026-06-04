@@ -52,12 +52,12 @@ jobs:
           gradle-version: wrapper
 
       - name: Build (compile only)
-        run: ./gradlew build -x test --parallel
+        run: ./gradlew --refresh-dependencies build -x test --parallel
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
       - name: Detekt static analysis
-        run: ./gradlew detekt --parallel
+        run: ./gradlew --refresh-dependencies detekt --parallel
 
       - name: Upload detekt report
         if: always()
@@ -89,7 +89,7 @@ jobs:
       - name: Test javers-core
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :javers-core:test --no-daemon && break
+            ./gradlew --refresh-dependencies :javers-core:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -98,7 +98,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-core:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :javers-core:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -139,7 +139,7 @@ jobs:
       - name: Test javers-ddd
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :javers-ddd:test --no-daemon && break
+            ./gradlew --refresh-dependencies :javers-ddd:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -148,7 +148,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-ddd:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :javers-ddd:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -189,7 +189,7 @@ jobs:
       - name: Test examples-javers-exposed-ddd
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :examples-javers-exposed-ddd:test --no-daemon && break
+            ./gradlew --refresh-dependencies :examples-javers-exposed-ddd:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -198,7 +198,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :examples-javers-exposed-ddd:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :examples-javers-exposed-ddd:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -239,7 +239,7 @@ jobs:
       - name: Test examples-javers-ktor
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :examples-javers-ktor:test --no-daemon && break
+            ./gradlew --refresh-dependencies :examples-javers-ktor:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -248,7 +248,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :examples-javers-ktor:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -289,7 +289,7 @@ jobs:
       - name: Test examples-javers-spring-boot4
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :examples-javers-spring-boot4:test --no-daemon && break
+            ./gradlew --refresh-dependencies :examples-javers-spring-boot4:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -298,7 +298,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :examples-javers-spring-boot4:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :examples-javers-spring-boot4:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -341,7 +341,7 @@ jobs:
       - name: Test javers-exposed
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :javers-exposed:test --no-daemon && break
+            ./gradlew --refresh-dependencies :javers-exposed:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -352,7 +352,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :javers-exposed:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -395,7 +395,7 @@ jobs:
       - name: Test javers-persistence-redis
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :javers-persistence-redis:test --no-daemon && break
+            ./gradlew --refresh-dependencies :javers-persistence-redis:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -406,7 +406,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-persistence-redis:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :javers-persistence-redis:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
@@ -449,7 +449,7 @@ jobs:
       - name: Test javers-persistence-kafka
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :javers-persistence-kafka:test --no-daemon && break
+            ./gradlew --refresh-dependencies :javers-persistence-kafka:test --no-daemon && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 10 || exit 1
           done
@@ -460,7 +460,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-persistence-kafka:koverXmlReport --no-daemon
+        run: ./gradlew --refresh-dependencies :javers-persistence-kafka:koverXmlReport --no-daemon
         continue-on-error: true
 
       - name: Upload test results
