@@ -21,3 +21,9 @@ reduces scheduled cross-repository Central snapshot contention.
 
 - `actionlint .github/workflows/nightly-tests.yml`
 - `git diff --check`
+
+## Future Rule
+
+When a downstream repository consumes bluetape4k snapshots, keep scheduled
+Nightly workflows staggered and keep Gradle invocations on
+`--refresh-dependencies` until the repository returns to stable dependencies.

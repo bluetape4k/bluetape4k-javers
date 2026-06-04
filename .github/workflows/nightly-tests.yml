@@ -320,7 +320,7 @@ jobs:
   # ── 7. javers-exposed (Testcontainers DBs) ───────────────────────────────
   test-javers-exposed:
     name: Test / javers-exposed
-    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
+    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -374,7 +374,7 @@ jobs:
   # ── 6. javers-persistence-redis (Testcontainers) ─────────────────────────
   test-persistence-redis:
     name: Test / javers-persistence-redis
-    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
+    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -428,7 +428,7 @@ jobs:
   # ── 7. javers-persistence-kafka (Testcontainers) ─────────────────────────
   test-persistence-kafka:
     name: Test / javers-persistence-kafka
-    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
+    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -494,7 +494,7 @@ jobs:
       - test-javers-exposed
       - test-persistence-redis
       - test-persistence-kafka
-    if: ${{ always() && ((github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full')) }}
+    if: ${{ always() && ((github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full')) }}
     steps:
       - name: Download all coverage artifacts
         uses: actions/download-artifact@v8
