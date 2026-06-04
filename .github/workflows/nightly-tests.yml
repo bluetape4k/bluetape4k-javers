@@ -504,6 +504,58 @@ jobs:
           merge-multiple: false
         continue-on-error: true
 
+      - name: Validate expected coverage artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Full nightly coverage must include every module covered by this job.
+          expected_artifacts=(
+            coverage-javers-core
+            coverage-javers-ddd
+            coverage-examples-javers-exposed-ddd
+            coverage-examples-javers-ktor
+            coverage-examples-javers-spring-boot4
+            coverage-javers-exposed
+            coverage-persistence-redis
+            coverage-persistence-kafka
+          )
+
+          missing_artifacts=()
+          empty_artifacts=()
+
+          for artifact in "${expected_artifacts[@]}"; do
+            artifact_dir="coverage-artifacts/${artifact}"
+            if [[ ! -d "${artifact_dir}" ]]; then
+              missing_artifacts+=("${artifact}")
+              continue
+            fi
+
+            if ! find "${artifact_dir}" -type f -print -quit | grep -q .; then
+              empty_artifacts+=("${artifact}")
+            fi
+          done
+
+          if (( ${#missing_artifacts[@]} > 0 || ${#empty_artifacts[@]} > 0 )); then
+            echo "::error title=Nightly coverage artifacts incomplete::Expected full-scope coverage artifacts are missing or empty."
+
+            if (( ${#missing_artifacts[@]} > 0 )); then
+              printf 'Missing artifacts:\n'
+              printf '  - %s\n' "${missing_artifacts[@]}"
+            fi
+
+            if (( ${#empty_artifacts[@]} > 0 )); then
+              printf 'Empty artifacts:\n'
+              printf '  - %s\n' "${empty_artifacts[@]}"
+            fi
+
+            echo "Downloaded artifacts:"
+            find coverage-artifacts -maxdepth 2 -type d -print 2>/dev/null | sort || true
+            exit 1
+          fi
+
+          printf 'Validated %s expected full-scope coverage artifacts.\n' "${#expected_artifacts[@]}"
+
       - name: Upload aggregated coverage
         if: always()
         uses: actions/upload-artifact@v7
