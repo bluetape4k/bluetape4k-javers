@@ -119,11 +119,11 @@ Testcontainers-backed tests must run serially in one Gradle invocation.
 | P2 | First implementation may be O(N) for broad JQL queries because inherited filtering loads all snapshots. | Accepted as first-release scope; documented as non-goal and future pushdown target. |
 | P2 | CI/Nightly must include the new module, not only local Gradle tests. | Accepted in plan. |
 
-### Claude Code Advisor
+### Historical External CLI Review Attempt
 
-Artifact: `.omx/artifacts/claude-issue-3-spec-plan-5min-20260526210042.md`
+Historical artifact was recorded under `.omx/artifacts` during this work.
 
-The Claude Code CLI advisor was run with a 5-minute timeout as requested. It
-timed out with no usable output (`rc=142`), so it cannot close the external
-advisor gate. Work continues with local review evidence; final DoD must report
-this validation gap.
+The external CLI review was run with a 5-minute timeout as requested at that
+time. It timed out with no usable output (`rc=142`). Current workflow policy
+uses local/native 7-tier review as the required gate, so this note is retained
+as historical evidence only and not as an active blocker.

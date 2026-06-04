@@ -25,7 +25,8 @@ cover Lettuce, Redisson, and Kafka's write-only negative contract.
 
 - `./gradlew :javers-core:compileKotlin :javers-persistence-redis:compileKotlin :javers-persistence-redis:compileTestKotlin :javers-persistence-kafka:compileTestKotlin --no-build-cache --no-parallel --console=plain`
 - `./gradlew :javers-persistence-redis:cleanTest :javers-persistence-redis:test :javers-persistence-kafka:cleanTest :javers-persistence-kafka:test --no-build-cache --no-parallel --console=plain`
-- Claude advisor: `.omx/artifacts/ask-claude-code-review-javers-issue-62-convergence-20260525174339.md` (`P0=0`, `P1=0`, `APPROVE`)
+- Historical external CLI review artifact recorded `P0=0`, `P1=0`, `APPROVE`;
+  current work should use local/native 7-tier review as the required gate.
 
 ## Future Guard
 

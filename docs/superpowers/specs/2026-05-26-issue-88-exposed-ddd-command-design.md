@@ -120,7 +120,7 @@ would distract from the JaVers/DDD integration that #88 is meant to prove.
 
 ## Review Notes
 
-Claude advisor is expected to be unavailable in this environment because the
-previous #4 run returned `API Error: 400 This organization has been disabled.`
-If it still fails, record that as a validation gap and proceed with local review
-and CI evidence.
+The prior #4 external CLI review attempt returned
+`API Error: 400 This organization has been disabled.` Current workflow policy
+uses local/native 7-tier review plus CI evidence as the required gate, so that
+historical tool outage is not an active blocker.

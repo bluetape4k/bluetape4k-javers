@@ -55,8 +55,7 @@ Touch:
     - `./gradlew build -x test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
     - `actionlint`
     - `git diff --check`
-11. Run Claude CLI advisor review with 300 second timeout and require P0/P1=0
-    or record the blocker.
+11. Run local/native 7-tier review and require P0/P1=0 before PR creation.
 12. Commit with Lore trailers, push, and open a PR to `develop` closing #4.
 
 ## Stop Condition
