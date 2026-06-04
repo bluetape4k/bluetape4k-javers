@@ -154,12 +154,24 @@ jobs:
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+      - name: Generate Kover XML report
+        run: ./gradlew :javers-core:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.daemon=false"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-core
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-javers-core
+          path: javers-core/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 5. javers-ddd tests (H2 + DDD helper adapters)
@@ -188,12 +200,24 @@ jobs:
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Generate Kover XML report
+        run: ./gradlew :javers-ddd:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-ddd
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-javers-ddd
+          path: javers-ddd/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 6. examples-javers-exposed-ddd example tests (H2 command-side slice)
@@ -222,12 +246,24 @@ jobs:
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Generate Kover XML report
+        run: ./gradlew :examples-javers-exposed-ddd:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-examples-javers-exposed-ddd
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-examples-javers-exposed-ddd
+          path: examples/javers-exposed-ddd/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 7. examples-javers-ktor tests (Ktor REST example)
@@ -256,12 +292,24 @@ jobs:
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Generate Kover XML report
+        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-examples-javers-ktor
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-examples-javers-ktor
+          path: examples/javers-ktor/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 8. examples-javers-spring-boot4 tests (Spring Boot 4 REST example)
@@ -290,12 +338,24 @@ jobs:
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Generate Kover XML report
+        run: ./gradlew :examples-javers-spring-boot4:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-examples-javers-spring-boot4
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-examples-javers-spring-boot4
+          path: examples/javers-spring-boot4/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 9. javers-exposed tests (Exposed JDBC + Testcontainers databases)
@@ -326,12 +386,26 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
+      - name: Generate Kover XML report
+        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+          DOCKER_HOST: "unix:///var/run/docker.sock"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-exposed
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-javers-exposed
+          path: javers-exposed/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 9. javers-persistence-redis tests (Testcontainers Redis)
@@ -362,12 +436,26 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
+      - name: Generate Kover XML report
+        run: ./gradlew :javers-persistence-redis:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+          DOCKER_HOST: "unix:///var/run/docker.sock"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-persistence-redis
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-persistence-redis
+          path: javers-persistence-redis/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 10. javers-persistence-kafka tests (Testcontainers Kafka)
@@ -398,12 +486,26 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
+      - name: Generate Kover XML report
+        run: ./gradlew :javers-persistence-kafka:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+          DOCKER_HOST: "unix:///var/run/docker.sock"
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results-persistence-kafka
           path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-persistence-kafka
+          path: javers-persistence-kafka/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 7
 
   # 11. Status gate
