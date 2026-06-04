@@ -77,6 +77,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       examples-javers-exposed-ddd: ${{ steps.filter.outputs.examples-javers-exposed-ddd }}
+      examples-javers-ktor: ${{ steps.filter.outputs.examples-javers-ktor }}
       examples-javers-spring-boot4: ${{ steps.filter.outputs.examples-javers-spring-boot4 }}
       javers-core: ${{ steps.filter.outputs.javers-core }}
       javers-ddd: ${{ steps.filter.outputs.javers-ddd }}
@@ -91,6 +92,8 @@ jobs:
           filters: |
             examples-javers-exposed-ddd:
               - 'examples/javers-exposed-ddd/**'
+            examples-javers-ktor:
+              - 'examples/javers-ktor/**'
             examples-javers-spring-boot4:
               - 'examples/javers-spring-boot4/**'
             javers-core:
@@ -227,7 +230,41 @@ jobs:
           path: '**/build/test-results/test/*.xml'
           retention-days: 7
 
-  # 7. examples-javers-spring-boot4 tests (Spring Boot 4 REST example)
+  # 7. examples-javers-ktor tests (Ktor REST example)
+  test-examples-javers-ktor:
+    name: Test / examples-javers-ktor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build, changes]
+    if: ${{ needs.changes.outputs['examples-javers-ktor'] == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+      - name: Test examples-javers-ktor
+        run: |
+          for attempt in 1 2 3; do
+            ./gradlew :examples-javers-ktor:test --no-daemon && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 3 ] && sleep 10 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-examples-javers-ktor
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+
+  # 8. examples-javers-spring-boot4 tests (Spring Boot 4 REST example)
   test-examples-javers-spring-boot4:
     name: Test / examples-javers-spring-boot4
     runs-on: ubuntu-latest
@@ -261,7 +298,7 @@ jobs:
           path: '**/build/test-results/test/*.xml'
           retention-days: 7
 
-  # 8. javers-exposed tests (Exposed JDBC + Testcontainers databases)
+  # 9. javers-exposed tests (Exposed JDBC + Testcontainers databases)
   test-javers-exposed:
     name: Test / javers-exposed
     runs-on: ubuntu-latest
@@ -381,6 +418,7 @@ jobs:
       - test-javers-core
       - test-javers-ddd
       - test-examples-javers-exposed-ddd
+      - test-examples-javers-ktor
       - test-examples-javers-spring-boot4
       - test-javers-exposed
       - test-persistence-redis

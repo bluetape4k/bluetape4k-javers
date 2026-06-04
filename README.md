@@ -35,6 +35,8 @@ domain events fit together.
   adapters for JaVers-backed audit workflows.
 - **CQRS command-side example** — Exposed + JaVers + DDD helper order command
   flow under `examples/javers-exposed-ddd`.
+- **Ktor REST example** — explicit Ktor wiring for Exposed command persistence
+  and JaVers audit history under `examples/javers-ktor`.
 - **Spring Boot 4 REST example** — explicit Spring Boot 4 wiring for Exposed
   command persistence and JaVers audit history under `examples/javers-spring-boot4`.
 - **Redis persistence** — Lettuce and Redisson based snapshot storage paths.
@@ -70,6 +72,7 @@ domain events fit together.
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | DDD aggregate/domain-event helpers for JaVers audit workflows |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
 | `examples-javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
+| `examples-javers-ktor` | example module | Ktor REST example using explicit Exposed and JaVers wiring |
 | `examples-javers-spring-boot4` | example module | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
@@ -113,6 +116,10 @@ The `examples/javers-spring-boot4` module shows the same explicit JaVers +
 Exposed command persistence behind Spring Boot 4 REST endpoints, without relying
 on future auto-configuration.
 
+The `examples/javers-ktor` module shows the same current feature set behind Ktor
+REST endpoints for non-Spring users, reusing bluetape4k Ktor JSON and health
+helpers.
+
 ## Requirements
 
 - JDK 21+
@@ -128,6 +135,7 @@ on future auto-configuration.
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
 ./gradlew :examples-javers-exposed-ddd:test
+./gradlew :examples-javers-ktor:test
 ./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test

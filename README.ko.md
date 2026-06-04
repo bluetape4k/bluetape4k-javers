@@ -28,6 +28,7 @@ persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 blu
 - **Exposed JDBC persistence** — SQL-backed JaVers CDO snapshot을 위한 Exposed schema와 repository
 - **DDD helper** — JaVers audit workflow를 위한 aggregate root, domain event, repository, publisher adapter
 - **CQRS command-side 예제** — `examples/javers-exposed-ddd` 아래 Exposed + JaVers + DDD helper 주문 command flow
+- **Ktor REST 예제** — `examples/javers-ktor` 아래 Exposed command persistence와 JaVers audit history를 명시적으로 wiring하는 예제
 - **Spring Boot 4 REST 예제** — `examples/javers-spring-boot4` 아래 Exposed command persistence와 JaVers audit history를 명시적으로 wiring하는 예제
 - **Redis persistence** — Lettuce/Redisson 기반 snapshot 저장 경로
 - **Kafka persistence** — event stream 기반 CDO snapshot persistence
@@ -60,6 +61,7 @@ persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 blu
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | JaVers audit workflow용 DDD aggregate/domain-event helper |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
 | `examples-javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
+| `examples-javers-ktor` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Ktor REST 예제 |
 | `examples-javers-spring-boot4` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Spring Boot 4 REST 예제 |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (쓰기 전용 이벤트 스트림; 읽기는 항상 빈 결과 반환) |
@@ -101,6 +103,9 @@ commit한 뒤 domain event를 발행합니다. `examples/javers-exposed-ddd` 모
 흐름을 Spring Boot 4 REST endpoint 뒤에서 명시적으로 wiring해 보여줍니다. 아직
 제공하지 않는 auto-configuration에 의존하지 않습니다.
 
+`examples/javers-ktor` 모듈은 같은 현재 기능을 non-Spring 사용자를 위한 Ktor REST
+endpoint 뒤에서 보여주며, bluetape4k Ktor JSON/health helper를 재사용합니다.
+
 ## 요구사항
 
 - JDK 21+
@@ -116,6 +121,7 @@ commit한 뒤 domain event를 발행합니다. `examples/javers-exposed-ddd` 모
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
 ./gradlew :examples-javers-exposed-ddd:test
+./gradlew :examples-javers-ktor:test
 ./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
