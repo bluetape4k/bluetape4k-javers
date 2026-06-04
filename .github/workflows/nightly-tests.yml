@@ -99,7 +99,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :javers-core:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -114,7 +113,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-javers-core
-          path: '**/build/reports/kover/'
+          path: javers-core/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 3. javers-ddd (H2 + helper adapters) ─────────────────────────────────
@@ -149,7 +149,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :javers-ddd:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -164,7 +163,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-javers-ddd
-          path: '**/build/reports/kover/'
+          path: javers-ddd/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 4. examples-javers-exposed-ddd (H2 command-side example) ─────────────────────
@@ -199,7 +199,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :examples-javers-exposed-ddd:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -214,7 +213,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-examples-javers-exposed-ddd
-          path: '**/build/reports/kover/'
+          path: examples/javers-exposed-ddd/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 5. examples-javers-ktor (Ktor REST example) ──────────────────────────
@@ -249,7 +249,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :examples-javers-ktor:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -264,7 +263,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-examples-javers-ktor
-          path: '**/build/reports/kover/'
+          path: examples/javers-ktor/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 6. examples-javers-spring-boot4 (Spring Boot 4 REST example) ──────────
@@ -299,7 +299,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :examples-javers-spring-boot4:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -314,7 +313,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-examples-javers-spring-boot4
-          path: '**/build/reports/kover/'
+          path: examples/javers-spring-boot4/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 7. javers-exposed (Testcontainers DBs) ───────────────────────────────
@@ -353,7 +353,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :javers-exposed:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -368,7 +367,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-javers-exposed
-          path: '**/build/reports/kover/'
+          path: javers-exposed/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 6. javers-persistence-redis (Testcontainers) ─────────────────────────
@@ -407,7 +407,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :javers-persistence-redis:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -422,7 +421,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-persistence-redis
-          path: '**/build/reports/kover/'
+          path: javers-persistence-redis/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 7. javers-persistence-kafka (Testcontainers) ─────────────────────────
@@ -461,7 +461,6 @@ jobs:
       - name: Generate Kover XML report
         if: always()
         run: ./gradlew --refresh-dependencies :javers-persistence-kafka:koverXmlReport --no-daemon
-        continue-on-error: true
 
       - name: Upload test results
         if: always()
@@ -476,7 +475,8 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: coverage-persistence-kafka
-          path: '**/build/reports/kover/'
+          path: javers-persistence-kafka/build/reports/kover/report.xml
+          if-no-files-found: error
           retention-days: 14
 
   # ── 8. 커버리지 집계 ──────────────────────────────────────────────────────
@@ -531,7 +531,7 @@ jobs:
               continue
             fi
 
-            if ! find "${artifact_dir}" -type f -print -quit | grep -q .; then
+            if ! find "${artifact_dir}" -type f -name 'report.xml' -print -quit | grep -q .; then
               empty_artifacts+=("${artifact}")
             fi
           done
