@@ -5,11 +5,11 @@ import io.bluetape4k.io.serializer.BinarySerializer
 import io.bluetape4k.logging.KLogging
 
 /**
- * [JsonObject]를 [BinarySerializer]로 바이너리 직렬화하는 코덱.
+ * Codec that serializes a [JsonObject] into bytes through [BinarySerializer].
  *
- * ## 동작/계약
- * - 내부적으로 [MapJaversCodec]을 사용하여 JsonObject → Map 변환 후 직렬화한다
- * - [decode] 시 역직렬화 실패하면 null을 반환한다
+ * ## Contract
+ * - Converts the JsonObject to a Map through [MapJaversCodec] before serialization.
+ * - Returns `null` from [decode] when deserialization fails.
  *
  * ```kotlin
  * val codec = BinaryJaversCodec(BinarySerializers.Kryo)
@@ -18,7 +18,7 @@ import io.bluetape4k.logging.KLogging
  * // decoded != null
  * ```
  *
- * @property serializer 바이너리 직렬화에 사용할 [BinarySerializer]
+ * @property serializer [BinarySerializer] used for binary serialization
  */
 class BinaryJaversCodec(
     private val serializer: BinarySerializer,

@@ -1,40 +1,40 @@
 package io.bluetape4k.javers.dispatcher
 
 /**
- * 도메인 객체의 저장/삭제 이벤트를 외부에 전파하는 디스패처 인터페이스.
+ * Dispatches save and delete events for domain objects.
  *
- * ## 동작/계약
- * - [sendSaved]: 객체 생성 또는 수정 시 호출
- * - [sendDeleted]: 객체 인스턴스 기반 삭제 시 호출
- * - [sendDeletedById]: ID 기반 삭제 시 호출
+ * ## Contract
+ * - [sendSaved]: called when an object is created or updated
+ * - [sendDeleted]: called when an object instance is deleted
+ * - [sendDeletedById]: called when deletion is represented by an id
  */
 interface JaversDispatcher {
 
     /**
-     * 도메인 객체 저장(생성/수정) 이벤트를 외부에 전파한다.
+     * Dispatches a domain object save event.
      *
-     * @param domainObject 저장된 도메인 객체
+     * @param domainObject saved domain object
      */
     fun sendSaved(domainObject: Any)
 
     /**
-     * 도메인 객체 삭제 이벤트를 외부에 전파한다.
+     * Dispatches a domain object delete event.
      *
-     * @param domainObject 삭제된 도메인 객체
+     * @param domainObject deleted domain object
      */
     fun sendDeleted(domainObject: Any)
 
     /**
-     * ID 기반 도메인 객체 삭제 이벤트를 외부에 전파한다.
+     * Dispatches a delete event identified by domain object id.
      *
-     * @param domainObjectId 삭제된 도메인 객체의 ID
-     * @param domainType 도메인 객체의 타입 정보
+     * @param domainObjectId id of the deleted domain object
+     * @param domainType domain object type
      */
     fun sendDeletedById(domainObjectId: Any, domainType: Class<*>)
 }
 
 /**
- * reified 타입 파라미터로 ID 기반 삭제 이벤트를 전파한다.
+ * Dispatches an id-based delete event using a reified domain type.
  *
  * ```kotlin
  * dispatcher.sendDeletedById<User>(userId)

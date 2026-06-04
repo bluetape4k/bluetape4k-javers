@@ -14,7 +14,7 @@ import kotlin.reflect.KClass
 import kotlin.streams.asSequence
 
 /**
- * reified 타입 파라미터로 [EntityType] 매핑 정보를 조회한다.
+ * Looks up [EntityType] mapping information for the reified type.
  *
  * ```kotlin
  * val entityType = javers.getEntityTypeMapping<Person>()
@@ -25,7 +25,7 @@ inline fun <reified T: Any> Javers.getEntityTypeMapping(): EntityType =
     this.getTypeMapping(T::class.java)
 
 /**
- * reified 타입 파라미터로 [ValueObjectType] 매핑 정보를 조회한다.
+ * Looks up [ValueObjectType] mapping information for the reified type.
  *
  * ```kotlin
  * val voType = javers.getValueObjectTypeMapping<Address>()
@@ -36,7 +36,7 @@ inline fun <reified T: Any> Javers.getValueObjectTypeMapping(): ValueObjectType 
     this.getTypeMapping(T::class.java)
 
 /**
- * 엔티티 인스턴스로부터 [InstanceId]를 생성한다.
+ * Creates an [InstanceId] from an entity instance.
  *
  * ```kotlin
  * val bob = Person("Bob", "Dev")
@@ -48,7 +48,7 @@ inline fun <reified T: Any> Javers.createEntityInstanceId(entity: T): InstanceId
     this.getEntityTypeMapping<T>().createIdFromInstance(entity)
 
 /**
- * 엔티티의 로컬 ID 값으로부터 [InstanceId]를 생성한다.
+ * Creates an [InstanceId] from an entity local id value.
  *
  * ```kotlin
  * val id = javers.createEntityInstanceIdByEntityId<Person>("Bob")
@@ -59,7 +59,7 @@ inline fun <reified T: Any> Javers.createEntityInstanceIdByEntityId(localId: Any
     this.getEntityTypeMapping<T>().createIdFromInstanceId(localId)
 
 /**
- * 두 컬렉션의 차이를 비교하여 [Diff]를 반환한다.
+ * Compares two collections and returns their [Diff].
  *
  * ```kotlin
  * val oldList = listOf(Person("Tommy", "Tommy Smart"))
@@ -72,7 +72,7 @@ inline fun <reified T: Any> Javers.compareCollections(oldVersion: Collection<T>,
     this.compareCollections(oldVersion, newVersion, T::class.java)
 
 /**
- * 지정한 엔티티의 최신 [CdoSnapshot]을 반환하거나, 없으면 null을 반환한다.
+ * Returns the latest [CdoSnapshot] for the specified entity, or `null` when none exists.
  *
  * ```kotlin
  * val snapshot = javers.latestSnapshotOrNull(1, SnapshotEntity::class)
@@ -83,7 +83,7 @@ fun Javers.latestSnapshotOrNull(localId: Any, entityClass: KClass<*>): CdoSnapsh
     getLatestSnapshot(localId, entityClass.java).getOrNull()
 
 /**
- * reified 타입 파라미터로 지정한 엔티티의 최신 [CdoSnapshot]을 반환하거나, 없으면 null을 반환한다.
+ * Returns the latest [CdoSnapshot] for the reified entity type, or `null` when none exists.
  *
  * ```kotlin
  * val snapshot = javers.latestSnapshotOrNull<SnapshotEntity>(1)
@@ -94,11 +94,11 @@ inline fun <reified T: Any> Javers.latestSnapshotOrNull(localId: Any): CdoSnapsh
     getLatestSnapshot(localId, T::class.java).getOrNull()
 
 /**
- * [CdoSnapshot]을 원본 엔티티를 감싼 [Shadow]로 변환한다.
+ * Converts a [CdoSnapshot] into a [Shadow] wrapping the reconstructed entity.
  *
- * ## 동작/계약
- * - [ShadowFactory]를 통해 snapshot의 상태를 원본 엔티티 객체로 복원한다
- * - 반환된 Shadow의 `get()`으로 복원된 엔티티를 얻을 수 있다
+ * ## Contract
+ * - Restores the snapshot state into an entity object through [ShadowFactory].
+ * - The returned [Shadow] exposes the restored entity through `get()`.
  *
  * ```kotlin
  * val snapshot = javers.commit("a", entity).snapshots.first()
@@ -112,13 +112,13 @@ fun <T> Javers.getShadow(snapshot: CdoSnapshot): Shadow<T> {
 }
 
 /**
- * [Javers] 인스턴스에 연결된 [ShadowFactory]를 반환한다.
+ * Returns the [ShadowFactory] associated with this [Javers] instance.
  */
 val Javers.shadowFactory: ShadowFactory
     get() = ShadowProvider.getShadowFactory(this)
 
 /**
- * JQL 쿼리로 Shadow를 조회하여 [Sequence]로 반환한다.
+ * Queries shadows with JQL and returns them as a [Sequence].
  *
  * ```kotlin
  * val query = queryByInstanceId<SnapshotEntity>(1)
