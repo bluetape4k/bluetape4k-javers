@@ -1,5 +1,6 @@
 package org.javers.repository.jql
 
+import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.javers.repository.jql.queryByInstance
 import io.bluetape4k.javers.repository.jql.queryByInstanceId
 import io.bluetape4k.logging.KLogging
@@ -16,7 +17,6 @@ import org.javers.core.model.CategoryC
 import org.javers.core.model.ShallowPhone
 import org.javers.core.model.SnapshotEntity
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
@@ -158,7 +158,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         javers.commit("a", e)
 
         // WHEN
-        assertThrows<JaversException> {
+        assertFailsWith<JaversException> {
             val query = queryByInstance(e) {
                 withScopeDeepPlus()
                 withScopeCommitDeep()
