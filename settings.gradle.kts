@@ -61,6 +61,7 @@ rootProject.name = "bluetape4k-javers"
 
 include(
     "examples-javers-exposed-ddd",
+    "examples-javers-ktor",
     "examples-javers-spring-boot4",
     "javers-core",
     "javers-ddd",
@@ -70,6 +71,7 @@ include(
 )
 
 project(":examples-javers-exposed-ddd").projectDir = file("examples/javers-exposed-ddd")
+project(":examples-javers-ktor").projectDir = file("examples/javers-ktor")
 project(":examples-javers-spring-boot4").projectDir = file("examples/javers-spring-boot4")
 
 include("bluetape4k-javers-bom")

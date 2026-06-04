@@ -217,7 +217,57 @@ jobs:
           path: '**/build/reports/kover/'
           retention-days: 14
 
-  # ── 5. examples-javers-spring-boot4 (Spring Boot 4 REST example) ──────────
+  # ── 5. examples-javers-ktor (Ktor REST example) ──────────────────────────
+  test-examples-javers-ktor:
+    name: Test / examples-javers-ktor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+
+      - name: Test examples-javers-ktor
+        run: |
+          for attempt in 1 2 3; do
+            ./gradlew :examples-javers-ktor:test --no-daemon && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 3 ] && sleep 10 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+
+      - name: Generate Kover XML report
+        if: always()
+        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon
+        continue-on-error: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-examples-javers-ktor
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 14
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-examples-javers-ktor
+          path: '**/build/reports/kover/'
+          retention-days: 14
+
+  # ── 6. examples-javers-spring-boot4 (Spring Boot 4 REST example) ──────────
   test-examples-javers-spring-boot4:
     name: Test / examples-javers-spring-boot4
     runs-on: ubuntu-latest
@@ -267,7 +317,7 @@ jobs:
           path: '**/build/reports/kover/'
           retention-days: 14
 
-  # ── 6. javers-exposed (Testcontainers DBs) ───────────────────────────────
+  # ── 7. javers-exposed (Testcontainers DBs) ───────────────────────────────
   test-javers-exposed:
     name: Test / javers-exposed
     if: ${{ (github.event_name == 'schedule' && github.event.schedule == '0 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
@@ -439,6 +489,7 @@ jobs:
       - test-javers-core
       - test-javers-ddd
       - test-examples-javers-exposed-ddd
+      - test-examples-javers-ktor
       - test-examples-javers-spring-boot4
       - test-javers-exposed
       - test-persistence-redis
@@ -471,6 +522,7 @@ jobs:
       - test-javers-core
       - test-javers-ddd
       - test-examples-javers-exposed-ddd
+      - test-examples-javers-ktor
       - test-examples-javers-spring-boot4
       - test-javers-exposed
       - test-persistence-redis
