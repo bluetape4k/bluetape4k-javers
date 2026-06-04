@@ -1,8 +1,10 @@
 package org.javers.core
 
 import io.bluetape4k.javers.commit.SnowflakeCommitIdGenerator
+import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.diff.filterByType
 import io.bluetape4k.javers.latestSnapshotOrNull
+import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import io.bluetape4k.javers.repository.jql.queryAnyDomainObject
 import io.bluetape4k.javers.repository.jql.queryByClass
 import io.bluetape4k.javers.repository.jql.queryByInstance
@@ -11,6 +13,7 @@ import io.bluetape4k.javers.repository.jql.queryByValueObject
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
+import io.bluetape4k.assertions.shouldBeEmpty
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeGreaterThan
 import io.bluetape4k.assertions.shouldBeInstanceOf
@@ -20,9 +23,11 @@ import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.shouldNotBeNull
 import org.javers.common.date.DateProvider
 import org.javers.core.commit.CommitMetadata
+import org.javers.core.commit.CommitId
 import org.javers.core.diff.changetype.ValueChange
 import org.javers.core.diff.changetype.container.CollectionChange
 import org.javers.core.diff.changetype.container.ValueAdded
+import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.javers.core.model.ConcreteWithActualType
 import org.javers.core.model.DummyAddress
 import org.javers.core.model.DummyUser
@@ -32,6 +37,7 @@ import org.javers.core.model.NewValueObjectWithTypeAlias
 import org.javers.core.model.PrimitiveEntity
 import org.javers.core.model.SnapshotEntity
 import org.javers.repository.api.JaversRepository
+import org.javers.repository.api.SnapshotIdentifier
 import org.javers.repository.jql.JqlQuery
 import org.javers.repository.jql.QueryBuilder
 import org.junit.jupiter.api.Assumptions
@@ -87,7 +93,9 @@ abstract class AbstractJaversRepositoryTest {
     }
 
     protected open fun commitSeq(commit: CommitMetadata): Int = when {
-        useCustomCommitIdSupplier() -> commitIdGenerator!!.getSeq(commit.id)
+        useCustomCommitIdSupplier() -> requireNotNull(commitIdGenerator) {
+            "commitIdGenerator must be initialized when custom commit id supplier is enabled."
+        }.getSeq(commit.id)
         else -> commit.id.majorId.toInt()
     }
 
@@ -220,8 +228,8 @@ abstract class AbstractJaversRepositoryTest {
 //        log.trace { "refId=$refId" }
 //
 //        val snapshot = snapshots.find { (it.globalId as InstanceId).cdoId == 1 }
-//        log.trace { "majorId = ${snapshot!!.commitMetadata.id.majorId}" }
-//        commitSeq(snapshot!!.commitMetadata) shouldBeEqualTo 2
+//        log.trace { "majorId = ${snapshot.commitMetadata.id.majorId}" }
+//        commitSeq(snapshot.commitMetadata) shouldBeEqualTo 2
 //
 //        snapshot.getPropertyValue("id") shouldBeEqualTo 1
 //        snapshot.getPropertyValue("entityRef") shouldBeEqualTo refId
@@ -443,6 +451,53 @@ abstract class AbstractJaversRepositoryTest {
         snapshots[3].version shouldBeEqualTo 1
     }
 
+    @Test
+    fun `stale snapshot identifiers are ignored`() {
+        val repository = VersionHoleCdoSnapshotRepository()
+        val javers = JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
+        val entity = SnapshotEntity(id = 1).apply { intProperty = 11 }
+
+        javers.commit("author", entity)
+        entity.intProperty = 22
+        javers.commit("author", entity)
+        entity.intProperty = 33
+        val latest = javers.commit("author", entity).snapshots.single()
+
+        val snapshots = repository.getSnapshots(
+            mutableListOf(
+                SnapshotIdentifier(latest.globalId, 1),
+                SnapshotIdentifier(latest.globalId, 2),
+            ),
+        )
+
+        snapshots.map { it.version } shouldContainSame listOf(1L)
+    }
+
+    @Test
+    fun `missing snapshot identifiers return empty results`() {
+        val repository = VersionHoleCdoSnapshotRepository()
+        val javers = JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
+        val entity = SnapshotEntity(id = 1).apply { intProperty = 11 }
+
+        javers.commit("author", entity)
+        entity.intProperty = 22
+        javers.commit("author", entity)
+        entity.intProperty = 33
+        val latest = javers.commit("author", entity).snapshots.single()
+
+        val snapshots = repository.getSnapshots(
+            mutableListOf(
+                SnapshotIdentifier(latest.globalId, 2),
+            ),
+        )
+
+        snapshots.shouldBeEmpty()
+    }
+
 
     @RepeatedTest(3)
     fun `200개의 다른 snapshot들을 조회한다`() {
@@ -519,5 +574,42 @@ abstract class AbstractJaversRepositoryTest {
 
         // THEN: 저장되지 않았으므로 headId의 변화가 없다
         repository.headId shouldBeEqualTo commit.id
+    }
+
+    private class VersionHoleCdoSnapshotRepository(
+        private val hiddenVersion: Long = 2L,
+    ): AbstractCdoSnapshotRepository<String>(JaversCodecs.String) {
+
+        private val snapshots = mutableMapOf<String, MutableList<String>>()
+        private val snapshotSizes = mutableMapOf<String, Int>()
+        private val commitSequences = mutableMapOf<CommitId, Long>()
+
+        override fun getKeys(): Set<String> = snapshots.keys
+
+        override fun contains(globalIdValue: String): Boolean = snapshots.containsKey(globalIdValue)
+
+        override fun getSeq(commitId: CommitId): Long = commitSequences[commitId] ?: 0L
+
+        override fun updateCommitId(commitId: CommitId, sequence: Long) {
+            commitSequences[commitId] = sequence
+        }
+
+        override fun getSnapshotSize(globalIdValue: String): Int = snapshotSizes[globalIdValue] ?: 0
+
+        override fun saveSnapshot(snapshot: CdoSnapshot) {
+            val globalIdValue = snapshot.globalId.value()
+            snapshotSizes[globalIdValue] = maxOf(
+                snapshotSizes[globalIdValue] ?: 0,
+                snapshot.version.toInt(),
+            )
+            snapshots.getOrPut(globalIdValue) { mutableListOf() }.add(0, encode(snapshot))
+        }
+
+        override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
+            return snapshots[globalIdValue]
+                .orEmpty()
+                .mapNotNull { decode(it) }
+                .filterNot { it.version == hiddenVersion }
+        }
     }
 }

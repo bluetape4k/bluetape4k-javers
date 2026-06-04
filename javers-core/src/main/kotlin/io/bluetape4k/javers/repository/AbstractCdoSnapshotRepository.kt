@@ -195,9 +195,9 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     override fun getSnapshots(snapshotIdentifiers: MutableCollection<SnapshotIdentifier>): List<CdoSnapshot> {
         log.trace { "get snapshots by identifiers. $snapshotIdentifiers" }
         return getPersistedIdentifiers(snapshotIdentifiers)
-            .map { snapshot ->
-                val objectSnapshots = loadSnapshots(snapshot.globalId)
-                objectSnapshots[objectSnapshots.size - snapshot.version.toInt()]
+            .mapNotNull { snapshot ->
+                loadSnapshots(snapshot.globalId)
+                    .firstOrNull { it.version == snapshot.version }
             }
     }
 
@@ -270,7 +270,7 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     ): List<SnapshotIdentifier> {
         return snapshotIdentifiers
             .filter {
-                contains(it.globalId) && it.version <= getSnapshotSize(it.globalId)
+                contains(it.globalId) && it.version > 0 && it.version <= getSnapshotSize(it.globalId)
             }
     }
 }
