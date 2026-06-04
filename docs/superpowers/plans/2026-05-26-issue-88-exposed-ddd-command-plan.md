@@ -56,7 +56,7 @@ This PR closes #88 only and references #5 as the parent. It must not close #5,
 
 ## Open Constraints
 
-- Claude advisor review may be unavailable due disabled Claude organization.
-  If unavailable, preserve the artifact and note the gap in the PR.
+- Local/native 7-tier review is the required review gate; historical external
+  CLI tool outages should be noted only when they explain past evidence gaps.
 - Testcontainers are intentionally not used in #88. #89 will add Kafka/Redis
   integration tests and must run those serially.

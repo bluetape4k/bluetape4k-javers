@@ -46,9 +46,9 @@ Full Design / Type A: new Gradle module, public API, SQL persistence, Testcontai
 
 ## Review Gates
 
-- Spec/plan advisor review before implementation.
+- Spec/plan local/native 7-tier review before implementation.
 - Implemented diff review after verification.
-- Claude Code CLI artifact must show P0=0 and P1=0 before final DoD.
+- Final DoD must show local/native review P0=0 and P1=0.
 
 ## Stop Condition
 

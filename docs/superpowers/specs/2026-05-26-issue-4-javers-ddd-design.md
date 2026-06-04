@@ -108,9 +108,8 @@ transaction semantics.
 
 ## Review Notes
 
-- Claude advisor attempt:
-  `.omx/artifacts/claude-issue-4-spec-plan-20260526220405.md`
+- Historical external CLI review attempt was recorded under `.omx/artifacts`.
 - Result: blocked by `API Error: 400 This organization has been disabled.`
 - Local decision: proceed with implementation using current issue requirements,
-  source inspection, compile/test validation, and a post-implementation local
-  review. Re-run the external advisor if CLI access is restored before PR.
+  source inspection, compile/test validation, and local/native 7-tier review.
+  This historical tool outage is not an active process gate.
