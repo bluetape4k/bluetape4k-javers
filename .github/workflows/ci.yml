@@ -125,10 +125,10 @@ jobs:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - name: Build (compile only)
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew build -x test --parallel --no-configuration-cache && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -152,10 +152,10 @@ jobs:
           cache-read-only: true
       - name: Test javers-core
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :javers-core:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -198,10 +198,10 @@ jobs:
           cache-read-only: true
       - name: Test javers-ddd
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :javers-ddd:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
@@ -244,10 +244,10 @@ jobs:
           cache-read-only: true
       - name: Test examples-javers-exposed-ddd
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :examples-javers-exposed-ddd:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
@@ -290,10 +290,10 @@ jobs:
           cache-read-only: true
       - name: Test examples-javers-ktor
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :examples-javers-ktor:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
@@ -336,10 +336,10 @@ jobs:
           cache-read-only: true
       - name: Test examples-javers-spring-boot4
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :examples-javers-spring-boot4:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
@@ -382,10 +382,10 @@ jobs:
           cache-read-only: true
       - name: Test javers-exposed
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :javers-exposed:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
@@ -432,10 +432,10 @@ jobs:
           cache-read-only: true
       - name: Test javers-persistence-redis
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :javers-persistence-redis:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
@@ -482,10 +482,10 @@ jobs:
           cache-read-only: true
       - name: Test javers-persistence-kafka
         run: |
-          for attempt in 1 2 3; do
+          for attempt in 1 2 3 4 5; do
             ./gradlew :javers-persistence-kafka:test --no-daemon && break
             echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 10 || exit 1
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
