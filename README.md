@@ -35,6 +35,8 @@ domain events fit together.
   adapters for JaVers-backed audit workflows.
 - **CQRS command-side example** — Exposed + JaVers + DDD helper order command
   flow under `examples/javers-exposed-ddd`.
+- **Spring Boot 4 REST example** — explicit Spring Boot 4 wiring for Exposed
+  command persistence and JaVers audit history under `examples/javers-spring-boot4`.
 - **Redis persistence** — Lettuce and Redisson based snapshot storage paths.
 - **Kafka persistence** — event-stream backed CDO snapshot persistence.
 - **BOM support** — `bluetape4k-javers-bom` for aligned consumer dependency
@@ -67,7 +69,8 @@ domain events fit together.
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extensions, codecs, cache-backed repositories |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | DDD aggregate/domain-event helpers for JaVers audit workflows |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
-| `javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
+| `examples-javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
+| `examples-javers-spring-boot4` | example module | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
@@ -106,6 +109,10 @@ commit it to JaVers, then publish a domain event. The
 `examples/javers-exposed-ddd` module shows this path with Kafka events and a
 Redis read model.
 
+The `examples/javers-spring-boot4` module shows the same explicit JaVers +
+Exposed command persistence behind Spring Boot 4 REST endpoints, without relying
+on future auto-configuration.
+
 ## Requirements
 
 - JDK 21+
@@ -120,7 +127,8 @@ Redis read model.
 ./gradlew :javers-core:test
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
-./gradlew :javers-exposed-ddd:test
+./gradlew :examples-javers-exposed-ddd:test
+./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
 ```

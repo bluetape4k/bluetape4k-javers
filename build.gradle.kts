@@ -38,7 +38,8 @@ fun bt4kVersion(alias: String): String {
 }
 
 fun Project.isExampleProject(): Boolean {
-    return projectDir.relativeTo(rootProject.projectDir).invariantSeparatorsPath.startsWith("examples/")
+    val relativeProjectDir = projectDir.relativeTo(rootProject.projectDir).invariantSeparatorsPath
+    return name.startsWith("examples-javers-") || relativeProjectDir.startsWith("examples/")
 }
 
 val centralPublishing = resolveCentralPublishingConfig()

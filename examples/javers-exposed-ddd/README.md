@@ -1,4 +1,4 @@
-# javers-exposed-ddd
+# examples-javers-exposed-ddd
 
 English | [한국어](./README.ko.md)
 
@@ -31,7 +31,7 @@ shape used in this module. Lower milliseconds per operation is better.
 Command:
 
 ```bash
-./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
+./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
   --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
@@ -52,5 +52,5 @@ projection path rather than only entity revision tables.
 ## Run
 
 ```bash
-./gradlew :javers-exposed-ddd:test
+./gradlew :examples-javers-exposed-ddd:test
 ```
