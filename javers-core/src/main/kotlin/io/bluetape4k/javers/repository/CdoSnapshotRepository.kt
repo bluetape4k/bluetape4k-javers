@@ -5,11 +5,11 @@ import org.javers.core.metamodel.`object`.GlobalId
 import org.javers.repository.api.JaversRepository
 
 /**
- * [CdoSnapshot]을 저장·로드하는 JaVers 저장소 인터페이스.
+ * JaVers repository interface for storing and loading [CdoSnapshot] values.
  *
- * ## 동작/계약
- * - [saveSnapshot]으로 단일 스냅샷을 저장한다
- * - [loadSnapshots]로 GlobalId에 해당하는 스냅샷 목록을 조회한다 (최신순)
+ * ## Contract
+ * - Stores a single snapshot with [saveSnapshot].
+ * - Loads snapshots for a GlobalId with [loadSnapshots] in newest-first order.
  *
  * ```kotlin
  * val repo: CdoSnapshotRepository = CaffeineCdoSnapshotRepository()
@@ -21,17 +21,17 @@ import org.javers.repository.api.JaversRepository
 interface CdoSnapshotRepository: JaversRepository {
 
     /**
-     * [CdoSnapshot]을 저장소에 저장한다.
+     * Stores a [CdoSnapshot] in the repository.
      */
     fun saveSnapshot(snapshot: CdoSnapshot)
 
     /**
-     * 지정한 GlobalId 값에 해당하는 스냅샷 목록을 반환한다.
+     * Returns snapshots for the specified GlobalId value.
      */
     fun loadSnapshots(globalIdValue: String): List<CdoSnapshot>
 
     /**
-     * 지정한 [GlobalId]에 해당하는 스냅샷 목록을 반환한다.
+     * Returns snapshots for the specified [GlobalId].
      */
     fun loadSnapshots(globalId: GlobalId): List<CdoSnapshot> = loadSnapshots(globalId.value())
 }

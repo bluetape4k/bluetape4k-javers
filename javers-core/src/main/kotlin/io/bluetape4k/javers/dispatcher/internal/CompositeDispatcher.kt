@@ -5,12 +5,13 @@ import io.bluetape4k.javers.dispatcher.JaversDispatcher
 
 
 /**
- * 여러 [JaversDispatcher]에 이벤트를 순차적으로 전파하는 복합 디스패처.
+ * Composite dispatcher that forwards events to multiple [JaversDispatcher] instances in order.
  *
- * ## 동작/계약
- * - 등록된 모든 디스패처에 이벤트를 전달하며, 개별 디스패처 예외는 무시하고 나머지를 계속 실행한다
+ * ## Contract
+ * - Forwards each event to every registered dispatcher.
+ * - Ignores exceptions from one dispatcher and continues with the remaining dispatchers.
  *
- * @property dispatchers 이벤트를 전달할 [JaversDispatcher] 컬렉션
+ * @property dispatchers dispatchers that receive forwarded events
  */
 open class CompositeDispatcher(
     val dispatchers: Collection<JaversDispatcher>,

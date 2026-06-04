@@ -13,16 +13,16 @@ import javax.cache.expiry.EternalExpiryPolicy
 import kotlin.concurrent.withLock
 
 /**
- * JCache(JSR-107) 기반의 [CdoSnapshot] 저장소.
+ * JCache (JSR-107) based [CdoSnapshot] repository.
  *
- * ## 동작/계약
- * - [javax.cache.Cache]를 사용하여 GlobalId별 스냅샷 목록을 보관한다
- * - JCache는 기본적으로 값 복사(store by value)로 동작하므로, 쓰기 시 put을 다시 호출해야 한다
- * - lock으로 동시 쓰기 안전성을 보장한다
+ * ## Contract
+ * - Uses [javax.cache.Cache] to store snapshots grouped by GlobalId.
+ * - JCache stores values by copy, so writes must put the updated list back into the cache.
+ * - Uses a lock to keep concurrent writes safe.
  *
- * @param prefix 캐시 이름 접두사
- * @param cacheManager [javax.cache.CacheManager] 인스턴스
- * @param codec 스냅샷 인코딩/디코딩에 사용할 [JaversCodec] (기본값: LZ4 압축 문자열)
+ * @param prefix cache name prefix
+ * @param cacheManager [javax.cache.CacheManager] instance
+ * @param codec [JaversCodec] used for snapshot encoding and decoding; defaults to LZ4-compressed strings
  */
 class JCacheCdoSnapshotRepository(
     prefix: String,
@@ -77,7 +77,7 @@ class JCacheCdoSnapshotRepository(
         lock.withLock {
             val globalIdValue = snapshot.globalId.value()
 
-            // NOTE: JCache 는 기본적으로 Reference를 저장하지만, 여기서는 Value로 저장해야 합니다.
+            // NOTE: JCache usually stores by reference, but this repository needs store-by-value semantics.
             val snapshots = snapshotCache.get(globalIdValue) ?: mutableListOf()
             val encoded = encode(snapshot)
             snapshots.add(0, encoded)
