@@ -270,7 +270,7 @@ class EnversComparisonBenchmarkTest {
     companion object {
         private val NOW: Instant = Instant.parse("2026-05-27T00:00:00Z")
         private const val BENCHMARK_COMMAND =
-            "./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' " +
+            "./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' " +
                 "--no-configuration-cache --no-build-cache --no-parallel --console=plain"
         private const val NANOS_PER_MILLI = 1_000_000.0
     }

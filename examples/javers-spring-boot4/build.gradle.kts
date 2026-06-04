@@ -1,0 +1,26 @@
+plugins {
+    alias(libs.plugins.kotlin.spring)
+}
+
+dependencies {
+    implementation(libs.bluetape4k.core)
+    implementation(libs.javers.core)
+    implementation(project(":javers-ddd"))
+    implementation(project(":javers-exposed"))
+
+    implementation(platform("org.springframework.boot:spring-boot-dependencies:${bt4k.versions.spring.boot4.get()}"))
+    implementation(platform(libs.exposed.bom))
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.java.time)
+    implementation("tools.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    runtimeOnly(libs.h2)
+
+    testImplementation(libs.bluetape4k.junit5)
+    testImplementation(libs.h2)
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+}

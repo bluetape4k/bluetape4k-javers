@@ -1,4 +1,4 @@
-# javers-exposed-ddd
+# examples-javers-exposed-ddd
 
 [English](./README.md) | 한국어
 
@@ -31,7 +31,7 @@ milliseconds per operation 값은 낮을수록 좋습니다.
 명령:
 
 ```bash
-./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
+./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
   --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
@@ -53,5 +53,5 @@ aggregate commit, commit metadata, domain event integration, CQRS projection
 ## 실행
 
 ```bash
-./gradlew :javers-exposed-ddd:test
+./gradlew :examples-javers-exposed-ddd:test
 ```

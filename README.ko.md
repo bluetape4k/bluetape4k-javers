@@ -28,6 +28,7 @@ persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 blu
 - **Exposed JDBC persistence** — SQL-backed JaVers CDO snapshot을 위한 Exposed schema와 repository
 - **DDD helper** — JaVers audit workflow를 위한 aggregate root, domain event, repository, publisher adapter
 - **CQRS command-side 예제** — `examples/javers-exposed-ddd` 아래 Exposed + JaVers + DDD helper 주문 command flow
+- **Spring Boot 4 REST 예제** — `examples/javers-spring-boot4` 아래 Exposed command persistence와 JaVers audit history를 명시적으로 wiring하는 예제
 - **Redis persistence** — Lettuce/Redisson 기반 snapshot 저장 경로
 - **Kafka persistence** — event stream 기반 CDO snapshot persistence
 - **BOM 지원** — 소비자 dependency version 정렬을 위한 `bluetape4k-javers-bom`
@@ -58,7 +59,8 @@ persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 blu
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extension, codec, cache-backed repository |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | JaVers audit workflow용 DDD aggregate/domain-event helper |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
-| `javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
+| `examples-javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
+| `examples-javers-spring-boot4` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Spring Boot 4 REST 예제 |
 | `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (쓰기 전용 이벤트 스트림; 읽기는 항상 빈 결과 반환) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
@@ -95,6 +97,10 @@ DDD command flow에서는 source-of-truth 저장소에 aggregate를 저장하고
 commit한 뒤 domain event를 발행합니다. `examples/javers-exposed-ddd` 모듈은 이
 경로를 Kafka event와 Redis read model까지 포함해 보여줍니다.
 
+`examples/javers-spring-boot4` 모듈은 같은 JaVers + Exposed command persistence
+흐름을 Spring Boot 4 REST endpoint 뒤에서 명시적으로 wiring해 보여줍니다. 아직
+제공하지 않는 auto-configuration에 의존하지 않습니다.
+
 ## 요구사항
 
 - JDK 21+
@@ -109,7 +115,8 @@ commit한 뒤 domain event를 발행합니다. `examples/javers-exposed-ddd` 모
 ./gradlew :javers-core:test
 ./gradlew :javers-ddd:test
 ./gradlew :javers-exposed:test
-./gradlew :javers-exposed-ddd:test
+./gradlew :examples-javers-exposed-ddd:test
+./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
 ```
