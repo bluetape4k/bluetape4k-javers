@@ -36,6 +36,14 @@
 - `./gradlew :javers-exposed:test --tests 'io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryDatabaseSmokeTest' --no-configuration-cache --no-build-cache --console=plain` - PASS, 21 tests
 - `./gradlew :javers-exposed:test --no-configuration-cache --no-build-cache --console=plain` - PASS, 31 tests
 
+## Index Assessment
+
+- `CommitTable.commit_id` unique index is appropriate: it is used by commit existence checks, sequence lookup, and sequence updates.
+- `CommitTable.sequence` index is appropriate: it supports `loadHeadId()` ordering by highest repository sequence.
+- `CdoSnapshotTable` unique `(global_id, version)` index is appropriate: it supports snapshot history lookup by `global_id`, newest-first ordering by `version`, size checks, and identifier lookups.
+- Additional snapshot single-column indexes are not a reason to add more indexes in this PR. Current `QueryParams` filtering still runs through inherited in-memory filtering after loading snapshots, so commit id, type, changed-property, author, or date SQL indexes should wait for a dedicated SQL pushdown change.
+- This PR's index-related change is limited to deriving custom index names from custom table names. That is appropriate because H2 exposed a real same-database constraint-name collision during the disabled-schema test path.
+
 ## Residual Risk
 
 - Custom schema/catalog placement is still delegated to Exposed or external migration tooling; this change controls table names and schema creation ownership, not database-specific catalog DDL.
