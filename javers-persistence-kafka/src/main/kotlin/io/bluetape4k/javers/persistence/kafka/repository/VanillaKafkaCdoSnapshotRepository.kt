@@ -1,7 +1,11 @@
 package io.bluetape4k.javers.persistence.kafka.repository
 
+import io.bluetape4k.kafka.producerOf
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
+import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventCodecIds
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventMetadata
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
@@ -9,12 +13,12 @@ import io.bluetape4k.logging.warn
 import io.bluetape4k.support.requireNotBlank
 import kotlinx.atomicfu.atomic
 import org.apache.kafka.clients.producer.Producer
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.common.serialization.StringSerializer
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import java.io.Serializable
 import java.time.Duration
-import java.util.concurrent.TimeUnit
+import java.util.Properties
 
 /**
  * Options for [VanillaKafkaCdoSnapshotRepository].
@@ -27,22 +31,38 @@ import java.util.concurrent.TimeUnit
  *   closes the producer. It defaults to `false` because producers are usually
  *   owned by the application lifecycle.
  */
-data class VanillaKafkaCdoSnapshotRepositoryOptions(
+@ConsistentCopyVisibility
+data class VanillaKafkaCdoSnapshotRepositoryOptions private constructor(
     val topic: String,
     val publishTimeout: Duration = Duration.ofSeconds(30),
     val flushAfterSend: Boolean = false,
     val closeProducerOnClose: Boolean = false,
 ): Serializable {
 
-    init {
-        topic.requireNotBlank("topic")
-        require(!publishTimeout.isZero && !publishTimeout.isNegative) {
-            "publishTimeout must be positive: $publishTimeout"
-        }
-    }
-
     companion object {
         private const val serialVersionUID: Long = 1532863228759821530L
+
+        /**
+         * Creates validated options for [VanillaKafkaCdoSnapshotRepository].
+         */
+        operator fun invoke(
+            topic: String,
+            publishTimeout: Duration = Duration.ofSeconds(30),
+            flushAfterSend: Boolean = false,
+            closeProducerOnClose: Boolean = false,
+        ): VanillaKafkaCdoSnapshotRepositoryOptions {
+            topic.requireNotBlank("topic")
+            require(!publishTimeout.isZero && !publishTimeout.isNegative) {
+                "publishTimeout must be positive: $publishTimeout"
+            }
+
+            return VanillaKafkaCdoSnapshotRepositoryOptions(
+                topic = topic,
+                publishTimeout = publishTimeout,
+                flushAfterSend = flushAfterSend,
+                closeProducerOnClose = closeProducerOnClose,
+            )
+        }
     }
 }
 
@@ -50,8 +70,8 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions(
  * Write-only JaVers repository that publishes [CdoSnapshot] values with a vanilla Kafka [Producer].
  *
  * ## Behavior / Contract
- * - [saveSnapshot] publishes a [ProducerRecord] to [options.topic], using [keyMapper]
- *   for the key and the encoded snapshot as the value.
+ * - [saveSnapshot] publishes a Kafka record to [options.topic], using [keyMapper]
+ *   for the key and the encoded snapshot event payload as the value.
  * - The publish blocks up to [VanillaKafkaCdoSnapshotRepositoryOptions.publishTimeout].
  * - Publish failures are propagated as [RuntimeException] so that [persist] does not
  *   advance the audit-log head on error.
@@ -63,7 +83,7 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions(
  *
  * ```kotlin
  * val options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "order-audit-events")
- * val repo = VanillaKafkaCdoSnapshotRepository(producer, options)
+ * val repo = VanillaKafkaCdoSnapshotRepository(producerConfigs, options)
  * val javers = JaversBuilder.javers()
  *     .registerJaversRepository(repo)
  *     .build()
@@ -93,9 +113,54 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
                 options = options,
                 keyMapper = keyMapper,
             )
+
+        /**
+         * Creates a repository and its Kafka producer with bluetape4k-kafka [producerOf].
+         */
+        operator fun invoke(
+            producerConfigs: Map<String, Any?>,
+            options: VanillaKafkaCdoSnapshotRepositoryOptions,
+            keyMapper: (CdoSnapshot) -> String = { it.globalId.value() },
+        ): VanillaKafkaCdoSnapshotRepository =
+            VanillaKafkaCdoSnapshotRepository(
+                producer = producerOf(
+                    configs = producerConfigs,
+                    keySerializer = StringSerializer(),
+                    valueSerializer = StringSerializer(),
+                ),
+                options = options.asRepositoryOwned(),
+                keyMapper = keyMapper,
+            )
+
+        /**
+         * Creates a repository and its Kafka producer with bluetape4k-kafka [producerOf].
+         */
+        operator fun invoke(
+            producerProperties: Properties,
+            options: VanillaKafkaCdoSnapshotRepositoryOptions,
+            keyMapper: (CdoSnapshot) -> String = { it.globalId.value() },
+        ): VanillaKafkaCdoSnapshotRepository =
+            VanillaKafkaCdoSnapshotRepository(
+                producer = producerOf(
+                    props = producerProperties,
+                    keySerializer = StringSerializer(),
+                    valueSerializer = StringSerializer(),
+                ),
+                options = options.asRepositoryOwned(),
+                keyMapper = keyMapper,
+            )
+
+        private fun VanillaKafkaCdoSnapshotRepositoryOptions.asRepositoryOwned(): VanillaKafkaCdoSnapshotRepositoryOptions =
+            VanillaKafkaCdoSnapshotRepositoryOptions(
+                topic = topic,
+                publishTimeout = publishTimeout,
+                flushAfterSend = flushAfterSend,
+                closeProducerOnClose = true,
+            )
     }
 
     private val readContractWarningLogged = atomic(false)
+    private val publisher = VanillaKafkaSnapshotEventPublisher(producer, options)
 
     override fun getKeys(): Set<String> {
         logReadContract("getKeys()", "empty")
@@ -123,21 +188,9 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
 
     override fun saveSnapshot(snapshot: CdoSnapshot) {
         val key = keyMapper(snapshot)
-        val value = encode(snapshot)
-        val record = ProducerRecord(options.topic, key, value)
-        log.trace { "Produce snapshot. topic=${options.topic}, key=$key, value=$value" }
-
-        try {
-            producer.send(record).get(options.publishTimeout.toMillis(), TimeUnit.MILLISECONDS)
-            if (options.flushAfterSend) {
-                producer.flush()
-            }
-        } catch (e: InterruptedException) {
-            Thread.currentThread().interrupt()
-            throw RuntimeException("Kafka publish interrupted for topic=${options.topic}, key=$key", e)
-        } catch (e: Exception) {
-            throw RuntimeException("Kafka publish failed for topic=${options.topic}, key=$key", e)
-        }
+        val event = snapshot.toSnapshotEvent()
+        log.trace { "Produce snapshot. topic=${options.topic}, key=$key, value=${event.payload}" }
+        publisher.publish(event, key)
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
@@ -146,9 +199,7 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
     }
 
     override fun close() {
-        if (options.closeProducerOnClose) {
-            producer.close(options.publishTimeout)
-        }
+        publisher.close()
     }
 
     private fun logReadContract(operation: String, result: String) {
@@ -159,4 +210,10 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
             log.debug { message }
         }
     }
+
+    private fun CdoSnapshot.toSnapshotEvent(): CdoSnapshotEvent<String> =
+        CdoSnapshotEvent(
+            metadata = CdoSnapshotEventMetadata.from(this, CdoSnapshotEventCodecIds.JSON_STRING),
+            payload = encode(this),
+        )
 }
