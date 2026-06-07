@@ -2,6 +2,8 @@ package io.bluetape4k.javers.repository.event
 
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.support.requireNotBlank
+import io.bluetape4k.support.requirePositiveNumber
+import io.bluetape4k.support.requireZeroOrPositiveNumber
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import java.io.Serializable
 import java.time.Instant
@@ -23,6 +25,7 @@ object CdoSnapshotEventCodecIds {
  * ## Behavior / Contract
  * - [globalIdValue], [commitId], [snapshotType], [codecId], and [idempotencyKey]
  *   are non-blank.
+ * - [commitMajorId] is positive and [commitMinorId] is zero or positive.
  * - [snapshotVersion] is positive.
  * - [repositorySequence] is nullable because `AbstractCdoSnapshotRepository`
  *   assigns its sequence after `saveSnapshot()` succeeds.
@@ -73,6 +76,8 @@ data class CdoSnapshotEventMetadata private constructor(
             snapshotType.requireNotBlank("snapshotType")
             codecId.requireNotBlank("codecId")
             idempotencyKey.requireNotBlank("idempotencyKey")
+            commitMajorId.requirePositiveNumber("commitMajorId")
+            commitMinorId.requireZeroOrPositiveNumber("commitMinorId")
             require(snapshotVersion > 0) {
                 "snapshotVersion must be positive: $snapshotVersion"
             }
