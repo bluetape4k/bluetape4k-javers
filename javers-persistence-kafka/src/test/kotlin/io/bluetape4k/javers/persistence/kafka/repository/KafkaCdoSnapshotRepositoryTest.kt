@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
+import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CompletableFuture
 
@@ -188,6 +189,40 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
 
         assertFailsWith<IllegalArgumentException> {
             publisher.publish(snapshotEvent(), " ")
+        }
+    }
+
+    @Test
+    fun `repository rejects non-positive publish timeout`() {
+        assertFailsWith<IllegalArgumentException> {
+            KafkaCdoSnapshotRepository(
+                kafkaOperations = successfulKafkaTemplate(),
+                publishTimeout = Duration.ZERO,
+            )
+        }
+
+        assertFailsWith<IllegalArgumentException> {
+            KafkaCdoSnapshotRepository(
+                kafkaOperations = successfulKafkaTemplate(),
+                publishTimeout = Duration.ofMillis(-1),
+            )
+        }
+    }
+
+    @Test
+    fun `publisher rejects non-positive publish timeout`() {
+        assertFailsWith<IllegalArgumentException> {
+            KafkaSnapshotEventPublisher(
+                kafkaOperations = successfulKafkaTemplate(),
+                publishTimeout = Duration.ZERO,
+            )
+        }
+
+        assertFailsWith<IllegalArgumentException> {
+            KafkaSnapshotEventPublisher(
+                kafkaOperations = successfulKafkaTemplate(),
+                publishTimeout = Duration.ofMillis(-1),
+            )
         }
     }
 

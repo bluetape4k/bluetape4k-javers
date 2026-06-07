@@ -16,11 +16,27 @@ import java.util.concurrent.TimeUnit
  * - Waits up to [publishTimeout] for the send acknowledgement.
  * - Restores interrupt status before propagating an interrupted publish.
  */
-class KafkaSnapshotEventPublisher(
+class KafkaSnapshotEventPublisher private constructor(
     private val kafkaOperations: KafkaTemplate<String, String>,
     private val publishTimeout: Duration = Duration.ofSeconds(30),
     private val keyMapper: (CdoSnapshotEvent<String>) -> String = { it.metadata.globalIdValue },
 ): CdoSnapshotEventPublisher<String> {
+
+    companion object {
+        /**
+         * Creates a Spring Kafka snapshot event publisher with validated publish timeout.
+         */
+        operator fun invoke(
+            kafkaOperations: KafkaTemplate<String, String>,
+            publishTimeout: Duration = Duration.ofSeconds(30),
+            keyMapper: (CdoSnapshotEvent<String>) -> String = { it.metadata.globalIdValue },
+        ): KafkaSnapshotEventPublisher =
+            KafkaSnapshotEventPublisher(
+                kafkaOperations = kafkaOperations,
+                publishTimeout = publishTimeout.requirePositivePublishTimeout(),
+                keyMapper = keyMapper,
+            )
+    }
 
     override fun publish(event: CdoSnapshotEvent<String>) {
         publish(event, keyMapper(event))
