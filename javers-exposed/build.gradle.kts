@@ -19,6 +19,7 @@ dependencies {
 
     api(platform(libs.exposed.bom))
     api(libs.exposed.core)
+    api(libs.exposed.dao)
     api(libs.exposed.jdbc)
     api(libs.exposed.java.time)
 

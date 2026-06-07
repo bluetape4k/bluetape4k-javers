@@ -19,6 +19,8 @@ JaVers commit과 encoded snapshot을 저장하는 `AbstractCdoSnapshotRepository
   유지하고, repository head 복원을 위해 commit sequence index를 사용합니다.
 - 일반적인 JaVers snapshot filter를 snapshot JSON decode 전에 SQL로 pushdown합니다.
 - repository instance를 다시 만들 때 head commit id를 복원합니다.
+- 명시적인 `EntityHook` subscription으로 Exposed DAO `Entity` lifecycle event를
+  audit합니다.
 - Exposed JDBC를 통해 H2, PostgreSQL, MySQL을 지원합니다.
 
 ## Architecture
@@ -76,6 +78,58 @@ val repository = ExposedCdoSnapshotRepository(
 `createSchemaOnEnsure = false`이면 `ensureSchema()`는 아무 작업도 하지
 않습니다. snapshot을 쓰기 전에 애플리케이션이 Exposed `SchemaUtils`, Flyway,
 Liquibase 같은 migration 도구로 매핑된 table을 생성해야 합니다.
+
+## DAO EntityHook Audit
+
+`ExposedJaversEntityHookSubscription`을 사용하면 각 DAO repository method마다
+`javers.commit()`을 직접 호출하지 않고 Exposed DAO entity lifecycle event를
+audit할 수 있습니다. 이 기능은 Exposed DAO `EntityHook` 전용입니다. raw
+Exposed DSL write, 외부 database write, CDC stream은 감지하지 않습니다.
+
+각 DAO entity class를 detached JaVers audit object로 매핑합니다:
+
+```kotlin
+data class AuditedCustomer(
+    @Id val id: Int,
+    val name: String,
+)
+
+class CustomerEntity(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<CustomerEntity>(Customers)
+
+    var name by Customers.name
+}
+
+val mapping = ExposedJaversEntityHookMapping(
+    entityClass = CustomerEntity,
+    auditType = AuditedCustomer::class.java,
+    toAuditObject = { entity ->
+        AuditedCustomer(
+            id = entity.id.value,
+            name = entity.name,
+        )
+    },
+)
+
+val subscription = ExposedJaversEntityHookSubscription.subscribe(
+    javers = javers,
+    mappings = listOf(mapping),
+    authorProvider = { "system" },
+    commitPropertiesProvider = { change ->
+        mapOf("changeType" to change.changeType.name)
+    },
+)
+```
+
+application scope가 끝나면 subscription을 닫아 전역 hook을 해제합니다:
+
+```kotlin
+subscription.close()
+```
+
+생성/수정 DAO event는 flush된 entity state로 commit합니다. 삭제 DAO event는
+row가 제거된 뒤 entity state를 다시 읽지 않고 `commitShallowDeleteById()`로
+JaVers terminal snapshot을 만듭니다.
 
 ## Query 동작
 
