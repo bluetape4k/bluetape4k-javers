@@ -13,12 +13,6 @@ class LettuceJaversCommitTest: AbstractRedisCdoSnapshotRepositoryParityTest() {
 
     override val providerName: String = "lettuce"
 
-    override fun flushRedis() {
-        lettuceClient.connect().use {
-            it.sync().flushdb()
-        }
-    }
-
     override fun createRepository(
         repositoryName: String,
         codec: JaversCodec<ByteArray>,

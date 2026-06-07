@@ -19,22 +19,18 @@ abstract class AbstractRedisCdoSnapshotRepositoryParityTest: AbstractJaversCommi
 
     protected abstract val providerName: String
 
-    protected abstract fun flushRedis()
-
     protected abstract fun createRepository(
         repositoryName: String,
         codec: JaversCodec<ByteArray> = JaversCodecs.LZ4Fory,
     ): AbstractCdoSnapshotRepository<ByteArray>
 
     override fun newJavers(): Javers {
-        flushRedis()
-        return newJavers(createRepository(repositoryName("commit")))
+        return newJavers(createRepository(uniqueRepositoryName("commit")))
     }
 
     @Test
     fun `repository returns snapshots in reverse chronological order`() {
-        flushRedis()
-        val javers = newJavers(createRepository(repositoryName("snapshot-order")))
+        val javers = newJavers(createRepository(uniqueRepositoryName("snapshot-order")))
         val entity = SnapshotEntity(1).apply { intProperty = 100 }
 
         javers.commit("author", entity)
@@ -52,8 +48,7 @@ abstract class AbstractRedisCdoSnapshotRepositoryParityTest: AbstractJaversCommi
 
     @Test
     fun `repository restores head commit id after rebuild`() {
-        flushRedis()
-        val repositoryName = repositoryName("head-restore")
+        val repositoryName = uniqueRepositoryName("head-restore")
         val repository = createRepository(repositoryName)
         val javers = newJavers(repository)
         val entity = SnapshotEntity(1).apply {
@@ -77,8 +72,7 @@ abstract class AbstractRedisCdoSnapshotRepositoryParityTest: AbstractJaversCommi
 
     @Test
     fun `failed snapshot encoding does not advance repository head`() {
-        flushRedis()
-        val repository = createRepository(repositoryName("failure"), FailingCodec)
+        val repository = createRepository(uniqueRepositoryName("failure"), FailingCodec)
         val javers = newJavers(repository)
 
         assertFailsWith<RuntimeException> {
@@ -94,8 +88,8 @@ abstract class AbstractRedisCdoSnapshotRepositoryParityTest: AbstractJaversCommi
             .build()
     }
 
-    private fun repositoryName(contract: String): String =
-        "bluetape4k:$providerName:$contract:${Base58.randomString(8)}"
+    private fun uniqueRepositoryName(contract: String): String =
+        "bluetape4k:$providerName:$contract:${Base58.randomString(6)}"
 
     private object FailingCodec: JaversCodec<ByteArray> {
         override fun encode(jsonElement: JsonObject): ByteArray {

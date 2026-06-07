@@ -13,10 +13,6 @@ class RedissonJaversCommitTest: AbstractRedisCdoSnapshotRepositoryParityTest() {
 
     override val providerName: String = "redisson"
 
-    override fun flushRedis() {
-        redisson.keys.flushdb()
-    }
-
     override fun createRepository(
         repositoryName: String,
         codec: JaversCodec<ByteArray>,

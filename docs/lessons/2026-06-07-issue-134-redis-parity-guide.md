@@ -16,8 +16,10 @@ bluetape4k cache and Exposed cache modules.
 ## Outcome
 
 The shared contract now checks reverse chronological snapshots, head rebuild,
-and failure propagation for both Lettuce and Redisson. The module README pair
-explains when to choose each provider.
+and failure propagation for both Lettuce and Redisson. It isolates test data with
+unique repository prefixes ending in a short Base58 suffix instead of flushing
+the whole Redis database. The module README pair explains when to choose each
+provider.
 
 ## Verification
 
@@ -30,4 +32,5 @@ explains when to choose each provider.
 Before adding JaVers-specific Redis cache layers, first reuse or adapt
 `bluetape4k-projects/cache` and `bluetape4k-exposed` cache contracts. Add
 JaVers-specific tests only for snapshot ordering, commit metadata, query
-behavior, and repository head semantics.
+behavior, and repository head semantics. Prefer unique Redis key prefixes over
+`flushdb()` when a test can be isolated without clearing shared state.
