@@ -16,7 +16,7 @@ dependencies {
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
 
     // Kafka
-    api(libs.bluetape4k.kafka)
+    implementation(libs.bluetape4k.kafka)
     compileOnly(libs.spring.kafka)
 
     // Codec

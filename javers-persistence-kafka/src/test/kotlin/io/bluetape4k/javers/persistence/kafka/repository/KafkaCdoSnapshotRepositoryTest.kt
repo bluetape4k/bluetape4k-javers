@@ -155,6 +155,29 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         }
     }
 
+    @Test
+    fun `saveSnapshot restores interrupt status when Spring Kafka publish is interrupted`() {
+        val interruptedTemplate = object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
+            override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> =
+                InterruptedCompletableFuture()
+        }
+        interruptedTemplate.setDefaultTopic(KafkaProvider.TEST_TOPIC)
+
+        val repo = KafkaCdoSnapshotRepository(interruptedTemplate)
+        val javersInstance = JaversBuilder.javers()
+            .registerJaversRepository(repo)
+            .build()
+
+        try {
+            assertFailsWith<RuntimeException> {
+                javersInstance.commit("author", SnapshotEntity(1))
+            }
+            Thread.currentThread().isInterrupted shouldBeEqualTo true
+        } finally {
+            Thread.interrupted()
+        }
+    }
+
     private fun newJavers(repository: KafkaCdoSnapshotRepository): Javers =
         JaversBuilder.javers()
             .registerJaversRepository(repository)
@@ -201,5 +224,10 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         val method = KafkaCdoSnapshotRepository::class.java.getDeclaredMethod("getSnapshotSize", String::class.java)
         method.isAccessible = true
         return method.invoke(this, globalIdValue) as Int
+    }
+
+    private class InterruptedCompletableFuture: CompletableFuture<SendResult<String, String>>() {
+        override fun get(timeout: Long, unit: java.util.concurrent.TimeUnit): SendResult<String, String> =
+            throw InterruptedException("interrupted")
     }
 }
