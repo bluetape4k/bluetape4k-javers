@@ -78,8 +78,13 @@ historical reads.
 
 ## Snapshot Event Pipeline
 
-Both Kafka repositories now build a `CdoSnapshotEvent<String>` before publishing.
-The event carries:
+Both Kafka repositories build a `CdoSnapshotEvent<String>` before publishing.
+This is an in-process adapter contract used to derive Kafka keys, publish
+diagnostics, and future transport behavior. The current Kafka wire record value
+is still the encoded JaVers snapshot payload (`event.payload`), not a metadata
+envelope.
+
+The in-process event metadata carries:
 
 - global id value
 - commit id, major id, and minor id
@@ -90,8 +95,30 @@ The event carries:
 
 `repositorySequence` is nullable because JaVers assigns repository sequence
 after `saveSnapshot()` succeeds. Transport adapters should treat the
-idempotency key as opaque and must propagate publish failures so JaVers does not
-advance the audit-log head after a failed event publish.
+idempotency key as opaque.
+
+Kafka consumers should not assume that the metadata above is present in record
+headers or the record value today. If a projection or future adapter needs
+wire-visible metadata, it must define that contract explicitly with headers or
+an envelope and add consumer-facing tests.
+
+### Delivery and Retry Semantics
+
+Kafka publishing is synchronous and at-least-once. The repositories wait for the
+Kafka send acknowledgement and propagate publish failures so JaVers does not
+advance the audit-log head after a failed publish.
+
+For commits that produce multiple snapshots, a failure can happen after earlier
+snapshots in the same commit were already published. Retrying the operation can
+therefore duplicate those earlier snapshot events. Current Kafka consumers
+should treat duplicates as possible because the idempotency key is not
+wire-visible today. Projection/replay work or future wire contracts should
+expose and use the opaque idempotency key, or define another
+transport-specific deduplication policy.
+
+Read-side projection work (#105) and durable-history plus event-stream
+composition (#131) must keep this partial-publish behavior explicit when they
+add replay, retry, transaction, or outbox coordination.
 
 ## Adapter Selection
 
@@ -107,7 +134,8 @@ Kafka client lifecycle already owns the producer.
 ## Planned Non-Kafka Adapters
 
 The core event contract is transport-neutral, but this module implements Kafka
-only.
+only. Non-Kafka adapters must decide whether metadata is exposed as transport
+headers, an envelope, or another explicit wire contract.
 
 | Planned adapter | Current status | Notes |
 |---|---|---|

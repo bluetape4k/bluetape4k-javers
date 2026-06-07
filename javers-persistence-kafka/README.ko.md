@@ -78,8 +78,12 @@ history read도 필요하다면 durable snapshot repository나 projection consum
 
 ## Snapshot Event Pipeline
 
-두 Kafka repository는 publish 전에 `CdoSnapshotEvent<String>`을 생성합니다. Event는
-다음 metadata를 포함합니다:
+두 Kafka repository는 publish 전에 `CdoSnapshotEvent<String>`을 생성합니다. 이
+event는 Kafka key, publish diagnostics, future transport behavior를 도출하기 위한
+in-process adapter contract입니다. 현재 Kafka wire record value는 metadata
+envelope이 아니라 encoded JaVers snapshot payload(`event.payload`)입니다.
+
+In-process event metadata는 다음 값을 포함합니다:
 
 - global id value
 - commit id, major id, minor id
@@ -90,8 +94,29 @@ history read도 필요하다면 durable snapshot repository나 projection consum
 
 `repositorySequence`는 JaVers가 `saveSnapshot()` 성공 뒤에 repository sequence를
 배정하기 때문에 nullable입니다. Transport adapter는 idempotency key를 opaque 값으로
-취급해야 하며, publish 실패를 propagation해서 실패한 event publish 뒤 JaVers audit-log
-head가 advance되지 않도록 해야 합니다.
+취급해야 합니다.
+
+Kafka consumer는 위 metadata가 현재 record header나 record value에 들어 있다고
+가정하면 안 됩니다. Projection이나 future adapter가 wire-visible metadata를 필요로
+한다면 header나 envelope 같은 명시적 wire contract를 정의하고 consumer-facing test를
+추가해야 합니다.
+
+### Delivery and Retry Semantics
+
+Kafka publishing은 synchronous at-least-once 방식입니다. Repository는 Kafka send
+acknowledgement를 기다리고 publish 실패를 propagation해서 실패한 publish 뒤 JaVers
+audit-log head가 advance되지 않도록 합니다.
+
+여러 snapshot을 만드는 commit에서는 같은 commit의 앞선 snapshot이 이미 publish된 뒤
+뒤쪽 snapshot publish가 실패할 수 있습니다. 이 작업을 retry하면 앞서 publish된 snapshot
+event가 중복될 수 있습니다. 현재 Kafka consumer는 idempotency key를 wire에서 볼 수
+없으므로 duplicate 가능성을 전제로 처리해야 합니다. Projection/replay 작업이나 future
+wire contract는 opaque idempotency key를 노출해 사용하거나, 다른 transport-specific
+deduplication policy를 정의해야 합니다.
+
+Read-side projection 작업(#105)과 durable history plus event-stream composition
+작업(#131)은 replay, retry, transaction, outbox coordination을 추가할 때 이
+partial-publish behavior를 명시적으로 유지해야 합니다.
 
 ## Adapter 선택 기준
 
@@ -107,6 +132,8 @@ producer를 이미 소유한다면 기본값을 유지하세요.
 ## 예정된 Non-Kafka Adapter
 
 Core event contract는 transport-neutral이지만, 이 모듈은 Kafka만 구현합니다.
+Non-Kafka adapter는 metadata를 transport header, envelope 또는 다른 명시적 wire
+contract로 노출할지 결정해야 합니다.
 
 | 예정 adapter | 현재 상태 | 참고 |
 |---|---|---|
