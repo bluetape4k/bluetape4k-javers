@@ -11,6 +11,9 @@
 - Tier 1 correctness: PASS. Lettuce and Redisson now inherit the same JaVers
   Redis parity tests for reverse chronological snapshots, head rebuild, and
   failed encode propagation.
+- Tier 1 isolation update: PASS. PR review feedback on `flushdb()` risk was
+  addressed by using `provider + contract + Base58` repository names in the
+  parity/commit contract.
 - Tier 2 API/contract: PASS. No production API or provider-neutral cache
   abstraction was added.
 - Tier 3 integration: PASS. Existing provider-specific shadow tests and codec
@@ -42,3 +45,5 @@
 
 No production Redis write path changed. The remaining #133/#131 work still needs
 fresh tests when near-cache or composite repository behavior is introduced.
+Existing shadow tests still flush Redis as pre-existing module behavior; this PR
+removes `flushdb()` from the newly shared parity/commit contract only.
