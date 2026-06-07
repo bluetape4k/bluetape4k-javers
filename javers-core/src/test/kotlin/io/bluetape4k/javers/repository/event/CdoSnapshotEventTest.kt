@@ -49,6 +49,9 @@ class CdoSnapshotEventTest {
             metadata(repositorySequence = -1L)
         }
         assertFailsWith<IllegalArgumentException> {
+            metadata(snapshotType = " ")
+        }
+        assertFailsWith<IllegalArgumentException> {
             metadata(codecId = " ")
         }
         assertFailsWith<IllegalArgumentException> {
@@ -70,6 +73,7 @@ class CdoSnapshotEventTest {
         commitId: String = "1.00",
         repositorySequence: Long? = null,
         snapshotVersion: Long = 1L,
+        snapshotType: String = SnapshotType.INITIAL.name,
         codecId: String = CdoSnapshotEventCodecIds.JSON_STRING,
         idempotencyKey: String = "Entity/1:1.00:1",
     ): CdoSnapshotEventMetadata =
@@ -80,7 +84,7 @@ class CdoSnapshotEventTest {
             commitMinorId = 0,
             repositorySequence = repositorySequence,
             snapshotVersion = snapshotVersion,
-            snapshotType = SnapshotType.INITIAL.name,
+            snapshotType = snapshotType,
             author = "author",
             commitTimestamp = Instant.EPOCH,
             codecId = codecId,

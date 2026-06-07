@@ -88,6 +88,23 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
     }
 
     @Test
+    fun `repository-created producer publishes and closes through bluetape4k kafka helper`() {
+        val repository = VanillaKafkaCdoSnapshotRepository(
+            producerConfigs = KafkaProvider.producerProperties,
+            options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = KafkaProvider.TEST_TOPIC),
+        )
+        val javers = JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
+
+        try {
+            javers.commit("vanilla", SnapshotEntity(1))
+        } finally {
+            repository.close()
+        }
+    }
+
+    @Test
     fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
         every { producer.send(any()) } returns CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))
 

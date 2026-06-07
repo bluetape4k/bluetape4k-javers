@@ -79,7 +79,9 @@ class KafkaCdoSnapshotRepository(
     override fun saveSnapshot(snapshot: CdoSnapshot) {
         val key = snapshot.globalId.value()
         val event = snapshot.toSnapshotEvent()
-        log.trace { "Produce snapshot. key=$key, value=${event.payload}" }
+        log.trace {
+            "Produce snapshot. key=$key, version=${event.metadata.snapshotVersion}, codec=${event.metadata.codecId}"
+        }
         publisher.publish(event, key)
     }
 

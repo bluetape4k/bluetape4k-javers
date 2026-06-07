@@ -22,9 +22,14 @@ Spring Kafka and vanilla Kafka repositories now share `CdoSnapshotEvent<String>`
 metadata and payload construction while preserving write-only behavior and
 publish failure propagation.
 
+A strict follow-up review moved `bluetape4k-kafka` from `api` to
+`implementation`, removed full snapshot payloads from trace logs, and added
+tests for repository-created producers plus Spring interrupt handling.
+
 ## Verification
 
 - `./gradlew :javers-core:test :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
+- `./gradlew :javers-persistence-kafka:dependencies --configuration api --no-configuration-cache --no-build-cache --console=plain`
 - `./gradlew :javers-persistence-kafka:dependencies --configuration runtimeClasspath --no-configuration-cache --no-build-cache --console=plain`
 - `git diff --check`
 
