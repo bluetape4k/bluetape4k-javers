@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.exposed.repository
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeTrue
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.javers.codecs.JaversCodec
 import io.bluetape4k.javers.codecs.JaversCodecs
@@ -23,42 +24,44 @@ class ExposedCdoSnapshotRepositoryCodecContractTest {
 
     @Test
     fun `default repository codec is plain string json`() {
-        val database = newDatabase()
-        val repository = ExposedCdoSnapshotRepository(database)
-        val javers = newJavers(repository)
+        withDatabase { database ->
+            val repository = ExposedCdoSnapshotRepository(database)
+            val javers = newJavers(repository)
 
-        repository.codec() shouldBeEqualTo JaversCodecs.String
+            repository.codec() shouldBeEqualTo JaversCodecs.String
 
-        javers.commit("codec-contract", SnapshotEntity(1).apply { intProperty = 1 })
+            javers.commit("codec-contract", SnapshotEntity(1).apply { intProperty = 1 })
 
-        val state = states(database).single()
+            val state = states(database).single()
 
-        state.startsWith("{").shouldBeTrue()
-        JaversCodecs.String.decode(state).shouldNotBeNull()
+            state.startsWith("{").shouldBeTrue()
+            JaversCodecs.String.decode(state).shouldNotBeNull()
+        }
     }
 
     @Test
     fun `repository round trips snapshots with custom string codec`() {
-        val database = newDatabase()
-        val repository = ExposedCdoSnapshotRepository(database, PrefixStringCodec())
-        val javers = newJavers(repository)
-        val entity = SnapshotEntity(2).apply { intProperty = 1 }
+        withDatabase { database ->
+            val repository = ExposedCdoSnapshotRepository(database, PrefixStringCodec())
+            val javers = newJavers(repository)
+            val entity = SnapshotEntity(2).apply { intProperty = 1 }
 
-        javers.commit("codec-contract", entity)
-        entity.intProperty = 2
-        javers.commit("codec-contract", entity)
+            javers.commit("codec-contract", entity)
+            entity.intProperty = 2
+            javers.commit("codec-contract", entity)
 
-        val states = states(database)
-        states.size shouldBeEqualTo 2
-        states.all { it.startsWith(PrefixStringCodec.PREFIX) }.shouldBeTrue()
+            val states = states(database)
+            states shouldHaveSize 2
+            states.all { it.startsWith(PrefixStringCodec.PREFIX) }.shouldBeTrue()
 
-        val snapshots = javers.findSnapshots(QueryBuilder.byInstanceId(2, SnapshotEntity::class.java).build())
+            val snapshots = javers.findSnapshots(QueryBuilder.byInstanceId(2, SnapshotEntity::class.java).build())
 
-        snapshots.size shouldBeEqualTo 2
-        snapshots[0].version shouldBeEqualTo 2L
-        snapshots[0].getPropertyValue("intProperty") shouldBeEqualTo 2
-        snapshots[1].version shouldBeEqualTo 1L
-        snapshots[1].getPropertyValue("intProperty") shouldBeEqualTo 1
+            snapshots shouldHaveSize 2
+            snapshots[0].version shouldBeEqualTo 2L
+            snapshots[0].getPropertyValue("intProperty") shouldBeEqualTo 2
+            snapshots[1].version shouldBeEqualTo 1L
+            snapshots[1].getPropertyValue("intProperty") shouldBeEqualTo 1
+        }
     }
 
     private fun newDatabase(): Database {
@@ -70,6 +73,17 @@ class ExposedCdoSnapshotRepositoryCodecContractTest {
             SchemaUtils.create(CommitTable, CdoSnapshotTable)
         }
         return database
+    }
+
+    private fun <T> withDatabase(block: (Database) -> T): T {
+        val database = newDatabase()
+        try {
+            return block(database)
+        } finally {
+            transaction(database) {
+                SchemaUtils.drop(CdoSnapshotTable, CommitTable)
+            }
+        }
     }
 
     private fun newJavers(repository: ExposedCdoSnapshotRepository) =
