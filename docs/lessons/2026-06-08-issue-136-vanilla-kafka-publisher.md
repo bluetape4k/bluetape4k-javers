@@ -24,6 +24,11 @@ The module now has two clear adapters:
 Producer ownership is explicit through `closeProducerOnClose`, which defaults to
 `false`.
 
+Post-PR review tightened the implementation to match `bluetape4k-code-patterns`:
+the repository is created through companion `invoke`, MockK test collaborators
+are class fields reset by `@BeforeEach clearMocks`, and Kafka test fixture IDs
+use `Base58.randomString`.
+
 ## Verification
 
 - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`: PASS, 18 tests.
@@ -36,4 +41,5 @@ Keep Kafka repository work write-only until #105 or #131 explicitly owns read
 projection or composite durable-history semantics. Do not add helper artifacts
 as runtime dependencies when a direct Apache Kafka API keeps the vanilla path
 cleaner.
-
+Keep test-only unique Kafka client and group IDs as short Base58 strings instead
+of UUID-derived strings.
