@@ -13,6 +13,9 @@ import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
+import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventCodecIds
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventMetadata
 import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.every
@@ -25,11 +28,13 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.clients.producer.RecordMetadata
 import org.javers.core.JaversBuilder
 import org.javers.core.commit.CommitId
+import org.javers.core.metamodel.`object`.SnapshotType
 import org.javers.core.model.SnapshotEntity
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import java.time.Duration
+import java.time.Instant
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
@@ -118,6 +123,18 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
         assertFailsWith<RuntimeException> {
             javers.commit("vanilla", SnapshotEntity(1))
+        }
+    }
+
+    @Test
+    fun `publisher rejects blank explicit key`() {
+        val publisher = VanillaKafkaSnapshotEventPublisher(
+            producer = producer,
+            options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots"),
+        )
+
+        assertFailsWith<IllegalArgumentException> {
+            publisher.publish(snapshotEvent(), " ")
         }
     }
 
@@ -281,6 +298,24 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     private fun completedMetadataFuture(): CompletableFuture<RecordMetadata> =
         CompletableFuture.completedFuture(recordMetadata)
+
+    private fun snapshotEvent(): CdoSnapshotEvent<String> =
+        CdoSnapshotEvent(
+            metadata = CdoSnapshotEventMetadata(
+                globalIdValue = "Entity/1",
+                commitId = "1.00",
+                commitMajorId = 1L,
+                commitMinorId = 0,
+                repositorySequence = null,
+                snapshotVersion = 1L,
+                snapshotType = SnapshotType.INITIAL.name,
+                author = "author",
+                commitTimestamp = Instant.EPOCH,
+                codecId = CdoSnapshotEventCodecIds.JSON_STRING,
+                idempotencyKey = "Entity/1:1.00:1",
+            ),
+            payload = "{}",
+        )
 
     private fun AbstractCdoSnapshotRepository<*>.codec(): Any {
         val field = AbstractCdoSnapshotRepository::class.java.getDeclaredField("codec")

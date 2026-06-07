@@ -9,6 +9,9 @@ import io.bluetape4k.assertions.shouldBeEmpty
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeNull
+import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventCodecIds
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventMetadata
 import io.bluetape4k.logging.KLogging
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
@@ -22,6 +25,7 @@ import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.support.SendResult
+import java.time.Instant
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -178,6 +182,15 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         }
     }
 
+    @Test
+    fun `publisher rejects blank explicit key`() {
+        val publisher = KafkaSnapshotEventPublisher(successfulKafkaTemplate())
+
+        assertFailsWith<IllegalArgumentException> {
+            publisher.publish(snapshotEvent(), " ")
+        }
+    }
+
     private fun newJavers(repository: KafkaCdoSnapshotRepository): Javers =
         JaversBuilder.javers()
             .registerJaversRepository(repository)
@@ -193,6 +206,24 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
             it.setDefaultTopic(KafkaProvider.TEST_TOPIC)
         }
     }
+
+    private fun snapshotEvent(): CdoSnapshotEvent<String> =
+        CdoSnapshotEvent(
+            metadata = CdoSnapshotEventMetadata(
+                globalIdValue = "Entity/1",
+                commitId = "1.00",
+                commitMajorId = 1L,
+                commitMinorId = 0,
+                repositorySequence = null,
+                snapshotVersion = 1L,
+                snapshotType = SnapshotType.INITIAL.name,
+                author = "author",
+                commitTimestamp = Instant.EPOCH,
+                codecId = CdoSnapshotEventCodecIds.JSON_STRING,
+                idempotencyKey = "Entity/1:1.00:1",
+            ),
+            payload = "{}",
+        )
 
     private fun attachLogAppender(): Pair<Logger, ListAppender<ILoggingEvent>> {
         val logger = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME) as Logger
