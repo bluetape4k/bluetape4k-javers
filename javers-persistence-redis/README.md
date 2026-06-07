@@ -22,7 +22,7 @@ history in Redis instead of the built-in JaVers stores.
 ```kotlin
 val repository = LettuceCdoSnapshotRepository(
     name = "orders",
-    commands = redisCommands,
+    client = redisClient,
 )
 
 val javers = JaversBuilder.javers()
@@ -32,6 +32,25 @@ val javers = JaversBuilder.javers()
 
 Use this module when Redis is the audit snapshot store. For query-side CQRS read
 models, keep application projections separate from the JaVers snapshot data.
+
+## Repository selection
+
+Both repositories share the same JaVers snapshot contract: snapshots are queried
+newest-first, commit id sequence metadata is persisted so the repository head can
+be rebuilt, and codec failures propagate without advancing the head commit.
+
+Choose `LettuceCdoSnapshotRepository` when the application already standardizes
+on Lettuce, needs explicit Redis command/transaction control, or wants the
+smallest Redis client abstraction around the JaVers audit store.
+
+Choose `RedissonCdoSnapshotRepository` when the application already standardizes
+on Redisson, benefits from higher-level Redis collections, or plans to evaluate
+Redisson near-cache and read/write-through strategies in a follow-up layer.
+
+This module intentionally does not define a provider-neutral cache contract.
+Near-cache, read-through, write-through, and write-behind behavior should reuse
+the existing bluetape4k cache and Exposed cache modules before JaVers-specific
+mapping code is added.
 
 ## Dependency
 
