@@ -1,9 +1,12 @@
 package io.bluetape4k.javers.persistence.exposed.repository
 
+import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.model.SnapshotEntity
@@ -13,6 +16,7 @@ import org.javers.repository.api.SnapshotIdentifier
 import org.javers.repository.jql.QueryBuilder
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -51,6 +55,39 @@ class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
         latest.version shouldBeEqualTo 1L
         latest.getPropertyValue("intProperty") shouldBeEqualTo 100
         repository.getHeadId() shouldBeEqualTo commit.id
+    }
+
+    @Test
+    fun `disabled ensure schema lets external migrations own custom tables`() {
+        val options = ExposedCdoSnapshotRepositoryOptions(
+            tableNames = ExposedJaversTableNames(
+                commitTableName = "javers_commit_${Base58.randomString(6)}",
+                snapshotTableName = "javers_snapshot_${Base58.randomString(6)}",
+            ),
+            createSchemaOnEnsure = false,
+        )
+        val schema = options.newSchema()
+        val repository = ExposedCdoSnapshotRepository(database = database, options = options)
+
+        repository.ensureSchema()
+
+        assertFailsWith<Exception> {
+            transaction(database) {
+                schema.commitTable.selectAll().count()
+            }
+        }
+
+        transaction(database) {
+            SchemaUtils.create(*schema.tables)
+        }
+
+        val javers = newJavers(repository)
+        val entity = SnapshotEntity(20).apply { intProperty = 200 }
+        val commit = javers.commit("author", entity)
+        val latest = repository.getLatest(commit.snapshots.first().globalId).get()
+
+        latest.version shouldBeEqualTo 1L
+        latest.getPropertyValue("intProperty") shouldBeEqualTo 200
     }
 
     @Test

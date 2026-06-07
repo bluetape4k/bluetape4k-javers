@@ -11,6 +11,8 @@ managed through JetBrains Exposed.
 
 - Stores one row per JaVers commit in `javers_commit`.
 - Stores one row per CDO snapshot version in `javers_snapshot`.
+- Allows repository-local table names when the default names collide with an
+  existing schema or tenant layout.
 - Persists the full encoded `CdoSnapshot` payload so JaVers can reconstruct
   snapshots with its configured JSON converter.
 - Keeps a unique `(global_id, version)` index for the hot snapshot history load
@@ -51,6 +53,28 @@ val javers = JaversBuilder.javers()
     .registerJaversRepository(repository)
     .build()
 ```
+
+Use repository options when migrations own the schema or when the default table
+names are not acceptable:
+
+```kotlin
+val options = ExposedCdoSnapshotRepositoryOptions(
+    tableNames = ExposedJaversTableNames(
+        commitTableName = "audit_commit",
+        snapshotTableName = "audit_snapshot",
+    ),
+    createSchemaOnEnsure = false,
+)
+
+val repository = ExposedCdoSnapshotRepository(
+    database = database,
+    options = options,
+)
+```
+
+With `createSchemaOnEnsure = false`, `ensureSchema()` becomes a no-op and the
+application must create the mapped tables through Exposed `SchemaUtils`, Flyway,
+Liquibase, or another migration tool before writing snapshots.
 
 ## Query Behavior
 
