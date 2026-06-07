@@ -151,6 +151,35 @@ changed-property filters, commit-property filters, author-like matching,
 `Instant` commit date ranges, version ranges, `toCommitId`, and
 `snapshotQueryLimit`.
 
+## Redis + Exposed Latency Strategy
+
+Use `javers-exposed` as the durable JaVers audit source of truth when Exposed
+owns the database transaction. Use Redis near-cache or read/write-through
+behavior for application read models and projections, not for canonical
+`CdoSnapshot` rows or repository head metadata.
+
+The recommended reuse path is the existing `bluetape4k-exposed` cache stack:
+
+- `exposed-cache` defines `CacheMode`, `CacheWriteMode`, local cache options,
+  resilience options, and reusable repository test fixtures.
+- `exposed-jdbc-redisson` provides Redisson read-through, write-through,
+  write-behind, and near-cache repositories.
+- `exposed-jdbc-lettuce` provides Lettuce read-through, write-through, and
+  write-behind repositories.
+
+| Strategy | Use for JaVers + Exposed | Avoid for |
+|---|---|---|
+| Cache-aside | Rebuildable query results or projections derived from audit history. | Canonical audit snapshot writes. |
+| Read-through | Exposed read-model repositories that already fit `bluetape4k-exposed` cache contracts. | Replacing the raw JaVers `CdoSnapshot` repository. |
+| Write-through | Mutable read models when synchronous Redis + database latency is acceptable. | JaVers audit writes that must preserve commit ordering. |
+| Write-behind | Non-authoritative projections with explicit replay or drain failure handling. | Audit log writes, commit sequence, and repository head metadata. |
+| Near-cache | Hot read-model lookups with Redisson or Lettuce local cache support. | Canonical snapshot/head state unless a composite repository owns invalidation. |
+
+`javers-persistence-redis` is a direct Redis audit store. It should not be
+wrapped as a write-behind cache for this SQL-backed repository. A future
+composite repository can combine durable history and event/projection behavior,
+but it must own invalidation, replay, and failure semantics explicitly.
+
 ## Build
 
 ```bash

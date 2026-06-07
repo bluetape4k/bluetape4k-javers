@@ -52,6 +52,12 @@ Near-cache, read-through, write-through, and write-behind behavior should reuse
 the existing bluetape4k cache and Exposed cache modules before JaVers-specific
 mapping code is added.
 
+When Exposed is the durable audit store, use `javers-exposed` for canonical
+snapshot history and apply Redisson/Lettuce cache strategies to read models or
+projections through `bluetape4k-exposed`. Do not use this Redis repository as a
+write-behind cache for SQL-backed audit writes, commit sequence metadata, or
+repository head restoration.
+
 ## Dependency
 
 ```kotlin

@@ -51,6 +51,11 @@ codec 실패는 head commit을 전진시키지 않고 호출자에게 전파됩�
 read-through, write-through, write-behind 동작은 JaVers 전용 mapping code를 추가하기
 전에 기존 bluetape4k cache 및 Exposed cache 모듈 재사용을 우선합니다.
 
+Exposed가 durable audit store라면 canonical snapshot history는 `javers-exposed`에
+맡기고, Redisson/Lettuce cache 전략은 `bluetape4k-exposed`를 통해 read model 또는
+projection에 적용하세요. 이 Redis repository를 SQL-backed audit write, commit
+sequence metadata, repository head 복원을 위한 write-behind cache로 사용하지 마세요.
+
 ## 의존성
 
 ```kotlin
