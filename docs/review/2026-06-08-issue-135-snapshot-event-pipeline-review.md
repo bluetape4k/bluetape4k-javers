@@ -55,6 +55,7 @@ Initial review was too implementation-centric. A stricter pass found and fixed:
 | P2 | `javers-persistence-kafka/build.gradle.kts` | `bluetape4k-kafka` was used as an internal helper but declared as `api`, which would leak its compile classpath to consumers. | Changed it to `implementation(libs.bluetape4k.kafka)` and verified `api` dependencies do not include Kafka helper dependencies. |
 | P2 | `KafkaCdoSnapshotRepository.saveSnapshot`, `VanillaKafkaCdoSnapshotRepository.saveSnapshot` | Trace logs included the full encoded snapshot payload, which can contain audit data and user fields. | Reduced trace logs to key, snapshot version, and codec metadata only. |
 | P2 | Kafka tests | New public helper path and Spring interrupt behavior were under-tested. | Added a repository-created producer test through `bluetape4k-kafka` `producerOf(...)` and a Spring Kafka interrupt-preservation test. |
+| P3 | PR review comments | Explicit publisher key parameters did not guard blank values. | Added `key.requireNotBlank("key")` to Spring and vanilla publisher explicit-key paths with blank-key regression tests. |
 
 Strict re-review verdict after fixes: PASS with P0=0 and P1=0.
 
@@ -62,6 +63,8 @@ Strict re-review verdict after fixes: PASS with P0=0 and P1=0.
 
 - `./gradlew :javers-core:test :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
   - Result: BUILD SUCCESSFUL; `javers-core` executed 184 tests; `javers-persistence-kafka` executed 20 tests.
+- `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
+  - Result: BUILD SUCCESSFUL after PR comment fixes; `javers-persistence-kafka` executed 22 tests.
 - `./gradlew :javers-persistence-kafka:dependencies --configuration api --no-configuration-cache --no-build-cache --console=plain | rg -n "bluetape4k-kafka|spring-kafka|kafka-clients|No dependencies|io.github.bluetape4k|org.apache.kafka"`
   - Result: `api` dependencies include the intended bluetape4k API modules only; no `bluetape4k-kafka`, `spring-kafka`, or `kafka-clients` API leak appeared.
 - `./gradlew :javers-persistence-kafka:dependencies --configuration runtimeClasspath --no-configuration-cache --no-build-cache --console=plain | rg -n "bluetape4k-kafka|spring-kafka|bluetape4k-nats|aws|sqs|kafka-clients"`

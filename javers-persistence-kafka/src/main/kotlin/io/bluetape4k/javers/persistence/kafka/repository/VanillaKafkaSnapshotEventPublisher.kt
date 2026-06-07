@@ -2,6 +2,7 @@ package io.bluetape4k.javers.persistence.kafka.repository
 
 import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
 import io.bluetape4k.javers.repository.event.CdoSnapshotEventPublisher
+import io.bluetape4k.support.requireNotBlank
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
 import java.util.concurrent.TimeUnit
@@ -30,6 +31,8 @@ class VanillaKafkaSnapshotEventPublisher(
      * Publishes [event] with an explicit Kafka key.
      */
     fun publish(event: CdoSnapshotEvent<String>, key: String) {
+        key.requireNotBlank("key")
+
         val record = ProducerRecord(options.topic, key, event.payload)
         try {
             producer.send(record).get(options.publishTimeout.toMillis(), TimeUnit.MILLISECONDS)

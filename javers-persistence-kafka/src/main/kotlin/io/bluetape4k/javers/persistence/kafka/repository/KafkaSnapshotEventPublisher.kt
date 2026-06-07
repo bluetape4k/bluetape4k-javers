@@ -2,6 +2,7 @@ package io.bluetape4k.javers.persistence.kafka.repository
 
 import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
 import io.bluetape4k.javers.repository.event.CdoSnapshotEventPublisher
+import io.bluetape4k.support.requireNotBlank
 import org.springframework.kafka.core.KafkaTemplate
 import java.time.Duration
 import java.util.concurrent.TimeUnit
@@ -29,6 +30,8 @@ class KafkaSnapshotEventPublisher(
      * Publishes [event] with an explicit Kafka key.
      */
     fun publish(event: CdoSnapshotEvent<String>, key: String) {
+        key.requireNotBlank("key")
+
         try {
             kafkaOperations.sendDefault(key, event.payload).get(publishTimeout.toMillis(), TimeUnit.MILLISECONDS)
         } catch (e: InterruptedException) {
