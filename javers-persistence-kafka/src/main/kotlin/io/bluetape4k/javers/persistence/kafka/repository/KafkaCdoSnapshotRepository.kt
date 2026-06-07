@@ -50,7 +50,7 @@ class KafkaCdoSnapshotRepository(
     companion object: KLogging()
 
     private val readContractWarningLogged = atomic(false)
-    private val publisher = KafkaSnapshotEventPublisher(kafkaOperations, publishTimeout)
+    private val publisher = KafkaSnapshotEventPublisher(kafkaOperations, publishTimeout.requirePositivePublishTimeout())
 
     override fun getKeys(): Set<String> {
         logReadContract("getKeys()", "empty")

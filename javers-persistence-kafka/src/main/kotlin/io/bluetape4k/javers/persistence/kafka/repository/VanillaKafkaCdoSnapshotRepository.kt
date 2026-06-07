@@ -52,9 +52,7 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions private constructor(
             closeProducerOnClose: Boolean = false,
         ): VanillaKafkaCdoSnapshotRepositoryOptions {
             topic.requireNotBlank("topic")
-            require(!publishTimeout.isZero && !publishTimeout.isNegative) {
-                "publishTimeout must be positive: $publishTimeout"
-            }
+            publishTimeout.requirePositivePublishTimeout()
 
             return VanillaKafkaCdoSnapshotRepositoryOptions(
                 topic = topic,
