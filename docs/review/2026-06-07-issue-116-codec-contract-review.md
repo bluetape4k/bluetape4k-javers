@@ -19,6 +19,15 @@ Repository codec contracts are covered without production-code changes:
 - Lettuce and Redisson default to `JaversCodecs.LZ4Fory` and round-trip snapshots through an injected binary codec.
 - The CI gitleaks installer resolves the current Linux x64 asset from the release API instead of reconstructing a release URL.
 
+## PR Review Follow-up
+
+PR #166 review comments were addressed without production-code changes:
+
+- Exposed codec contract tests now clean their test schema in a `finally` block.
+- Redis codec contract tests no longer call `flushdb()` on shared Redis fixtures.
+- Redis codec contract tests use a unique repository namespace per test to avoid neighboring-test interference.
+- Snapshot count assertions now use `shouldHaveSize`.
+
 ## 7-Tier Local Review
 
 | Tier | Result | Evidence |
@@ -29,7 +38,7 @@ Repository codec contracts are covered without production-code changes:
 | Concurrency / infra risk | PASS | Redis and Kafka modules already disable JUnit parallel execution; Testcontainers-backed modules were verified in one Gradle invocation. |
 | Security / data safety | PASS | Tests use in-memory H2, local Testcontainers fixtures, and overridden Kafka publish futures; no secrets or external production systems. |
 | Maintainability | PASS | Test helpers are local, small, and repository-specific; CI install logic remains within the existing gitleaks step. |
-| Validation quality | PASS | Targeted new-test run, full issue acceptance command, `actionlint`, and local gitleaks scan passed. |
+| Validation quality | PASS | Targeted new-test run, clean affected-module test run, full issue acceptance command, `actionlint`, and local gitleaks scan passed. |
 
 ## Findings
 
@@ -62,6 +71,15 @@ Result: PASS.
 - `javers-exposed`: 27 tests
 - `javers-persistence-redis`: 70 tests
 - `javers-persistence-kafka`: 6 tests
+
+```bash
+./gradlew :javers-exposed:cleanTest :javers-persistence-redis:cleanTest :javers-exposed:test :javers-persistence-redis:test --no-configuration-cache --no-build-cache --console=plain
+```
+
+Result: PASS.
+
+- `javers-exposed`: 27 tests
+- `javers-persistence-redis`: 70 tests
 
 ```bash
 actionlint .github/workflows/ci.yml

@@ -3,6 +3,8 @@ package io.bluetape4k.javers.persistence.redis.repository
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeGreaterThan
+import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.codecs.JaversCodec
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
@@ -19,8 +21,7 @@ class RedisCdoSnapshotRepositoryCodecContractTest {
 
     @Test
     fun `lettuce repository defaults to LZ4 Fory codec`() {
-        flushLettuce()
-        val repository = LettuceCdoSnapshotRepository("codec-contract:lettuce:default", lettuceClient)
+        val repository = LettuceCdoSnapshotRepository(repositoryName("lettuce", "default"), lettuceClient)
 
         repository.codec() shouldBeEqualTo JaversCodecs.LZ4Fory
 
@@ -29,9 +30,8 @@ class RedisCdoSnapshotRepositoryCodecContractTest {
 
     @Test
     fun `lettuce repository round trips snapshots with custom binary codec`() {
-        flushLettuce()
         val codec = TrackingBinaryCodec()
-        val repository = LettuceCdoSnapshotRepository("codec-contract:lettuce:custom", lettuceClient, codec)
+        val repository = LettuceCdoSnapshotRepository(repositoryName("lettuce", "custom"), lettuceClient, codec)
 
         assertSnapshotRoundTrip(repository, 2)
 
@@ -41,8 +41,7 @@ class RedisCdoSnapshotRepositoryCodecContractTest {
 
     @Test
     fun `redisson repository defaults to LZ4 Fory codec`() {
-        flushRedisson()
-        val repository = RedissonCdoSnapshotRepository("codec-contract:redisson:default", redisson)
+        val repository = RedissonCdoSnapshotRepository(repositoryName("redisson", "default"), redisson)
 
         repository.codec() shouldBeEqualTo JaversCodecs.LZ4Fory
 
@@ -51,9 +50,8 @@ class RedisCdoSnapshotRepositoryCodecContractTest {
 
     @Test
     fun `redisson repository round trips snapshots with custom binary codec`() {
-        flushRedisson()
         val codec = TrackingBinaryCodec()
-        val repository = RedissonCdoSnapshotRepository("codec-contract:redisson:custom", redisson, codec)
+        val repository = RedissonCdoSnapshotRepository(repositoryName("redisson", "custom"), redisson, codec)
 
         assertSnapshotRoundTrip(repository, 4)
 
@@ -76,22 +74,15 @@ class RedisCdoSnapshotRepositoryCodecContractTest {
 
         val snapshots = javers.findSnapshots(QueryBuilder.byInstanceId(id, SnapshotEntity::class.java).build())
 
-        snapshots.size shouldBeEqualTo 2
+        snapshots shouldHaveSize 2
         snapshots[0].version shouldBeEqualTo 2L
         snapshots[0].getPropertyValue("intProperty") shouldBeEqualTo 2
         snapshots[1].version shouldBeEqualTo 1L
         snapshots[1].getPropertyValue("intProperty") shouldBeEqualTo 1
     }
 
-    private fun flushLettuce() {
-        lettuceClient.connect().use {
-            it.sync().flushdb()
-        }
-    }
-
-    private fun flushRedisson() {
-        redisson.keys.flushdb()
-    }
+    private fun repositoryName(client: String, contract: String): String =
+        "codec-contract:$client:$contract:${Base58.randomString(12)}"
 
     private fun AbstractCdoSnapshotRepository<*>.codec(): Any {
         val field = AbstractCdoSnapshotRepository::class.java.getDeclaredField("codec")
