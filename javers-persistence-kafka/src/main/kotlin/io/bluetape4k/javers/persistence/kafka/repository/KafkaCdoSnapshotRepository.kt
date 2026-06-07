@@ -2,6 +2,9 @@ package io.bluetape4k.javers.persistence.kafka.repository
 
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
+import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventCodecIds
+import io.bluetape4k.javers.repository.event.CdoSnapshotEventMetadata
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
@@ -11,7 +14,6 @@ import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.springframework.kafka.core.KafkaTemplate
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 /**
  * Write-only JaVers repository that publishes [CdoSnapshot] to a Kafka topic.
@@ -48,6 +50,7 @@ class KafkaCdoSnapshotRepository(
     companion object: KLogging()
 
     private val readContractWarningLogged = atomic(false)
+    private val publisher = KafkaSnapshotEventPublisher(kafkaOperations, publishTimeout)
 
     override fun getKeys(): Set<String> {
         logReadContract("getKeys()", "empty")
@@ -75,16 +78,9 @@ class KafkaCdoSnapshotRepository(
 
     override fun saveSnapshot(snapshot: CdoSnapshot) {
         val key = snapshot.globalId.value()
-        val value = encode(snapshot)
-        log.trace { "Produce snapshot. key=$key, value=$value" }
-        try {
-            kafkaOperations.sendDefault(key, value).get(publishTimeout.toMillis(), TimeUnit.MILLISECONDS)
-        } catch (e: InterruptedException) {
-            Thread.currentThread().interrupt()
-            throw RuntimeException("Kafka publish interrupted for key=$key", e)
-        } catch (e: Exception) {
-            throw RuntimeException("Kafka publish failed for key=$key", e)
-        }
+        val event = snapshot.toSnapshotEvent()
+        log.trace { "Produce snapshot. key=$key, value=${event.payload}" }
+        publisher.publish(event, key)
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
@@ -100,4 +96,10 @@ class KafkaCdoSnapshotRepository(
             log.debug { message }
         }
     }
+
+    private fun CdoSnapshot.toSnapshotEvent(): CdoSnapshotEvent<String> =
+        CdoSnapshotEvent(
+            metadata = CdoSnapshotEventMetadata.from(this, CdoSnapshotEventCodecIds.JSON_STRING),
+            payload = encode(this),
+        )
 }
