@@ -150,6 +150,36 @@ changed-property filter, commit-property filter, author-like matching,
 `Instant` commit date range, version range, `toCommitId`,
 `snapshotQueryLimit`이 포함됩니다.
 
+## Redis + Exposed 지연 시간 전략
+
+Exposed가 database transaction을 소유하는 애플리케이션에서는
+`javers-exposed`를 durable JaVers audit source of truth로 사용하세요. Redis
+near-cache 또는 read/write-through 동작은 canonical `CdoSnapshot` row나
+repository head metadata가 아니라 application read model과 projection에
+적용하는 것이 안전합니다.
+
+권장 재사용 경로는 기존 `bluetape4k-exposed` cache stack입니다:
+
+- `exposed-cache`는 `CacheMode`, `CacheWriteMode`, local cache option,
+  resilience option, 재사용 가능한 repository test fixture를 제공합니다.
+- `exposed-jdbc-redisson`은 Redisson read-through, write-through,
+  write-behind, near-cache repository를 제공합니다.
+- `exposed-jdbc-lettuce`는 Lettuce read-through, write-through,
+  write-behind repository를 제공합니다.
+
+| 전략 | JaVers + Exposed에서 사용하기 좋은 대상 | 피해야 할 대상 |
+|---|---|---|
+| Cache-aside | audit history에서 재생성 가능한 query result 또는 projection. | canonical audit snapshot write. |
+| Read-through | `bluetape4k-exposed` cache contract에 맞는 Exposed read-model repository. | raw JaVers `CdoSnapshot` repository 대체. |
+| Write-through | 동기 Redis + database latency를 감수할 수 있는 mutable read model. | commit ordering을 보존해야 하는 JaVers audit write. |
+| Write-behind | replay 또는 drain 실패 처리가 명시된 non-authoritative projection. | audit log write, commit sequence, repository head metadata. |
+| Near-cache | Redisson 또는 Lettuce local cache를 활용하는 hot read-model lookup. | composite repository가 invalidation을 소유하지 않는 canonical snapshot/head state. |
+
+`javers-persistence-redis`는 직접 Redis에 audit snapshot을 저장하는 모듈입니다.
+이 SQL-backed repository의 write-behind cache로 감싸는 용도로 사용하지 마세요.
+향후 composite repository는 durable history와 event/projection 동작을 결합할 수
+있지만, invalidation, replay, failure semantics를 명시적으로 소유해야 합니다.
+
 ## 빌드
 
 ```bash
