@@ -5,7 +5,11 @@ import com.google.gson.JsonObject
 import io.bluetape4k.javers.codecs.JaversCodec
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
+import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTableMapping
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.schema.CommitTableMapping
+import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversSchema
+import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.trace
@@ -19,6 +23,40 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
+import java.io.Serializable
+
+/**
+ * Options for [ExposedCdoSnapshotRepository].
+ *
+ * ## Contract
+ * Defaults preserve the original `javers_commit` / `javers_snapshot` table
+ * mapping and keep [ensureSchema] creating those tables. Set
+ * [createSchemaOnEnsure] to `false` when schema migrations are owned by an
+ * external migration tool.
+ *
+ * ```kotlin
+ * val options = ExposedCdoSnapshotRepositoryOptions(
+ *     tableNames = ExposedJaversTableNames(
+ *         commitTableName = "audit_commit",
+ *         snapshotTableName = "audit_snapshot",
+ *     ),
+ *     createSchemaOnEnsure = false,
+ * )
+ * ```
+ */
+data class ExposedCdoSnapshotRepositoryOptions(
+    val tableNames: ExposedJaversTableNames = ExposedJaversTableNames.Default,
+    val createSchemaOnEnsure: Boolean = true,
+): Serializable {
+
+    fun newSchema(): ExposedJaversSchema = ExposedJaversSchema.from(tableNames)
+
+    companion object {
+        private const val serialVersionUID: Long = 1L
+
+        val Default: ExposedCdoSnapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions()
+    }
+}
 
 /**
  * JaVers CDO snapshot repository backed by Exposed JDBC.
@@ -30,6 +68,7 @@ import org.jetbrains.exposed.v1.jdbc.update
  *   snapshots through its configured JSON converter.
  * - Uses Exposed `transaction {}` or `transaction(database) {}` for every
  *   operation and never manages JDBC commits directly.
+ * - Uses [options] to customize table names and schema creation ownership.
  *
  * ```kotlin
  * val repository = ExposedCdoSnapshotRepository(database)
@@ -41,68 +80,77 @@ import org.jetbrains.exposed.v1.jdbc.update
  *
  * @property database optional Exposed database used to route transactions
  * @property codec codec used to persist JaVers snapshot JSON
+ * @property options table mapping and schema initialization options
  */
 class ExposedCdoSnapshotRepository(
     private val database: Database? = null,
     codec: JaversCodec<String> = JaversCodecs.String,
+    private val options: ExposedCdoSnapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions.Default,
 ): AbstractCdoSnapshotRepository<String>(codec) {
 
     companion object: KLogging()
 
+    private val schema: ExposedJaversSchema = options.newSchema()
+    private val commitTable: CommitTableMapping = schema.commitTable
+    private val snapshotTable: CdoSnapshotTableMapping = schema.snapshotTable
+
     override fun ensureSchema() {
+        if (!options.createSchemaOnEnsure) {
+            return
+        }
         inTransaction {
-            SchemaUtils.create(CommitTable, CdoSnapshotTable)
+            SchemaUtils.create(*schema.tables)
         }
     }
 
     override fun getKeys(): Set<String> = inTransaction {
-        CdoSnapshotTable
+        snapshotTable
             .selectAll()
-            .map { it[CdoSnapshotTable.globalId] }
+            .map { it[snapshotTable.globalId] }
             .toSet()
     }
 
     override fun contains(globalIdValue: String): Boolean = inTransaction {
-        CdoSnapshotTable
+        snapshotTable
             .selectAll()
-            .where { CdoSnapshotTable.globalId eq globalIdValue }
+            .where { snapshotTable.globalId eq globalIdValue }
             .limit(1)
             .empty()
             .not()
     }
 
     override fun getSeq(commitId: CommitId): Long = inTransaction {
-        CommitTable
+        commitTable
             .selectAll()
-            .where { CommitTable.commitId eq commitId.value() }
+            .where { commitTable.commitId eq commitId.value() }
             .singleOrNull()
-            ?.get(CommitTable.sequence)
+            ?.get(commitTable.sequence)
             ?: 0L
     }
 
     override fun updateCommitId(commitId: CommitId, sequence: Long) {
         inTransaction {
-            val updated = CommitTable.update({ CommitTable.commitId eq commitId.value() }) {
-                it[CommitTable.sequence] = sequence
+            val updated = commitTable.update({ commitTable.commitId eq commitId.value() }) {
+                it[commitTable.sequence] = sequence
             }
             log.trace { "Updated commit sequence. commitId=${commitId.value()}, sequence=$sequence, updated=$updated" }
         }
     }
 
     override fun loadHeadId(): CommitId? = inTransaction {
-        CommitTable
+        commitTable
             .selectAll()
-            .orderBy(CommitTable.sequence, SortOrder.DESC)
+            .orderBy(commitTable.sequence, SortOrder.DESC)
             .limit(1)
             .singleOrNull()
-            ?.get(CommitTable.commitId)
+            ?.get(commitTable.commitId)
             ?.let { CommitId.valueOf(it) }
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int = inTransaction {
-        CdoSnapshotTable
+        snapshotTable
             .selectAll()
-            .where { CdoSnapshotTable.globalId eq globalIdValue }
+            .where { snapshotTable.globalId eq globalIdValue }
             .count()
             .toInt()
     }
@@ -113,7 +161,7 @@ class ExposedCdoSnapshotRepository(
         inTransaction {
             saveCommitMetadataIfAbsent(snapshot)
 
-            CdoSnapshotTable.insert {
+            snapshotTable.insert {
                 it[globalId] = snapshot.globalId.value()
                 it[commitId] = metadata.id.value()
                 it[version] = snapshot.version
@@ -128,9 +176,9 @@ class ExposedCdoSnapshotRepository(
     private fun saveCommitMetadataIfAbsent(snapshot: CdoSnapshot) {
         val metadata = snapshot.commitMetadata
         val commitIdValue = metadata.id.value()
-        val exists = CommitTable
+        val exists = commitTable
             .selectAll()
-            .where { CommitTable.commitId eq commitIdValue }
+            .where { commitTable.commitId eq commitIdValue }
             .limit(1)
             .empty()
             .not()
@@ -139,7 +187,7 @@ class ExposedCdoSnapshotRepository(
             return
         }
 
-        CommitTable.insert {
+        commitTable.insert {
             it[commitId] = commitIdValue
             it[author] = metadata.author
             it[commitDate] = metadata.commitDate
@@ -150,11 +198,11 @@ class ExposedCdoSnapshotRepository(
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> = inTransaction {
-        CdoSnapshotTable
+        snapshotTable
             .selectAll()
-            .where { CdoSnapshotTable.globalId eq globalIdValue }
-            .orderBy(CdoSnapshotTable.version, SortOrder.DESC)
-            .mapNotNull { decode(it[CdoSnapshotTable.state]) }
+            .where { snapshotTable.globalId eq globalIdValue }
+            .orderBy(snapshotTable.version, SortOrder.DESC)
+            .mapNotNull { decode(it[snapshotTable.state]) }
     }
 
     private fun Map<String, String>.toJsonObject(): JsonObject {

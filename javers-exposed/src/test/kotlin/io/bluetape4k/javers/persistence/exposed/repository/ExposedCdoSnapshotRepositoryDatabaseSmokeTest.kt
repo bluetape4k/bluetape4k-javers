@@ -1,11 +1,13 @@
 package io.bluetape4k.javers.persistence.exposed.repository
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.exposed.tests.AbstractExposedTest
 import io.bluetape4k.exposed.tests.TestDB
 import io.bluetape4k.exposed.tests.withTables
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.model.SnapshotEntity
@@ -22,6 +24,28 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
     fun `commit and load latest snapshot on shared database matrix`(testDB: TestDB) {
         withTables(testDB, CommitTable, CdoSnapshotTable) {
             assertRepositorySmoke()
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource(ENABLE_DIALECTS_METHOD)
+    fun `custom table names commit and load on shared database matrix`(testDB: TestDB) {
+        val options = customOptions(testDB)
+        val schema = options.newSchema()
+
+        withTables(testDB, *schema.tables) {
+            val repository = ExposedCdoSnapshotRepository(options = options)
+            val javers = newJavers(repository)
+            val entity = SnapshotEntity(10).apply { intProperty = 100 }
+
+            val commit = javers.commit("author", entity)
+            val latest = repository.getLatest(commit.snapshots.first().globalId).get()
+
+            schema.commitTable.tableName shouldBeEqualTo options.tableNames.commitTableName
+            schema.snapshotTable.tableName shouldBeEqualTo options.tableNames.snapshotTableName
+            latest.version shouldBeEqualTo 1L
+            latest.getPropertyValue("intProperty") shouldBeEqualTo 100
+            repository.getHeadId() shouldBeEqualTo commit.id
         }
     }
 
@@ -141,5 +165,15 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
         return JaversBuilder.javers()
             .registerJaversRepository(repository)
             .build()
+    }
+
+    private fun customOptions(testDB: TestDB): ExposedCdoSnapshotRepositoryOptions {
+        val suffix = "${testDB.name.lowercase()}_${Base58.randomString(6)}"
+        return ExposedCdoSnapshotRepositoryOptions(
+            tableNames = ExposedJaversTableNames(
+                commitTableName = "javers_commit_$suffix",
+                snapshotTableName = "javers_snapshot_$suffix",
+            ),
+        )
     }
 }
