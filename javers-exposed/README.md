@@ -19,6 +19,8 @@ managed through JetBrains Exposed.
   path and an index on commit sequence for repository head restoration.
 - Pushes common JaVers snapshot filters into SQL before decoding snapshot JSON.
 - Restores the repository head commit id after a repository instance rebuild.
+- Audits Exposed DAO `Entity` lifecycle events through an explicit
+  `EntityHook` subscription.
 - Supports H2, PostgreSQL, and MySQL through Exposed JDBC.
 
 ## Architecture
@@ -76,6 +78,59 @@ val repository = ExposedCdoSnapshotRepository(
 With `createSchemaOnEnsure = false`, `ensureSchema()` becomes a no-op and the
 application must create the mapped tables through Exposed `SchemaUtils`, Flyway,
 Liquibase, or another migration tool before writing snapshots.
+
+## DAO EntityHook Audit
+
+`ExposedJaversEntityHookSubscription` can audit Exposed DAO entity lifecycle
+events without adding `javers.commit()` calls to every DAO repository method.
+It is intentionally scoped to Exposed DAO `EntityHook`; raw Exposed DSL writes,
+external database writes, and CDC streams are not observed.
+
+Map each DAO entity class to a detached JaVers audit object:
+
+```kotlin
+data class AuditedCustomer(
+    @Id val id: Int,
+    val name: String,
+)
+
+class CustomerEntity(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<CustomerEntity>(Customers)
+
+    var name by Customers.name
+}
+
+val mapping = ExposedJaversEntityHookMapping(
+    entityClass = CustomerEntity,
+    auditType = AuditedCustomer::class.java,
+    toAuditObject = { entity ->
+        AuditedCustomer(
+            id = entity.id.value,
+            name = entity.name,
+        )
+    },
+)
+
+val subscription = ExposedJaversEntityHookSubscription.subscribe(
+    javers = javers,
+    mappings = listOf(mapping),
+    authorProvider = { "system" },
+    commitPropertiesProvider = { change ->
+        mapOf("changeType" to change.changeType.name)
+    },
+)
+```
+
+Close the subscription when the application scope ends:
+
+```kotlin
+subscription.close()
+```
+
+Created and updated DAO events are committed from the flushed entity state.
+Deleted DAO events create a JaVers terminal snapshot by id with
+`commitShallowDeleteById()`, so deleted object state is not reloaded after the
+row is removed.
 
 ## Query Behavior
 
