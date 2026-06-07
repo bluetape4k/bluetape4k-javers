@@ -43,6 +43,12 @@ class CdoSnapshotEventTest {
             metadata(commitId = " ")
         }
         assertFailsWith<IllegalArgumentException> {
+            metadata(commitMajorId = 0L)
+        }
+        assertFailsWith<IllegalArgumentException> {
+            metadata(commitMinorId = -1)
+        }
+        assertFailsWith<IllegalArgumentException> {
             metadata(snapshotVersion = 0L)
         }
         assertFailsWith<IllegalArgumentException> {
@@ -71,6 +77,8 @@ class CdoSnapshotEventTest {
     private fun metadata(
         globalIdValue: String = "Entity/1",
         commitId: String = "1.00",
+        commitMajorId: Long = 1L,
+        commitMinorId: Int = 0,
         repositorySequence: Long? = null,
         snapshotVersion: Long = 1L,
         snapshotType: String = SnapshotType.INITIAL.name,
@@ -80,8 +88,8 @@ class CdoSnapshotEventTest {
         CdoSnapshotEventMetadata(
             globalIdValue = globalIdValue,
             commitId = commitId,
-            commitMajorId = 1L,
-            commitMinorId = 0,
+            commitMajorId = commitMajorId,
+            commitMinorId = commitMinorId,
             repositorySequence = repositorySequence,
             snapshotVersion = snapshotVersion,
             snapshotType = snapshotType,
