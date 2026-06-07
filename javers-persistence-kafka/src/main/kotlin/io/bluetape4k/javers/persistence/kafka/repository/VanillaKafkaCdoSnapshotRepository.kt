@@ -73,13 +73,27 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions(
  * @property options publishing and lifecycle options
  * @property keyMapper maps a JaVers snapshot to the Kafka record key
  */
-class VanillaKafkaCdoSnapshotRepository(
+class VanillaKafkaCdoSnapshotRepository private constructor(
     private val producer: Producer<String, String>,
     private val options: VanillaKafkaCdoSnapshotRepositoryOptions,
     private val keyMapper: (CdoSnapshot) -> String = { it.globalId.value() },
 ): AbstractCdoSnapshotRepository<String>(JaversCodecs.String), AutoCloseable {
 
-    companion object: KLogging()
+    companion object: KLogging() {
+        /**
+         * Creates a write-only JaVers repository backed by an Apache Kafka [Producer].
+         */
+        operator fun invoke(
+            producer: Producer<String, String>,
+            options: VanillaKafkaCdoSnapshotRepositoryOptions,
+            keyMapper: (CdoSnapshot) -> String = { it.globalId.value() },
+        ): VanillaKafkaCdoSnapshotRepository =
+            VanillaKafkaCdoSnapshotRepository(
+                producer = producer,
+                options = options,
+                keyMapper = keyMapper,
+            )
+    }
 
     private val readContractWarningLogged = atomic(false)
 
@@ -146,4 +160,3 @@ class VanillaKafkaCdoSnapshotRepository(
         }
     }
 }
-

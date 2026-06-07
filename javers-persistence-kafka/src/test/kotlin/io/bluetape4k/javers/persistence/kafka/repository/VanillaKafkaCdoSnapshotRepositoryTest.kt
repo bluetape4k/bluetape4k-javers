@@ -9,11 +9,12 @@ import io.bluetape4k.assertions.shouldBeEmpty
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeNull
-import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.assertions.shouldBeTrue
+import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import io.mockk.Runs
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -25,6 +26,7 @@ import org.apache.kafka.clients.producer.RecordMetadata
 import org.javers.core.JaversBuilder
 import org.javers.core.commit.CommitId
 import org.javers.core.model.SnapshotEntity
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -34,9 +36,16 @@ import java.util.concurrent.TimeUnit
 
 class VanillaKafkaCdoSnapshotRepositoryTest {
 
+    private val producer = mockk<Producer<String, String>>(relaxed = true)
+    private val recordMetadata = mockk<RecordMetadata>()
+
+    @BeforeEach
+    fun beforeEach() {
+        clearMocks(producer, recordMetadata)
+    }
+
     @Test
     fun `repository publishes encoded snapshot with vanilla producer`() {
-        val producer = mockk<Producer<String, String>>(relaxed = true)
         val recordSlot = slot<ProducerRecord<String, String>>()
         every { producer.send(capture(recordSlot)) } returns completedMetadataFuture()
 
@@ -61,7 +70,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `repository uses custom key mapper`() {
-        val producer = mockk<Producer<String, String>>(relaxed = true)
         val recordSlot = slot<ProducerRecord<String, String>>()
         every { producer.send(capture(recordSlot)) } returns completedMetadataFuture()
 
@@ -81,7 +89,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
-        val producer = mockk<Producer<String, String>>()
         every { producer.send(any()) } returns CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))
 
         val repository = VanillaKafkaCdoSnapshotRepository(
@@ -99,7 +106,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `saveSnapshot propagates timeout when Kafka publish does not complete`() {
-        val producer = mockk<Producer<String, String>>()
         every { producer.send(any()) } returns CompletableFuture<RecordMetadata>()
 
         val repository = VanillaKafkaCdoSnapshotRepository(
@@ -120,7 +126,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `saveSnapshot restores interrupt status when Kafka publish is interrupted`() {
-        val producer = mockk<Producer<String, String>>()
         every { producer.send(any()) } returns InterruptedFuture()
 
         val repository = VanillaKafkaCdoSnapshotRepository(
@@ -143,7 +148,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `flushAfterSend flushes producer only after successful acknowledgement`() {
-        val producer = mockk<Producer<String, String>>(relaxed = true)
         every { producer.send(any()) } returns completedMetadataFuture()
         every { producer.flush() } just Runs
 
@@ -165,7 +169,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `close does not close caller owned producer by default`() {
-        val producer = mockk<Producer<String, String>>(relaxed = true)
         val repository = VanillaKafkaCdoSnapshotRepository(
             producer = producer,
             options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots"),
@@ -178,7 +181,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `close closes producer when ownership is enabled`() {
-        val producer = mockk<Producer<String, String>>(relaxed = true)
         every { producer.close(any<Duration>()) } just Runs
         val repository = VanillaKafkaCdoSnapshotRepository(
             producer = producer,
@@ -213,7 +215,6 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `rebuilt repository has no head because vanilla Kafka persistence is write only`() {
-        val producer = mockk<Producer<String, String>>(relaxed = true)
         every { producer.send(any()) } returns completedMetadataFuture()
         val options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots")
         val repository = VanillaKafkaCdoSnapshotRepository(producer, options)
@@ -235,7 +236,7 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
     @Test
     fun `read path keeps write only contract and warns once per repository`() {
         val repository = VanillaKafkaCdoSnapshotRepository(
-            producer = mockk(relaxed = true),
+            producer = producer,
             options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots"),
         )
         val (logger, appender) = attachLogAppender()
@@ -262,7 +263,7 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
     }
 
     private fun completedMetadataFuture(): CompletableFuture<RecordMetadata> =
-        CompletableFuture.completedFuture(mockk())
+        CompletableFuture.completedFuture(recordMetadata)
 
     private fun AbstractCdoSnapshotRepository<*>.codec(): Any {
         val field = AbstractCdoSnapshotRepository::class.java.getDeclaredField("codec")
