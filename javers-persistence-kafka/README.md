@@ -12,18 +12,20 @@ consume audit events, while repository read methods return empty/default values.
 
 ## Features
 
-- `KafkaCdoSnapshotRepository` for publishing encoded JaVers snapshots.
-- Configurable Kafka topic and key mapping.
+- `KafkaCdoSnapshotRepository` for Spring Kafka `KafkaTemplate` publishing.
+- `VanillaKafkaCdoSnapshotRepository` for Spring-free Apache Kafka `Producer` publishing.
+- Configurable Kafka topic, key mapping, publish timeout, flush behavior, and producer lifecycle ownership.
 - Explicit first read-path warning, with repeated write-only contract messages demoted to debug.
 - Failure propagation from Kafka send operations.
 - Codec reuse from `javers-core`.
 
 ## Usage
 
+### Spring Kafka
+
 ```kotlin
 val repository = KafkaCdoSnapshotRepository(
-    producer = producer,
-    topic = "order-audit-events",
+    kafkaOperations = kafkaTemplate,
 )
 
 val javers = JaversBuilder.javers()
@@ -31,9 +33,59 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
+### Vanilla Kafka
+
+Use the vanilla repository when the application already owns an Apache Kafka
+`Producer<String, String>` and should not depend on Spring Kafka at runtime:
+
+```kotlin
+val options = VanillaKafkaCdoSnapshotRepositoryOptions(
+    topic = "order-audit-events",
+    publishTimeout = Duration.ofSeconds(10),
+)
+
+val repository = VanillaKafkaCdoSnapshotRepository(
+    producer = producer,
+    options = options,
+)
+
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repository)
+    .build()
+```
+
+You can create the producer with raw Kafka clients or an optional
+`bluetape4k-kafka` / `bluetape4k-kafka4` helper that matches the application's
+Kafka compatibility line:
+
+```kotlin
+val producer = producerOf<String, String>(
+    mapOf(
+        ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "localhost:9092",
+        ProducerConfig.ACKS_CONFIG to "all",
+    ),
+    StringSerializer(),
+    StringSerializer(),
+)
+```
+
+That helper dependency is optional; `javers-persistence-kafka` does not require
+it on the production runtime classpath.
+
 Use this module when Kafka is the audit event stream. Pair it with a durable
 snapshot repository or a projection consumer when the application also needs
 historical reads.
+
+## Adapter Selection
+
+| Adapter | Runtime dependency | Use when |
+|---|---|---|
+| `KafkaCdoSnapshotRepository` | Spring Kafka `KafkaTemplate` supplied by the caller. | The application already uses Spring Kafka. |
+| `VanillaKafkaCdoSnapshotRepository` | Apache Kafka `Producer<String, String>` supplied by the caller. | The application is not Spring-based or owns producer lifecycle directly. |
+
+`VanillaKafkaCdoSnapshotRepository.close()` does not close the producer unless
+`closeProducerOnClose = true` is set. Keep the default when an application-level
+Kafka client lifecycle already owns the producer.
 
 ## Dependency
 
