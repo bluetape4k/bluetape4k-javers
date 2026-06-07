@@ -268,7 +268,7 @@ class ExposedCdoSnapshotRepository(
         }
     }
 
-    private fun joinedSnapshotQuery(predicate: Op<Boolean>?): Query {
+    private fun joinedSnapshotQuery(predicate: Op<Boolean>? = null): Query {
         var query = snapshotTable
             .join(
                 otherTable = commitTable,
