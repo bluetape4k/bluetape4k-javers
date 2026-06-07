@@ -17,6 +17,7 @@ managed through JetBrains Exposed.
   snapshots with its configured JSON converter.
 - Keeps a unique `(global_id, version)` index for the hot snapshot history load
   path and an index on commit sequence for repository head restoration.
+- Pushes common JaVers snapshot filters into SQL before decoding snapshot JSON.
 - Restores the repository head commit id after a repository instance rebuild.
 - Supports H2, PostgreSQL, and MySQL through Exposed JDBC.
 
@@ -78,10 +79,22 @@ Liquibase, or another migration tool before writing snapshots.
 
 ## Query Behavior
 
-The first implementation delegates JaVers query filtering to the inherited
-repository behavior after loading snapshots by global id. SQL pushdown is out of
-scope for this module version and can be added behind the same repository API
-later.
+`ExposedCdoSnapshotRepository` avoids a full repository scan for common JaVers
+snapshot queries:
+
+- `getStateHistory(globalId, queryParams)` loads only the requested global id
+  when the query does not include aggregate child value objects.
+- `getStateHistory(classes, queryParams)` prefilters by persisted managed type
+  when the query does not include aggregate child value objects.
+- `getSnapshots(queryParams)` pushes exact commit ids, exact version, exact
+  author, `LocalDateTime` commit date range, snapshot type, `skip`, and `limit`
+  into the SQL query before decoding snapshot JSON.
+
+Queries that need JaVers in-memory semantics still fall back to the shared
+repository filtering path. This includes aggregate child value object queries,
+changed-property filters, commit-property filters, author-like matching,
+`Instant` commit date ranges, version ranges, `toCommitId`, and
+`snapshotQueryLimit`.
 
 ## Build
 

@@ -4,6 +4,14 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.bluetape4k.javers.codecs.JaversCodec
 import io.bluetape4k.javers.codecs.JaversCodecs
+import io.bluetape4k.javers.metamodel.filterByAuthor
+import io.bluetape4k.javers.metamodel.filterByChangedPropertyNames
+import io.bluetape4k.javers.metamodel.filterByCommitDate
+import io.bluetape4k.javers.metamodel.filterByCommitIds
+import io.bluetape4k.javers.metamodel.filterByCommitProperties
+import io.bluetape4k.javers.metamodel.filterByToCommitId
+import io.bluetape4k.javers.metamodel.filterByType
+import io.bluetape4k.javers.metamodel.filterByVersion
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTableMapping
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
@@ -15,15 +23,27 @@ import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.trace
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
+import org.javers.core.metamodel.`object`.GlobalId
+import org.javers.core.metamodel.type.ManagedType
+import org.javers.repository.api.QueryParams
+import org.javers.repository.api.QueryParamsBuilder
+import org.jetbrains.exposed.v1.core.JoinType
+import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.SortOrder
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.lessEq
 import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.Query
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 import java.io.Serializable
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Options for [ExposedCdoSnapshotRepository].
@@ -203,6 +223,137 @@ class ExposedCdoSnapshotRepository(
             .where { snapshotTable.globalId eq globalIdValue }
             .orderBy(snapshotTable.version, SortOrder.DESC)
             .mapNotNull { decode(it[snapshotTable.state]) }
+    }
+
+    override fun getStateHistory(globalId: GlobalId, queryParams: QueryParams): MutableList<CdoSnapshot> {
+        if (queryParams.isAggregate) {
+            return super.getStateHistory(globalId, queryParams)
+        }
+        return applyQueryParams(loadSnapshots(globalId.value()).asSequence(), queryParams)
+    }
+
+    override fun getStateHistory(
+        givenClasses: MutableSet<ManagedType>,
+        queryParams: QueryParams,
+    ): MutableList<CdoSnapshot> {
+        if (queryParams.isAggregate) {
+            return super.getStateHistory(givenClasses, queryParams)
+        }
+
+        val managedTypeNames = givenClasses.map { it.name }.toSet()
+        if (managedTypeNames.isEmpty()) {
+            return mutableListOf()
+        }
+
+        val snapshots = inTransaction {
+            joinedSnapshotQuery(snapshotTable.managedType inList managedTypeNames)
+                .mapNotNull { decode(it[snapshotTable.state]) }
+        }
+        return applyQueryParams(snapshots.asSequence(), queryParams)
+    }
+
+    override fun getSnapshots(queryParams: QueryParams): MutableList<CdoSnapshot> {
+        if (!queryParams.canUseSqlPushdown()) {
+            return super.getSnapshots(queryParams)
+        }
+
+        return inTransaction {
+            val query = joinedSnapshotQuery(queryParams.toSqlPredicate())
+                .limit(queryParams.limit())
+                .offset(queryParams.skip().toLong())
+            applyQueryParams(
+                snapshots = query.mapNotNull { decode(it[snapshotTable.state]) }.asSequence(),
+                queryParams = queryParams.withSqlPageApplied(),
+            )
+        }
+    }
+
+    private fun joinedSnapshotQuery(predicate: Op<Boolean>?): Query {
+        var query = snapshotTable
+            .join(
+                otherTable = commitTable,
+                joinType = JoinType.INNER,
+                additionalConstraint = { snapshotTable.commitId eq commitTable.commitId },
+            )
+            .selectAll()
+            .orderBy(commitTable.sequence, SortOrder.DESC)
+
+        if (predicate != null) {
+            query = query.where { predicate }
+        }
+        return query
+    }
+
+    private fun QueryParams.canUseSqlPushdown(): Boolean {
+        return toCommitId().isEmpty &&
+            authorLikeIgnoreCase().isEmpty &&
+            fromInstant().isEmpty &&
+            toInstant().isEmpty &&
+            commitProperties().isEmpty() &&
+            commitPropertiesLike().isEmpty() &&
+            changedProperties().isEmpty() &&
+            fromVersion().isEmpty &&
+            toVersion().isEmpty &&
+            !hasSnapshotQueryLimit()
+    }
+
+    private fun QueryParams.toSqlPredicate(): Op<Boolean>? {
+        val predicates = mutableListOf<Op<Boolean>>()
+
+        val commitIdValues = commitIds().map { it.value() }
+        if (commitIdValues.isNotEmpty()) {
+            predicates += snapshotTable.commitId inList commitIdValues
+        }
+        version().getOrNull()?.let { predicates += snapshotTable.version eq it }
+        author().getOrNull()?.let { predicates += commitTable.author eq it }
+        from().getOrNull()?.let { predicates += commitTable.commitDate greaterEq it }
+        to().getOrNull()?.let { predicates += commitTable.commitDate lessEq it }
+        snapshotType().getOrNull()?.let { predicates += snapshotTable.type eq it.name }
+
+        return predicates.reduceOrNull { left, right -> left and right }
+    }
+
+    private fun QueryParams.withSqlPageApplied(): QueryParams {
+        if (skip() == 0) {
+            return this
+        }
+        return QueryParamsBuilder.copy(this)
+            .skip(0)
+            .build()
+    }
+
+    private fun applyQueryParams(
+        snapshots: Sequence<CdoSnapshot>,
+        queryParams: QueryParams,
+    ): MutableList<CdoSnapshot> {
+        var results = snapshots
+        if (queryParams.commitIds().isNotEmpty()) {
+            results = results.filterByCommitIds(queryParams.commitIds())
+        }
+        if (queryParams.toCommitId().isPresent) {
+            results = results.filterByToCommitId(queryParams.toCommitId().get())
+        }
+        if (queryParams.version().isPresent) {
+            results = results.filterByVersion(queryParams.version().get())
+        }
+        if (queryParams.author().isPresent) {
+            results = results.filterByAuthor(queryParams.author().get())
+        }
+        if (queryParams.from().isPresent || queryParams.to().isPresent) {
+            results = results.filterByCommitDate(queryParams)
+        }
+        if (queryParams.changedProperties().isNotEmpty()) {
+            results = results.filterByChangedPropertyNames(queryParams.changedProperties())
+        }
+        if (queryParams.snapshotType().isPresent) {
+            results = results.filterByType(queryParams.snapshotType().get())
+        }
+        results = results.filterByCommitProperties(queryParams.commitProperties())
+
+        return results
+            .drop(queryParams.skip())
+            .take(queryParams.limit())
+            .toMutableList()
     }
 
     private fun Map<String, String>.toJsonObject(): JsonObject {

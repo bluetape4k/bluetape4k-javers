@@ -17,6 +17,7 @@ JaVers commit과 encoded snapshot을 저장하는 `AbstractCdoSnapshotRepository
   `CdoSnapshot` payload를 저장합니다.
 - snapshot history 조회 hot path를 위해 `(global_id, version)` unique index를
   유지하고, repository head 복원을 위해 commit sequence index를 사용합니다.
+- 일반적인 JaVers snapshot filter를 snapshot JSON decode 전에 SQL로 pushdown합니다.
 - repository instance를 다시 만들 때 head commit id를 복원합니다.
 - Exposed JDBC를 통해 H2, PostgreSQL, MySQL을 지원합니다.
 
@@ -78,9 +79,22 @@ Liquibase 같은 migration 도구로 매핑된 table을 생성해야 합니다.
 
 ## Query 동작
 
-첫 구현은 global id로 snapshot을 읽은 뒤 상위 repository의 JaVers query
-filtering 동작에 위임합니다. SQL pushdown은 이번 module version의 범위가
-아니며, 같은 repository API 뒤에서 이후 확장할 수 있습니다.
+`ExposedCdoSnapshotRepository`는 일반적인 JaVers snapshot query에서 full
+repository scan을 피합니다:
+
+- `getStateHistory(globalId, queryParams)`는 aggregate child value object
+  query가 아닐 때 요청한 global id만 읽습니다.
+- `getStateHistory(classes, queryParams)`는 aggregate child value object
+  query가 아닐 때 저장된 managed type으로 먼저 필터링합니다.
+- `getSnapshots(queryParams)`는 exact commit id, exact version, exact
+  author, `LocalDateTime` commit date range, snapshot type, `skip`, `limit`을
+  snapshot JSON decode 전에 SQL query로 pushdown합니다.
+
+JaVers in-memory semantics가 필요한 query는 기존 공통 repository filtering
+경로로 fallback합니다. 여기에는 aggregate child value object query,
+changed-property filter, commit-property filter, author-like matching,
+`Instant` commit date range, version range, `toCommitId`,
+`snapshotQueryLimit`이 포함됩니다.
 
 ## 빌드
 
