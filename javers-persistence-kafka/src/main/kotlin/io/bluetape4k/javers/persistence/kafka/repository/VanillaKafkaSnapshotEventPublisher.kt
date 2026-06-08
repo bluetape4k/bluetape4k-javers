@@ -32,6 +32,7 @@ class VanillaKafkaSnapshotEventPublisher(
      */
     fun publish(event: CdoSnapshotEvent<String>, key: String) {
         key.requireNotBlank("key")
+        val keyDiagnostics = KafkaSnapshotKeyDiagnostics.format(key)
 
         val record = ProducerRecord(options.topic, key, event.payload)
         try {
@@ -41,9 +42,9 @@ class VanillaKafkaSnapshotEventPublisher(
             }
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-            throw RuntimeException("Kafka publish interrupted for topic=${options.topic}, key=$key", e)
+            throw RuntimeException("Kafka publish interrupted for topic=${options.topic}, $keyDiagnostics", e)
         } catch (e: Exception) {
-            throw RuntimeException("Kafka publish failed for topic=${options.topic}, key=$key", e)
+            throw RuntimeException("Kafka publish failed for topic=${options.topic}, $keyDiagnostics", e)
         }
     }
 

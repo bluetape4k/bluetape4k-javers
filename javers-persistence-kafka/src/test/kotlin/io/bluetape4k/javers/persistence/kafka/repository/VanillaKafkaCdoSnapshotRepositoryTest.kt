@@ -10,6 +10,8 @@ import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.assertions.shouldBeTrue
+import io.bluetape4k.assertions.shouldContain
+import io.bluetape4k.assertions.shouldNotContain
 import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
@@ -93,6 +95,34 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
     }
 
     @Test
+    fun `repository logs key diagnostics without raw key`() {
+        val sensitiveKey = "account:alice@example.com"
+        every { producer.send(any()) } returns completedMetadataFuture()
+        val repository = VanillaKafkaCdoSnapshotRepository(
+            producer = producer,
+            options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots"),
+            keyMapper = { sensitiveKey },
+        )
+        val javers = JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
+        val attached = attachTraceLogAppender(VanillaKafkaCdoSnapshotRepository::class.java)
+
+        try {
+            javers.commit("vanilla", SnapshotEntity(1))
+        } finally {
+            attached.restore()
+        }
+
+        val messages = attached.appender.list.joinToString("\n") { it.formattedMessage }
+
+        messages shouldContain "Produce snapshot."
+        messages shouldContain "keyFingerprint="
+        messages shouldContain "keyLength=${sensitiveKey.length}"
+        messages.shouldNotContain(sensitiveKey)
+    }
+
+    @Test
     fun `repository-created producer publishes and closes through bluetape4k kafka helper`() {
         val repository = VanillaKafkaCdoSnapshotRepository(
             producerConfigs = KafkaProvider.producerProperties,
@@ -127,6 +157,25 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
     }
 
     @Test
+    fun `publisher failure message uses key diagnostics without raw key`() {
+        val sensitiveKey = "account:alice@example.com"
+        every { producer.send(any()) } returns CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))
+        val publisher = VanillaKafkaSnapshotEventPublisher(
+            producer = producer,
+            options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots"),
+        )
+
+        val failure = assertFailsWith<RuntimeException> {
+            publisher.publish(snapshotEvent(), sensitiveKey)
+        }
+        val message = failure.message.orEmpty()
+
+        message shouldContain "keyFingerprint="
+        message shouldContain "keyLength=${sensitiveKey.length}"
+        message.shouldNotContain(sensitiveKey)
+    }
+
+    @Test
     fun `publisher rejects blank explicit key`() {
         val publisher = VanillaKafkaSnapshotEventPublisher(
             producer = producer,
@@ -140,6 +189,7 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
 
     @Test
     fun `saveSnapshot propagates timeout when Kafka publish does not complete`() {
+        val sensitiveKey = "account:alice@example.com"
         every { producer.send(any()) } returns CompletableFuture<RecordMetadata>()
 
         val repository = VanillaKafkaCdoSnapshotRepository(
@@ -148,14 +198,20 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
                 topic = "audit.snapshots",
                 publishTimeout = Duration.ofMillis(1),
             ),
+            keyMapper = { sensitiveKey },
         )
         val javers = JaversBuilder.javers()
             .registerJaversRepository(repository)
             .build()
 
-        assertFailsWith<RuntimeException> {
+        val failure = assertFailsWith<RuntimeException> {
             javers.commit("vanilla", SnapshotEntity(1))
         }
+        val message = failure.message.orEmpty()
+
+        message shouldContain "keyFingerprint="
+        message shouldContain "keyLength=${sensitiveKey.length}"
+        message.shouldNotContain(sensitiveKey)
     }
 
     @Test
@@ -175,6 +231,29 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
                 javers.commit("vanilla", SnapshotEntity(1))
             }
             Thread.currentThread().isInterrupted.shouldBeTrue()
+        } finally {
+            Thread.interrupted()
+        }
+    }
+
+    @Test
+    fun `publisher interruption message uses key diagnostics without raw key`() {
+        val sensitiveKey = "account:alice@example.com"
+        every { producer.send(any()) } returns InterruptedFuture()
+        val publisher = VanillaKafkaSnapshotEventPublisher(
+            producer = producer,
+            options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "audit.snapshots"),
+        )
+
+        try {
+            val failure = assertFailsWith<RuntimeException> {
+                publisher.publish(snapshotEvent(), sensitiveKey)
+            }
+            val message = failure.message.orEmpty()
+
+            message shouldContain "keyFingerprint="
+            message shouldContain "keyLength=${sensitiveKey.length}"
+            message.shouldNotContain(sensitiveKey)
         } finally {
             Thread.interrupted()
         }
@@ -328,6 +407,31 @@ class VanillaKafkaCdoSnapshotRepositoryTest {
         val appender = ListAppender<ILoggingEvent>().apply { start() }
         logger.addAppender(appender)
         return logger to appender
+    }
+
+    private fun attachTraceLogAppender(loggerClass: Class<*>): AttachedLogAppender {
+        val logger = LoggerFactory.getLogger(loggerClass) as Logger
+        val previousLevel = logger.level
+        val previousAdditive = logger.isAdditive
+        val appender = ListAppender<ILoggingEvent>().apply { start() }
+        logger.level = Level.TRACE
+        logger.isAdditive = false
+        logger.addAppender(appender)
+        return AttachedLogAppender(logger, appender, previousLevel, previousAdditive)
+    }
+
+    private class AttachedLogAppender(
+        val logger: Logger,
+        val appender: ListAppender<ILoggingEvent>,
+        val previousLevel: Level?,
+        val previousAdditive: Boolean,
+    ) {
+        fun restore() {
+            logger.detachAppender(appender)
+            logger.level = previousLevel
+            logger.isAdditive = previousAdditive
+            appender.stop()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
