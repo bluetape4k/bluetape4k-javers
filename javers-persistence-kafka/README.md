@@ -102,6 +102,27 @@ headers or the record value today. If a projection or future adapter needs
 wire-visible metadata, it must define that contract explicitly with headers or
 an envelope and add consumer-facing tests.
 
+### Kafka Key Diagnostics
+
+Kafka record keys remain unchanged because they are part of the transport
+routing contract. Diagnostics do not expose raw keys because JaVers global ids
+can include natural identifiers such as emails, account numbers, or tenant
+identifiers.
+
+Logs and exception messages use only:
+
+- `keyFingerprint=<sha256-prefix>`: the first 16 hex characters of the UTF-8
+  key SHA-256 digest.
+- `keyLength=<n>`: the raw key character length.
+
+Raw keys, partial keys, prefixes, suffixes, and masked key variants are not
+logged or included in thrown exception messages.
+
+The fingerprint is a pseudonymous correlation value, not anonymization. It
+remains deterministic so operators can correlate repeated failures for the same
+key, but applications with stricter privacy requirements should avoid exporting
+these diagnostics outside their trusted telemetry boundary.
+
 ### Delivery and Retry Semantics
 
 Kafka publishing is synchronous and at-least-once. The repositories wait for the

@@ -47,14 +47,15 @@ class KafkaSnapshotEventPublisher private constructor(
      */
     fun publish(event: CdoSnapshotEvent<String>, key: String) {
         key.requireNotBlank("key")
+        val keyDiagnostics = KafkaSnapshotKeyDiagnostics.format(key)
 
         try {
             kafkaOperations.sendDefault(key, event.payload).get(publishTimeout.toMillis(), TimeUnit.MILLISECONDS)
         } catch (e: InterruptedException) {
             Thread.currentThread().interrupt()
-            throw RuntimeException("Kafka publish interrupted for key=$key", e)
+            throw RuntimeException("Kafka publish interrupted for $keyDiagnostics", e)
         } catch (e: Exception) {
-            throw RuntimeException("Kafka publish failed for key=$key", e)
+            throw RuntimeException("Kafka publish failed for $keyDiagnostics", e)
         }
     }
 }

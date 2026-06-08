@@ -80,7 +80,8 @@ class KafkaCdoSnapshotRepository(
         val key = snapshot.globalId.value()
         val event = snapshot.toSnapshotEvent()
         log.trace {
-            "Produce snapshot. key=$key, version=${event.metadata.snapshotVersion}, codec=${event.metadata.codecId}"
+            "Produce snapshot. ${KafkaSnapshotKeyDiagnostics.format(key)}, " +
+                "version=${event.metadata.snapshotVersion}, codec=${event.metadata.codecId}"
         }
         publisher.publish(event, key)
     }

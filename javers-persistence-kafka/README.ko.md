@@ -101,6 +101,25 @@ Kafka consumer는 위 metadata가 현재 record header나 record value에 들어
 한다면 header나 envelope 같은 명시적 wire contract를 정의하고 consumer-facing test를
 추가해야 합니다.
 
+### Kafka Key Diagnostics
+
+Kafka record key는 transport routing contract의 일부이므로 변경하지 않습니다.
+Diagnostics는 raw key를 노출하지 않습니다. JaVers global id에는 email, account number,
+tenant identifier 같은 natural identifier가 포함될 수 있기 때문입니다.
+
+Log와 exception message에는 다음 값만 사용합니다:
+
+- `keyFingerprint=<sha256-prefix>`: UTF-8 key SHA-256 digest의 앞 16 hex 문자.
+- `keyLength=<n>`: raw key의 character length.
+
+Raw key, partial key, prefix, suffix, masked key variant는 log나 thrown exception
+message에 포함하지 않습니다.
+
+Fingerprint는 anonymization이 아니라 pseudonymous correlation value입니다.
+같은 key의 반복 실패를 운영자가 연결할 수 있도록 deterministic하게 유지하지만,
+더 강한 privacy requirement가 있는 애플리케이션은 이 diagnostics를 trusted telemetry
+boundary 밖으로 export하지 않아야 합니다.
+
 ### Delivery and Retry Semantics
 
 Kafka publishing은 synchronous at-least-once 방식입니다. Repository는 Kafka send

@@ -9,6 +9,8 @@ import io.bluetape4k.assertions.shouldBeEmpty
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeNull
+import io.bluetape4k.assertions.shouldContain
+import io.bluetape4k.assertions.shouldNotContain
 import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
 import io.bluetape4k.javers.repository.event.CdoSnapshotEventCodecIds
 import io.bluetape4k.javers.repository.event.CdoSnapshotEventMetadata
@@ -140,6 +142,27 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     }
 
     @Test
+    fun `saveSnapshot logs key diagnostics without raw key`() {
+        val repository = KafkaCdoSnapshotRepository(successfulKafkaTemplate())
+        val javersInstance = newJavers(repository)
+        val rawKey = "org.javers.core.model.SnapshotEntity/1"
+        val attached = attachTraceLogAppender(KafkaCdoSnapshotRepository::class.java)
+
+        try {
+            javersInstance.commit("author", SnapshotEntity(1))
+        } finally {
+            attached.restore()
+        }
+
+        val messages = attached.appender.list.joinToString("\n") { it.formattedMessage }
+
+        messages shouldContain "Produce snapshot."
+        messages shouldContain "keyFingerprint="
+        messages shouldContain "keyLength=${rawKey.length}"
+        messages.shouldNotContain(rawKey)
+    }
+
+    @Test
     fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
         // Build a KafkaTemplate whose sendDefault always returns a failed future.
         // KafkaTemplate requires a ProducerFactory; supply the real one but override sendDefault
@@ -161,6 +184,26 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     }
 
     @Test
+    fun `publisher failure message uses key diagnostics without raw key`() {
+        val failingTemplate = object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
+            override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> =
+                CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))
+        }
+        failingTemplate.setDefaultTopic(KafkaProvider.TEST_TOPIC)
+        val publisher = KafkaSnapshotEventPublisher(failingTemplate)
+        val sensitiveKey = "account:alice@example.com"
+
+        val failure = assertFailsWith<RuntimeException> {
+            publisher.publish(snapshotEvent(), sensitiveKey)
+        }
+        val message = failure.message.orEmpty()
+
+        message shouldContain "keyFingerprint="
+        message shouldContain "keyLength=${sensitiveKey.length}"
+        message.shouldNotContain(sensitiveKey)
+    }
+
+    @Test
     fun `saveSnapshot restores interrupt status when Spring Kafka publish is interrupted`() {
         val interruptedTemplate = object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
             override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> =
@@ -178,6 +221,30 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
                 javersInstance.commit("author", SnapshotEntity(1))
             }
             Thread.currentThread().isInterrupted shouldBeEqualTo true
+        } finally {
+            Thread.interrupted()
+        }
+    }
+
+    @Test
+    fun `publisher interruption message uses key diagnostics without raw key`() {
+        val interruptedTemplate = object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
+            override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> =
+                InterruptedCompletableFuture()
+        }
+        interruptedTemplate.setDefaultTopic(KafkaProvider.TEST_TOPIC)
+        val publisher = KafkaSnapshotEventPublisher(interruptedTemplate)
+        val sensitiveKey = "account:alice@example.com"
+
+        try {
+            val failure = assertFailsWith<RuntimeException> {
+                publisher.publish(snapshotEvent(), sensitiveKey)
+            }
+            val message = failure.message.orEmpty()
+
+            message shouldContain "keyFingerprint="
+            message shouldContain "keyLength=${sensitiveKey.length}"
+            message.shouldNotContain(sensitiveKey)
         } finally {
             Thread.interrupted()
         }
@@ -265,6 +332,31 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         val appender = ListAppender<ILoggingEvent>().apply { start() }
         logger.addAppender(appender)
         return logger to appender
+    }
+
+    private fun attachTraceLogAppender(loggerClass: Class<*>): AttachedLogAppender {
+        val logger = LoggerFactory.getLogger(loggerClass) as Logger
+        val previousLevel = logger.level
+        val previousAdditive = logger.isAdditive
+        val appender = ListAppender<ILoggingEvent>().apply { start() }
+        logger.level = Level.TRACE
+        logger.isAdditive = false
+        logger.addAppender(appender)
+        return AttachedLogAppender(logger, appender, previousLevel, previousAdditive)
+    }
+
+    private class AttachedLogAppender(
+        val logger: Logger,
+        val appender: ListAppender<ILoggingEvent>,
+        val previousLevel: Level?,
+        val previousAdditive: Boolean,
+    ) {
+        fun restore() {
+            logger.detachAppender(appender)
+            logger.level = previousLevel
+            logger.isAdditive = previousAdditive
+            appender.stop()
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

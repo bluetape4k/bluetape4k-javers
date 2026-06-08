@@ -188,7 +188,7 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
         val key = keyMapper(snapshot)
         val event = snapshot.toSnapshotEvent()
         log.trace {
-            "Produce snapshot. topic=${options.topic}, key=$key, " +
+            "Produce snapshot. topic=${options.topic}, ${KafkaSnapshotKeyDiagnostics.format(key)}, " +
                 "version=${event.metadata.snapshotVersion}, codec=${event.metadata.codecId}"
         }
         publisher.publish(event, key)
