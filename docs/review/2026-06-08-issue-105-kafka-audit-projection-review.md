@@ -51,6 +51,8 @@ and issue #105 design artifacts.
 - Public data classes are `Serializable` and use companion `invoke` validation.
 - KDoc documents behavior contracts and usage.
 - `README.md` and `README.ko.md` were updated together.
+- `javers-kafka-projection-01.png` is embedded in both README files.
+- Matching SVG, DOT, plain, sketch, and Graphviz evidence files are present.
 
 ## Tier 6 - Tests
 
@@ -62,6 +64,9 @@ and issue #105 design artifacts.
 - Dependency evidence:
   - `./gradlew -q :javers-persistence-kafka:dependencies --configuration runtimeClasspath --no-configuration-cache --no-build-cache --console=plain | rg "javers-persistence-redis|bluetape4k-lettuce|lettuce-core"`
   - Result: no matches.
+- Diagram evidence:
+  - Rendered `javers-persistence-kafka/docs/images/readme-diagrams/javers-kafka-projection-01.png`.
+  - Visually inspected the rendered PNG and fixed projector title overflow before finalizing.
 - Coverage includes unit replay behavior and Kafka-to-Redis projection.
 
 ## Tier 7 - Risk

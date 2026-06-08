@@ -83,6 +83,8 @@ Kafka repositories stay write-only. When the application needs historical reads,
 project the Kafka stream into a read-capable `CdoSnapshotRepository` such as the
 Redis, Exposed, or Caffeine repositories from the bluetape4k JaVers ecosystem:
 
+![Kafka audit projection](docs/images/readme-diagrams/javers-kafka-projection-01.png)
+
 ```kotlin
 val readRepository = LettuceCdoSnapshotRepository("audit-read", redisClient)
 val readJavers = JaversBuilder.javers()
