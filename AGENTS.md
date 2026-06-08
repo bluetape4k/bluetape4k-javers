@@ -14,6 +14,7 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 | `javers-core` | Javers extensions, codecs, cache-backed repositories |
 | `javers-ddd` | DDD aggregate and domain-event helpers for JaVers workflows |
 | `javers-exposed` | Exposed JDBC CDO snapshot persistence |
+| `benchmark/javers-exposed-benchmark` | kotlinx-benchmark harness for JaVers Exposed PostgreSQL index tradeoff evaluation |
 | `examples/javers-exposed-ddd` | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
 | `examples/javers-ktor` | Ktor REST example using explicit Exposed and JaVers wiring |
 | `examples/javers-spring-boot4` | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |

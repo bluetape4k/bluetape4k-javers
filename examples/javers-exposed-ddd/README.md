@@ -52,6 +52,32 @@ fresh run. The benchmark still remains a bounded H2 documentation benchmark:
 use the table to understand the example's cost shape, not as a release-wide
 performance guarantee.
 
+### Commit Metadata Index Evaluation
+
+The commit metadata index benchmark compares the same JaVers Exposed SQL
+pushdown path with benchmark-only `author` and `commit_date` indexes on
+PostgreSQL 18-alpine via Testcontainers and HikariCP. It lives in the dedicated
+`kotlinx-benchmark` module and reuses `bluetape4k-jdbc`,
+`bluetape4k-exposed-jdbc`, and `bluetape4k-exposed-jdbc-tests`. Production
+schema defaults remain unchanged by this benchmark.
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
+  --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Raw artifact:
+[`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](../../docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
+
+![JaVers Exposed commit metadata index evaluation](../../docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.png)
+
+| Variant | Insert ops/s | Author query ops/s | Date-range query ops/s |
+|---|---:|---:|---:|
+| Baseline | 481.4 | 917.5 | 916.5 |
+| Author index | 488.6 | 907.1 | 904.7 |
+| `commit_date` index | 499.3 | 931.2 | 923.2 |
+| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 |
+
 ## Run
 
 ```bash

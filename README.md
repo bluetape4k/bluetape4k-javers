@@ -167,6 +167,38 @@ also includes source-of-truth order persistence and aggregate repository
 orchestration, so compare it as an end-to-end example path rather than as a pure
 snapshot repository cost.
 
+### Commit Metadata Index Evaluation
+
+Issue #188 evaluates optional secondary indexes on the JaVers Exposed commit
+metadata table. The benchmark below is a dedicated `kotlinx-benchmark`/JMH
+harness that uses PostgreSQL 18-alpine via Testcontainers, HikariCP,
+`bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`, and
+`bluetape4k-exposed-jdbc-tests`. Scores are throughput in operations per second;
+higher values are better.
+
+Command:
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Raw artifact:
+[`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
+
+![JaVers Exposed commit metadata index evaluation](docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.png)
+
+| Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
+|---|---:|---:|---:|---|
+| Baseline | 481.4 | 917.5 | 916.5 | Stable reference for the current production schema. |
+| Author index | 488.6 | 907.1 | 904.7 | No author-query benefit in this smoke run. |
+| `commit_date` index | 499.3 | 931.2 | 923.2 | Slight read throughput gain, but bounded evidence only. |
+| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | Best author-query throughput, but weaker date-range throughput. |
+
+The candidate indexes are created only inside the benchmark schema. Production
+JaVers Exposed defaults remain unchanged because this short smoke run is mixed;
+a broader workload benchmark must justify the extra DDL and write-amplification
+cost before default indexes are added.
+
 ## References
 
 - [JaVers](https://javers.org)
