@@ -3,9 +3,16 @@ digraph CompositeCdoSnapshotRepository {
     rankdir=LR,
     bgcolor="#fffdf8",
     pad="0.35",
-    nodesep="0.55",
-    ranksep="0.75",
-    splines=polyline
+    nodesep="0.95",
+    ranksep="1.15",
+    splines=polyline,
+    labelloc=t,
+    label=<
+      <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+        <TR><TD><FONT FACE="Architects Daughter" POINT-SIZE="24">Composite CDO Snapshot Repository</FONT></TD></TR>
+        <TR><TD><FONT FACE="Comic Mono" POINT-SIZE="13">Primary read source with ordered secondary fanout</FONT></TD></TR>
+      </TABLE>
+    >
   ];
 
   node [
