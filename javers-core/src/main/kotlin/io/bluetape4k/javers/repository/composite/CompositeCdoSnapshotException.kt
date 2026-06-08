@@ -8,8 +8,8 @@ import io.bluetape4k.support.requireNotEmpty
  * ## Behavior / Contract
  * - [failures] is never empty.
  * - The first failure is exposed as the exception cause.
- * - The message includes delegate role, index, type, and operation only. It
- *   intentionally avoids raw snapshot global-id values or payload content.
+ * - The message includes delegate kind, index, class name, and operation only.
+ *   It intentionally avoids raw snapshot global-id values or payload content.
  */
 class CompositeCdoSnapshotException private constructor(
     val failures: List<CompositeCdoSnapshotWriteFailure>,
@@ -43,8 +43,8 @@ class CompositeCdoSnapshotException private constructor(
 
         private fun buildMessage(failures: List<CompositeCdoSnapshotWriteFailure>): String {
             val details = failures.joinToString(separator = "; ") { failure ->
-                "${failure.delegateRole}#${failure.delegateIndex} " +
-                    "${failure.delegateType}.${failure.operation}: ${failure.cause::class.java.simpleName}"
+                "${failure.delegateKind}#${failure.delegateIndex} " +
+                    "${failure.delegateClassName}.${failure.operation}: ${failure.cause::class.java.simpleName}"
             }
             return "Composite CDO snapshot repository operation failed. failures=${failures.size}; $details"
         }

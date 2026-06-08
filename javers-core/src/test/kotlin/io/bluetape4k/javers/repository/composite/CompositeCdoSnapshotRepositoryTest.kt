@@ -129,7 +129,7 @@ class CompositeCdoSnapshotRepositoryTest {
         }
 
         failure.failures.shouldHaveSize(1)
-        failure.failures[0].delegateRole shouldBeEqualTo CompositeCdoSnapshotDelegateRole.PRIMARY
+        failure.failures[0].delegateKind shouldBeEqualTo CompositeCdoSnapshotDelegateKind.PRIMARY
         operations shouldBeEqualTo listOf("primary:saveSnapshot")
     }
 
@@ -164,7 +164,7 @@ class CompositeCdoSnapshotRepositoryTest {
         }
 
         failure.failures.shouldHaveSize(1)
-        failure.failures[0].delegateRole shouldBeEqualTo CompositeCdoSnapshotDelegateRole.SECONDARY
+        failure.failures[0].delegateKind shouldBeEqualTo CompositeCdoSnapshotDelegateKind.SECONDARY
         failure.failures[0].delegateIndex shouldBeEqualTo 0
         operations shouldBeEqualTo listOf("primary:saveSnapshot", "secondary1:saveSnapshot")
     }
@@ -273,9 +273,9 @@ class CompositeCdoSnapshotRepositoryTest {
 
     private fun delegateFailure(index: Int): CompositeCdoSnapshotWriteFailure =
         CompositeCdoSnapshotWriteFailure(
-            delegateRole = CompositeCdoSnapshotDelegateRole.SECONDARY,
+            delegateKind = CompositeCdoSnapshotDelegateKind.SECONDARY,
             delegateIndex = index,
-            delegateType = RecordingCdoSnapshotRepository::class.java.name,
+            delegateClassName = RecordingCdoSnapshotRepository::class.java.name,
             operation = "saveSnapshot",
             cause = IllegalStateException("delegate $index failed"),
         )

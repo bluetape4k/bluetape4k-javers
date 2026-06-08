@@ -8,16 +8,16 @@ import java.io.Serializable
  * Describes one failed delegate operation in [CompositeCdoSnapshotRepository].
  *
  * ## Behavior / Contract
- * - [delegateIndex] is zero-based within [delegateRole].
- * - [delegateType] and [operation] are safe diagnostic values and must not
+ * - [delegateIndex] is zero-based within [delegateKind].
+ * - [delegateClassName] and [operation] are safe diagnostic values and must not
  *   contain raw snapshot identifiers.
  * - [cause] is the original delegate failure.
  */
 @ConsistentCopyVisibility
 data class CompositeCdoSnapshotWriteFailure private constructor(
-    val delegateRole: CompositeCdoSnapshotDelegateRole,
+    val delegateKind: CompositeCdoSnapshotDelegateKind,
     val delegateIndex: Int,
-    val delegateType: String,
+    val delegateClassName: String,
     val operation: String,
     val cause: Throwable,
 ): Serializable {
@@ -29,20 +29,20 @@ data class CompositeCdoSnapshotWriteFailure private constructor(
          * Creates a validated delegate failure descriptor.
          */
         operator fun invoke(
-            delegateRole: CompositeCdoSnapshotDelegateRole,
+            delegateKind: CompositeCdoSnapshotDelegateKind,
             delegateIndex: Int,
-            delegateType: String,
+            delegateClassName: String,
             operation: String,
             cause: Throwable,
         ): CompositeCdoSnapshotWriteFailure {
             delegateIndex.requireZeroOrPositiveNumber("delegateIndex")
-            delegateType.requireNotBlank("delegateType")
+            delegateClassName.requireNotBlank("delegateClassName")
             operation.requireNotBlank("operation")
 
             return CompositeCdoSnapshotWriteFailure(
-                delegateRole = delegateRole,
+                delegateKind = delegateKind,
                 delegateIndex = delegateIndex,
-                delegateType = delegateType,
+                delegateClassName = delegateClassName,
                 operation = operation,
                 cause = cause,
             )

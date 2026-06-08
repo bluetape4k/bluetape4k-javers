@@ -69,7 +69,7 @@ Native subagent note: Step 6-R normally prefers bounded native reviewer lanes. I
 | Thread | Area | Resolution |
 |---|---|---|
 | `PRRT_kwDOSVj8-s6Hz43L` | README diagram | Added title/subtitle to the DOT source, increased Graphviz spacing, re-rendered `.plain`, `.svg`, and `.png`, then inspected the PNG. |
-| `PRRT_kwDOSVj8-s6Hz6GB` | Delegate role model | Kept `PRIMARY`/`SECONDARY` roles because there is exactly one primary and zero or more ordered secondaries; clarified in KDoc that `delegateIndex` represents secondary execution order. |
+| `PRRT_kwDOSVj8-s6Hz6GB` | Delegate kind model | Renamed the delegate category API to `CompositeCdoSnapshotDelegateKind`; kept `PRIMARY`/`SECONDARY` because there is exactly one primary and zero or more ordered secondaries; clarified in KDoc that `delegateIndex` represents secondary execution order. |
 
 ## Convergence Record
 
