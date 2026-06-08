@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="760" viewBox="0 0 1700 760" role="img" aria-labelledby="title desc">
   <title id="title">Composite CDO snapshot repository</title>
   <desc id="desc">Primary read source with ordered secondary fanout for Redis projections and Kafka audit streams.</desc>
   <defs>
@@ -24,117 +24,91 @@
       .canvas{fill:#F7FAFC}
       .frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
       .title{font-family:"Architects Daughter","Comic Mono",cursive;font-size:42px;fill:#22344A}
-      .subtitle,.detail,.label,.legend{font-family:"Comic Mono",monospace;font-size:15px;fill:#536476}
+      .subtitle,.detail,.label{font-family:"Comic Mono",monospace;font-size:15px;fill:#536476}
       .actor{font-family:"Architects Daughter","Comic Mono",cursive;font-size:24px;fill:#22344A}
-      .small-actor{font-family:"Architects Daughter","Comic Mono",cursive;font-size:22px;fill:#22344A}
       .box{filter:url(#shadow);stroke-width:2}
-      .band{fill:#FAFCFE;stroke:#DCE7F1;stroke-width:1.5;stroke-dasharray:8 8}
-      .band-title{font-family:"Architects Daughter","Comic Mono",cursive;font-size:22px;fill:#44566A}
       .commit{fill:none;stroke:#56708C;stroke-width:2.6;marker-end:url(#arrow-blue)}
       .primary{fill:none;stroke:#4E9A68;stroke-width:2.6;marker-end:url(#arrow-green)}
       .secondary-cache{fill:none;stroke:#C85F7F;stroke-width:2.6;marker-end:url(#arrow-pink)}
       .secondary-stream{fill:none;stroke:#8D6CC8;stroke-width:2.6;marker-end:url(#arrow-purple)}
       .read{fill:none;stroke:#718096;stroke-width:2.4;marker-end:url(#arrow-muted)}
       .label-bg{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1}
-      .chip{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:1.4}
     </style>
   </defs>
 
-  <rect class="canvas" width="1400" height="780"/>
-  <rect class="frame" x="32" y="28" width="1336" height="724" rx="26"/>
+  <rect class="canvas" width="1700" height="760"/>
+  <rect class="frame" x="32" y="28" width="1636" height="704" rx="26"/>
   <text class="title" x="72" y="86">Composite CDO snapshot repository</text>
   <text class="subtitle" x="76" y="118">Primary read source with ordered primary-first fanout to secondary projections and streams.</text>
 
-  <rect class="band" x="70" y="160" width="1260" height="205" rx="18"/>
-  <text class="band-title" x="92" y="198">Commit path</text>
-  <rect class="band" x="70" y="405" width="1260" height="170" rx="18"/>
-  <text class="band-title" x="92" y="443">Read path and audit stream</text>
-
-  <g transform="translate(110,238)">
+  <g transform="translate(92,220)">
     <rect class="box" width="214" height="82" rx="12" fill="#E8F3FF" stroke="#75A9E8"/>
     <text class="actor" x="107" y="36" text-anchor="middle">Application</text>
     <text class="detail" x="107" y="59" text-anchor="middle">JaVers commit</text>
   </g>
 
-  <g transform="translate(430,262)">
-    <rect class="box" width="350" height="112" rx="14" fill="#EAF7EF" stroke="#69B888"/>
-    <text class="actor" x="175" y="39" text-anchor="middle">Composite repository</text>
-    <text class="detail" x="175" y="63" text-anchor="middle">one primary + ordered secondaries</text>
-    <text class="detail" x="175" y="86" text-anchor="middle">fail-fast or best-effort writes</text>
+  <g transform="translate(86,420)">
+    <rect class="box" width="226" height="82" rx="12" fill="#FFF3D9" stroke="#D9AA4D"/>
+    <text class="actor" x="113" y="36" text-anchor="middle">JaVers reads</text>
+    <text class="detail" x="113" y="59" text-anchor="middle">query source of truth</text>
   </g>
 
-  <g transform="translate(930,184)">
+  <g transform="translate(520,315)">
+    <rect class="box" width="360" height="112" rx="14" fill="#EAF7EF" stroke="#69B888"/>
+    <text class="actor" x="180" y="39" text-anchor="middle">Composite repository</text>
+    <text class="detail" x="180" y="63" text-anchor="middle">one primary + ordered secondaries</text>
+    <text class="detail" x="180" y="86" text-anchor="middle">fail-fast or best-effort writes</text>
+  </g>
+
+  <g transform="translate(1090,185)">
     <rect class="box" width="286" height="84" rx="12" fill="#E9F7F6" stroke="#45A7A1"/>
-    <text class="small-actor" x="143" y="35" text-anchor="middle">Primary repository</text>
+    <text class="actor" x="143" y="35" text-anchor="middle">Primary repository</text>
     <text class="detail" x="143" y="59" text-anchor="middle">Exposed / Redis / Caffeine</text>
   </g>
 
-  <g transform="translate(930,300)">
-    <rect class="box" width="286" height="84" rx="12" fill="#FBEAF0" stroke="#D87391"/>
-    <text class="small-actor" x="143" y="35" text-anchor="middle">Secondary projection</text>
-    <text class="detail" x="143" y="59" text-anchor="middle">Redis cache store</text>
+  <g transform="translate(1120,360)">
+    <rect class="box" width="256" height="84" rx="12" fill="#FBEAF0" stroke="#D87391"/>
+    <text class="actor" x="128" y="35" text-anchor="middle">Secondary projection</text>
+    <text class="detail" x="128" y="59" text-anchor="middle">Redis cache store</text>
   </g>
 
-  <g transform="translate(930,462)">
+  <g transform="translate(1090,555)">
     <rect class="box" width="286" height="84" rx="12" fill="#F5EDFF" stroke="#A179D8"/>
-    <text class="small-actor" x="143" y="35" text-anchor="middle">Secondary stream</text>
+    <text class="actor" x="143" y="35" text-anchor="middle">Secondary stream</text>
     <text class="detail" x="143" y="59" text-anchor="middle">Kafka write-only repository</text>
   </g>
 
-  <g transform="translate(110,457)">
-    <rect class="box" width="214" height="82" rx="12" fill="#FFF3D9" stroke="#D9AA4D"/>
-    <text class="actor" x="107" y="36" text-anchor="middle">JaVers reads</text>
-    <text class="detail" x="107" y="59" text-anchor="middle">query source of truth</text>
+  <g transform="translate(1435,555)">
+    <rect class="box" width="220" height="84" rx="12" fill="#FFF7CF" stroke="#D9AA4D"/>
+    <text class="actor" x="110" y="35" text-anchor="middle">Consumers</text>
+    <text class="detail" x="110" y="59" text-anchor="middle">replay / audit pipeline</text>
   </g>
 
-  <g transform="translate(930,610)">
-    <rect class="box" width="286" height="72" rx="12" fill="#FFF7CF" stroke="#D9AA4D"/>
-    <text class="small-actor" x="143" y="31" text-anchor="middle">Downstream consumers</text>
-    <text class="detail" x="143" y="53" text-anchor="middle">replay / audit pipeline</text>
-  </g>
+  <path class="commit" d="M306 261 C385 271 446 288 520 331"/>
+  <rect class="label-bg" x="373" y="260" width="124" height="24" rx="8"/>
+  <text class="label" x="435" y="277" text-anchor="middle">persist(commit)</text>
 
-  <path class="commit" d="M324 279 H430"/>
-  <rect class="label-bg" x="342" y="252" width="88" height="24" rx="8"/>
-  <text class="label" x="386" y="269" text-anchor="middle">persist</text>
+  <path class="read" d="M312 461 C405 450 468 426 520 398"/>
+  <rect class="label-bg" x="382" y="430" width="112" height="24" rx="8"/>
+  <text class="label" x="438" y="447" text-anchor="middle">read methods</text>
 
-  <path class="primary" d="M780 294 H850 V246 H930"/>
-  <rect class="label-bg" x="812" y="270" width="122" height="24" rx="8"/>
-  <text class="label" x="873" y="287" text-anchor="middle">1. primary</text>
+  <path class="primary" d="M806 315 C900 274 992 240 1090 227"/>
+  <rect class="label-bg" x="920" y="251" width="130" height="24" rx="8"/>
+  <text class="label" x="985" y="268" text-anchor="middle">1. primary persist</text>
 
-  <path class="secondary-cache" d="M780 342 H930"/>
-  <rect class="label-bg" x="812" y="315" width="132" height="24" rx="8"/>
-  <text class="label" x="878" y="332" text-anchor="middle">2. secondary</text>
+  <path class="read" d="M880 342 C966 310 1010 284 1090 250"/>
+  <rect class="label-bg" x="944" y="304" width="124" height="24" rx="8"/>
+  <text class="label" x="1006" y="321" text-anchor="middle">delegate reads</text>
 
-  <path class="secondary-stream" d="M780 374 H850 V504 H930"/>
-  <rect class="label-bg" x="808" y="398" width="142" height="24" rx="8"/>
-  <text class="label" x="879" y="415" text-anchor="middle">N. secondary</text>
+  <path class="secondary-cache" d="M880 379 C965 385 1034 397 1120 402"/>
+  <rect class="label-bg" x="948" y="382" width="132" height="24" rx="8"/>
+  <text class="label" x="1014" y="399" text-anchor="middle">2. secondary</text>
 
-  <path class="read" d="M324 498 H575 V374"/>
-  <rect class="label-bg" x="357" y="471" width="112" height="24" rx="8"/>
-  <text class="label" x="413" y="488" text-anchor="middle">read methods</text>
+  <path class="secondary-stream" d="M818 427 C912 500 995 553 1090 589"/>
+  <rect class="label-bg" x="926" y="512" width="142" height="24" rx="8"/>
+  <text class="label" x="997" y="529" text-anchor="middle">N. secondary</text>
 
-  <path class="read" d="M620 262 V206 H930"/>
-  <rect class="label-bg" x="666" y="181" width="124" height="24" rx="8"/>
-  <text class="label" x="728" y="198" text-anchor="middle">delegate reads</text>
-
-  <path class="secondary-stream" d="M1073 546 V610"/>
-  <rect class="label-bg" x="1088" y="570" width="72" height="24" rx="8"/>
-  <text class="label" x="1124" y="587" text-anchor="middle">records</text>
-
-  <g transform="translate(94,690)">
-    <rect class="chip" width="256" height="38" rx="12"/>
-    <text class="legend" x="128" y="24" text-anchor="middle">primary owns query semantics</text>
-  </g>
-  <g transform="translate(374,690)">
-    <rect class="chip" width="252" height="38" rx="12"/>
-    <text class="legend" x="126" y="24" text-anchor="middle">secondary order is explicit</text>
-  </g>
-  <g transform="translate(650,690)">
-    <rect class="chip" width="252" height="38" rx="12"/>
-    <text class="legend" x="126" y="24" text-anchor="middle">delegateKind marks failure source</text>
-  </g>
-  <g transform="translate(926,690)">
-    <rect class="chip" width="280" height="38" rx="12"/>
-    <text class="legend" x="140" y="24" text-anchor="middle">writes are primary-first, not atomic</text>
-  </g>
+  <path class="secondary-stream" d="M1376 597 H1435"/>
+  <rect class="label-bg" x="1384" y="568" width="72" height="24" rx="8"/>
+  <text class="label" x="1420" y="585" text-anchor="middle">records</text>
 </svg>

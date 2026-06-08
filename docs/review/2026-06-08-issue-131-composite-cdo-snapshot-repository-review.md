@@ -36,8 +36,8 @@ Native subagent note: Step 6-R normally prefers bounded native reviewer lanes. I
   - `rg "Inter|Arial|Helvetica" javers-core/docs/images/readme-diagrams/javers-core-composite-repository-01.svg` returned no matches.
 - Visual evidence:
   - Rendered PNG inspected with `view_image`.
-  - Final README diagram follows the existing bluetape4k rounded outer-frame format with title, subtitle, diagram body, and bottom chips.
-  - Final diagram labels are English and visible; no observed node/text overlap or connector crowding after rendering at `1400x780`.
+  - Final README diagram keeps the original wide component layout while applying the existing bluetape4k rounded outer-frame format with title and subtitle.
+  - Final diagram labels are English and visible; no observed node/text overlap or connector crowding after rendering at `1700x760`.
 - Tests:
   - `./gradlew :javers-core:test --no-configuration-cache --no-build-cache --console=plain`
   - Result: `BUILD SUCCESSFUL`, `SUCCESS: Executed 197 tests in 13.8s`.
@@ -71,7 +71,7 @@ Native subagent note: Step 6-R normally prefers bounded native reviewer lanes. I
 |---|---|---|
 | `PRRT_kwDOSVj8-s6Hz43L` | README diagram | Added title/subtitle to the DOT source, increased Graphviz spacing, re-rendered `.plain`, `.svg`, and `.png`, then inspected the PNG. |
 | `PRRT_kwDOSVj8-s6Hz6GB` | Delegate kind model | Renamed the delegate category API to `CompositeCdoSnapshotDelegateKind`; kept `PRIMARY`/`SECONDARY` because there is exactly one primary and zero or more ordered secondaries; clarified in KDoc that `delegateIndex` represents secondary execution order. |
-| Follow-up | README diagram format | Replaced the Graphviz-style final SVG with the existing README infographic format: rounded outer frame, title/subtitle header, body bands, semantic connector colors, and bottom chips; re-rendered PNG and inspected it. |
+| Follow-up | README diagram format | Kept the original wide component layout and replaced only the final decoration with the existing README infographic format: rounded outer frame, title/subtitle header, semantic connector colors, and hand-authored cards; re-rendered PNG and inspected it. |
 
 ## Convergence Record
 
