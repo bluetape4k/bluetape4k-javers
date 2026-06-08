@@ -60,6 +60,7 @@ dependencyResolutionManagement {
 rootProject.name = "bluetape4k-javers"
 
 include(
+    "benchmark-javers-exposed-benchmark",
     "examples-javers-exposed-ddd",
     "examples-javers-ktor",
     "examples-javers-spring-boot4",
@@ -69,6 +70,8 @@ include(
     "javers-persistence-kafka",
     "javers-persistence-redis",
 )
+
+project(":benchmark-javers-exposed-benchmark").projectDir = file("benchmark/javers-exposed-benchmark")
 
 project(":examples-javers-exposed-ddd").projectDir = file("examples/javers-exposed-ddd")
 project(":examples-javers-ktor").projectDir = file("examples/javers-ktor")

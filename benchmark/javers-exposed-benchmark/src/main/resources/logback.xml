@@ -1,0 +1,16 @@
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.javers" level="ERROR"/>
+    <logger name="org.testcontainers" level="ERROR"/>
+    <logger name="com.github.dockerjava" level="ERROR"/>
+    <logger name="com.zaxxer.hikari" level="ERROR"/>
+
+    <root level="ERROR">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

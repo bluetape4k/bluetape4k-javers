@@ -153,6 +153,38 @@ source-of-truth order persistence와 aggregate repository orchestration까지
 포함하므로, 순수 snapshot repository 비용이 아니라 end-to-end example path로
 비교해야 합니다.
 
+### Commit Metadata Index 평가
+
+Issue #188은 JaVers Exposed commit metadata table에 `author`, `commit_date`
+보조 인덱스를 추가할 가치가 있는지 평가합니다. 아래 benchmark는 전용
+`kotlinx-benchmark`/JMH harness이며 Testcontainers의 PostgreSQL 18-alpine,
+HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`,
+`bluetape4k-exposed-jdbc-tests`를 사용합니다. 점수 단위는 초당 처리량
+operations per second이며, 높을수록 좋습니다.
+
+명령:
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Raw artifact:
+[`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
+
+![JaVers Exposed commit metadata index evaluation](docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.png)
+
+| Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
+|---|---:|---:|---:|---|
+| Baseline | 481.4 | 917.5 | 916.5 | 현재 production schema의 안정 기준선입니다. |
+| Author index | 488.6 | 907.1 | 904.7 | 이 smoke run에서는 author query 이점이 없습니다. |
+| `commit_date` index | 499.3 | 931.2 | 923.2 | read throughput이 약간 높지만 bounded evidence입니다. |
+| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | author query는 가장 높지만 date-range throughput은 낮습니다. |
+
+후보 인덱스는 benchmark schema 안에서만 생성합니다. 더 넓은 workload
+benchmark가 DDL 및 write-amplification 비용을 정당화하기 전까지 production
+JaVers Exposed 기본 schema는 변경하지 않습니다. 이번 짧은 smoke run은
+결과가 mixed입니다.
+
 ## 참고 자료
 
 - [JaVers](https://javers.org)

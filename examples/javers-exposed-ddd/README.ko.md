@@ -53,6 +53,32 @@ milliseconds per operation 값은 낮을수록 좋습니다.
 예제의 비용 구조를 이해하기 위한 자료이며, release 전체 성능 보장은
 아닙니다.
 
+### Commit Metadata Index 평가
+
+Commit metadata index benchmark는 JaVers Exposed SQL pushdown 경로를
+benchmark 전용 `author`, `commit_date` 인덱스 조합과 비교합니다.
+Testcontainers PostgreSQL 18-alpine과 HikariCP를 사용하고, 전용
+`kotlinx-benchmark` 모듈 안에서 `bluetape4k-jdbc`,
+`bluetape4k-exposed-jdbc`, `bluetape4k-exposed-jdbc-tests`를 재사용합니다.
+이 benchmark는 production schema 기본값을 변경하지 않습니다.
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
+  --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Raw artifact:
+[`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](../../docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
+
+![JaVers Exposed commit metadata index evaluation](../../docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.png)
+
+| Variant | Insert ops/s | Author query ops/s | Date-range query ops/s |
+|---|---:|---:|---:|
+| Baseline | 481.4 | 917.5 | 916.5 |
+| Author index | 488.6 | 907.1 | 904.7 |
+| `commit_date` index | 499.3 | 931.2 | 923.2 |
+| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 |
+
 ## 실행
 
 ```bash
