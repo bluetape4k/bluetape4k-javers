@@ -1,0 +1,16 @@
+graph 1 20.221 4.0733
+node app 1.5185 3.1825 2.1204 0.94833 "Application\nJaVers commit" rounded,filled box #4a5568 #fdebd3
+node composite 7.3629 2.4325 4.3392 0.94833 "CompositeCdoSnapshotRepository\nprimary-first fanout" rounded,filled box #4a5568 #dff3ea
+node primary 13.796 3.5992 3.5683 0.94833 "Primary repository\nExposed / Redis / Caffeine" rounded,filled box #4a5568 #dbeafe
+node redis 13.796 1.9742 2.8704 0.94833 "Secondary projection\nRedis cache store" rounded,filled box #4a5568 #fce7f3
+node kafka 13.796 0.47417 3.6517 0.94833 "Secondary stream\nKafka write-only repository" rounded,filled box #4a5568 #eee7ff
+node queries 1.5185 1.6825 3.0371 0.94833 "JaVers reads\nquery source of truth" rounded,filled box #4a5568 #e8f7d4
+node consumers 18.625 0.47417 3.1933 0.94833 "Downstream consumers\nreplay / audit pipeline" rounded,filled box #4a5568 #fff2b8
+edge app composite 4 2.5858 3.0467 3.2713 2.9583 4.1927 2.8395 5.0425 2.7299 "persist(commit)" 4.1152 3.0389 solid #2563eb
+edge composite primary 7 9.2093 2.9152 9.6051 3.0195 9.9075 3.0992 9.9075 3.0992 9.9075 3.0992 10.886 3.2255 11.86 3.3511 "1. primary persist" 10.751 3.4033 solid #16a34a
+edge composite primary 7 9.5415 2.6374 10.577 2.7355 11.595 2.8318 11.595 2.8318 11.595 2.8318 11.892 2.9361 12.267 3.0678 "delegate reads" 10.751 2.9308 solid #64748b
+edge composite redis 4 9.5408 2.2776 10.414 2.2152 11.403 2.1444 12.206 2.0869 solid #db2777
+edge composite kafka 4 8.956 1.9497 9.8987 1.6614 11.097 1.2952 12.063 0.99974 solid #7c3aed
+edge kafka consumers 4 15.625 0.47417 16.034 0.47417 16.467 0.47417 16.873 0.47417 records 16.325 0.57312 solid #7c3aed
+edge queries composite 4 3.1928 1.8966 3.8133 1.9766 4.5274 2.0687 5.1866 2.1537 "read methods" 4.1152 2.2014 solid #64748b
+stop

@@ -57,7 +57,7 @@ persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 blu
 
 | 모듈 | Artifact | 역할 |
 |---|---|---|
-| `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extension, codec, cache-backed repository |
+| `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extension, codec, cache-backed/composite repository |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | JaVers audit workflow용 DDD aggregate/domain-event helper |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
 | `examples-javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
