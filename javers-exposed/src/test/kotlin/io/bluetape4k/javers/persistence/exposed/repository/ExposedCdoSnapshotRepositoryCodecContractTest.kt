@@ -5,6 +5,7 @@ import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.codecs.JaversCodec
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
@@ -18,7 +19,6 @@ import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 class ExposedCdoSnapshotRepositoryCodecContractTest {
 
@@ -66,7 +66,7 @@ class ExposedCdoSnapshotRepositoryCodecContractTest {
 
     private fun newDatabase(): Database {
         val database = Database.connect(
-            url = "jdbc:h2:mem:javers-codec-contract-${UUID.randomUUID()};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+            url = "jdbc:h2:mem:javers-codec-contract-${Base58.randomString(8)};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
             driver = "org.h2.Driver",
         )
         transaction(database) {

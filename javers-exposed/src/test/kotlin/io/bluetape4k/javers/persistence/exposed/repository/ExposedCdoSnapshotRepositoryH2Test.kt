@@ -20,12 +20,11 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
 
 class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
 
     private val database: Database = Database.connect(
-        url = "jdbc:h2:mem:javers-exposed-${UUID.randomUUID()};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+        url = "jdbc:h2:mem:javers-exposed-${Base58.randomString(8)};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
 

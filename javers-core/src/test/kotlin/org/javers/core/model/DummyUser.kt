@@ -72,17 +72,13 @@ class DummyUser(@Id val name: String, var surname: String? = null): AbstractDumm
     }
 
     fun withAddress(city: String) = apply {
-        if (dummyUserDetails == null) {
-            withDetails()
-        }
-        dummyUserDetails!!.dummyAddress = DummyAddress(city = city)
+        val details = dummyUserDetails ?: DummyUserDetails(1).also { dummyUserDetails = it }
+        details.dummyAddress = DummyAddress(city = city)
     }
 
     fun withAddresses(vararg addresses: DummyAddress) = apply {
-        if (dummyUserDetails == null) {
-            withDetails()
-        }
-        dummyUserDetails!!.addressList.addAll(addresses)
+        val details = dummyUserDetails ?: DummyUserDetails(1).also { dummyUserDetails = it }
+        details.addressList.addAll(addresses)
     }
 
     fun withSex(sex: SEX) = apply { this.sex = sex }
