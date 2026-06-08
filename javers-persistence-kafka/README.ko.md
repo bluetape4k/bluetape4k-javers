@@ -14,6 +14,7 @@ event를 소비할 수 있게 하며, repository read method는 빈 값이나 �
 
 - Spring Kafka `KafkaTemplate`로 encoded JaVers snapshot을 발행하는 `KafkaCdoSnapshotRepository`.
 - Spring Kafka API 없이 Apache Kafka `Producer`로 snapshot을 발행하는 `VanillaKafkaCdoSnapshotRepository`.
+- 기존 `CdoSnapshotRepository`로 read-side replay를 수행하는 명시적 `KafkaCdoSnapshotProjector`.
 - Kafka publisher adapter가 공유하는 transport-neutral `CdoSnapshotEvent` metadata contract.
 - Kafka topic, key mapping, publish timeout, flush 동작, producer lifecycle ownership 설정.
 - write-only contract가 보이도록 첫 read path에서 warning log 출력, 반복 메시지는 debug로 완화.
@@ -76,6 +77,39 @@ Kafka를 audit event stream으로 사용할 때 이 모듈을 사용하세요. �
 history read도 필요하다면 durable snapshot repository나 projection consumer와
 함께 사용해야 합니다.
 
+### Read-side Projection
+
+Kafka repository는 계속 write-only입니다. 애플리케이션이 history read를 필요로 하면
+Kafka stream을 Redis, Exposed, Caffeine 같은 bluetape4k JaVers ecosystem의
+read-capable `CdoSnapshotRepository`로 projection합니다:
+
+```kotlin
+val readRepository = LettuceCdoSnapshotRepository("audit-read", redisClient)
+val readJavers = JaversBuilder.javers()
+    .registerJaversRepository(readRepository)
+    .build()
+
+val projector = KafkaCdoSnapshotProjector(
+    consumerConfigs = mapOf(
+        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "localhost:9092",
+        ConsumerConfig.GROUP_ID_CONFIG to "audit-projection",
+        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to false,
+    ),
+    jsonConverter = readJavers.jsonConverter,
+    projectionRepository = readRepository,
+    options = KafkaCdoSnapshotProjectionOptions(topic = "order-audit-events"),
+)
+
+projector.use {
+    it.replayUntilIdle(maxIdlePolls = 2)
+}
+```
+
+Projector가 config에서 consumer를 직접 만들 때는 governed `bluetape4k-kafka`
+`consumerOf(...)` helper를 사용합니다. 호출자가 소유한 `Consumer<String, String>`를
+직접 넘길 수도 있습니다.
+
 ## Snapshot Event Pipeline
 
 두 Kafka repository는 publish 전에 `CdoSnapshotEvent<String>`을 생성합니다. 이
@@ -136,6 +170,24 @@ deduplication policy를 정의해야 합니다.
 Read-side projection 작업(#105)과 durable history plus event-stream composition
 작업(#131)은 replay, retry, transaction, outbox coordination을 추가할 때 이
 partial-publish behavior를 명시적으로 유지해야 합니다.
+
+### Projection Replay Semantics
+
+`KafkaCdoSnapshotProjector`는 현재 Kafka wire value인 encoded JaVers snapshot
+payload를 소비합니다. Metadata envelope이나 header contract는 필요하지 않습니다.
+
+각 poll batch는 deterministic `partition, offset` 순서로 적용합니다. Kafka가 total
+audit order를 제공하는 경우는 topic topology가 그렇게 구성된 때뿐입니다. 예를 들어
+single-partition audit topic이나 aggregate별 partitioning strategy가 필요합니다.
+
+기본적으로 projector는 같은 GlobalId, commit id, version의 snapshot이 target
+repository에 이미 있으면 저장을 건너뜁니다. 이 동작은 read store에 이미 materialized된
+duplicate snapshot record에 대한 replay를 idempotent하게 만듭니다. 단, Kafka exactly-once
+transaction 보장은 아닙니다.
+
+Offset commit을 켜면 poll batch 전체가 decode되고 저장 또는 skip된 뒤에만 offset을
+commit합니다. Decode 실패와 target repository 실패는 propagation되어 호출자가 retry할
+수 있습니다.
 
 ## Adapter 선택 기준
 
