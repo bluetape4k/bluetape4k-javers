@@ -37,7 +37,7 @@ Add these public types under `io.bluetape4k.javers.repository.composite`:
 - `CompositeCdoSnapshotRepository`
 - `CompositeCdoSnapshotRepositoryOptions`
 - `CompositeCdoSnapshotFailurePolicy`
-- `CompositeCdoSnapshotDelegateRole`
+- `CompositeCdoSnapshotDelegateKind`
 - `CompositeCdoSnapshotWriteFailure`
 - `CompositeCdoSnapshotException`
 
@@ -95,14 +95,14 @@ unavailable, no secondary repository should receive the snapshot.
 
 `CompositeCdoSnapshotWriteFailure` records:
 
-- delegate role: `PRIMARY` or `SECONDARY`
+- delegate kind: `PRIMARY` or `SECONDARY`
 - delegate index
-- delegate type
+- delegate class name
 - operation name
 - cause
 
 `CompositeCdoSnapshotException` records all failures and exposes the first
-failure as its cause. Messages must include delegate role/index/type and
+failure as its cause. Messages must include delegate kind/index/class name and
 operation, but must not include raw snapshot global-id values.
 
 ## Behavior Contract
@@ -205,5 +205,5 @@ because Kafka write-only repositories are the main secondary use case.
 | Secondary event stream receives writes when durable store fails | Primary is always written first and always fails fast. |
 | Hidden cache semantics duplicate `bluetape4k-exposed` | Composite only accepts existing repositories; no new cache API. |
 | Best-effort hides failures | Best-effort throws aggregate failures after attempts; it never silently swallows failures. |
-| Sensitive snapshot identifiers leak in errors | Failure messages use delegate role/index/type, not raw snapshot keys. |
+| Sensitive snapshot identifiers leak in errors | Failure messages use delegate kind/index/class name, not raw snapshot keys. |
 | Close failure prevents later delegates from closing | Close uses best-effort attempt-all behavior. |

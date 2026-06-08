@@ -156,11 +156,11 @@ class CompositeCdoSnapshotRepository private constructor(
     override fun close() {
         val closeableDelegates = buildList {
             if (primary is AutoCloseable) {
-                add(CompositeCdoSnapshotDelegateRole.PRIMARY to (0 to primary))
+                add(CompositeCdoSnapshotDelegateKind.PRIMARY to (0 to primary))
             }
             secondaryRepositories.forEachIndexed { index, repository ->
                 if (repository is AutoCloseable) {
-                    add(CompositeCdoSnapshotDelegateRole.SECONDARY to (index to repository))
+                    add(CompositeCdoSnapshotDelegateKind.SECONDARY to (index to repository))
                 }
             }
         }
@@ -175,7 +175,7 @@ class CompositeCdoSnapshotRepository private constructor(
             block(primary)
         } catch (e: Exception) {
             throw CompositeCdoSnapshotException(
-                listOf(primary.failure(CompositeCdoSnapshotDelegateRole.PRIMARY, 0, operation, e))
+                listOf(primary.failure(CompositeCdoSnapshotDelegateKind.PRIMARY, 0, operation, e))
             )
         }
     }
@@ -190,7 +190,7 @@ class CompositeCdoSnapshotRepository private constructor(
             try {
                 block(repository)
             } catch (e: Exception) {
-                failures += repository.failure(CompositeCdoSnapshotDelegateRole.SECONDARY, index, operation, e)
+                failures += repository.failure(CompositeCdoSnapshotDelegateKind.SECONDARY, index, operation, e)
                 if (failurePolicy == CompositeCdoSnapshotFailurePolicy.FAIL_FAST) {
                     throw CompositeCdoSnapshotException(failures)
                 }
@@ -202,15 +202,15 @@ class CompositeCdoSnapshotRepository private constructor(
     }
 
     private fun executeCloseables(
-        closeableDelegates: List<Pair<CompositeCdoSnapshotDelegateRole, Pair<Int, AutoCloseable>>>,
+        closeableDelegates: List<Pair<CompositeCdoSnapshotDelegateKind, Pair<Int, AutoCloseable>>>,
     ) {
         val failures = mutableListOf<CompositeCdoSnapshotWriteFailure>()
-        closeableDelegates.forEach { (role, indexedRepository) ->
+        closeableDelegates.forEach { (kind, indexedRepository) ->
             val (index, closeable) = indexedRepository
             try {
                 closeable.close()
             } catch (e: Exception) {
-                failures += closeable.failure(role, index, "close", e)
+                failures += closeable.failure(kind, index, "close", e)
                 if (options.closeFailurePolicy == CompositeCdoSnapshotFailurePolicy.FAIL_FAST) {
                     throw CompositeCdoSnapshotException(failures)
                 }
@@ -222,15 +222,15 @@ class CompositeCdoSnapshotRepository private constructor(
     }
 
     private fun Any.failure(
-        role: CompositeCdoSnapshotDelegateRole,
+        kind: CompositeCdoSnapshotDelegateKind,
         index: Int,
         operation: String,
         cause: Throwable,
     ): CompositeCdoSnapshotWriteFailure =
         CompositeCdoSnapshotWriteFailure(
-            delegateRole = role,
+            delegateKind = kind,
             delegateIndex = index,
-            delegateType = javaClass.name,
+            delegateClassName = javaClass.name,
             operation = operation,
             cause = cause,
         )

@@ -31,7 +31,7 @@ README locale updates, local 7-Tier reviews, and a PR for milestone `0.3.0`.
 
 2. Add composite failure model in `javers-core`.
    - Add `CompositeCdoSnapshotFailurePolicy`.
-   - Add `CompositeCdoSnapshotDelegateRole`.
+   - Add `CompositeCdoSnapshotDelegateKind`.
    - Add `CompositeCdoSnapshotWriteFailure`.
    - Add `CompositeCdoSnapshotException`.
    - Use English KDoc and bluetape4k validation helpers.
