@@ -35,6 +35,13 @@ mixed: indexed variants improved some smoke scores, but the combined index
 weakened date-range throughput and the run is too short to define a production
 DDL policy.
 
+The root README also needs a combined interpretation with the older Hibernate
+Envers / JaVers in-memory comparison. Convert #188 throughput to approximate
+milliseconds per operation with `1000 / opsPerSecond`, then explain that the
+older comparison measures a broader audit workflow while #188 measures a
+narrower commit metadata pushdown path. Do not present the two benchmark
+families as identical workloads.
+
 ## Verification
 
 - `./gradlew :benchmark-javers-exposed-benchmark:compileKotlin --no-configuration-cache --no-build-cache --no-parallel --console=plain`

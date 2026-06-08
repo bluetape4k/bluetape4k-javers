@@ -185,6 +185,30 @@ benchmark가 DDL 및 write-amplification 비용을 정당화하기 전까지 pro
 JaVers Exposed 기본 schema는 변경하지 않습니다. 이번 짧은 smoke run은
 결과가 mixed입니다.
 
+### 종합 해석
+
+두 benchmark 계열은 서로 다른 질문에 답합니다. Envers 비교는 더 넓은 감사
+workflow를 milliseconds per operation 단위로 측정하고, commit metadata
+benchmark는 더 좁은 JaVers Exposed SQL pushdown 경로를 throughput으로
+측정합니다. 아래 표는 metadata benchmark를 `1000 / opsPerSecond`로
+milliseconds per operation 근사값으로 환산해 같은 latency 눈금에서 읽을 수
+있게 한 것입니다.
+
+![JaVers Exposed combined benchmark overview](docs/images/readme-charts/javers-exposed-combined-benchmark-overview-01.png)
+
+| Path | Scope | Insert ms/op | Read ms/op | Interpretation |
+|---|---|---:|---:|---|
+| Hibernate Envers | Entity revision audit path | 4.486 | 12.483 audit-query | 예제 domain의 JPA audit 기준 경로입니다. |
+| JaVers in-memory | Core JaVers diff/query path | 0.510 | 12.559 audit-query | write는 빠르지만 in-memory audit query는 Exposed SQL 경로가 아닙니다. |
+| JaVers + Exposed repository | Snapshot repository path | 8.499 | 0.763 audit-query | 이 비교에서는 repository read path가 가장 빠른 full audit-query lane입니다. |
+| JaVers + Exposed DDD path | End-to-end example path | 6.397 | 0.704 audit-query | source table과 aggregate orchestration을 포함하면서도 audit read가 빠릅니다. |
+| JaVers Exposed metadata baseline | Commit metadata author/date filters | 2.077 | 1.090 author / 1.091 date-range | 현재 production schema도 Exposed audit-query와 같은 order of magnitude 안에 있습니다. |
+| Best metadata-index smoke variants | Benchmark-only candidate indexes | 1.928 | 1.057 author / 1.083 date-range | 이득이 작고 mixed라 default DDL 근거로는 부족합니다. |
+
+종합하면, 이 workload에서는 Envers 대비 Exposed repository 방향이 read-side에
+유리합니다. 다만 commit metadata index는 별도 결정입니다. 이번 smoke 결과만으로
+기본 schema를 바꿀 만큼 넓고 일관된 이득은 확인되지 않았습니다.
+
 ## 참고 자료
 
 - [JaVers](https://javers.org)
