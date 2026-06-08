@@ -83,6 +83,8 @@ Kafka repository는 계속 write-only입니다. 애플리케이션이 history re
 Kafka stream을 Redis, Exposed, Caffeine 같은 bluetape4k JaVers ecosystem의
 read-capable `CdoSnapshotRepository`로 projection합니다:
 
+![Kafka audit projection](docs/images/readme-diagrams/javers-kafka-projection-01.png)
+
 ```kotlin
 val readRepository = LettuceCdoSnapshotRepository("audit-read", redisClient)
 val readJavers = JaversBuilder.javers()
