@@ -14,10 +14,15 @@ dependencies {
     api(libs.javers.core)
     api(project(":javers-core"))
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
+    testImplementation(project(":javers-persistence-redis"))
 
     // Kafka
     implementation(libs.bluetape4k.kafka)
     compileOnly(libs.spring.kafka)
+
+    // Redis projection target tests
+    testImplementation(libs.bluetape4k.lettuce)
+    testImplementation(libs.lettuce.core)
 
     // Codec
     compileOnly(libs.fory.kotlin)

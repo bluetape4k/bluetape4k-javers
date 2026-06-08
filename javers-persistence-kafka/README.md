@@ -14,6 +14,7 @@ consume audit events, while repository read methods return empty/default values.
 
 - `KafkaCdoSnapshotRepository` for Spring Kafka `KafkaTemplate` publishing.
 - `VanillaKafkaCdoSnapshotRepository` for Spring Kafka API-free Apache Kafka `Producer` publishing.
+- `KafkaCdoSnapshotProjector` for explicit read-side replay into an existing `CdoSnapshotRepository`.
 - Transport-neutral `CdoSnapshotEvent` metadata contract shared by Kafka publisher adapters.
 - Configurable Kafka topic, key mapping, publish timeout, flush behavior, and producer lifecycle ownership.
 - Explicit first read-path warning, with repeated write-only contract messages demoted to debug.
@@ -75,6 +76,39 @@ caller-owned unless `closeProducerOnClose = true` is set.
 Use this module when Kafka is the audit event stream. Pair it with a durable
 snapshot repository or a projection consumer when the application also needs
 historical reads.
+
+### Read-side Projection
+
+Kafka repositories stay write-only. When the application needs historical reads,
+project the Kafka stream into a read-capable `CdoSnapshotRepository` such as the
+Redis, Exposed, or Caffeine repositories from the bluetape4k JaVers ecosystem:
+
+```kotlin
+val readRepository = LettuceCdoSnapshotRepository("audit-read", redisClient)
+val readJavers = JaversBuilder.javers()
+    .registerJaversRepository(readRepository)
+    .build()
+
+val projector = KafkaCdoSnapshotProjector(
+    consumerConfigs = mapOf(
+        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to "localhost:9092",
+        ConsumerConfig.GROUP_ID_CONFIG to "audit-projection",
+        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG to "earliest",
+        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG to false,
+    ),
+    jsonConverter = readJavers.jsonConverter,
+    projectionRepository = readRepository,
+    options = KafkaCdoSnapshotProjectionOptions(topic = "order-audit-events"),
+)
+
+projector.use {
+    it.replayUntilIdle(maxIdlePolls = 2)
+}
+```
+
+The projector uses the governed `bluetape4k-kafka` `consumerOf(...)` helper when
+it creates a repository-owned consumer from configuration. You can also pass a
+caller-owned `Consumer<String, String>` directly.
 
 ## Snapshot Event Pipeline
 
@@ -140,6 +174,25 @@ transport-specific deduplication policy.
 Read-side projection work (#105) and durable-history plus event-stream
 composition (#131) must keep this partial-publish behavior explicit when they
 add replay, retry, transaction, or outbox coordination.
+
+### Projection Replay Semantics
+
+`KafkaCdoSnapshotProjector` consumes the current Kafka wire value: the encoded
+JaVers snapshot payload. It does not require a metadata envelope or headers.
+
+Each polled batch is applied in deterministic `partition, offset` order. Kafka
+provides a total audit order only when the topic topology does so, for example a
+single-partition audit topic or a partitioning strategy that keeps each
+aggregate on one partition.
+
+By default the projector checks the target repository for an existing snapshot
+with the same GlobalId, commit id, and version before saving. This makes replay
+idempotent for duplicate snapshot records already materialized in the read
+store. It is not an exactly-once Kafka transaction guarantee.
+
+When offset commits are enabled, offsets are committed only after the complete
+polled batch is decoded and saved or skipped successfully. Decode failures and
+target repository failures are propagated so the caller can retry.
 
 ## Adapter Selection
 
