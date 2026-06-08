@@ -36,9 +36,10 @@ Add these public types under `io.bluetape4k.javers.repository.composite`:
 
 - `CompositeCdoSnapshotRepository`
 - `CompositeCdoSnapshotRepositoryOptions`
-- `CompositeCdoSnapshotWriteFailurePolicy`
+- `CompositeCdoSnapshotFailurePolicy`
+- `CompositeCdoSnapshotDelegateRole`
 - `CompositeCdoSnapshotWriteFailure`
-- `CompositeCdoSnapshotWriteException`
+- `CompositeCdoSnapshotException`
 
 ### `CompositeCdoSnapshotRepository`
 
@@ -49,6 +50,9 @@ Constructor contract:
 - Reads delegate only to the primary repository.
 - Writes save to the primary first, then fan out to secondaries in the supplied
   order.
+- `persist(commit)` calls `primary.persist(commit)` first so the durable
+  repository keeps its native head/sequence behavior, then calls
+  `persist(commit)` on each secondary according to the failure policy.
 - `setJsonConverter()` is propagated to the primary and all secondaries.
 - `ensureSchema()` is propagated to the primary and all secondaries using the
   same failure policy as writes.
@@ -74,11 +78,11 @@ validation is required. Keep options serializable.
 
 ### Failure policy
 
-`CompositeCdoSnapshotWriteFailurePolicy`:
+`CompositeCdoSnapshotFailurePolicy`:
 
 - `FAIL_FAST`: propagate the first delegate failure and stop remaining
   secondary writes. This is the default because it preserves the JaVers
-  `persist()` head-advance contract.
+  native `persist()` contract for the primary repository.
 - `BEST_EFFORT`: try all secondary writes and throw an aggregate exception only
   after all delegates have been attempted. This policy is allowed for event
   streams or rebuildable projections when callers accept partial secondary
@@ -91,13 +95,13 @@ unavailable, no secondary repository should receive the snapshot.
 
 `CompositeCdoSnapshotWriteFailure` records:
 
-- delegate role: `PRIMARY`, `SECONDARY`, or `CLOSE`
+- delegate role: `PRIMARY` or `SECONDARY`
 - delegate index
 - delegate type
 - operation name
 - cause
 
-`CompositeCdoSnapshotWriteException` records all failures and exposes the first
+`CompositeCdoSnapshotException` records all failures and exposes the first
 failure as its cause. Messages must include delegate role/index/type and
 operation, but must not include raw snapshot global-id values.
 
@@ -106,12 +110,14 @@ operation, but must not include raw snapshot global-id values.
 - Public read methods (`getLatest`, `getStateHistory`, `getValueObjectStateHistory`,
   `getSnapshots`, `loadSnapshots`, and `getHeadId`) delegate to primary storage.
 - `saveSnapshot(snapshot)` writes primary first and then secondaries in order.
-- `persist(commit)` can use the default JaVers call path. Since JaVers calls
-  `saveSnapshot()` before advancing head, a thrown composite exception prevents
-  head advancement.
+- `persist(commit)` writes primary first using the primary repository's native
+  `persist()` implementation, then secondaries in order.
 - The composite must not claim atomicity across primary and secondaries.
   Distributed transaction, outbox, retry, and compensation are non-goals for
   this issue.
+- If a secondary fails after the primary succeeds, the primary may already
+  contain the commit and expose its head. The composite surfaces the secondary
+  failure but does not roll back primary storage.
 - Duplicate secondary entries are caller responsibility unless the secondary
   repository itself is idempotent.
 - Redis/cache integration is represented by passing an existing Redis-backed or

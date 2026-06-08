@@ -30,10 +30,10 @@ README locale updates, local 7-Tier reviews, and a PR for milestone `0.3.0`.
    - Confirm no existing generic composite repository exists in `javers-core`.
 
 2. Add composite failure model in `javers-core`.
-   - Add `CompositeCdoSnapshotWriteFailurePolicy`.
+   - Add `CompositeCdoSnapshotFailurePolicy`.
    - Add `CompositeCdoSnapshotDelegateRole`.
    - Add `CompositeCdoSnapshotWriteFailure`.
-   - Add `CompositeCdoSnapshotWriteException`.
+   - Add `CompositeCdoSnapshotException`.
    - Use English KDoc and bluetape4k validation helpers.
    - Keep serializable data classes with `serialVersionUID`.
 
@@ -53,6 +53,9 @@ README locale updates, local 7-Tier reviews, and a PR for milestone `0.3.0`.
    - Propagate `ensureSchema()` primary first, then secondaries according to
      options.
    - `saveSnapshot()` writes primary first, then ordered secondaries.
+   - `persist(commit)` calls `primary.persist(commit)` first, then ordered
+     secondaries, so the primary repository keeps its native head/sequence
+     behavior.
    - Primary failure always prevents secondary writes.
    - `FAIL_FAST` stops on first secondary failure.
    - `BEST_EFFORT` attempts all secondary writes, then throws aggregate failure.
@@ -120,6 +123,9 @@ README locale updates, local 7-Tier reviews, and a PR for milestone `0.3.0`.
   constraints.
 - Add automatic retry/outbox/compensation: rejected because that changes
   reliability and operational semantics beyond this issue.
+- Roll back primary storage on secondary failure: rejected because existing
+  `CdoSnapshotRepository` implementations do not expose a safe rollback API and
+  #131 explicitly avoids distributed transaction semantics.
 - Make Kafka repositories read-capable: rejected because #105 already added an
   explicit projector while preserving Kafka write-only repositories.
 
