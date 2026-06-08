@@ -64,6 +64,13 @@ Native subagent note: Step 6-R normally prefers bounded native reviewer lanes. I
 |---|---|---|---|---|
 | P2 | `CompositeCdoSnapshotException.kt:14` | API robustness | Public aggregate exception accepted a caller-provided list directly and validated after message construction. | Added validated payload construction, immutable copy, `serialVersionUID`, and a regression test. |
 
+## PR Comment Follow-up
+
+| Thread | Area | Resolution |
+|---|---|---|
+| `PRRT_kwDOSVj8-s6Hz43L` | README diagram | Added title/subtitle to the DOT source, increased Graphviz spacing, re-rendered `.plain`, `.svg`, and `.png`, then inspected the PNG. |
+| `PRRT_kwDOSVj8-s6Hz6GB` | Delegate role model | Kept `PRIMARY`/`SECONDARY` roles because there is exactly one primary and zero or more ordered secondaries; clarified in KDoc that `delegateIndex` represents secondary execution order. |
+
 ## Convergence Record
 
 | Iteration | P0 | P1 | P2 | P3 | Action |
