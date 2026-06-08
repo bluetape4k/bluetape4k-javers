@@ -2,6 +2,7 @@ package io.bluetape4k.javers.examples.exposedddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.ddd.DOMAIN_EVENT_TYPE_PROPERTY
 import io.bluetape4k.javers.ddd.DomainEvent
 import io.bluetape4k.javers.ddd.FunctionDomainEventPublisher
@@ -31,12 +32,11 @@ import java.math.BigDecimal
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneOffset
-import java.util.UUID
 
 class OrderCommandHandlerTest {
 
     private val database: Database = Database.connect(
-        url = "jdbc:h2:mem:javers-exposed-ddd-${UUID.randomUUID()};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+        url = "jdbc:h2:mem:javers-exposed-ddd-${Base58.randomString(8)};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
 
@@ -108,7 +108,8 @@ class OrderCommandHandlerTest {
         val paid = handler.handle(MarkOrderPaidCommand(orderId = orderId, author = "tester"))
 
         paid.status shouldBeEqualTo OrderStatus.PAID
-        repository.load(orderId).shouldNotBeNull().status shouldBeEqualTo OrderStatus.PAID
+        val loaded = repository.load(orderId).shouldNotBeNull()
+        loaded.status shouldBeEqualTo OrderStatus.PAID
         repository.loadHistory(orderId).size shouldBeEqualTo 2
         publishedEvents.map { it::class } shouldBeEqualTo listOf(OrderPlaced::class, OrderMarkedPaid::class)
     }

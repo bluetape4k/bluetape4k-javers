@@ -1,6 +1,7 @@
 package io.bluetape4k.javers.examples.exposedddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.ddd.DomainEventPublisher
 import io.bluetape4k.javers.examples.exposedddd.domain.CustomerId
 import io.bluetape4k.javers.examples.exposedddd.domain.MarkOrderPaidCommand
@@ -34,13 +35,12 @@ import java.time.Clock
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneOffset
-import java.util.UUID
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderProjectionFlowTest {
 
     private val database: Database = Database.connect(
-        url = "jdbc:h2:mem:javers-exposed-ddd-projection-${UUID.randomUUID()};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+        url = "jdbc:h2:mem:javers-exposed-ddd-projection-${Base58.randomString(8)};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
 
@@ -56,7 +56,7 @@ class OrderProjectionFlowTest {
 
     @Test
     fun `command events update Redis order summary through Kafka`() {
-        val topic = "javers-exposed-ddd-orders-${UUID.randomUUID()}"
+        val topic = "javers-exposed-ddd-orders-${Base58.randomString(8)}"
         val orderId = OrderId("order-projection-1")
 
         KafkaServer.Launcher.createStringProducer(kafka).use { producer ->
@@ -65,7 +65,7 @@ class OrderProjectionFlowTest {
                 try {
                     val projection = RedisOrderSummaryProjection(
                         client = redisClient,
-                        keyPrefix = "test:${UUID.randomUUID()}:order-summary",
+                        keyPrefix = "test:${Base58.randomString(8)}:order-summary",
                     )
                     val queryService = OrderQueryService(projection)
                     val projectionConsumer = OrderProjectionEventConsumer(consumer, projection).apply {

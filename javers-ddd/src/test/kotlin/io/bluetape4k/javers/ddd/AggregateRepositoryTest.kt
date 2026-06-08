@@ -2,6 +2,7 @@ package io.bluetape4k.javers.ddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
@@ -14,12 +15,11 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Instant
-import java.util.UUID
 
 class AggregateRepositoryTest {
 
     private val database: Database = Database.connect(
-        url = "jdbc:h2:mem:javers-ddd-${UUID.randomUUID()};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+        url = "jdbc:h2:mem:javers-ddd-${Base58.randomString(8)};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
 
@@ -65,9 +65,8 @@ class AggregateRepositoryTest {
 
         repository.clear()
 
-        val loaded = repository.load(aggregate.id)
+        val loaded = repository.load(aggregate.id).shouldNotBeNull()
 
-        loaded.shouldNotBeNull()
         loaded.id shouldBeEqualTo aggregate.id
         loaded.status shouldBeEqualTo "PAID"
         repository.loadHistory(aggregate.id).size shouldBeEqualTo 2

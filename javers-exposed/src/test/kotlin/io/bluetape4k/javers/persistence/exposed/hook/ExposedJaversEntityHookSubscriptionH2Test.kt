@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.exposed.hook
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
@@ -77,7 +78,7 @@ class ExposedJaversEntityHookSubscriptionH2Test {
             }
 
             transaction(database) {
-                val customer = AuditCustomerEntity.findById(createdId)!!
+                val customer = AuditCustomerEntity.findById(createdId).shouldNotBeNull()
                 customer.name = "Bobby"
                 customer.score = 20
             }
@@ -106,7 +107,8 @@ class ExposedJaversEntityHookSubscriptionH2Test {
             }
 
             transaction(database) {
-                AuditCustomerEntity.findById(createdId)!!.delete()
+                val customer = AuditCustomerEntity.findById(createdId).shouldNotBeNull()
+                customer.delete()
             }
             createdId
         }
@@ -131,7 +133,7 @@ class ExposedJaversEntityHookSubscriptionH2Test {
             }
 
             transaction(database) {
-                val customer = AuditCustomerEntity.findById(createdId)!!
+                val customer = AuditCustomerEntity.findById(createdId).shouldNotBeNull()
                 customer.score = 20
                 customer.score = 30
                 customer.name = "David"
@@ -196,7 +198,8 @@ class ExposedJaversEntityHookSubscriptionH2Test {
         lateinit var subscription: ExposedJaversEntityHookSubscription
         val javers = recursiveJavers {
             commitCalls.incrementAndGet()
-            subscription.handle(activeChange!!)
+            val change = activeChange.shouldNotBeNull()
+            subscription.handle(change)
         }
 
         subscription = ExposedJaversEntityHookSubscription.subscribe(

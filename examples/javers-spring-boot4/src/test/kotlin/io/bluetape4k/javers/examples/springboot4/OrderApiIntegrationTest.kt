@@ -2,6 +2,7 @@ package io.bluetape4k.javers.examples.springboot4
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.examples.springboot4.domain.OrderPlaced
 import io.bluetape4k.javers.examples.springboot4.web.MarkOrderPaidRequest
 import io.bluetape4k.javers.examples.springboot4.web.OrderHistoryResponse
@@ -18,7 +19,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import tools.jackson.databind.ObjectMapper
 import java.math.BigDecimal
-import java.util.UUID
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -116,5 +116,5 @@ class OrderApiIntegrationTest {
     private inline fun <reified T: Any> org.springframework.test.web.servlet.MvcResult.readBody(): T =
         objectMapper.readValue(response.contentAsString.shouldNotBeNull(), T::class.java)
 
-    private fun newOrderId(): String = "order-${UUID.randomUUID()}"
+    private fun newOrderId(): String = "order-${Base58.randomString(8)}"
 }
