@@ -205,24 +205,27 @@ The two benchmark families answer different questions. The Envers comparison
 measures broader audit workflows in milliseconds per operation, while the
 commit metadata benchmark measures a narrower JaVers Exposed SQL pushdown path
 in throughput. The table below converts the metadata benchmark to approximate
-milliseconds per operation with `1000 / opsPerSecond` so the results can be read
-on one latency scale.
+milliseconds per operation with `1000 / opsPerSecond` so insert, update, and
+read-side results can be read on one latency scale. The commit metadata
+benchmark does not include an update scenario because JaVers commit metadata is
+append-only in this repository path.
 
 ![JaVers Exposed combined benchmark overview](docs/images/readme-charts/javers-exposed-combined-benchmark-overview-01.png)
 
-| Path | Scope | Insert ms/op | Read ms/op | Interpretation |
-|---|---|---:|---:|---|
-| Hibernate Envers | Entity revision audit path | 4.486 | 12.483 audit-query | Baseline JPA audit path for the example domain. |
-| JaVers in-memory | Core JaVers diff/query path | 0.510 | 12.559 audit-query | Fast writes, but in-memory audit query is not the Exposed SQL path. |
-| JaVers + Exposed repository | Snapshot repository path | 8.499 | 0.763 audit-query | Repository read path is the fastest full audit-query lane here. |
-| JaVers + Exposed DDD path | End-to-end example path | 6.397 | 0.704 audit-query | Adds source-table and aggregate orchestration, but keeps fast audit reads. |
-| JaVers Exposed metadata baseline | Commit metadata author/date filters | 2.077 | 1.090 author / 1.091 date-range | Current production schema is already near the Exposed audit-query order of magnitude. |
-| Best metadata-index smoke variants | Benchmark-only candidate indexes | 1.928 | 1.057 author / 1.083 date-range | Small and mixed gains; not enough evidence for default DDL. |
+| Path | Scope | Insert ms/op | Update ms/op | Read ms/op | Interpretation |
+|---|---|---:|---:|---:|---|
+| Hibernate Envers | Entity revision audit path | 4.486 | 6.917 | 12.483 audit-query | Baseline JPA audit path for the example domain. |
+| JaVers in-memory | Core JaVers diff/query path | 0.510 | 0.978 | 12.559 audit-query | Fast writes and updates, but in-memory audit query is not the Exposed SQL path. |
+| JaVers + Exposed repository | Snapshot repository path | 8.499 | 5.945 | 0.763 audit-query | Higher write cost, but repository read path is the fastest full audit-query lane here. |
+| JaVers + Exposed DDD path | End-to-end example path | 6.397 | 7.257 | 0.704 audit-query | Adds source-table and aggregate orchestration, but keeps fast audit reads. |
+| JaVers Exposed metadata baseline | Commit metadata author/date filters | 2.077 | Not measured | 1.090 author / 1.091 date-range | Current production schema is already near the Exposed audit-query order of magnitude for metadata reads. |
+| Best metadata-index smoke variants | Benchmark-only candidate indexes | 1.928 | Not measured | 1.057 author / 1.083 date-range | Insert is slightly faster in the smoke run, but read gains remain small and mixed. |
 
 Taken together, the Exposed repository remains the right read-side direction
-against Envers for this workload, but the commit metadata index decision should
-stay conservative. The indexed smoke variants are not a broad enough win to
-change the default schema.
+against Envers for this workload, but it pays more on insert/update than the
+in-memory path. The commit metadata index decision should stay conservative:
+the indexed smoke variants improve insert a little and only some read filters,
+while update is outside that append-only benchmark scope.
 
 ## References
 

@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="680" viewBox="0 0 1500 680" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
   <title id="title">JaVers Exposed combined benchmark overview</title>
-  <desc id="desc">Horizontal bar chart comparing audit-query latency from the Envers comparison with commit metadata query latency converted from throughput to milliseconds per operation. Lower values are better.</desc>
+  <desc id="desc">Grouped horizontal bar chart comparing insert, update, and read latency across Hibernate Envers, JaVers in-memory, JaVers Exposed, and commit metadata benchmark paths. Metadata throughput is converted to milliseconds per operation. Lower values are better.</desc>
   <defs>
     <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
       <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#203040" flood-opacity="0.10"/>
@@ -8,25 +8,27 @@
     <style>
       .canvas{fill:#F7FAFC}
       .frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:42px;fill:#22344A;font-weight:400}
-      .subtitle{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:18px;fill:#536476;font-weight:400}
+      .title{font-family:"Architects Daughter";font-size:42px;fill:#22344A;font-weight:400}
+      .subtitle{font-family:"Comic Mono";font-size:18px;fill:#536476;font-weight:400}
       .axis{stroke:#C9D7E4;stroke-width:2}
       .tick{stroke:#E4ECF3;stroke-width:1.5}
-      .tick-label{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:14px;fill:#6B7B8D}
-      .label{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:15px;fill:#35465A}
-      .value{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:14px;fill:#314255;font-weight:600}
-      .legend{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:15px;fill:#35465A}
-      .note{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:13px;fill:#627184}
+      .tick-label{font-family:"Comic Mono";font-size:14px;fill:#6B7B8D}
+      .group-title{font-family:"Architects Daughter";font-size:25px;fill:#22344A;font-weight:400}
+      .label{font-family:"Comic Mono";font-size:15px;fill:#35465A}
+      .value{font-family:"Comic Mono";font-size:14px;fill:#314255;font-weight:700}
+      .legend{font-family:"Comic Mono";font-size:15px;fill:#35465A}
+      .note{font-family:"Comic Mono";font-size:13px;fill:#627184}
       .plot{fill:#FBFDFE;stroke:#DCE7F0;stroke-width:2;filter:url(#shadow)}
+      .divider{stroke:#DCE7F0;stroke-width:2}
     </style>
   </defs>
-  <rect class="canvas" width="1500" height="680"/>
-  <rect class="frame" x="34" y="28" width="1432" height="624" rx="26"/>
+  <rect class="canvas" width="1600" height="1040"/>
+  <rect class="frame" x="34" y="28" width="1532" height="984" rx="26"/>
   <text class="title" x="72" y="84">JaVers Exposed combined benchmark overview</text>
-  <text class="subtitle" x="76" y="116">Audit-query and metadata-query latency, milliseconds per operation, lower is better.</text>
+  <text class="subtitle" x="76" y="116">Insert, update, and read latency in milliseconds per operation; lower is better.</text>
 
   <g transform="translate(76,138)">
-    <rect x="0" y="0" width="1348" height="70" rx="18" fill="#F3F7FB" stroke="#D7E2EC" stroke-width="2"/>
+    <rect x="0" y="0" width="1452" height="70" rx="18" fill="#F3F7FB" stroke="#D7E2EC" stroke-width="2"/>
     <g transform="translate(28,22)">
       <rect width="18" height="18" rx="4" fill="#4A90E2"/>
       <text class="legend" x="28" y="15">Audit workflow benchmark</text>
@@ -39,56 +41,106 @@
       <rect width="18" height="18" rx="4" fill="#D6A63F"/>
       <text class="legend" x="28" y="15">Best metadata-index smoke variant</text>
     </g>
+    <text class="note" x="1324" y="37" text-anchor="middle">Scale: 0 to 13 ms/op</text>
   </g>
 
   <g transform="translate(76,230)">
-    <rect class="plot" x="0" y="0" width="1348" height="440" rx="18"/>
-    <line class="axis" x1="420" y1="380" x2="1320" y2="380"/>
+    <rect class="plot" x="0" y="0" width="1452" height="770" rx="18"/>
+    <line class="axis" x1="470" y1="700" x2="1370" y2="700"/>
     <g>
-      <line class="tick" x1="420" y1="34" x2="420" y2="380"/>
-      <text class="tick-label" x="420" y="406" text-anchor="middle">0</text>
-      <line class="tick" x1="697" y1="34" x2="697" y2="380"/>
-      <text class="tick-label" x="697" y="406" text-anchor="middle">4</text>
-      <line class="tick" x1="974" y1="34" x2="974" y2="380"/>
-      <text class="tick-label" x="974" y="406" text-anchor="middle">8</text>
-      <line class="tick" x1="1251" y1="34" x2="1251" y2="380"/>
-      <text class="tick-label" x="1251" y="406" text-anchor="middle">12</text>
-      <line class="tick" x1="1320" y1="34" x2="1320" y2="380"/>
-      <text class="tick-label" x="1320" y="406" text-anchor="middle">13</text>
+      <line class="tick" x1="470" y1="34" x2="470" y2="700"/>
+      <text class="tick-label" x="470" y="728" text-anchor="middle">0</text>
+      <line class="tick" x1="747" y1="34" x2="747" y2="700"/>
+      <text class="tick-label" x="747" y="728" text-anchor="middle">4</text>
+      <line class="tick" x1="1024" y1="34" x2="1024" y2="700"/>
+      <text class="tick-label" x="1024" y="728" text-anchor="middle">8</text>
+      <line class="tick" x1="1301" y1="34" x2="1301" y2="700"/>
+      <text class="tick-label" x="1301" y="728" text-anchor="middle">12</text>
+      <line class="tick" x1="1370" y1="34" x2="1370" y2="700"/>
+      <text class="tick-label" x="1370" y="728" text-anchor="middle">13</text>
     </g>
 
-    <text class="label" x="42" y="56">Hibernate Envers audit-query</text>
-    <rect x="420" y="40" width="864" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="1296" y="54">12.483</text>
+    <text class="group-title" x="42" y="52">Insert</text>
+    <text class="label" x="180" y="52">Hibernate Envers</text>
+    <rect x="470" y="38" width="311" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="793" y="52">4.486</text>
 
-    <text class="label" x="42" y="94">JaVers in-memory audit-query</text>
-    <rect x="420" y="78" width="869" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="1301" y="92">12.559</text>
+    <text class="label" x="180" y="82">JaVers in-memory</text>
+    <rect x="470" y="68" width="35" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="517" y="82">0.510</text>
 
-    <text class="label" x="42" y="132">JaVers + Exposed repository audit-query</text>
-    <rect x="420" y="116" width="53" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="485" y="130">0.763</text>
+    <text class="label" x="180" y="112">JaVers + Exposed repository</text>
+    <rect x="470" y="98" width="588" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="1070" y="112">8.499</text>
 
-    <text class="label" x="42" y="170">JaVers + Exposed DDD audit-query</text>
-    <rect x="420" y="154" width="49" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="481" y="168">0.704</text>
+    <text class="label" x="180" y="142">JaVers + Exposed DDD path</text>
+    <rect x="470" y="128" width="443" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="925" y="142">6.397</text>
 
-    <text class="label" x="42" y="224">Metadata baseline author query</text>
-    <rect x="420" y="208" width="75" height="18" rx="5" fill="#54A66B"/>
-    <text class="value" x="507" y="222">1.090</text>
+    <text class="label" x="180" y="172">Metadata baseline</text>
+    <rect x="470" y="158" width="144" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="626" y="172">2.077</text>
 
-    <text class="label" x="42" y="262">Metadata baseline date-range query</text>
-    <rect x="420" y="246" width="76" height="18" rx="5" fill="#54A66B"/>
-    <text class="value" x="508" y="260">1.091</text>
+    <text class="label" x="180" y="202">Best metadata-index variant</text>
+    <rect x="470" y="188" width="133" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="615" y="202">1.928</text>
 
-    <text class="label" x="42" y="316">Best indexed author query</text>
-    <rect x="420" y="300" width="73" height="18" rx="5" fill="#D6A63F"/>
-    <text class="value" x="505" y="314">1.057</text>
+    <line class="divider" x1="42" y1="232" x2="1398" y2="232"/>
 
-    <text class="label" x="42" y="354">Best indexed date-range query</text>
-    <rect x="420" y="338" width="75" height="18" rx="5" fill="#D6A63F"/>
-    <text class="value" x="507" y="352">1.083</text>
+    <text class="group-title" x="42" y="272">Update</text>
+    <text class="label" x="180" y="272">Hibernate Envers</text>
+    <rect x="470" y="258" width="479" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="961" y="272">6.917</text>
 
-    <text class="note" x="750" y="432" text-anchor="middle">Metadata benchmark values are converted from ops/s with 1000 / throughput; benchmark scopes are related but not identical.</text>
+    <text class="label" x="180" y="302">JaVers in-memory</text>
+    <rect x="470" y="288" width="68" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="550" y="302">0.978</text>
+
+    <text class="label" x="180" y="332">JaVers + Exposed repository</text>
+    <rect x="470" y="318" width="412" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="894" y="332">5.945</text>
+
+    <text class="label" x="180" y="362">JaVers + Exposed DDD path</text>
+    <rect x="470" y="348" width="502" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="984" y="362">7.257</text>
+
+    <text class="note" x="180" y="396">Commit metadata update is not measured because this path is append-only.</text>
+
+    <line class="divider" x1="42" y1="426" x2="1398" y2="426"/>
+
+    <text class="group-title" x="42" y="466">Read</text>
+    <text class="label" x="180" y="466">Hibernate Envers audit-query</text>
+    <rect x="470" y="452" width="864" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="1346" y="466">12.483</text>
+
+    <text class="label" x="180" y="496">JaVers in-memory audit-query</text>
+    <rect x="470" y="482" width="869" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="1351" y="496">12.559</text>
+
+    <text class="label" x="180" y="526">Exposed repository audit-query</text>
+    <rect x="470" y="512" width="53" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="535" y="526">0.763</text>
+
+    <text class="label" x="180" y="556">Exposed DDD audit-query</text>
+    <rect x="470" y="542" width="49" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="531" y="556">0.704</text>
+
+    <text class="label" x="180" y="586">Metadata baseline author query</text>
+    <rect x="470" y="572" width="75" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="557" y="586">1.090</text>
+
+    <text class="label" x="180" y="616">Metadata baseline date-range query</text>
+    <rect x="470" y="602" width="76" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="558" y="616">1.091</text>
+
+    <text class="label" x="180" y="646">Best indexed author query</text>
+    <rect x="470" y="632" width="73" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="555" y="646">1.057</text>
+
+    <text class="label" x="180" y="676">Best indexed date-range query</text>
+    <rect x="470" y="662" width="75" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="557" y="676">1.083</text>
+
+    <text class="note" x="755" y="758" text-anchor="middle">Metadata values are converted from ops/s with 1000 / throughput; benchmark scopes are related but not identical.</text>
   </g>
 </svg>
