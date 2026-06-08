@@ -40,7 +40,9 @@ Envers / JaVers in-memory comparison. Convert #188 throughput to approximate
 milliseconds per operation with `1000 / opsPerSecond`, then explain that the
 older comparison measures a broader audit workflow while #188 measures a
 narrower commit metadata pushdown path. Do not present the two benchmark
-families as identical workloads.
+families as identical workloads. When producing a combined comparison, include
+insert, update, and read-side results together; if one benchmark family has no
+matching scenario, state that it was not measured instead of dropping the axis.
 
 ## Verification
 
