@@ -1,0 +1,118 @@
+{
+  "benchmark": "javers-exposed-ddd-envers-comparison",
+  "generatedAt": "2026-06-08T00:00:00Z",
+  "command": "./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain",
+  "metric": "milliseconds per operation",
+  "direction": "lower is better",
+  "warmupIterations": 5,
+  "measuredIterations": 40,
+  "environment": {
+    "javaVersion": "21.0.11",
+    "osName": "Mac OS X",
+    "osArch": "aarch64",
+    "database": "PostgreSQL 18-alpine via Testcontainers",
+    "connectionPool": "HikariCP",
+    "schema": "JaVers Exposed tables use natural primary keys"
+  },
+  "implementations": [
+    {
+      "name": "Hibernate Envers",
+      "results": [
+        {
+          "scenario": "insert",
+          "iterations": 40,
+          "totalMillis": 179.431291,
+          "millisPerOperation": 4.485782275
+        },
+        {
+          "scenario": "update",
+          "iterations": 40,
+          "totalMillis": 276.676792,
+          "millisPerOperation": 6.9169198
+        },
+        {
+          "scenario": "audit-query",
+          "iterations": 40,
+          "totalMillis": 499.336708,
+          "millisPerOperation": 12.4834177
+        }
+      ]
+    },
+    {
+      "name": "JaVers in-memory",
+      "results": [
+        {
+          "scenario": "insert",
+          "iterations": 40,
+          "totalMillis": 20.401042,
+          "millisPerOperation": 0.51002605
+        },
+        {
+          "scenario": "update",
+          "iterations": 40,
+          "totalMillis": 39.11575,
+          "millisPerOperation": 0.97789375
+        },
+        {
+          "scenario": "audit-query",
+          "iterations": 40,
+          "totalMillis": 502.375125,
+          "millisPerOperation": 12.559378125
+        }
+      ]
+    },
+    {
+      "name": "JaVers + Exposed repository",
+      "results": [
+        {
+          "scenario": "insert",
+          "iterations": 40,
+          "totalMillis": 339.943292,
+          "millisPerOperation": 8.498582299999999
+        },
+        {
+          "scenario": "update",
+          "iterations": 40,
+          "totalMillis": 237.81675,
+          "millisPerOperation": 5.94541875
+        },
+        {
+          "scenario": "audit-query",
+          "iterations": 40,
+          "totalMillis": 30.530291,
+          "millisPerOperation": 0.763257275
+        }
+      ]
+    },
+    {
+      "name": "JaVers + Exposed DDD path",
+      "results": [
+        {
+          "scenario": "insert",
+          "iterations": 40,
+          "totalMillis": 255.884917,
+          "millisPerOperation": 6.397122925
+        },
+        {
+          "scenario": "update",
+          "iterations": 40,
+          "totalMillis": 290.29175,
+          "millisPerOperation": 7.25729375
+        },
+        {
+          "scenario": "audit-query",
+          "iterations": 40,
+          "totalMillis": 28.178042,
+          "millisPerOperation": 0.7044510500000001
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "The previous JaVers + Exposed audit-query outlier is not reproduced on this run.",
+    "JaVers in-memory approximates core diff/query cost before persistence adapters.",
+    "JaVers + Exposed repository isolates snapshot repository persistence and query cost from the example source table.",
+    "JaVers + Exposed DDD path includes source-of-truth order persistence and aggregate repository orchestration.",
+    "The benchmark remains a bounded PostgreSQL Testcontainers documentation benchmark, not a release-wide performance claim."
+  ]
+}

@@ -36,18 +36,21 @@ Command:
 ```
 
 Environment and raw results are stored in
-[`docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json`](../../docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json).
+[`docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json`](../../docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json).
 
-| Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
-|---|---:|---:|
-| insert | 1.049 | 3.627 |
-| update | 1.383 | 2.848 |
-| audit-query | 8.010 | 105.339 |
+![JaVers Exposed DDD benchmark comparison](../../docs/images/readme-charts/javers-exposed-ddd-envers-comparison-01.png)
 
-On this H2 run Envers is faster for the narrow persistence benchmark. The
-JaVers + Exposed example is still useful when the application needs explicit
-aggregate commits, commit metadata, domain-event integration, and a CQRS
-projection path rather than only entity revision tables.
+| Lane | insert ms/op | update ms/op | audit-query ms/op | Notes |
+|---|---:|---:|---:|---|
+| Hibernate Envers | 1.084 | 1.528 | 10.236 | Hibernate entity revision tables; audit query loads audited entity revisions. |
+| JaVers in-memory | 0.490 | 0.939 | 12.208 | Approximate JaVers core diff/query path before persistence adapters. |
+| JaVers + Exposed repository | 3.039 | 1.765 | 0.309 | Snapshot repository persistence and query path without the example source table. |
+| JaVers + Exposed DDD path | 2.095 | 3.002 | 0.313 | End-to-end example path including `OrdersTable` and aggregate repository orchestration. |
+
+The previous JaVers + Exposed audit-query outlier is not reproduced by this
+fresh run. The benchmark still remains a bounded H2 documentation benchmark:
+use the table to understand the example's cost shape, not as a release-wide
+performance guarantee.
 
 ## Run
 

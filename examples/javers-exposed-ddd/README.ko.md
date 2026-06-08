@@ -36,19 +36,22 @@ milliseconds per operation 값은 낮을수록 좋습니다.
 ```
 
 환경과 원시 결과는
-[`docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json`](../../docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)에
+[`docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json`](../../docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json)에
 저장되어 있습니다.
 
-| Scenario | Hibernate Envers ms/op | JaVers + Exposed ms/op |
-|---|---:|---:|
-| insert | 1.049 | 3.627 |
-| update | 1.383 | 2.848 |
-| audit-query | 8.010 | 105.339 |
+![JaVers Exposed DDD benchmark comparison](../../docs/images/readme-charts/javers-exposed-ddd-envers-comparison-01.png)
 
-이번 H2 실행에서는 좁은 persistence benchmark 기준 Envers가 더 빠릅니다.
-JaVers + Exposed 예제의 가치는 단순 entity revision table만이 아니라 명시적
-aggregate commit, commit metadata, domain event integration, CQRS projection
-경로가 필요할 때에 있습니다.
+| Lane | insert ms/op | update ms/op | audit-query ms/op | 비고 |
+|---|---:|---:|---:|---|
+| Hibernate Envers | 1.084 | 1.528 | 10.236 | Hibernate entity revision table 경로입니다. audit query는 audited entity revision을 읽습니다. |
+| JaVers in-memory | 0.490 | 0.939 | 12.208 | persistence adapter 전의 JaVers core diff/query 경로에 가깝습니다. |
+| JaVers + Exposed repository | 3.039 | 1.765 | 0.309 | 예제 source table을 제외한 snapshot repository persistence/query 경로입니다. |
+| JaVers + Exposed DDD path | 2.095 | 3.002 | 0.313 | `OrdersTable`과 aggregate repository orchestration을 포함한 예제 end-to-end 경로입니다. |
+
+이 fresh run에서는 이전 JaVers + Exposed audit-query outlier가 재현되지
+않았습니다. 이 benchmark는 여전히 H2 기반 문서화용 benchmark입니다. 표는
+예제의 비용 구조를 이해하기 위한 자료이며, release 전체 성능 보장은
+아닙니다.
 
 ## 실행
 

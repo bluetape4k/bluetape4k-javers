@@ -127,6 +127,32 @@ endpoint 뒤에서 보여주며, bluetape4k Ktor JSON/health helper를 재사용
 ./gradlew :javers-persistence-kafka:test
 ```
 
+## 벤치마크 스냅샷
+
+아래 비교는 문서용으로 범위를 제한한 benchmark이며 release-wide 성능 주장이
+아닙니다.
+`./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain`
+명령으로 생성했고, scenario마다 warmup 5회와 측정 40회를 실행했습니다. 단위는
+milliseconds per operation이며 낮을수록 좋습니다.
+
+환경: PostgreSQL 18-alpine via Testcontainers, HikariCP, JDK 21.0.11, macOS
+aarch64. Raw artifact:
+[`docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json`](docs/benchmark/2026-06-08-javers-exposed-ddd-envers-comparison.json).
+
+![JaVers Exposed DDD benchmark comparison](docs/images/readme-charts/javers-exposed-ddd-envers-comparison-01.png)
+
+| Implementation | Insert ms/op | Update ms/op | Audit-query ms/op |
+|---|---:|---:|---:|
+| Hibernate Envers | 4.486 | 6.917 | 12.483 |
+| JaVers in-memory | 0.510 | 0.978 | 12.559 |
+| JaVers + Exposed repository | 8.499 | 5.945 | 0.763 |
+| JaVers + Exposed DDD path | 6.397 | 7.257 | 0.704 |
+
+Exposed lane은 HikariCP를 통한 PostgreSQL round trip을 포함합니다. DDD path는
+source-of-truth order persistence와 aggregate repository orchestration까지
+포함하므로, 순수 snapshot repository 비용이 아니라 end-to-end example path로
+비교해야 합니다.
+
 ## 참고 자료
 
 - [JaVers](https://javers.org)
