@@ -2,7 +2,6 @@ package io.bluetape4k.javers.persistence.exposed.schema
 
 import io.bluetape4k.support.requireNotBlank
 import org.jetbrains.exposed.v1.core.Table
-import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.javatime.datetime
 import java.io.Serializable
 
@@ -16,9 +15,9 @@ import java.io.Serializable
 open class CdoSnapshotTableMapping(
     tableName: String = DEFAULT_TABLE_NAME,
     globalIdVersionIndexName: String = DEFAULT_GLOBAL_ID_VERSION_INDEX,
-): LongIdTable(tableName.requireNotBlank("tableName")) {
+): Table(tableName.requireNotBlank("tableName")) {
 
-    val globalId = varchar("global_id", 200).index()
+    val globalId = varchar("global_id", 200)
     val commitId = varchar("commit_id", 50).index()
     val version = long("version")
     val type = varchar("type", 50).index()
@@ -26,9 +25,11 @@ open class CdoSnapshotTableMapping(
     val changedProperties = text("changed_properties")
     val managedType = varchar("managed_type", 200).index()
 
-    init {
-        uniqueIndex(globalIdVersionIndexName.requireNotBlank("globalIdVersionIndexName"), globalId, version)
-    }
+    override val primaryKey: PrimaryKey = PrimaryKey(
+        globalId,
+        version,
+        name = globalIdVersionIndexName.requireNotBlank("globalIdVersionIndexName"),
+    )
 
     companion object {
         const val DEFAULT_TABLE_NAME: String = "javers_snapshot"
@@ -50,14 +51,19 @@ open class CommitTableMapping(
     tableName: String = DEFAULT_TABLE_NAME,
     commitIdIndexName: String = DEFAULT_COMMIT_ID_INDEX,
     sequenceIndexName: String = DEFAULT_SEQUENCE_INDEX,
-): LongIdTable(tableName.requireNotBlank("tableName")) {
+): Table(tableName.requireNotBlank("tableName")) {
 
-    val commitId = varchar("commit_id", 50).uniqueIndex(commitIdIndexName.requireNotBlank("commitIdIndexName"))
+    val commitId = varchar("commit_id", 50)
     val author = varchar("author", 200)
     val commitDate = datetime("commit_date")
     val commitDateInstant = varchar("commit_date_instant", 64).nullable()
     val properties = text("properties")
     val sequence = long("sequence").default(0L).index(sequenceIndexName.requireNotBlank("sequenceIndexName"))
+
+    override val primaryKey: PrimaryKey = PrimaryKey(
+        commitId,
+        name = commitIdIndexName.requireNotBlank("commitIdIndexName"),
+    )
 
     companion object {
         const val DEFAULT_TABLE_NAME: String = "javers_commit"

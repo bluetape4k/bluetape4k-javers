@@ -56,11 +56,18 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
 
     @ParameterizedTest
     @MethodSource(ENABLE_DIALECTS_METHOD)
-    fun `snapshot table declares hot path indexes on shared database matrix`(testDB: TestDB) {
+    fun `snapshot and commit tables declare natural keys and hot path indexes on shared database matrix`(testDB: TestDB) {
         withTables(testDB, CommitTable, CdoSnapshotTable) {
-            val snapshotIndex = CdoSnapshotTable.indices.single { it.indexName == CdoSnapshotTable.GLOBAL_ID_VERSION_INDEX }
-            snapshotIndex.unique shouldBeEqualTo true
-            snapshotIndex.columns shouldBeEqualTo listOf(CdoSnapshotTable.globalId, CdoSnapshotTable.version)
+            val snapshotKey = CdoSnapshotTable.primaryKey
+            snapshotKey.name shouldBeEqualTo CdoSnapshotTable.GLOBAL_ID_VERSION_INDEX
+            snapshotKey.columns.map { it.name } shouldBeEqualTo listOf(
+                CdoSnapshotTable.globalId.name,
+                CdoSnapshotTable.version.name,
+            )
+
+            val commitKey = CommitTable.primaryKey
+            commitKey.name shouldBeEqualTo CommitTable.COMMIT_ID_INDEX
+            commitKey.columns.map { it.name } shouldBeEqualTo listOf(CommitTable.commitId.name)
 
             val sequenceIndex = CommitTable.indices.single { it.indexName == CommitTable.SEQUENCE_INDEX }
             sequenceIndex.unique shouldBeEqualTo false

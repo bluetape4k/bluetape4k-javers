@@ -15,8 +15,9 @@ JaVers commit과 encoded snapshot을 저장하는 `AbstractCdoSnapshotRepository
   table명을 지정할 수 있습니다.
 - JaVers JSON converter로 snapshot을 복원할 수 있도록 전체 encoded
   `CdoSnapshot` payload를 저장합니다.
-- snapshot history 조회 hot path를 위해 `(global_id, version)` unique index를
-  유지하고, repository head 복원을 위해 commit sequence index를 사용합니다.
+- commit에는 `commit_id`, snapshot에는 `(global_id, version)` natural primary
+  key를 사용하고, repository head 복원을 위해 commit sequence index를
+  사용합니다.
 - 일반적인 JaVers snapshot filter를 snapshot JSON decode 전에 SQL로 pushdown합니다.
 - repository instance를 다시 만들 때 head commit id를 복원합니다.
 - 명시적인 `EntityHook` subscription으로 Exposed DAO `Entity` lifecycle event를

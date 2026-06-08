@@ -15,8 +15,9 @@ managed through JetBrains Exposed.
   existing schema or tenant layout.
 - Persists the full encoded `CdoSnapshot` payload so JaVers can reconstruct
   snapshots with its configured JSON converter.
-- Keeps a unique `(global_id, version)` index for the hot snapshot history load
-  path and an index on commit sequence for repository head restoration.
+- Uses natural primary keys: `commit_id` for commits and `(global_id, version)`
+  for snapshots, plus an index on commit sequence for repository head
+  restoration.
 - Pushes common JaVers snapshot filters into SQL before decoding snapshot JSON.
 - Restores the repository head commit id after a repository instance rebuild.
 - Audits Exposed DAO `Entity` lifecycle events through an explicit

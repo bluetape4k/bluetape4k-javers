@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="640" viewBox="0 0 1500 640" role="img" aria-labelledby="title desc">
+  <title id="title">JaVers Exposed DDD benchmark comparison</title>
+  <desc id="desc">Grouped horizontal bar chart for insert, update, and audit-query milliseconds per operation. Lower values are better.</desc>
+  <defs>
+    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#203040" flood-opacity="0.10"/>
+    </filter>
+    <style>
+      .canvas{fill:#F7FAFC}
+      .frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
+      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:44px;fill:#22344A;font-weight:400}
+      .subtitle{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:18px;fill:#536476;font-weight:400}
+      .axis{stroke:#C9D7E4;stroke-width:2}
+      .tick{stroke:#E4ECF3;stroke-width:1.5}
+      .tick-label{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:14px;fill:#6B7B8D}
+      .scenario{font-family:"Architects Daughter","Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:25px;fill:#22344A;font-weight:400}
+      .label{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:15px;fill:#35465A}
+      .value{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:14px;fill:#314255;font-weight:600}
+      .legend{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:15px;fill:#35465A}
+      .note{font-family:"Comic Sans MS","Comic Sans","Comic Neue",sans-serif;font-size:13px;fill:#627184}
+      .plot{fill:#FBFDFE;stroke:#DCE7F0;stroke-width:2;filter:url(#shadow)}
+    </style>
+  </defs>
+  <rect class="canvas" width="1500" height="640"/>
+  <rect class="frame" x="34" y="28" width="1432" height="584" rx="26"/>
+  <text class="title" x="72" y="84">JaVers Exposed DDD benchmark comparison</text>
+  <text class="subtitle" x="76" y="116">2026-06-08 PostgreSQL + HikariCP documentation benchmark, milliseconds per operation, lower is better.</text>
+
+  <g transform="translate(76,138)">
+    <rect x="0" y="0" width="1348" height="70" rx="18" fill="#F3F7FB" stroke="#D7E2EC" stroke-width="2"/>
+    <g transform="translate(28,22)">
+      <rect width="18" height="18" rx="4" fill="#4A90E2"/>
+      <text class="legend" x="28" y="15">Hibernate Envers</text>
+    </g>
+    <g transform="translate(292,22)">
+      <rect width="18" height="18" rx="4" fill="#54A66B"/>
+      <text class="legend" x="28" y="15">JaVers in-memory</text>
+    </g>
+    <g transform="translate(548,22)">
+      <rect width="18" height="18" rx="4" fill="#C76093"/>
+      <text class="legend" x="28" y="15">JaVers + Exposed repository</text>
+    </g>
+    <g transform="translate(892,22)">
+      <rect width="18" height="18" rx="4" fill="#D6A63F"/>
+      <text class="legend" x="28" y="15">JaVers + Exposed DDD path</text>
+    </g>
+  </g>
+
+  <g transform="translate(76,230)">
+    <rect class="plot" x="0" y="0" width="1348" height="410" rx="18"/>
+    <line class="axis" x1="420" y1="354" x2="1320" y2="354"/>
+    <g>
+      <line class="tick" x1="420" y1="34" x2="420" y2="354"/>
+      <text class="tick-label" x="420" y="380" text-anchor="middle">0</text>
+      <line class="tick" x1="645" y1="34" x2="645" y2="354"/>
+      <text class="tick-label" x="645" y="380" text-anchor="middle">4</text>
+      <line class="tick" x1="870" y1="34" x2="870" y2="354"/>
+      <text class="tick-label" x="870" y="380" text-anchor="middle">8</text>
+      <line class="tick" x1="1095" y1="34" x2="1095" y2="354"/>
+      <text class="tick-label" x="1095" y="380" text-anchor="middle">12</text>
+      <line class="tick" x1="1320" y1="34" x2="1320" y2="354"/>
+      <text class="tick-label" x="1320" y="380" text-anchor="middle">16</text>
+    </g>
+
+    <text class="scenario" x="42" y="58">insert</text>
+    <text class="label" x="212" y="45">Hibernate Envers</text>
+    <rect x="420" y="30" width="252" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="684" y="44">4.486</text>
+    <text class="label" x="212" y="69">JaVers in-memory</text>
+    <rect x="420" y="54" width="29" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="461" y="68">0.510</text>
+    <text class="label" x="212" y="93">Exposed repository</text>
+    <rect x="420" y="78" width="478" height="18" rx="5" fill="#C76093"/>
+    <text class="value" x="910" y="92">8.499</text>
+    <text class="label" x="212" y="117">Exposed DDD path</text>
+    <rect x="420" y="102" width="360" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="792" y="116">6.397</text>
+
+    <text class="scenario" x="42" y="170">update</text>
+    <text class="label" x="212" y="157">Hibernate Envers</text>
+    <rect x="420" y="142" width="389" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="821" y="156">6.917</text>
+    <text class="label" x="212" y="181">JaVers in-memory</text>
+    <rect x="420" y="166" width="55" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="487" y="180">0.978</text>
+    <text class="label" x="212" y="205">Exposed repository</text>
+    <rect x="420" y="190" width="334" height="18" rx="5" fill="#C76093"/>
+    <text class="value" x="766" y="204">5.945</text>
+    <text class="label" x="212" y="229">Exposed DDD path</text>
+    <rect x="420" y="214" width="408" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="840" y="228">7.257</text>
+
+    <text class="scenario" x="42" y="282">audit-query</text>
+    <text class="label" x="212" y="269">Hibernate Envers</text>
+    <rect x="420" y="254" width="702" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="1134" y="268">12.483</text>
+    <text class="label" x="212" y="293">JaVers in-memory</text>
+    <rect x="420" y="278" width="706" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="1138" y="292">12.559</text>
+    <text class="label" x="212" y="317">Exposed repository</text>
+    <rect x="420" y="302" width="43" height="18" rx="5" fill="#C76093"/>
+    <text class="value" x="475" y="316">0.763</text>
+    <text class="label" x="212" y="341">Exposed DDD path</text>
+    <rect x="420" y="326" width="40" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="472" y="340">0.704</text>
+
+    <text class="note" x="750" y="402" text-anchor="middle">Audit query loads Envers audited entities and JaVers snapshots; this is a bounded PostgreSQL + HikariCP documentation benchmark.</text>
+  </g>
+</svg>
