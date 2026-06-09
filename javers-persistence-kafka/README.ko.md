@@ -52,6 +52,7 @@ payload로 취급해야 합니다.
 ```kotlin
 val repository = KafkaCdoSnapshotRepository(
     kafkaOperations = kafkaTemplate,
+    topic = "order-audit-events",
 )
 
 val javers = JaversBuilder.javers()

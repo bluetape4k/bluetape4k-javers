@@ -53,6 +53,7 @@ repository, and commits offsets only after the batch is projected successfully.
 ```kotlin
 val repository = KafkaCdoSnapshotRepository(
     kafkaOperations = kafkaTemplate,
+    topic = "order-audit-events",
 )
 
 val javers = JaversBuilder.javers()

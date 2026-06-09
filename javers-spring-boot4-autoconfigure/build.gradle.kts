@@ -44,7 +44,9 @@ dependencies {
     testImplementation(libs.lz4.java)
     testImplementation("org.springframework.boot:spring-boot-test")
     testImplementation("org.springframework.boot:spring-boot-autoconfigure")
+    testImplementation("org.springframework.boot:spring-boot-kafka")
     testImplementation("org.springframework:spring-context")
+    // Required by ApplicationContextRunner's assertable context API; assertions stay bluetape4k-only.
     testImplementation("org.assertj:assertj-core")
     testRuntimeOnly(libs.h2)
 }

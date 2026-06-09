@@ -1,6 +1,9 @@
 package io.bluetape4k.javers.autoconfigure
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeFalse
+import io.bluetape4k.assertions.shouldBeInstanceOf
+import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.kafka.repository.KafkaCdoSnapshotRepository
@@ -10,6 +13,7 @@ import io.bluetape4k.javers.persistence.redis.repository.RedissonCdoSnapshotRepo
 import io.lettuce.core.RedisClient
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.apache.kafka.clients.producer.Producer
 import org.javers.core.Javers
 import org.javers.repository.api.JaversRepository
@@ -24,7 +28,11 @@ import org.springframework.boot.test.context.FilteredClassLoader
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
 import org.springframework.context.annotation.Bean
+import org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration
 import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.SendResult
+import java.io.Serializable
+import java.util.concurrent.CompletableFuture
 
 class JaversAutoConfigurationTest {
 
@@ -60,12 +68,33 @@ class JaversAutoConfigurationTest {
     }
 
     @Test
+    fun `Spring Kafka repository phase is ordered after Spring Boot Kafka auto configuration`() {
+        val annotation = JaversSpringKafkaRepositoryAutoConfiguration::class.java
+            .getAnnotation(org.springframework.boot.autoconfigure.AutoConfiguration::class.java)
+
+        annotation.afterName.toList() shouldBeEqualTo listOf(KafkaAutoConfiguration::class.qualifiedName)
+    }
+
+    @Test
+    fun `Exposed schema initialization defaults are migration owned`() {
+        contextRunner
+            .withPropertyValues("bluetape4k.javers.repository.type=exposed")
+            .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
+            .run { context ->
+                val properties = context.getBean(JaversAutoConfigurationProperties::class.java)
+
+                properties.exposed.initializeSchema.shouldBeFalse()
+                properties.exposed.createSchemaOnEnsure.shouldBeFalse()
+            }
+    }
+
+    @Test
     fun `does not register repository when repository type is none`() {
         contextRunner
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
                 context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
-                context.containsBean("javers") shouldBeEqualTo false
+                context.containsBean("javers").shouldBeFalse()
             }
     }
 
@@ -79,7 +108,7 @@ class JaversAutoConfigurationTest {
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
                 context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
-                context.containsBean("javers") shouldBeEqualTo false
+                context.containsBean("javers").shouldBeFalse()
             }
     }
 
@@ -89,9 +118,9 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=exposed")
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
-                context.containsBean("javersExposedCdoSnapshotRepository") shouldBeEqualTo true
-                (context.getBean(JaversRepository::class.java) is ExposedCdoSnapshotRepository) shouldBeEqualTo true
-                context.containsBean("javers") shouldBeEqualTo true
+                context.containsBean("javersExposedCdoSnapshotRepository").shouldBeTrue()
+                context.getBean(JaversRepository::class.java) shouldBeInstanceOf ExposedCdoSnapshotRepository::class
+                context.containsBean("javers").shouldBeTrue()
             }
     }
 
@@ -101,8 +130,8 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=lettuce")
             .withUserConfiguration(LettuceConfiguration::class.java)
             .run { context ->
-                context.containsBean("javersLettuceCdoSnapshotRepository") shouldBeEqualTo true
-                (context.getBean(JaversRepository::class.java) is LettuceCdoSnapshotRepository) shouldBeEqualTo true
+                context.containsBean("javersLettuceCdoSnapshotRepository").shouldBeTrue()
+                context.getBean(JaversRepository::class.java) shouldBeInstanceOf LettuceCdoSnapshotRepository::class
             }
     }
 
@@ -112,8 +141,8 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=redisson")
             .withUserConfiguration(RedissonConfiguration::class.java)
             .run { context ->
-                context.containsBean("javersRedissonCdoSnapshotRepository") shouldBeEqualTo true
-                (context.getBean(JaversRepository::class.java) is RedissonCdoSnapshotRepository) shouldBeEqualTo true
+                context.containsBean("javersRedissonCdoSnapshotRepository").shouldBeTrue()
+                context.getBean(JaversRepository::class.java) shouldBeInstanceOf RedissonCdoSnapshotRepository::class
             }
     }
 
@@ -123,8 +152,49 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=spring-kafka")
             .withUserConfiguration(SpringKafkaConfiguration::class.java)
             .run { context ->
-                context.containsBean("javersSpringKafkaCdoSnapshotRepository") shouldBeEqualTo true
-                (context.getBean(JaversRepository::class.java) is KafkaCdoSnapshotRepository) shouldBeEqualTo true
+                context.containsBean("javersSpringKafkaCdoSnapshotRepository").shouldBeTrue()
+                context.getBean(JaversRepository::class.java) shouldBeInstanceOf KafkaCdoSnapshotRepository::class
+            }
+    }
+
+    @Test
+    fun `registers Spring Kafka repository after Boot creates KafkaTemplate`() {
+        ApplicationContextRunner()
+            .withConfiguration(
+                AutoConfigurations.of(
+                    KafkaAutoConfiguration::class.java,
+                    JaversSpringKafkaRepositoryAutoConfiguration::class.java,
+                    JaversAutoConfiguration::class.java,
+                )
+            )
+            .withPropertyValues(
+                "spring.kafka.bootstrap-servers=localhost:9092",
+                "bluetape4k.javers.repository.type=spring-kafka",
+            )
+            .run { context ->
+                context.containsBean("kafkaTemplate").shouldBeTrue()
+                context.containsBean("javersSpringKafkaCdoSnapshotRepository").shouldBeTrue()
+                context.getBean(JaversRepository::class.java) shouldBeInstanceOf KafkaCdoSnapshotRepository::class
+            }
+    }
+
+    @Test
+    fun `Spring Kafka repository publishes to configured topic`() {
+        contextRunner
+            .withPropertyValues(
+                "bluetape4k.javers.repository.type=spring-kafka",
+                "bluetape4k.javers.kafka.topic=audit-topic",
+            )
+            .withUserConfiguration(SpringKafkaConfiguration::class.java)
+            .run { context ->
+                val javers = context.getBean(Javers::class.java)
+                @Suppress("UNCHECKED_CAST")
+                val kafkaTemplate = context.getBean(KafkaTemplate::class.java) as KafkaTemplate<String, String>
+
+                javers.commit("author", AuditEntity(1L, "created"))
+
+                verify { kafkaTemplate.send("audit-topic", any<String>(), any<String>()) }
+                verify(exactly = 0) { kafkaTemplate.sendDefault(any<String>(), any<String>()) }
             }
     }
 
@@ -137,8 +207,8 @@ class JaversAutoConfigurationTest {
             )
             .withUserConfiguration(VanillaKafkaConfiguration::class.java)
             .run { context ->
-                context.containsBean("javersVanillaKafkaCdoSnapshotRepository") shouldBeEqualTo true
-                (context.getBean(JaversRepository::class.java) is VanillaKafkaCdoSnapshotRepository) shouldBeEqualTo true
+                context.containsBean("javersVanillaKafkaCdoSnapshotRepository").shouldBeTrue()
+                context.getBean(JaversRepository::class.java) shouldBeInstanceOf VanillaKafkaCdoSnapshotRepository::class
             }
     }
 
@@ -149,7 +219,7 @@ class JaversAutoConfigurationTest {
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java, UserRepositoryConfiguration::class.java)
             .run { context ->
                 context.getBeansOfType(JaversRepository::class.java).keys shouldBeEqualTo setOf("userJaversRepository")
-                context.containsBean("javersExposedCdoSnapshotRepository") shouldBeEqualTo false
+                context.containsBean("javersExposedCdoSnapshotRepository").shouldBeFalse()
             }
     }
 
@@ -159,7 +229,7 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=exposed")
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java, UserJaversConfiguration::class.java)
             .run { context ->
-                context.containsBean("javersExposedCdoSnapshotRepository") shouldBeEqualTo true
+                context.containsBean("javersExposedCdoSnapshotRepository").shouldBeTrue()
                 context.getBeansOfType(Javers::class.java).keys shouldBeEqualTo setOf("userJavers")
             }
     }
@@ -172,7 +242,7 @@ class JaversAutoConfigurationTest {
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
                 context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
-                context.containsBean("javers") shouldBeEqualTo false
+                context.containsBean("javers").shouldBeFalse()
             }
     }
 
@@ -184,7 +254,7 @@ class JaversAutoConfigurationTest {
             .withUserConfiguration(SpringKafkaConfiguration::class.java)
             .run { context ->
                 context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
-                context.containsBean("javers") shouldBeEqualTo false
+                context.containsBean("javers").shouldBeFalse()
             }
     }
 
@@ -196,7 +266,7 @@ class JaversAutoConfigurationTest {
             .withUserConfiguration(LettuceConfiguration::class.java)
             .run { context ->
                 context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
-                context.containsBean("javers") shouldBeEqualTo false
+                context.containsBean("javers").shouldBeFalse()
             }
     }
 
@@ -238,7 +308,18 @@ class JaversAutoConfigurationTest {
     class SpringKafkaConfiguration {
 
         @Bean
-        fun kafkaTemplate(): KafkaTemplate<String, String> = mockk(relaxed = true)
+        fun kafkaTemplate(): KafkaTemplate<String, String> {
+            val kafkaTemplate = mockk<KafkaTemplate<String, String>>(relaxed = true)
+            val successfulSend = CompletableFuture.completedFuture(mockk<SendResult<String, String>>(relaxed = true))
+            val failedDefaultSend = CompletableFuture.failedFuture<SendResult<String, String>>(
+                AssertionError("configured topic should be used")
+            )
+
+            every { kafkaTemplate.send(any<String>(), any<String>(), any<String>()) } returns successfulSend
+            every { kafkaTemplate.sendDefault(any<String>(), any<String>()) } returns failedDefaultSend
+
+            return kafkaTemplate
+        }
     }
 
     @TestConfiguration(proxyBeanMethods = false)
@@ -260,5 +341,15 @@ class JaversAutoConfigurationTest {
 
         @Bean
         fun userJavers(): Javers = mockk(relaxed = true)
+    }
+
+    data class AuditEntity(
+        val id: Long,
+        val status: String,
+    ): Serializable {
+
+        companion object {
+            private const val serialVersionUID: Long = 1L
+        }
     }
 }

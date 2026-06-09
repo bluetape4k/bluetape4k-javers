@@ -32,6 +32,7 @@ persistence topology decisions.
 | `bluetape4k-javers-exposed` | Exposed JDBC-backed JaversRepository |
 | `bluetape4k-javers-persistence-redis` | Redis-backed JaversRepository |
 | `bluetape4k-javers-persistence-kafka` | Kafka snapshot event delivery for projection pipelines |
+| `bluetape4k-javers-spring-boot4-autoconfigure` | Spring Boot 4 conditional auto-configuration for JaVers repositories |
 
 ## Usage
 
