@@ -32,6 +32,7 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 - **Core JaVers helper** — Kotlin extension, codec, cache delegate, composite CDO snapshot repository
 - **Exposed JDBC persistence** — SQL-backed snapshot, repository head 복원, Envers 경로와 비교 가능한 query behavior
 - **DDD helper** — JaVers commit 주변의 aggregate repository, domain event, publisher boundary
+- **Spring Boot 4 auto-configuration** — Exposed, Redis, Kafka backend를 위한 조건부 JaVers repository와 builder wiring
 - **Redis persistence** — repository rebuild 이후에도 복원 가능한 low-latency snapshot state를 위한 Lettuce/Redisson 경로
 - **Kafka persistence** — 직접 history query가 아니라 snapshot event delivery와 projection pipeline을 위한 경로
 - **실행 가능한 예제** — Exposed DDD CQRS, Ktor REST, Spring Boot 4 REST wiring
@@ -67,6 +68,7 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 | `examples-javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
 | `examples-javers-ktor` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Ktor REST 예제 |
 | `examples-javers-spring-boot4` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Spring Boot 4 REST 예제 |
+| `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Exposed, Redis, Kafka JaVers repository를 위한 Spring Boot 4 조건부 auto-configuration |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
 
 ## 의존성 설정
@@ -75,10 +77,11 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.1"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
     implementation("io.github.bluetape4k.javers:javers-ddd")
+    implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
 }
 ```
 
@@ -98,13 +101,31 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
+Spring Boot 4 애플리케이션은 auto-configuration 모듈을 추가하고 repository backend를
+선택할 수 있습니다. Exposed `Database`, Redis client, Kafka producer,
+`KafkaTemplate` 같은 인프라 bean은 여전히 애플리케이션이 소유합니다.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
+    implementation("io.github.bluetape4k.javers:javers-exposed")
+}
+```
+
+```yaml
+bluetape4k:
+  javers:
+    repository:
+      type: exposed
+```
+
 DDD command flow에서는 source-of-truth 저장소에 aggregate를 저장하고 JaVers에
 commit한 뒤 domain event를 발행합니다. `examples/javers-exposed-ddd` 모듈은 이
 경로를 Kafka event와 Redis read model까지 포함해 보여줍니다.
 
 `examples/javers-spring-boot4` 모듈은 같은 JaVers + Exposed command persistence
-흐름을 Spring Boot 4 REST endpoint 뒤에서 명시적으로 wiring해 보여줍니다. 아직
-제공하지 않는 auto-configuration에 의존하지 않습니다.
+흐름을 Spring Boot 4 REST endpoint 뒤에서 명시적으로 wiring해 보여줍니다. 수동
+wiring을 선호할 때 참고할 수 있습니다.
 
 `examples/javers-ktor` 모듈은 같은 현재 기능을 non-Spring 사용자를 위한 Ktor REST
 endpoint 뒤에서 보여주며, bluetape4k Ktor JSON/health helper를 재사용합니다.
@@ -128,6 +149,7 @@ endpoint 뒤에서 보여주며, bluetape4k Ktor JSON/health helper를 재사용
 ./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
+./gradlew :javers-spring-boot4-autoconfigure:test
 ```
 
 ## 벤치마크 스냅샷

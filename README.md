@@ -35,6 +35,8 @@ not be treated as interchangeable stores.
   recovery, and query behavior that can be benchmarked against Envers paths.
 - **DDD helpers** for aggregate repositories, domain events, and publisher
   boundaries around JaVers commits.
+- **Spring Boot 4 auto-configuration** for conditional JaVers repository and
+  builder wiring across Exposed, Redis, and Kafka backends.
 - **Redis persistence** through Lettuce and Redisson when snapshot state must be
   low-latency and recoverable after repository rebuilds.
 - **Kafka persistence** for snapshot event delivery and projection pipelines,
@@ -73,6 +75,7 @@ not be treated as interchangeable stores.
 | `examples-javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
 | `examples-javers-ktor` | example module | Ktor REST example using explicit Exposed and JaVers wiring |
 | `examples-javers-spring-boot4` | example module | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |
+| `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Spring Boot 4 conditional auto-configuration for Exposed, Redis, and Kafka JaVers repositories |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
 
 ## Dependency Setup
@@ -81,10 +84,11 @@ Use the BOM when consuming more than one module:
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.1"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
     implementation("io.github.bluetape4k.javers:javers-ddd")
+    implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
 }
 ```
 
@@ -104,14 +108,32 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
+For Spring Boot 4 applications, add the auto-configuration module and select a
+repository backend. The application still owns infrastructure beans such as
+Exposed `Database`, Redis clients, Kafka producers, or `KafkaTemplate`.
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
+    implementation("io.github.bluetape4k.javers:javers-exposed")
+}
+```
+
+```yaml
+bluetape4k:
+  javers:
+    repository:
+      type: exposed
+```
+
 For DDD command handling, write the aggregate to the source-of-truth store,
 commit it to JaVers, then publish a domain event. The
 `examples/javers-exposed-ddd` module shows this path with Kafka events and a
 Redis read model.
 
 The `examples/javers-spring-boot4` module shows the same explicit JaVers +
-Exposed command persistence behind Spring Boot 4 REST endpoints, without relying
-on future auto-configuration.
+Exposed command persistence behind Spring Boot 4 REST endpoints when you prefer
+manual wiring over auto-configuration.
 
 The `examples/javers-ktor` module shows the same current feature set behind Ktor
 REST endpoints for non-Spring users, reusing bluetape4k Ktor JSON and health
@@ -136,6 +158,7 @@ helpers.
 ./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
+./gradlew :javers-spring-boot4-autoconfigure:test
 ```
 
 ## Benchmark Snapshot

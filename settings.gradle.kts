@@ -70,6 +70,7 @@ include(
     "javers-exposed",
     "javers-persistence-kafka",
     "javers-persistence-redis",
+    "javers-spring-boot4-autoconfigure",
 )
 
 project(":benchmark-javers-exposed-benchmark").projectDir = file("benchmark/javers-exposed-benchmark")
