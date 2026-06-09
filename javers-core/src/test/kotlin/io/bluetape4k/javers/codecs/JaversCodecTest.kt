@@ -31,13 +31,6 @@ class JaversCodecTest {
     )
 
     private fun getBinaryCodecs() = listOf(
-        JaversCodecs.Jdk,
-        JaversCodecs.DeflateJdk,
-        JaversCodecs.GZipJdk,
-        JaversCodecs.LZ4Jdk,
-        JaversCodecs.SnappyJdk,
-        JaversCodecs.ZstdJdk,
-
         JaversCodecs.Kryo,
         JaversCodecs.DeflateKryo,
         JaversCodecs.GZipKryo,
