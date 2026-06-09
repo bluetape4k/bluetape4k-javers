@@ -30,6 +30,16 @@ val snapshot = javers.latestSnapshotOrNull<Order>(orderId)
 SQL, Redis, Kafka persistence adapter 없이 JaVers helper API만 필요할 때
 `javers-core`를 직접 사용하세요.
 
+## Codec Safety
+
+durable JSON storage에는 string codec을 우선 사용하고, binary payload에는
+trusted input일 때만 Kryo 또는 Fory codec을 사용하세요. JDK serialization
+alias인 `JaversCodecs.Jdk`, `DeflateJdk`, `GZipJdk`, `LZ4Jdk`,
+`SnappyJdk`, `ZstdJdk`는 Java deserialization이 untrusted bytes에 안전하지
+않기 때문에 obsolete compatibility bridge로만 남깁니다. 새 코드는
+`JaversCodecs.String`, `JaversCodecs.Kryo`, `JaversCodecs.Fory`를
+사용하세요.
+
 ## Composite Repository
 
 ![Composite CDO snapshot repository](./docs/images/readme-diagrams/javers-core-composite-repository-01.png)

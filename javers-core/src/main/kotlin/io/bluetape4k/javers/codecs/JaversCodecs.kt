@@ -1,9 +1,13 @@
 package io.bluetape4k.javers.codecs
 
+import io.bluetape4k.annotations.BluetapeObsoleteApi
 import io.bluetape4k.io.compressor.Compressors
 import io.bluetape4k.io.serializer.BinarySerializers
 import io.bluetape4k.javers.codecs.JaversCodecs.String
 
+private const val JDK_CODEC_DEPRECATION_MESSAGE =
+    "JDK serialization is obsolete because Java deserialization can execute unsafe gadget chains. " +
+        "Use JaversCodecs.Fory or JaversCodecs.Kryo for trusted binary payloads, or JaversCodecs.String for JSON."
 
 /**
  * Factory object providing pre-configured [JaversCodec] instances.
@@ -11,7 +15,8 @@ import io.bluetape4k.javers.codecs.JaversCodecs.String
  * ## Behavior / Contract
  * - All codecs are lazily initialized on first access.
  * - String family: JSON-string-based encoding with optional compression.
- * - Binary family: binary serialization via BinarySerializer (Jdk/Kryo/Fory) with optional compression.
+ * - Binary family: binary serialization via BinarySerializer (Kryo/Fory) with optional compression.
+ * - JDK-serialization codecs are retained only as obsolete compatibility bridges.
  * - Map family: bidirectional [JsonObject] ↔ `Map<String, Any?>` conversion.
  *
  * ```kotlin
@@ -48,14 +53,59 @@ object JaversCodecs {
 
     // Binary Codecs - JDK Serialization
 
-    /** JDK-serialization binary codec. */
-    val Jdk by lazy { BinaryJaversCodec(BinarySerializers.Jdk) }
+    /**
+     * JDK-serialization binary codec.
+     *
+     * @deprecated JDK deserialization is unsafe for untrusted bytes. Prefer
+     * [Fory], [Kryo], or [String] depending on the storage contract.
+     */
+    @BluetapeObsoleteApi
+    @Deprecated(
+        message = JDK_CODEC_DEPRECATION_MESSAGE,
+        replaceWith = ReplaceWith("JaversCodecs.Fory"),
+        level = DeprecationLevel.ERROR,
+    )
+    val Jdk by lazy { jdkBinaryCodec() }
 
-    val DeflateJdk by lazy { CompressibleBinaryJaversCodec(Jdk, Compressors.Deflate) }
-    val GZipJdk by lazy { CompressibleBinaryJaversCodec(Jdk, Compressors.GZip) }
-    val LZ4Jdk by lazy { CompressibleBinaryJaversCodec(Jdk, Compressors.LZ4) }
-    val SnappyJdk by lazy { CompressibleBinaryJaversCodec(Jdk, Compressors.Snappy) }
-    val ZstdJdk by lazy { CompressibleBinaryJaversCodec(Jdk, Compressors.Zstd) }
+    @BluetapeObsoleteApi
+    @Deprecated(
+        message = JDK_CODEC_DEPRECATION_MESSAGE,
+        replaceWith = ReplaceWith("JaversCodecs.DeflateFory"),
+        level = DeprecationLevel.ERROR,
+    )
+    val DeflateJdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.Deflate) }
+
+    @BluetapeObsoleteApi
+    @Deprecated(
+        message = JDK_CODEC_DEPRECATION_MESSAGE,
+        replaceWith = ReplaceWith("JaversCodecs.GZipFory"),
+        level = DeprecationLevel.ERROR,
+    )
+    val GZipJdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.GZip) }
+
+    @BluetapeObsoleteApi
+    @Deprecated(
+        message = JDK_CODEC_DEPRECATION_MESSAGE,
+        replaceWith = ReplaceWith("JaversCodecs.LZ4Fory"),
+        level = DeprecationLevel.ERROR,
+    )
+    val LZ4Jdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.LZ4) }
+
+    @BluetapeObsoleteApi
+    @Deprecated(
+        message = JDK_CODEC_DEPRECATION_MESSAGE,
+        replaceWith = ReplaceWith("JaversCodecs.SnappyFory"),
+        level = DeprecationLevel.ERROR,
+    )
+    val SnappyJdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.Snappy) }
+
+    @BluetapeObsoleteApi
+    @Deprecated(
+        message = JDK_CODEC_DEPRECATION_MESSAGE,
+        replaceWith = ReplaceWith("JaversCodecs.ZstdFory"),
+        level = DeprecationLevel.ERROR,
+    )
+    val ZstdJdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.Zstd) }
 
     // Binary Codecs - Kryo Serialization
 
@@ -83,4 +133,8 @@ object JaversCodecs {
 
     /** Codec that converts [JsonObject] ↔ `Map<String, Any?>`. */
     val Map by lazy { MapJaversCodec() }
+
+    @OptIn(BluetapeObsoleteApi::class)
+    @Suppress("DEPRECATION")
+    private fun jdkBinaryCodec(): BinaryJaversCodec = BinaryJaversCodec(BinarySerializers.Jdk)
 }

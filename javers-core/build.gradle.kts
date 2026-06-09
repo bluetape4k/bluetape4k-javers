@@ -3,6 +3,9 @@ configurations {
     create("testJar")
 }
 
+val bt4kCatalog = extensions.getByType<org.gradle.api.artifacts.VersionCatalogsExtension>().named("bt4k")
+fun bt4kLibrary(alias: String) = bt4kCatalog.findLibrary(alias).get()
+
 tasks.register<Jar>("testJar") {
     dependsOn(tasks.testClasses)
     archiveClassifier.set("test")
@@ -16,6 +19,7 @@ artifacts {
 dependencies {
     api(libs.javers.core)
 
+    api(bt4kLibrary("bluetape4k-annotations"))
     api(libs.bluetape4k.io)
     api(libs.bluetape4k.jackson3)
     implementation(libs.bluetape4k.cache.core)
