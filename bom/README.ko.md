@@ -31,6 +31,7 @@ auto-configuration, persistence topology 결정을 제공하지 않습니다.
 | `bluetape4k-javers-exposed` | Exposed JDBC 기반 JaversRepository |
 | `bluetape4k-javers-persistence-redis` | Redis 기반 JaversRepository |
 | `bluetape4k-javers-persistence-kafka` | projection pipeline을 위한 Kafka snapshot event delivery |
+| `bluetape4k-javers-spring-boot4-autoconfigure` | JaVers repository용 Spring Boot 4 조건부 auto-configuration |
 
 ## 사용 방법
 

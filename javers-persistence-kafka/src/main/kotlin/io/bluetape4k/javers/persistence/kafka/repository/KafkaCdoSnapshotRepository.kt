@@ -19,8 +19,9 @@ import java.time.Duration
  * Write-only JaVers repository that publishes [CdoSnapshot] to a Kafka topic.
  *
  * ## Behavior / Contract
- * - [saveSnapshot] publishes to the default topic via [KafkaTemplate.sendDefault],
- *   using the GlobalId as the key and the encoded snapshot as the value.
+ * - [saveSnapshot] publishes to [topic] when it is set, otherwise to the
+ *   [KafkaTemplate] default topic, using the GlobalId as the key and the encoded
+ *   snapshot as the value.
  * - The publish blocks up to [publishTimeout] (default 30 s). A [java.util.concurrent.TimeoutException]
  *   is wrapped in [RuntimeException] and propagated so that [persist] does not advance the head.
  * - Publish failures are propagated as [RuntimeException] so that [persist] sees the failure
@@ -47,10 +48,25 @@ class KafkaCdoSnapshotRepository(
     private val publishTimeout: Duration = Duration.ofSeconds(30),
 ): AbstractCdoSnapshotRepository<String>(JaversCodecs.String) {
 
+    /**
+     * Creates a write-only repository that publishes to [topic].
+     */
+    constructor(
+        kafkaOperations: KafkaTemplate<String, String>,
+        publishTimeout: Duration = Duration.ofSeconds(30),
+        topic: String,
+    ): this(kafkaOperations, publishTimeout) {
+        publisher = KafkaSnapshotEventPublisher.withTopic(
+            kafkaOperations = kafkaOperations,
+            topic = topic,
+            publishTimeout = publishTimeout.requirePositivePublishTimeout(),
+        )
+    }
+
     companion object: KLogging()
 
     private val readContractWarningLogged = atomic(false)
-    private val publisher = KafkaSnapshotEventPublisher(kafkaOperations, publishTimeout.requirePositivePublishTimeout())
+    private var publisher = KafkaSnapshotEventPublisher(kafkaOperations, publishTimeout.requirePositivePublishTimeout())
 
     override fun getKeys(): Set<String> {
         logReadContract("getKeys()", "empty")

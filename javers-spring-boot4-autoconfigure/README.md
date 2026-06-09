@@ -45,8 +45,8 @@ bluetape4k:
     repository:
       type: exposed
     exposed:
-      initialize-schema: true
-      create-schema-on-ensure: true
+      initialize-schema: false
+      create-schema-on-ensure: false
       commit-table-name: javers_commit
       snapshot-table-name: javers_snapshot
 ```
@@ -63,6 +63,9 @@ class AuditDatabaseConfiguration {
 
 With that setup, Spring Boot registers `JaversRepository` and `Javers` beans
 unless the application already provides them.
+
+Schema creation is opt-in. Keep `initialize-schema` and
+`create-schema-on-ensure` disabled when schema ownership belongs to migrations.
 
 ## Redis Example
 
@@ -106,6 +109,10 @@ Kafka repositories are write-only event stream adapters. Query methods return
 empty results by design; use a projection or another repository for read-side
 audit queries.
 
+`bluetape4k.javers.kafka.topic` is used by both `spring-kafka` and
+`vanilla-kafka` backends. For Spring Kafka, the repository sends to this topic
+directly instead of relying on a `KafkaTemplate` default topic.
+
 ## Customizing JaVers
 
 Add ordered `JaversBuilderCustomizer` beans when the default builder needs
@@ -125,13 +132,13 @@ fun orderAuditCustomizer(): JaversBuilderCustomizer =
 |---|---|---|
 | `bluetape4k.javers.enabled` | `true` | Enables all auto-configuration phases. |
 | `bluetape4k.javers.repository.type` | `none` | Repository backend to create. |
-| `bluetape4k.javers.exposed.initialize-schema` | `true` | Calls `ensureSchema()` after creating the Exposed repository. |
-| `bluetape4k.javers.exposed.create-schema-on-ensure` | `true` | Allows `ensureSchema()` to create missing tables. |
+| `bluetape4k.javers.exposed.initialize-schema` | `false` | Calls `ensureSchema()` after creating the Exposed repository when explicitly enabled. |
+| `bluetape4k.javers.exposed.create-schema-on-ensure` | `false` | Allows `ensureSchema()` to create missing tables when explicitly enabled. |
 | `bluetape4k.javers.exposed.commit-table-name` | `javers_commit` | Commit table name for the Exposed repository. |
 | `bluetape4k.javers.exposed.snapshot-table-name` | `javers_snapshot` | Snapshot table name for the Exposed repository. |
 | `bluetape4k.javers.redis.name` | `default` | Redis key namespace. |
 | `bluetape4k.javers.redis.codec` | `lz4-fory` | Redis binary codec. |
-| `bluetape4k.javers.kafka.topic` | `javers-snapshots` | Topic for vanilla Kafka repository events. |
+| `bluetape4k.javers.kafka.topic` | `javers-snapshots` | Topic for Spring Kafka and vanilla Kafka repository events. |
 | `bluetape4k.javers.kafka.publish-timeout` | `30s` | Kafka publish timeout. |
 | `bluetape4k.javers.kafka.flush-after-send` | `false` | Flushes vanilla Kafka producer after each send. |
 | `bluetape4k.javers.kafka.close-producer-on-close` | `false` | Closes the application-provided vanilla Kafka producer when the repository closes. |

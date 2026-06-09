@@ -170,7 +170,10 @@ class JaversRedissonRepositoryAutoConfiguration {
 /**
  * Auto-configures a Spring Kafka write-only JaVers repository from an existing [KafkaTemplate] bean.
  */
-@AutoConfiguration(before = [JaversAutoConfiguration::class])
+@AutoConfiguration(
+    before = [JaversAutoConfiguration::class],
+    afterName = ["org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration"],
+)
 @ConditionalOnClass(
     name = [
         "io.bluetape4k.javers.persistence.kafka.repository.KafkaCdoSnapshotRepository",
@@ -204,6 +207,7 @@ class JaversSpringKafkaRepositoryAutoConfiguration {
         KafkaCdoSnapshotRepository(
             kafkaOperations = kafkaTemplate,
             publishTimeout = properties.kafka.publishTimeout.validatedPublishTimeout(),
+            topic = properties.kafka.topic.validatedKafkaTopic(),
         )
 }
 
@@ -261,6 +265,9 @@ private fun JaversRedisCodec.toByteArrayCodec(): JaversCodec<ByteArray> =
 
 private fun String.validatedRedisName(): String =
     requireNotBlank("redis.name")
+
+private fun String.validatedKafkaTopic(): String =
+    requireNotBlank("kafka.topic")
 
 private fun Duration.validatedPublishTimeout(): Duration =
     apply { toMillis().requirePositiveNumber("kafka.publishTimeout") }

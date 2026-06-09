@@ -72,8 +72,8 @@ enum class JaversRepositoryType {
  * Exposed JDBC repository properties.
  */
 data class JaversExposedProperties(
-    val initializeSchema: Boolean = true,
-    val createSchemaOnEnsure: Boolean = true,
+    val initializeSchema: Boolean = false,
+    val createSchemaOnEnsure: Boolean = false,
     val commitTableName: String = "javers_commit",
     val snapshotTableName: String = "javers_snapshot",
 ): Serializable {

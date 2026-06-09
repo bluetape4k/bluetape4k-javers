@@ -9,6 +9,7 @@ import io.bluetape4k.assertions.shouldBeEmpty
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeNull
+import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldNotContain
 import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
@@ -220,7 +221,7 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
             assertFailsWith<RuntimeException> {
                 javersInstance.commit("author", SnapshotEntity(1))
             }
-            Thread.currentThread().isInterrupted shouldBeEqualTo true
+            Thread.currentThread().isInterrupted.shouldBeTrue()
         } finally {
             Thread.interrupted()
         }
@@ -256,6 +257,31 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
 
         assertFailsWith<IllegalArgumentException> {
             publisher.publish(snapshotEvent(), " ")
+        }
+    }
+
+    @Test
+    fun `publisher sends to explicit topic when configured`() {
+        val kafkaTemplate = explicitTopicKafkaTemplate()
+        val publisher = KafkaSnapshotEventPublisher.withTopic(
+            kafkaOperations = kafkaTemplate,
+            topic = "audit-topic",
+        )
+
+        publisher.publish(snapshotEvent(), "Entity/1")
+
+        kafkaTemplate.recordedTopic shouldBeEqualTo "audit-topic"
+        kafkaTemplate.recordedKey shouldBeEqualTo "Entity/1"
+        kafkaTemplate.sendDefaultCount shouldBeEqualTo 0
+    }
+
+    @Test
+    fun `publisher rejects blank explicit topic`() {
+        assertFailsWith<IllegalArgumentException> {
+            KafkaSnapshotEventPublisher.withTopic(
+                kafkaOperations = successfulKafkaTemplate(),
+                topic = " ",
+            )
         }
     }
 
@@ -308,6 +334,11 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
             it.setDefaultTopic(KafkaProvider.TEST_TOPIC)
         }
     }
+
+    private fun explicitTopicKafkaTemplate(): RecordingKafkaTemplate =
+        RecordingKafkaTemplate().also {
+            it.setDefaultTopic(KafkaProvider.TEST_TOPIC)
+        }
 
     private fun snapshotEvent(): CdoSnapshotEvent<String> =
         CdoSnapshotEvent(
@@ -387,5 +418,30 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     private class InterruptedCompletableFuture: CompletableFuture<SendResult<String, String>>() {
         override fun get(timeout: Long, unit: java.util.concurrent.TimeUnit): SendResult<String, String> =
             throw InterruptedException("interrupted")
+    }
+
+    private class RecordingKafkaTemplate: KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
+
+        var recordedTopic: String? = null
+            private set
+
+        var recordedKey: String? = null
+            private set
+
+        var sendDefaultCount: Int = 0
+            private set
+
+        override fun send(topic: String, key: String, data: String?): CompletableFuture<SendResult<String, String>> {
+            recordedTopic = topic
+            recordedKey = key
+            @Suppress("UNCHECKED_CAST")
+            return CompletableFuture.completedFuture(null) as CompletableFuture<SendResult<String, String>>
+        }
+
+        override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> {
+            sendDefaultCount++
+            @Suppress("UNCHECKED_CAST")
+            return CompletableFuture.completedFuture(null) as CompletableFuture<SendResult<String, String>>
+        }
     }
 }

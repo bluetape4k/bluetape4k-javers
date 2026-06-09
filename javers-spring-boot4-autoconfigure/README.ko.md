@@ -45,8 +45,8 @@ bluetape4k:
     repository:
       type: exposed
     exposed:
-      initialize-schema: true
-      create-schema-on-ensure: true
+      initialize-schema: false
+      create-schema-on-ensure: false
       commit-table-name: javers_commit
       snapshot-table-name: javers_snapshot
 ```
@@ -63,6 +63,9 @@ class AuditDatabaseConfiguration {
 
 이 설정이면 애플리케이션이 직접 `JaversRepository`나 `Javers`를 제공하지 않는 한
 Spring Boot가 두 bean을 등록합니다.
+
+Schema 생성은 opt-in입니다. Schema ownership이 migration에 있다면
+`initialize-schema`와 `create-schema-on-ensure`를 끈 상태로 유지하세요.
 
 ## Redis 예제
 
@@ -106,6 +109,10 @@ Kafka repository는 write-only event stream adapter입니다. Query method는 �
 빈 결과를 반환하므로, read-side audit query에는 projection이나 다른 repository를
 사용하세요.
 
+`bluetape4k.javers.kafka.topic`은 `spring-kafka`와 `vanilla-kafka` backend 모두에
+적용됩니다. Spring Kafka repository는 `KafkaTemplate` default topic에 의존하지
+않고 이 topic으로 직접 전송합니다.
+
 ## JaVers Customizer
 
 기본 builder에 entity registration이나 JaVers option을 추가해야 하면 ordered
@@ -125,13 +132,13 @@ fun orderAuditCustomizer(): JaversBuilderCustomizer =
 |---|---|---|
 | `bluetape4k.javers.enabled` | `true` | 전체 auto-configuration phase를 켭니다. |
 | `bluetape4k.javers.repository.type` | `none` | 생성할 repository backend입니다. |
-| `bluetape4k.javers.exposed.initialize-schema` | `true` | Exposed repository 생성 후 `ensureSchema()`를 호출합니다. |
-| `bluetape4k.javers.exposed.create-schema-on-ensure` | `true` | `ensureSchema()`가 누락 table을 만들 수 있게 합니다. |
+| `bluetape4k.javers.exposed.initialize-schema` | `false` | 명시적으로 켜면 Exposed repository 생성 후 `ensureSchema()`를 호출합니다. |
+| `bluetape4k.javers.exposed.create-schema-on-ensure` | `false` | 명시적으로 켜면 `ensureSchema()`가 누락 table을 만들 수 있게 합니다. |
 | `bluetape4k.javers.exposed.commit-table-name` | `javers_commit` | Exposed repository commit table 이름입니다. |
 | `bluetape4k.javers.exposed.snapshot-table-name` | `javers_snapshot` | Exposed repository snapshot table 이름입니다. |
 | `bluetape4k.javers.redis.name` | `default` | Redis key namespace입니다. |
 | `bluetape4k.javers.redis.codec` | `lz4-fory` | Redis binary codec입니다. |
-| `bluetape4k.javers.kafka.topic` | `javers-snapshots` | Vanilla Kafka repository event topic입니다. |
+| `bluetape4k.javers.kafka.topic` | `javers-snapshots` | Spring Kafka와 vanilla Kafka repository event topic입니다. |
 | `bluetape4k.javers.kafka.publish-timeout` | `30s` | Kafka publish timeout입니다. |
 | `bluetape4k.javers.kafka.flush-after-send` | `false` | Vanilla Kafka producer를 send마다 flush합니다. |
 | `bluetape4k.javers.kafka.close-producer-on-close` | `false` | Repository close 시 애플리케이션이 제공한 vanilla Kafka producer를 닫습니다. |
