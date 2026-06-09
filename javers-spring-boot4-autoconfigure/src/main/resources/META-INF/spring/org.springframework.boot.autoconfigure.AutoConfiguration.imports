@@ -1,0 +1,6 @@
+io.bluetape4k.javers.autoconfigure.JaversExposedRepositoryAutoConfiguration
+io.bluetape4k.javers.autoconfigure.JaversLettuceRepositoryAutoConfiguration
+io.bluetape4k.javers.autoconfigure.JaversRedissonRepositoryAutoConfiguration
+io.bluetape4k.javers.autoconfigure.JaversSpringKafkaRepositoryAutoConfiguration
+io.bluetape4k.javers.autoconfigure.JaversVanillaKafkaRepositoryAutoConfiguration
+io.bluetape4k.javers.autoconfigure.JaversAutoConfiguration

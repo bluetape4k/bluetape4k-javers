@@ -86,6 +86,7 @@ jobs:
       javers-exposed: ${{ steps.filter.outputs.javers-exposed }}
       javers-kafka: ${{ steps.filter.outputs.javers-kafka }}
       javers-redis: ${{ steps.filter.outputs.javers-redis }}
+      javers-spring-boot4-autoconfigure: ${{ steps.filter.outputs.javers-spring-boot4-autoconfigure }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -108,6 +109,8 @@ jobs:
               - 'javers-persistence-kafka/**'
             javers-redis:
               - 'javers-persistence-redis/**'
+            javers-spring-boot4-autoconfigure:
+              - 'javers-spring-boot4-autoconfigure/**'
 
   # 3. Compile only
   build:
@@ -415,7 +418,53 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  # 9. javers-persistence-redis tests (Testcontainers Redis)
+  # 10. javers-spring-boot4-autoconfigure tests (Spring Boot auto-configuration slice)
+  test-javers-spring-boot4-autoconfigure:
+    name: Test / javers-spring-boot4-autoconfigure
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build, changes]
+    if: ${{ needs.changes.outputs['javers-spring-boot4-autoconfigure'] == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+      - name: Test javers-spring-boot4-autoconfigure
+        run: |
+          for attempt in 1 2 3 4 5; do
+            ./gradlew :javers-spring-boot4-autoconfigure:test --no-daemon && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Generate Kover XML report
+        run: ./gradlew :javers-spring-boot4-autoconfigure:koverXmlReport --no-daemon
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-javers-spring-boot4-autoconfigure
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 7
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-javers-spring-boot4-autoconfigure
+          path: javers-spring-boot4-autoconfigure/build/reports/kover/report.xml
+          if-no-files-found: error
+          retention-days: 7
+
+  # 11. javers-persistence-redis tests (Testcontainers Redis)
   test-persistence-redis:
     name: Test / javers-persistence-redis
     runs-on: ubuntu-latest
@@ -465,7 +514,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  # 10. javers-persistence-kafka tests (Testcontainers Kafka)
+  # 12. javers-persistence-kafka tests (Testcontainers Kafka)
   test-persistence-kafka:
     name: Test / javers-persistence-kafka
     runs-on: ubuntu-latest
@@ -515,7 +564,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  # 11. Status gate
+  # 13. Status gate
   ci-status:
     name: CI Status
     runs-on: ubuntu-latest
@@ -530,6 +579,7 @@ jobs:
       - test-examples-javers-ktor
       - test-examples-javers-spring-boot4
       - test-javers-exposed
+      - test-javers-spring-boot4-autoconfigure
       - test-persistence-redis
       - test-persistence-kafka
     if: always()

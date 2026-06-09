@@ -489,7 +489,57 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  # ── 8. 커버리지 집계 ──────────────────────────────────────────────────────
+  # ── 8. javers-spring-boot4-autoconfigure (Spring Boot auto-configuration slice) ──
+  test-javers-spring-boot4-autoconfigure:
+    name: Test / javers-spring-boot4-autoconfigure
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+
+      - name: Test javers-spring-boot4-autoconfigure
+        run: |
+          for attempt in 1 2 3 4 5; do
+            ./gradlew :javers-spring-boot4-autoconfigure:test --no-daemon --no-configuration-cache && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 5 ] && sleep 30 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+
+      - name: Generate Kover XML report
+        if: always()
+        run: ./gradlew :javers-spring-boot4-autoconfigure:koverXmlReport --no-daemon --no-configuration-cache
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-javers-spring-boot4-autoconfigure
+          path: '**/build/test-results/test/*.xml'
+          retention-days: 14
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-javers-spring-boot4-autoconfigure
+          path: javers-spring-boot4-autoconfigure/build/reports/kover/report.xml
+          if-no-files-found: error
+          retention-days: 14
+
+  # ── 9. 커버리지 집계 ──────────────────────────────────────────────────────
   coverage-report:
     name: Coverage Report
 
@@ -504,6 +554,7 @@ jobs:
       - test-javers-exposed
       - test-persistence-redis
       - test-persistence-kafka
+      - test-javers-spring-boot4-autoconfigure
     if: ${{ always() && ((github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full')) }}
     steps:
       - name: Download all coverage artifacts
@@ -529,6 +580,7 @@ jobs:
             coverage-javers-exposed
             coverage-persistence-redis
             coverage-persistence-kafka
+            coverage-javers-spring-boot4-autoconfigure
           )
 
           missing_artifacts=()
@@ -574,7 +626,7 @@ jobs:
           path: coverage-artifacts/
           retention-days: 30
 
-  # ── 9. 결과 집계 ──────────────────────────────────────────────────────────
+  # ── 10. 결과 집계 ─────────────────────────────────────────────────────────
   nightly-status:
     name: Nightly Status
     runs-on: ubuntu-latest
@@ -589,6 +641,7 @@ jobs:
       - test-javers-exposed
       - test-persistence-redis
       - test-persistence-kafka
+      - test-javers-spring-boot4-autoconfigure
       - coverage-report
     if: always()
     steps:

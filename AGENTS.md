@@ -25,6 +25,7 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 | `examples/javers-spring-boot4` | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |
 | `javers-persistence-kafka` | Kafka-backed CDO snapshot persistence |
 | `javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
+| `javers-spring-boot4-autoconfigure` | Spring Boot 4 conditional auto-configuration for JaVers repositories |
 | `bom/` | `bluetape4k-javers-bom` consumer BOM |
 
 ## Commands
@@ -40,6 +41,7 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 ./gradlew :examples-javers-spring-boot4:test
 ./gradlew :javers-persistence-redis:test
 ./gradlew :javers-persistence-kafka:test
+./gradlew :javers-spring-boot4-autoconfigure:test
 ```
 
 ## Rules
