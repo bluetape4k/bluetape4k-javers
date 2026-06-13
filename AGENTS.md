@@ -1,5 +1,10 @@
 # AGENTS.md - bluetape4k-javers
 
+This repository inherits the workspace guidance from `../AGENTS.md`.
+Read and follow the workspace root guide first. This file only adds
+repo-specific layout, commands, domain rules, and local exceptions.
+
+
 Javers audit/diff integrations with Redis, Kafka, and Exposed.
 
 - Group: `io.github.bluetape4k.javers`
@@ -21,9 +26,6 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 | `javers-persistence-kafka` | Kafka-backed CDO snapshot persistence |
 | `javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
 | `bom/` | `bluetape4k-javers-bom` consumer BOM |
-
-Root README visual assets live under `docs/assets/` and should be shared by
-`README.md` and `README.ko.md` through the same relative path.
 
 ## Commands
 
@@ -47,13 +49,8 @@ Root README visual assets live under `docs/assets/` and should be shared by
 - Follow existing codec and cache-backed repository patterns.
 - For Redis/Kafka changes, verify the affected persistence module directly.
 
-## Cross-Repo Lesson Guards
+## Repo-Specific Guards
 
-- Before issue, PR, workflow, release, or module-registration work, query GNO
-  for this repo in both `bluetape4k-github` and `bluetape4k-docs`.
-- For module additions, moves, or artifact renames, update README locale sets,
-  repo-local module lists, CI/Nightly coverage, coverage artifacts, and
-  BOM/catalog constraints together.
-- Run Redis/Kafka/Testcontainers-backed verification sequentially. Preserve
-  Kover XML/Codecov visibility without adding hard gates unless explicitly
-  decided.
+- Preserve Redis/Kafka persistence semantics and verify the affected persistence
+  module directly.
+- Run Redis/Kafka/Testcontainers-backed verification sequentially.
