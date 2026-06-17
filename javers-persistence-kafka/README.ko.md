@@ -6,9 +6,33 @@ Kafka로 JaVers CDO snapshot을 발행하는 모듈입니다. 이 모듈은 의�
 write-only입니다. Snapshot을 Kafka record로 직렬화해 downstream system이 audit
 event를 소비할 수 있게 하며, repository read method는 빈 값이나 기본값을 반환합니다.
 
-## 아키텍처
+## Repository map
 
-![Kafka persistence sequence](docs/images/readme-diagrams/javers-kafka-sequence-01.png)
+![JaVers Kafka repository map](../docs/images/readme-diagrams/javers-kafka-repository-map-01.png)
+
+Kafka repository는 audit event만 발행합니다. 애플리케이션이 이미 Spring Kafka를 쓰면
+`KafkaCdoSnapshotRepository`를 사용하고, Apache Kafka `Producer<String, String>`를
+직접 소유한다면 `VanillaKafkaCdoSnapshotRepository`를 사용합니다. 두 adapter는 같은
+encoded snapshot event contract를 공유합니다. History read가 필요하면
+`KafkaCdoSnapshotProjector` 또는 다른 read-capable JaVers repository가 필요합니다.
+
+## Publish flow
+
+![JaVers Kafka publish flow](../docs/images/readme-diagrams/javers-kafka-publish-flow-01.png)
+
+저장된 JaVers snapshot은 현재 Kafka wire value로 encode됩니다. In-process
+`CdoSnapshotEvent<String>`은 key mapping, diagnostics, future transport behavior를
+위한 metadata를 담지만, 현재 consumer는 record value를 encoded JaVers snapshot
+payload로 취급해야 합니다.
+
+## Projection flow
+
+![JaVers Kafka projection flow](../docs/images/readme-diagrams/javers-kafka-projection-flow-01.png)
+
+`KafkaCdoSnapshotProjector`는 encoded snapshot record를 read-capable
+`CdoSnapshotRepository`로 replay합니다. 각 poll batch는 deterministic
+`partition, offset` 순서로 적용되고, target repository에 이미 있는 snapshot은 건너뛸
+수 있으며, batch 전체가 성공적으로 projection된 뒤에만 offset을 commit합니다.
 
 ## 기능
 
@@ -82,8 +106,6 @@ history read도 필요하다면 durable snapshot repository나 projection consum
 Kafka repository는 계속 write-only입니다. 애플리케이션이 history read를 필요로 하면
 Kafka stream을 Redis, Exposed, Caffeine 같은 bluetape4k JaVers ecosystem의
 read-capable `CdoSnapshotRepository`로 projection합니다:
-
-![Kafka audit projection](docs/images/readme-diagrams/javers-kafka-projection-01.png)
 
 ```kotlin
 val readRepository = LettuceCdoSnapshotRepository("audit-read", redisClient)

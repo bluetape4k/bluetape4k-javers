@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="980" viewBox="0 0 1840 980" role="img" aria-label="javers kafka publish flow">
+<defs>
+<filter id="shadow" x="-15%" y="-15%" width="130%" height="135%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#64748b" flood-opacity="0.12"/></filter>
+<marker id="blue" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#2563eb"/></marker>
+<marker id="green" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669"/></marker>
+<marker id="amber" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706"/></marker>
+<style>
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:40px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:16px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:25px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:27px;fill:#183247;font-weight:700}
+.body{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#475569}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:14px;fill:#64748b}
+.infra{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:24px;fill:#292524;font-weight:700}
+</style>
+</defs>
+<rect width="1840" height="980" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1800" height="940" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="64">javers-persistence-kafka Publish Flow</text>
+<text class="subtitle" x="56" y="94">JaVers snapshot commit to acknowledged Kafka record, with write-only read behavior</text>
+
+<rect x="70" y="130" width="1700" height="360" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="166">Save path</text>
+<rect x="130" y="245" width="255" height="108" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="258" y="283" text-anchor="middle">JaVers commit</text>
+<text class="body" x="158" y="315">produces CdoSnapshot</text>
+<rect x="505" y="225" width="305" height="148" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="658" y="264" text-anchor="middle">Build event</text>
+<text class="body" x="535" y="296">CdoSnapshotEvent metadata</text>
+<text class="body" x="535" y="317">payload = encoded snapshot</text>
+<text class="body" x="535" y="338">codec = JSON string</text>
+<rect x="940" y="210" width="325" height="178" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1102" y="249" text-anchor="middle">Publish adapter</text>
+<text class="body" x="970" y="283">Spring: sendDefault(...)</text>
+<text class="body" x="970" y="304">Vanilla: ProducerRecord(topic)</text>
+<text class="body" x="970" y="325">wait for acknowledgement</text>
+<text class="body" x="970" y="346">optional flush for vanilla</text>
+<rect x="1365" y="225" width="385" height="148" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<g transform="translate(1380 244)">
+<circle cx="18" cy="18" r="11" fill="#111827"/><circle cx="64" cy="18" r="11" fill="#111827"/><circle cx="41" cy="57" r="11" fill="#111827"/>
+<path d="M 28 22 L 54 22 M 24 28 L 36 48 M 58 28 L 46 48" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
+</g>
+<text class="infra" x="1575" y="272" text-anchor="middle">Kafka topic</text>
+<text class="body" x="1495" y="317">key fingerprint only in logs</text>
+<text class="body" x="1495" y="338">wire value is payload</text>
+<path d="M 385,299 L 505,299" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#blue)"/>
+<path d="M 810,299 L 940,299" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#green)"/>
+<path d="M 1265,299 L 1365,299" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#amber)"/>
+
+<rect x="70" y="560" width="1700" height="285" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="596">Read and failure contract</text>
+<rect x="160" y="660" width="420" height="112" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="370" y="700" text-anchor="middle">Read methods</text>
+<text class="body" x="190" y="732">return empty / false / 0</text>
+<text class="body" x="190" y="753">first call warns, repeats debug</text>
+<rect x="710" y="660" width="420" height="112" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="920" y="700" text-anchor="middle">Publish failure</text>
+<text class="body" x="740" y="732">RuntimeException propagates</text>
+<text class="body" x="740" y="753">JaVers head does not advance</text>
+<rect x="1260" y="660" width="420" height="112" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1470" y="700" text-anchor="middle">Duplicate risk</text>
+<text class="body" x="1290" y="732">multi-snapshot commit can partially publish</text>
+<text class="body" x="1290" y="753">consumers must tolerate retries</text>
+<text class="small" x="96" y="910">Kafka is an audit event stream here, not a read-capable JaVers repository.</text>
+</svg>
