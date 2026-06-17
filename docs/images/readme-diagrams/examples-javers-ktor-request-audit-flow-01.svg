@@ -18,7 +18,8 @@
     .line{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
     .dash{stroke-dasharray:8 7}
   </style>
-</defs>
+
+<marker id="arrow0284C7" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#0284c7" stroke-dasharray="none"/></marker></defs>
 
 <rect width="1960" height="1120" rx="30" fill="#f8fafc"/>
 <rect x="24" y="24" width="1912" height="1072" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
@@ -83,7 +84,7 @@
 <path class="line" d="M 1291 383 L 1291 515" stroke="#d97706" marker-end="url(#amber)"/>
 <path class="line" d="M 1450 319 L 1535 319 L 1535 364 L 1605 364" stroke="#e11d48" marker-end="url(#rose)"/>
 
-<path class="line" d="M 442 550 L 520 550 L 520 720 L 625 720" stroke="#0284c7" marker-end="url(#blue)"/>
+<path class="line" d="M 442 550 L 520 550 L 520 720 L 625 720" stroke="#0284c7" marker-end="url(#arrow0284C7)"/>
 <path class="line" d="M 940 742 L 1070 742 L 1070 595 L 1190 595" stroke="#d97706" marker-end="url(#amber)"/>
 
 <path class="line" d="M 442 770 L 610 770 L 625 770" stroke="#7c3aed" marker-end="url(#purple)"/>

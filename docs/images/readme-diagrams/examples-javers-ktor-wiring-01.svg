@@ -16,7 +16,8 @@
     .infra{font-family:"Architects Daughter";font-size:28px;fill:#111827}
     .line{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   </style>
-</defs>
+
+<marker id="arrow4F46E5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#4f46e5" stroke-dasharray="none"/></marker></defs>
 
 <rect width="1880" height="1040" rx="30" fill="#f8fafc"/>
 <rect x="24" y="24" width="1832" height="992" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
@@ -71,7 +72,7 @@
 <text class="body" x="1548" y="670">jv_snapshot</text>
 
 <path class="line" d="M 418 341 L 545 341 L 545 314 L 590 314" stroke="#2563eb" marker-end="url(#blue)"/>
-<path class="line" d="M 735 378 L 735 555" stroke="#4f46e5" marker-end="url(#blue)"/>
+<path class="line" d="M 735 378 L 735 555" stroke="#4f46e5" marker-end="url(#arrow4F46E5)"/>
 <path class="line" d="M 880 314 L 990 314 L 990 331 L 1052 331" stroke="#2563eb" marker-end="url(#blue)"/>
 <path class="line" d="M 1205 392 L 1205 562" stroke="#059669" marker-end="url(#green)"/>
 <path class="line" d="M 1360 630 L 1430 630 L 1430 358 L 1538 358" stroke="#d97706" marker-end="url(#amber)"/>
