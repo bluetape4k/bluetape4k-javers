@@ -5,6 +5,22 @@
 Exposed JDBC command persistence와 JaVers audit을 함께 사용하는 Ktor REST
 예제입니다.
 
+## Architecture
+
+이 예제는 auto-configuration을 사용하지 않고 필요한 객체를 명시적으로
+wiring합니다. Ktor module이 H2 기반 Exposed `Database`를 만들고,
+command-side table과 JaVers table을 생성한 뒤 `ExposedCdoSnapshotRepository`,
+`OrderRepository`, order API route를 연결합니다.
+
+![examples-javers-ktor wiring](../../docs/images/readme-diagrams/examples-javers-ktor-wiring-01.png)
+
+Runtime 요청은 Ktor route에서 command handler로 들어갑니다. 주문 상태는 먼저
+`example_order` table에 저장되고, 이후 `AggregateRepository`가 domain-event
+metadata와 함께 JaVers snapshot을 commit합니다. 현재 주문 조회는 command
+table을 읽고, audit history 조회는 JaVers snapshot을 읽습니다.
+
+![examples-javers-ktor request audit flow](../../docs/images/readme-diagrams/examples-javers-ktor-request-audit-flow-01.png)
+
 ## 포함 범위
 
 - `Database`, `Javers`, `OrderRepository`를 명시적으로 wiring하는 Ktor 구성

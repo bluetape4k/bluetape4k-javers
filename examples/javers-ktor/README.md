@@ -4,6 +4,21 @@ English | [한국어](./README.ko.md)
 
 Ktor REST example for JaVers auditing with Exposed JDBC command persistence.
 
+## Architecture
+
+This example is intentionally explicit. The Ktor module creates the H2-backed
+Exposed `Database`, creates the command-side and JaVers tables, registers
+`ExposedCdoSnapshotRepository`, and then wires a small order API.
+
+![examples-javers-ktor wiring](../../docs/images/readme-diagrams/examples-javers-ktor-wiring-01.png)
+
+Runtime requests go through Ktor routes into the command handler. Order state is
+stored in the `example_order` table first, then `AggregateRepository` commits a
+JaVers snapshot with domain-event metadata. History reads come from JaVers
+snapshots, while current order reads come from the command table.
+
+![examples-javers-ktor request audit flow](../../docs/images/readme-diagrams/examples-javers-ktor-request-audit-flow-01.png)
+
 ## What This Example Covers
 
 - Explicit Ktor wiring for `Database`, `Javers`, and `OrderRepository`.
