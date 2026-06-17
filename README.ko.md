@@ -9,35 +9,37 @@
 
 ![bluetape4k JaVers 감사 작업대 일러스트](./docs/assets/javers-workbench.png)
 
-[JaVers](https://javers.org) 객체 감사(audit)와 diff를 위한 Kotlin/JVM 통합 라이브러리입니다.
-CDO snapshot과 event-sourced change stream을 위해 Exposed JDBC, Redis, Kafka persistence 선택지를 제공합니다.
+[JaVers](https://javers.org) 객체 감사(audit)와 diff를 위한 Kotlin/JVM 통합
+라이브러리입니다. bluetape4k 애플리케이션이 SQL snapshot, Redis snapshot
+state, Kafka audit event, DDD command-side 예제를 실제 요구에 맞게 고를 수
+있도록 JaVers wiring을 정리합니다.
 
 ## 프로젝트 목적
 
-`bluetape4k-javers`는 JaVers의 기본 in-memory, MongoDB, JDBC 저장소 선택지를 확장합니다.
-cache-backed read, Redis persistence, Kafka event stream, Exposed 기반 repository layer가
-필요한 Kotlin 서비스의 audit/diff 인프라를 목표로 합니다.
+`bluetape4k-javers`는 JaVers의 object diff 모델을 쓰되, bluetape4k 방식의
+Kotlin API, 명시적인 persistence 선택지, 실행 가능한 예제가 필요한 서비스를
+위한 저장소입니다. 먼저 `javers-core`로 시작하고, 애플리케이션의 audit 계약에
+맞는 persistence adapter를 더한 뒤, 예제와 benchmark로 운영 tradeoff를
+확인하는 흐름을 의도합니다.
 
-JaVers의 object diff 모델을 쓰면서도 Kotlin-first helper, Exposed JDBC
-persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 bluetape4k
-서비스에 맞춘 저장소입니다.
+가장 중요한 결정은 audit snapshot의 authoritative store입니다. Exposed는 SQL
+query 경로, Redis는 low-latency snapshot state 경로, Kafka는 projection을 위한
+event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능한 저장소로 보면
+안 됩니다.
 
 ## 제공 기능
 
-- **JaVers core helper** — extension, codec, cache-backed repository 구성 요소
-- **Exposed JDBC persistence** — SQL-backed JaVers CDO snapshot을 위한 Exposed schema와 repository
-- **DDD helper** — JaVers audit workflow를 위한 aggregate root, domain event, repository, publisher adapter
-- **CQRS command-side 예제** — `examples/javers-exposed-ddd` 아래 Exposed + JaVers + DDD helper 주문 command flow
-- **Ktor REST 예제** — `examples/javers-ktor` 아래 Exposed command persistence와 JaVers audit history를 명시적으로 wiring하는 예제
-- **Spring Boot 4 REST 예제** — `examples/javers-spring-boot4` 아래 Exposed command persistence와 JaVers audit history를 명시적으로 wiring하는 예제
-- **Redis persistence** — Lettuce/Redisson 기반 snapshot 저장 경로
-- **Kafka persistence** — event stream 기반 CDO snapshot persistence
+- **Core JaVers helper** — Kotlin extension, codec, cache delegate, composite CDO snapshot repository
+- **Exposed JDBC persistence** — SQL-backed snapshot, repository head 복원, Envers 경로와 비교 가능한 query behavior
+- **DDD helper** — JaVers commit 주변의 aggregate repository, domain event, publisher boundary
+- **Redis persistence** — repository rebuild 이후에도 복원 가능한 low-latency snapshot state를 위한 Lettuce/Redisson 경로
+- **Kafka persistence** — 직접 history query가 아니라 snapshot event delivery와 projection pipeline을 위한 경로
+- **실행 가능한 예제** — Exposed DDD CQRS, Ktor REST, Spring Boot 4 REST wiring
 - **BOM 지원** — 소비자 dependency version 정렬을 위한 `bluetape4k-javers-bom`
-- **구현 backlog** — Exposed persistence, DDD helper, CQRS/Event Sourcing 예제 phase chain
 
 ## Persistence 선택지
 
-![JaVers persistence options relationship diagram](./docs/assets/javers-persistence-options.png)
+![JaVers persistence options relationship diagram](docs/images/readme-diagrams/javers-persistence-options-01.png)
 
 ## 아키텍처
 
@@ -60,11 +62,11 @@ persistence, cache/stream adapter, CQRS 예제를 함께 가져가야 하는 blu
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extension, codec, cache-backed/composite repository |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | JaVers audit workflow용 DDD aggregate/domain-event helper |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
+| `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
+| `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | projection을 위한 Kafka-backed CDO snapshot event stream |
 | `examples-javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
 | `examples-javers-ktor` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Ktor REST 예제 |
 | `examples-javers-spring-boot4` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Spring Boot 4 REST 예제 |
-| `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
-| `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (쓰기 전용 이벤트 스트림; 읽기는 항상 빈 결과 반환) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
 
 ## 의존성 설정
@@ -80,8 +82,9 @@ dependencies {
 }
 ```
 
-Kafka, Redis, Exposed 모듈은 역할이 다르므로 애플리케이션이 실제로 사용하는
-storage/eventing adapter만 추가하세요.
+Exposed, Redis, Kafka 모듈은 역할이 다르므로 애플리케이션이 실제로 사용하는
+storage/eventing adapter만 추가하세요. BOM은 버전을 맞춰주지만 runtime topology를
+대신 결정하지는 않습니다.
 
 ## 빠른 시작
 
