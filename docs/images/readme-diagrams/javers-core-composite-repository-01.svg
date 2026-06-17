@@ -9,7 +9,7 @@
 .title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#183247;font-weight:700}
 .subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
 .lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#183247;font-weight:700}
-.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:20px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:24px;fill:#183247;font-weight:700}
 .small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#587086}
 </style>
 </defs>

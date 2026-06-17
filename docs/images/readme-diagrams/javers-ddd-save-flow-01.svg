@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-label="javers-ddd aggregate save flow">
+<defs>
+<filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
+<marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/></marker>
+<marker id="arrowGreen" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#059669"/></marker>
+<marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706"/></marker>
+<marker id="arrowRose" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e11d48"/></marker>
+<style>
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:24px;fill:#183247;font-weight:700}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#587086}
+</style>
+</defs>
+<rect x="0" y="0" width="1700" height="980" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1660" height="940" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="64">javers-ddd Save Flow</text>
+<text class="subtitle" x="56" y="94">AggregateRepository saves source state, commits JaVers audit metadata, then publishes events immediately</text>
+
+<rect x="70" y="132" width="1560" height="730" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="168">save(aggregate, author, events)</text>
+
+<rect class="card" x="600" y="205" width="500" height="110" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="850" y="238" text-anchor="middle">Application service</text>
+<text class="small" x="642" y="266">repository.save(order, "system", events)</text>
+<text class="small" x="642" y="284">caller owns transaction boundary</text>
+
+<rect class="card" x="600" y="390" width="500" height="128" rx="16" fill="#fce7f3" stroke="#db2777" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="850" y="424" text-anchor="middle">AggregateRepository</text>
+<text class="small" x="642" y="452">persist(aggregate)</text>
+<text class="small" x="642" y="470">javers.commit(author, saved, event properties)</text>
+<text class="small" x="642" y="488">eventPublisher.publishAll(events)</text>
+
+<rect class="card" x="235" y="610" width="360" height="118" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="1.2" filter="url(#softShadow)"/>
+<path d="M 278,650 v42 c0,8 16,13 36,13 s36,-5 36,-13 v-42" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+<ellipse cx="314" cy="650" rx="36" ry="13" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+<path d="M 278,673 c0,8 16,13 36,13 s36,-5 36,-13" fill="none" stroke="#059669" stroke-width="1.2"/>
+<text class="label" x="405" y="650">Source store</text>
+<text class="small" x="405" y="678">Exposed, Spring Data, or custom</text>
+<text class="small" x="405" y="696">subclass implements persist/findById</text>
+
+<rect class="card" x="670" y="610" width="360" height="118" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="850" y="650" text-anchor="middle">JaVers audit</text>
+<text class="small" x="704" y="678">commit properties from DomainEvent</text>
+<text class="small" x="704" y="696">loadHistory(id) reads snapshots</text>
+
+<rect class="card" x="1105" y="610" width="360" height="118" rx="16" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1285" y="650" text-anchor="middle">Event publisher</text>
+<text class="small" x="1138" y="678">Noop, function, composite</text>
+<text class="small" x="1138" y="696">Spring, Kafka, or NATS adapter</text>
+
+<rect class="card" x="515" y="805" width="670" height="54" rx="16" fill="#ffe4e6" stroke="#e11d48" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="850" y="838" text-anchor="middle">Immediate delivery helper, not a durable outbox</text>
+
+<path d="M 850,315 L 850,390" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowBlue)"/>
+<path d="M 600,470 L 415,470 L 415,610" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)"/>
+<path d="M 850,518 L 850,610" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowAmber)"/>
+<path d="M 1100,470 L 1285,470 L 1285,610" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)"/>
+<path d="M 850,728 L 850,805" fill="none" stroke="#e11d48" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="7 5" marker-end="url(#arrowRose)"/>
+
+<text class="small" x="96" y="925">If exactly-once external delivery, replay, or cross-service recovery is required, place a transactional outbox outside this helper.</text>
+</svg>
