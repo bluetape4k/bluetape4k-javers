@@ -5,6 +5,24 @@
 Exposed JDBC command persistence와 JaVers audit을 함께 사용하는 Spring Boot 4
 REST 예제입니다.
 
+## Architecture
+
+이 예제는 auto-configuration 대신 명시적인 Spring bean wiring을 사용합니다.
+`JaversExampleConfiguration`이 H2 기반 Exposed `Database`를 만들고,
+command-side table과 JaVers table을 초기화한 뒤
+`ExposedCdoSnapshotRepository`, order repository, command handler, REST
+controller를 연결합니다.
+
+![examples-javers-spring-boot4 wiring](../../docs/images/readme-diagrams/examples-javers-spring-boot4-wiring-01.png)
+
+Runtime 요청은 `OrderController`로 들어갑니다. Write endpoint는
+`OrderCommandHandler`를 통해 aggregate를 전이하고, repository는 source-of-truth
+주문 row를 저장한 뒤 domain-event metadata와 함께 JaVers snapshot을 commit합니다.
+현재 주문 조회는 command table을 읽고, audit history 조회는 JaVers snapshot을
+읽습니다.
+
+![examples-javers-spring-boot4 request audit flow](../../docs/images/readme-diagrams/examples-javers-spring-boot4-request-audit-flow-01.png)
+
 ## 포함 범위
 
 - `Database`, `Javers`, `OrderRepository`를 명시적으로 wiring하는 Spring Boot 4 구성
