@@ -24,21 +24,44 @@ JaVers commit과 encoded snapshot을 저장하는 `AbstractCdoSnapshotRepository
   audit합니다.
 - Exposed JDBC를 통해 H2, PostgreSQL, MySQL을 지원합니다.
 
-## Architecture
+## Class and Schema Map
 
-![javers-exposed architecture](docs/images/readme-diagrams/javers-exposed-architecture-01.png)
+![javers-exposed class diagram](../docs/images/readme-diagrams/javers-exposed-class-diagram-01.png)
 
 `ExposedCdoSnapshotRepository`는 공통
-`AbstractCdoSnapshotRepository`의 codec 및 query 동작을 확장하고, JaVers
-commit metadata와 encoded `CdoSnapshot` row를 Exposed table에 매핑합니다.
+`AbstractCdoSnapshotRepository`의 codec 및 query 동작을 확장하고, repository
+option으로 commit/snapshot table mapping을 가진 `ExposedJaversSchema`를
+구성합니다. 기본 mapping은 `javers_commit`, `javers_snapshot`에 기록하며,
+custom table name을 사용하면 migration이 소유하는 schema에 맞춘
+repository-local mapping을 만듭니다.
+
+## Schema ERD
+
+![javers-exposed ERD](../docs/images/readme-diagrams/javers-exposed-erd-01.png)
+
+물리 모델은 의도적으로 작습니다. `javers_commit`은 JaVers commit마다 한 row를
+저장하고, `javers_snapshot`은 global id별 encoded snapshot version을 저장합니다.
+`commit_id`는 snapshot과 commit metadata를 연결하여 repository head 복원과
+SQL-filtered query에 사용됩니다.
 
 ## Persistence Flow
 
-![javers-exposed persistence sequence](docs/images/readme-diagrams/javers-exposed-sequence-01.png)
+![javers-exposed persistence flow](../docs/images/readme-diagrams/javers-exposed-persistence-flow-01.png)
 
 쓰기 작업은 Exposed transaction 안에서 commit metadata를 필요할 때만
-삽입하고 encoded snapshot payload를 저장합니다. 조회 시에는 snapshot
-version 순서로 row를 읽고 decode하여 JaVers query에 돌려줍니다.
+삽입하고 encoded snapshot payload를 저장하며, repository head 복원에 필요한
+commit sequence를 유지합니다. 조회는 snapshot JSON decode 전에 exact filter를
+SQL로 pushdown하고, SQL column으로 표현하기 어려운 JaVers semantics가 필요한
+query는 공통 in-memory filtering 경로로 fallback합니다.
+
+## DAO EntityHook Audit Flow
+
+![javers-exposed entity hook audit flow](../docs/images/readme-diagrams/javers-exposed-entity-hook-01.png)
+
+선택 사항인 EntityHook subscription은 repository storage path와 분리되어
+있습니다. 이 hook은 Exposed DAO `Entity` lifecycle event만 관찰하고, 설정된
+entity를 detached audit object로 매핑한 뒤 created/updated state를 commit하며,
+deleted row는 `commitShallowDeleteById()`로 terminal snapshot을 만듭니다.
 
 ## 사용 예
 

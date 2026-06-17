@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="860" viewBox="0 0 1560 860" role="img" aria-labelledby="title desc">
+  <title id="title">javers-exposed Table ERD</title>
+  <desc id="desc">Dense ERD for javers-exposed commit metadata and encoded CDO snapshot tables.</desc>
+  <defs>
+    <filter id="shadow" x="-12%" y="-14%" width="124%" height="136%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#64748b" flood-opacity="0.13"/>
+    </filter>
+    <marker id="arrowJoin" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrowSchema" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#16a34a"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Comic Mono", monospace; fill: #263244; }
+    .title { font-family: "Architects Daughter", cursive; font-size: 36px; fill: #172033; }
+    .subtitle { font-size: 14px; fill: #64748b; }
+    .table-title { font-family: "Architects Daughter", cursive; font-size: 22px; fill: #172033; }
+    .table-name { font-size: 12px; fill: #64748b; }
+    .head { font-size: 11px; fill: #64748b; font-weight: 700; }
+    .row { font-size: 12.5px; fill: #334155; }
+    .note { font-size: 12px; fill: #64748b; }
+    .badge { font-size: 10px; fill: #ffffff; font-weight: 700; }
+    .footer { font-size: 12px; fill: #64748b; }
+    .frame { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.4; filter: url(#shadow); }
+    .schema { fill: #f0fdf4; stroke: #86efac; stroke-width: 1.3; }
+    .commit { fill: #fff7ed; stroke: #fdba74; stroke-width: 1.4; }
+    .snapshot { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.4; }
+    .info { fill: #f8fafc; stroke: #dbe4f0; stroke-width: 1.1; }
+    .header { fill-opacity: 0.48; }
+    .line { stroke: rgba(100,116,139,0.28); stroke-width: 1; }
+    .schema-line { stroke: #16a34a; stroke-width: 1.35; fill: none; marker-end: url(#arrowSchema); }
+    .join-line { stroke: #475569; stroke-width: 1.45; fill: none; stroke-dasharray: 6 5; marker-end: url(#arrowJoin); }
+    .pk { fill: #2563eb; }
+    .ix { fill: #0f766e; }
+    .join { fill: #475569; }
+    .label-bg { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1; }
+  </style>
+
+  <rect width="1560" height="860" fill="#f6f8fb"/>
+  <rect class="frame" x="34" y="30" width="1492" height="790" rx="18"/>
+  <text class="title" x="780" y="76" text-anchor="middle">javers-exposed Table ERD</text>
+  <text class="subtitle" x="780" y="104" text-anchor="middle">Commit metadata, encoded CDO snapshots, logical join key, indexes, nullability, and query-use columns.</text>
+
+  <g id="Schema" transform="translate(520 132)">
+    <rect class="schema" width="520" height="74" rx="10"/>
+    <text class="table-title" x="260" y="28" text-anchor="middle">ExposedJaversSchema.tables</text>
+    <text class="note" x="260" y="51" text-anchor="middle">CommitTableMapping + CdoSnapshotTableMapping</text>
+  </g>
+
+  <g id="CommitTable" transform="translate(72 250)">
+    <rect class="commit" width="620" height="386" rx="10"/>
+    <rect class="commit header" width="620" height="62" rx="10"/>
+    <text class="table-title" x="310" y="28" text-anchor="middle">CommitTableMapping</text>
+    <text class="table-name" x="310" y="50" text-anchor="middle">javers_commit</text>
+    <line class="line" x1="0" y1="62" x2="620" y2="62"/>
+    <text class="head" x="26" y="88">KEY</text>
+    <text class="head" x="90" y="88">COLUMN</text>
+    <text class="head" x="260" y="88">TYPE</text>
+    <text class="head" x="408" y="88">CONSTRAINT / USE</text>
+    <line class="line" x1="0" y1="104" x2="620" y2="104"/>
+    <line class="line" x1="78" y1="70" x2="78" y2="334"/>
+    <line class="line" x1="248" y1="70" x2="248" y2="334"/>
+    <line class="line" x1="396" y1="70" x2="396" y2="334"/>
+    <rect class="pk" x="22" y="119" width="34" height="18" rx="9"/>
+    <text class="badge" x="39" y="132" text-anchor="middle">PK</text>
+    <text class="row" x="90" y="132">commit_id</text>
+    <text class="row" x="260" y="132">VARCHAR(50)</text>
+    <text class="row" x="408" y="132">NOT NULL; commit id unique key</text>
+    <text class="row" x="90" y="166">author</text>
+    <text class="row" x="260" y="166">VARCHAR(200)</text>
+    <text class="row" x="408" y="166">NOT NULL; exact author filter</text>
+    <text class="row" x="90" y="200">commit_date</text>
+    <text class="row" x="260" y="200">DATETIME</text>
+    <text class="row" x="408" y="200">NOT NULL; LocalDateTime range</text>
+    <text class="row" x="90" y="234">commit_date_instant</text>
+    <text class="row" x="260" y="234">VARCHAR(64)</text>
+    <text class="row" x="408" y="234">NULL; Instant copy as text</text>
+    <text class="row" x="90" y="268">properties</text>
+    <text class="row" x="260" y="268">TEXT</text>
+    <text class="row" x="408" y="268">NOT NULL; commit props JSON</text>
+    <rect class="ix" x="22" y="289" width="34" height="18" rx="9"/>
+    <text class="badge" x="39" y="302" text-anchor="middle">IX</text>
+    <text class="row" x="90" y="302">sequence</text>
+    <text class="row" x="260" y="302">LONG</text>
+    <text class="row" x="408" y="302">NOT NULL DEFAULT 0; head restore</text>
+    <line class="line" x1="0" y1="334" x2="620" y2="334"/>
+    <text class="note" x="24" y="360">Indexes: PK javers_commit_commit_id_unique; IX ix_javers_commit_sequence.</text>
+  </g>
+
+  <g id="SnapshotTable" transform="translate(868 250)">
+    <rect class="snapshot" width="620" height="420" rx="10"/>
+    <rect class="snapshot header" width="620" height="62" rx="10"/>
+    <text class="table-title" x="310" y="28" text-anchor="middle">CdoSnapshotTableMapping</text>
+    <text class="table-name" x="310" y="50" text-anchor="middle">javers_snapshot</text>
+    <line class="line" x1="0" y1="62" x2="620" y2="62"/>
+    <text class="head" x="26" y="88">KEY</text>
+    <text class="head" x="90" y="88">COLUMN</text>
+    <text class="head" x="260" y="88">TYPE</text>
+    <text class="head" x="408" y="88">CONSTRAINT / USE</text>
+    <line class="line" x1="0" y1="104" x2="620" y2="104"/>
+    <line class="line" x1="78" y1="70" x2="78" y2="368"/>
+    <line class="line" x1="248" y1="70" x2="248" y2="368"/>
+    <line class="line" x1="396" y1="70" x2="396" y2="368"/>
+    <rect class="pk" x="22" y="119" width="34" height="18" rx="9"/>
+    <text class="badge" x="39" y="132" text-anchor="middle">PK</text>
+    <text class="row" x="90" y="132">global_id</text>
+    <text class="row" x="260" y="132">VARCHAR(200)</text>
+    <text class="row" x="408" y="132">NOT NULL; JaVers GlobalId</text>
+    <rect class="pk" x="22" y="153" width="34" height="18" rx="9"/>
+    <text class="badge" x="39" y="166" text-anchor="middle">PK</text>
+    <text class="row" x="90" y="166">version</text>
+    <text class="row" x="260" y="166">LONG</text>
+    <text class="row" x="408" y="166">NOT NULL; per-object version</text>
+    <rect class="join" x="16" y="187" width="46" height="18" rx="9"/>
+    <text class="badge" x="39" y="200" text-anchor="middle">JOIN</text>
+    <text class="row" x="90" y="200">commit_id</text>
+    <text class="row" x="260" y="200">VARCHAR(50)</text>
+    <text class="row" x="408" y="200">NOT NULL; logical FK, indexed</text>
+    <rect class="ix" x="22" y="221" width="34" height="18" rx="9"/>
+    <text class="badge" x="39" y="234" text-anchor="middle">IX</text>
+    <text class="row" x="90" y="234">type</text>
+    <text class="row" x="260" y="234">VARCHAR(50)</text>
+    <text class="row" x="408" y="234">NOT NULL; snapshot type filter</text>
+    <text class="row" x="90" y="268">state</text>
+    <text class="row" x="260" y="268">TEXT</text>
+    <text class="row" x="408" y="268">NOT NULL; encoded CdoSnapshot</text>
+    <text class="row" x="90" y="302">changed_properties</text>
+    <text class="row" x="260" y="302">TEXT</text>
+    <text class="row" x="408" y="302">NOT NULL; JSON array text</text>
+    <rect class="ix" x="22" y="323" width="34" height="18" rx="9"/>
+    <text class="badge" x="39" y="336" text-anchor="middle">IX</text>
+    <text class="row" x="90" y="336">managed_type</text>
+    <text class="row" x="260" y="336">VARCHAR(200)</text>
+    <text class="row" x="408" y="336">NOT NULL; class pushdown</text>
+    <line class="line" x1="0" y1="368" x2="620" y2="368"/>
+    <text class="note" x="24" y="394">Indexes: PK ux_javers_snapshot_global_id_version; IX commit_id/type/managed_type.</text>
+  </g>
+
+  <path class="schema-line" d="M 650 206 L 650 226 L 382 226 L 382 250"/>
+  <path class="schema-line" d="M 910 206 L 910 226 L 1178 226 L 1178 250"/>
+
+  <path class="join-line" d="M 868 450 L 780 450 L 780 382 L 692 382"/>
+  <rect class="label-bg" x="692" y="470" width="176" height="28" rx="14"/>
+  <text class="note" x="780" y="488" text-anchor="middle">logical join, no FK</text>
+  <text class="note" x="838" y="443">0..*</text>
+  <text class="note" x="704" y="375">1</text>
+
+  <g id="Summary" transform="translate(82 720)">
+    <rect fill="#f8fafc" stroke="#dbe4f0" width="1396" height="42" rx="12"/>
+    <text class="footer" x="698" y="26" text-anchor="middle">Custom table names preserve the same logical columns; SQL pushdown uses commit_id, author, date, version, type, managed_type, skip, and limit before JSON decode.</text>
+  </g>
+</svg>
