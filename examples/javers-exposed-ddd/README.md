@@ -7,9 +7,17 @@ helpers.
 
 ## Flow
 
-![javers-exposed-ddd command and projection sequence](docs/images/readme-diagrams/javers-exposed-ddd-sequence-01.png)
+The example has two separate responsibilities. The command side owns the order
+row and JaVers audit snapshot. The event/read side publishes order domain events
+to Kafka and projects them into Redis for query reads.
 
-![javers-exposed-ddd CQRS flow](docs/images/readme-diagrams/javers-exposed-ddd-cqrs-flow-01.png)
+![javers-exposed-ddd CQRS flow](../../docs/images/readme-diagrams/examples-javers-exposed-ddd-cqrs-flow-01.png)
+
+The command handler saves aggregate state before the Kafka event is projected.
+The read API intentionally reads the Redis projection only; it does not query
+`OrdersTable` or JaVers snapshots.
+
+![javers-exposed-ddd command and projection sequence](../../docs/images/readme-diagrams/examples-javers-exposed-ddd-sequence-01.png)
 
 ## What This Example Covers
 

@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+<title id="title">examples-javers-exposed-ddd CQRS Flow</title>
+<desc id="desc">Vertical responsibility layers for command handling, write-model and audit persistence, Kafka event stream, and Redis read-side projection.</desc>
+<defs>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#94a3b8" flood-opacity="0.22"/></filter>
+  <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/></marker>
+  <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#059669"/></marker>
+  <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706"/></marker>
+  <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/></marker>
+  <style>
+    .title{font-family:"Architects Daughter";font-size:52px;fill:#172033}
+    .subtitle,.body,.footer{font-family:"Comic Mono";fill:#475569}
+    .subtitle{font-size:18px}.body{font-size:17px}.footer{font-size:15px}
+    .lane{font-family:"Architects Daughter";font-size:30px;fill:#172033}
+    .label{font-family:"Architects Daughter";font-size:29px;fill:#172033}
+    .infra{font-family:"Architects Daughter";font-size:28px;fill:#111827}
+    .line{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+    .dash{stroke-dasharray:8 7}
+  </style>
+</defs>
+
+<rect width="1920" height="1080" rx="30" fill="#f8fafc"/>
+<rect x="24" y="24" width="1872" height="1032" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
+<text class="title" x="60" y="82">examples-javers-exposed-ddd CQRS Flow</text>
+<text class="subtitle" x="62" y="116">Commands commit the write model first; Kafka events then maintain a Redis read model.</text>
+
+<rect x="70" y="150" width="395" height="820" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
+<text class="lane" x="100" y="194">1. Command</text>
+<rect x="112" y="272" width="310" height="112" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="267" y="312" text-anchor="middle">Order command</text>
+<text class="body" x="148" y="346">PlaceOrderCommand</text>
+<text class="body" x="148" y="369">MarkOrderPaidCommand</text>
+<rect x="100" y="545" width="334" height="142" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="267" y="586" text-anchor="middle">OrderCommandHandler</text>
+<text class="body" x="132" y="622">load current order</text>
+<text class="body" x="132" y="645">transition aggregate</text>
+<text class="body" x="132" y="668">save aggregate + event</text>
+<path class="line" d="M 267 384 L 267 545" stroke="#2563eb" marker-end="url(#blue)"/>
+
+<rect x="525" y="150" width="425" height="820" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
+<text class="lane" x="555" y="194">2. Write / Audit</text>
+<rect x="585" y="250" width="305" height="142" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="737" y="290" text-anchor="middle">OrderRepository</text>
+<text class="body" x="620" y="326">source-of-truth row</text>
+<text class="body" x="620" y="349">JaVers commit</text>
+<text class="body" x="620" y="372">domain event publish</text>
+<g transform="translate(596 525)">
+  <path d="M 0 28 C 0 12 180 12 180 28 L 180 132 C 180 148 0 148 0 132 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1.4" filter="url(#shadow)"/>
+  <path d="M 0 28 C 0 44 180 44 180 28" fill="none" stroke="#d97706" stroke-width="1.4"/>
+  <text class="infra" x="90" y="80" text-anchor="middle">Exposed DB</text>
+  <text class="body" x="90" y="110" text-anchor="middle">example_order</text>
+</g>
+<rect x="586" y="755" width="304" height="112" rx="10" fill="#fefce8" stroke="#eab308" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="738" y="795" text-anchor="middle">JaVers snapshots</text>
+<text class="body" x="620" y="830">ExposedCdoSnapshotRepository</text>
+<path class="line" d="M 434 616 L 505 616 L 505 321 L 585 321" stroke="#2563eb" marker-end="url(#blue)"/>
+<path class="line" d="M 686 392 L 686 525" stroke="#059669" marker-end="url(#green)"/>
+<path class="line" d="M 820 392 L 820 720 L 738 720 L 738 755" stroke="#059669" marker-end="url(#green)"/>
+
+<rect x="1010" y="150" width="395" height="820" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
+<text class="lane" x="1040" y="194">3. Event Stream</text>
+<rect x="1050" y="300" width="315" height="126" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1207" y="338" text-anchor="middle">Kafka publisher</text>
+<text class="body" x="1084" y="374">key = order id</text>
+<text class="body" x="1084" y="397">value = local event JSON</text>
+<rect x="1040" y="585" width="335" height="142" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<g transform="translate(1070 612)">
+<circle cx="18" cy="18" r="11" fill="#111827"/><circle cx="64" cy="18" r="11" fill="#111827"/><circle cx="41" cy="57" r="11" fill="#111827"/>
+<path d="M 28 22 L 54 22 M 24 28 L 36 48 M 58 28 L 46 48" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
+</g>
+<text class="infra" x="1270" y="640" text-anchor="middle">Kafka topic</text>
+<text class="body" x="1198" y="680">OrderPlaced</text>
+<text class="body" x="1198" y="703">OrderMarkedPaid</text>
+<path class="line" d="M 890 321 L 970 321 L 970 363 L 1050 363" stroke="#d97706" marker-end="url(#amber)"/>
+<path class="line" d="M 1207 426 L 1207 585" stroke="#d97706" marker-end="url(#amber)"/>
+
+<rect x="1465" y="150" width="385" height="820" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
+<text class="lane" x="1495" y="194">4. Projection / Read</text>
+<rect x="1495" y="260" width="326" height="110" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1658" y="300" text-anchor="middle">Projection consumer</text>
+<text class="body" x="1538" y="335">poll, decode, apply events</text>
+<rect x="1488" y="510" width="340" height="152" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2" filter="url(#shadow)"/>
+<g transform="translate(1518 545)">
+<rect x="0" y="17" width="62" height="62" rx="12" fill="#b91c1c"/>
+<rect x="12" y="5" width="38" height="86" rx="9" fill="#ef4444"/>
+<path d="M 16 22 L 46 22 M 16 43 L 46 43 M 16 64 L 46 64" stroke="#fee2e2" stroke-width="5" stroke-linecap="round"/>
+</g>
+<text class="infra" x="1708" y="568" text-anchor="middle">Redis read model</text>
+<text class="body" x="1628" y="605">OrderSummary JSON</text>
+<text class="body" x="1628" y="628">key prefix + order id</text>
+<rect x="1502" y="790" width="312" height="88" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1658" y="828" text-anchor="middle">OrderQueryService</text>
+<text class="body" x="1588" y="857">reads Redis only</text>
+<path class="line" d="M 1375 656 L 1435 656 L 1435 315 L 1495 315" stroke="#2563eb" marker-end="url(#blue)"/>
+<path class="line" d="M 1658 370 L 1658 510" stroke="#059669" marker-end="url(#green)"/>
+<path class="line dash" d="M 1658 790 L 1658 662" stroke="#7c3aed" marker-end="url(#purple)"/>
+
+<text class="footer" x="960" y="1032" text-anchor="middle">Example boundary: no HTTP layer, no production outbox; tests wire H2, Kafka, and Redis containers.</text>
+</svg>

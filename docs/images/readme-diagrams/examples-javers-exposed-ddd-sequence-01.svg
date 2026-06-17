@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1240" viewBox="0 0 1800 1240" role="img" aria-labelledby="title desc">
+<title id="title">examples-javers-exposed-ddd Command and Projection Sequence</title>
+<desc id="desc">Sequence showing command handling, write-model persistence, JaVers audit commit, Kafka event publication, Redis projection, and query reads.</desc>
+<defs>
+  <marker id="arrowCall" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M 0.5 0.5 L 4.5 2.5 L 0.5 4.5 Z" fill="#3f7d9c"/></marker>
+  <marker id="arrowWork" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M 0.5 0.5 L 4.5 2.5 L 0.5 4.5 Z" fill="#2d8f64"/></marker>
+  <marker id="arrowAudit" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M 0.5 0.5 L 4.5 2.5 L 0.5 4.5 Z" fill="#c98220"/></marker>
+  <marker id="arrowEvent" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M 0.5 0.5 L 4.5 2.5 L 0.5 4.5 Z" fill="#d35f25"/></marker>
+  <marker id="arrowProjection" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M 0.5 0.5 L 4.5 2.5 L 0.5 4.5 Z" fill="#b94a5a"/></marker>
+  <marker id="arrowQuery" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M 0.5 0.5 L 4.5 2.5 L 0.5 4.5 Z" fill="#755bc6"/></marker>
+  <style>
+    .title{font-family:"Architects Daughter";font-size:46px;fill:#263238}
+    .subtitle,.msg,.role,.note,.footer{font-family:"Comic Mono";fill:#4b6075}
+    .subtitle{font-size:18px}.msg{font-size:15px}.role{font-size:13px}.note{font-size:14px}.footer{font-size:14px}
+    .participant{font-family:"Architects Daughter";font-size:23px;fill:#172033}
+    .frame{fill:#fbfcf8;stroke:#cbd5e1;stroke-width:2.2}
+    .header{fill:#ffffff;stroke-width:2}
+    .lifeline{stroke:#9aaab1;stroke-width:1.8;stroke-dasharray:7 8}
+    .activation{fill:#eef2f7;stroke:#64748b;stroke-width:1.4}
+    .call{fill:none;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+    .return{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:8 7}
+    .label{fill:#ffffff;stroke-width:1.5}
+    .badge{stroke-width:1.5}.badgeText{font-family:"Comic Mono";font-size:12px;font-weight:700;fill:#ffffff}
+    .callLabel{stroke:#9cc2d1}.workLabel{stroke:#9bcfab}.auditLabel{stroke:#ddb676}.eventLabel{stroke:#e9a47d}.projectionLabel{stroke:#e0a4ae}.queryLabel{stroke:#b9a8eb}
+    .callText{fill:#2f6f8e}.workText{fill:#28764f}.auditText{fill:#8a5f21}.eventText{fill:#a44f1f}.projectionText{fill:#9d4f5f}.queryText{fill:#6248af}
+  </style>
+</defs>
+
+<rect width="1800" height="1240" rx="30" fill="#f8fafc"/>
+<rect class="frame" x="32" y="28" width="1736" height="1184" rx="26"/>
+<text class="title" x="70" y="84">examples-javers-exposed-ddd Sequence</text>
+<text class="subtitle" x="74" y="118">Command state is committed before Kafka projection updates the Redis read model.</text>
+
+<rect x="95" y="155" width="175" height="76" rx="10" class="header" stroke="#2563eb" fill="#dbeafe"/>
+<text class="participant" x="182" y="188" text-anchor="middle">Test / App</text>
+<text class="role" x="182" y="211" text-anchor="middle">command caller</text>
+<rect x="340" y="155" width="230" height="76" rx="10" class="header" stroke="#0284c7" fill="#e0f2fe"/>
+<text class="participant" x="455" y="188" text-anchor="middle">CommandHandler</text>
+<text class="role" x="455" y="211" text-anchor="middle">state transition</text>
+<rect x="640" y="155" width="220" height="76" rx="10" class="header" stroke="#059669" fill="#dcfce7"/>
+<text class="participant" x="750" y="188" text-anchor="middle">OrderRepository</text>
+<text class="role" x="750" y="211" text-anchor="middle">aggregate repository</text>
+<rect x="930" y="155" width="180" height="76" rx="10" class="header" stroke="#d97706" fill="#fef3c7"/>
+<text class="participant" x="1020" y="188" text-anchor="middle">Exposed DB</text>
+<text class="role" x="1020" y="211" text-anchor="middle">OrdersTable</text>
+<rect x="1180" y="155" width="180" height="76" rx="10" class="header" stroke="#eab308" fill="#fefce8"/>
+<text class="participant" x="1270" y="188" text-anchor="middle">JaVers</text>
+<text class="role" x="1270" y="211" text-anchor="middle">snapshot audit</text>
+<rect x="1430" y="155" width="165" height="76" rx="10" class="header" stroke="#f97316" fill="#fff7ed"/>
+<text class="participant" x="1512" y="188" text-anchor="middle">Kafka</text>
+<text class="role" x="1512" y="211" text-anchor="middle">order events</text>
+<rect x="1642" y="155" width="110" height="76" rx="10" class="header" stroke="#ef4444" fill="#fee2e2"/>
+<text class="participant" x="1697" y="188" text-anchor="middle">Redis</text>
+<text class="role" x="1697" y="211" text-anchor="middle">read model</text>
+
+<line class="lifeline" x1="182" y1="231" x2="182" y2="1080"/>
+<line class="lifeline" x1="455" y1="231" x2="455" y2="1080"/>
+<line class="lifeline" x1="750" y1="231" x2="750" y2="1080"/>
+<line class="lifeline" x1="1020" y1="231" x2="1020" y2="1080"/>
+<line class="lifeline" x1="1270" y1="231" x2="1270" y2="1080"/>
+<line class="lifeline" x1="1512" y1="231" x2="1512" y2="1080"/>
+<line class="lifeline" x1="1697" y1="231" x2="1697" y2="1080"/>
+
+<rect class="activation" x="447" y="302" width="16" height="510" rx="6"/>
+<rect class="activation" x="742" y="385" width="16" height="380" rx="6"/>
+<rect class="activation" x="1012" y="485" width="16" height="92" rx="6"/>
+<rect class="activation" x="1262" y="620" width="16" height="82" rx="6"/>
+<rect class="activation" x="1504" y="775" width="16" height="115" rx="6"/>
+<rect class="activation" x="1689" y="850" width="16" height="170" rx="6"/>
+
+<rect x="230" y="270" width="260" height="34" rx="17" class="label callLabel"/>
+<circle cx="254" cy="287" r="13" fill="#3f7d9c"/><text x="254" y="292" text-anchor="middle" class="badgeText">1</text>
+<text x="282" y="292" class="msg callText">handle PlaceOrder / MarkPaid</text>
+<path d="M 182 330 L 447 330" class="call" stroke="#3f7d9c" marker-end="url(#arrowCall)"/>
+
+<rect x="500" y="355" width="250" height="34" rx="17" class="label callLabel"/>
+<circle cx="524" cy="372" r="13" fill="#3f7d9c"/><text x="524" y="377" text-anchor="middle" class="badgeText">2</text>
+<text x="552" y="377" class="msg callText">save aggregate + domain event</text>
+<path d="M 463 415 L 742 415" class="call" stroke="#3f7d9c" marker-end="url(#arrowCall)"/>
+
+<rect x="795" y="455" width="230" height="34" rx="17" class="label workLabel"/>
+<circle cx="819" cy="472" r="13" fill="#2d8f64"/><text x="819" y="477" text-anchor="middle" class="badgeText">3</text>
+<text x="847" y="477" class="msg workText">insert / update order row</text>
+<path d="M 758 515 L 1012 515" class="call" stroke="#2d8f64" marker-end="url(#arrowWork)"/>
+
+<rect x="665" y="555" width="145" height="34" rx="17" class="label workLabel"/>
+<circle cx="689" cy="572" r="13" fill="#2d8f64"/><text x="689" y="577" text-anchor="middle" class="badgeText">4</text>
+<text x="717" y="577" class="msg workText">row persisted</text>
+<path d="M 1012 600 L 758 600" class="return" stroke="#2d8f64" marker-end="url(#arrowWork)"/>
+
+<rect x="840" y="615" width="285" height="34" rx="17" class="label auditLabel"/>
+<circle cx="864" cy="632" r="13" fill="#c98220"/><text x="864" y="637" text-anchor="middle" class="badgeText">5</text>
+<text x="892" y="637" class="msg auditText">commit snapshot with author</text>
+<path d="M 758 660 L 1262 660" class="call" stroke="#c98220" marker-end="url(#arrowAudit)"/>
+
+<rect x="900" y="700" width="155" height="34" rx="17" class="label auditLabel"/>
+<circle cx="924" cy="717" r="13" fill="#c98220"/><text x="924" y="722" text-anchor="middle" class="badgeText">6</text>
+<text x="952" y="722" class="msg auditText">snapshot stored</text>
+<path d="M 1262 740 L 758 740" class="return" stroke="#c98220" marker-end="url(#arrowAudit)"/>
+
+<rect x="920" y="790" width="360" height="34" rx="17" class="label eventLabel"/>
+<circle cx="944" cy="807" r="13" fill="#d35f25"/><text x="944" y="812" text-anchor="middle" class="badgeText">7</text>
+<text x="972" y="812" class="msg eventText">publish OrderPlaced / OrderMarkedPaid JSON</text>
+<path d="M 758 850 L 1504 850" class="call" stroke="#d35f25" marker-end="url(#arrowEvent)"/>
+
+<rect x="920" y="880" width="250" height="34" rx="17" class="label eventLabel"/>
+<circle cx="944" cy="897" r="13" fill="#d35f25"/><text x="944" y="902" text-anchor="middle" class="badgeText">8</text>
+<text x="972" y="902" class="msg eventText">producer ack; command returns</text>
+<path d="M 1504 925 L 758 925" class="return" stroke="#d35f25" marker-end="url(#arrowEvent)"/>
+
+<rect x="1474" y="952" width="210" height="34" rx="17" class="label projectionLabel"/>
+<circle cx="1498" cy="969" r="13" fill="#b94a5a"/><text x="1498" y="974" text-anchor="middle" class="badgeText">9</text>
+<text x="1526" y="974" class="msg projectionText">poll, decode, apply</text>
+<path d="M 1512 1010 L 1689 1010" class="call" stroke="#b94a5a" marker-end="url(#arrowProjection)"/>
+
+<rect x="585" y="1032" width="360" height="34" rx="17" class="label queryLabel"/>
+<circle cx="609" cy="1049" r="13" fill="#755bc6"/><text x="609" y="1054" text-anchor="middle" class="badgeText">10</text>
+<text x="637" y="1054" class="msg queryText">OrderQueryService reads Redis projection only</text>
+<path d="M 182 1094 L 1689 1094" class="call" stroke="#755bc6" marker-end="url(#arrowQuery)"/>
+
+<rect x="110" y="1130" width="1580" height="48" rx="12" fill="#ffffff" stroke="#ccd7da" stroke-width="1.5"/>
+<text x="900" y="1160" text-anchor="middle" class="note">Kafka ordering is assumed per order key, so OrderPlaced reaches Redis before later status-change events.</text>
+</svg>
