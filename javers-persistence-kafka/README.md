@@ -6,9 +6,34 @@ Kafka-backed JaVers CDO snapshot publisher. This module is intentionally
 write-only: it serializes snapshots to Kafka records so downstream systems can
 consume audit events, while repository read methods return empty/default values.
 
-## Architecture
+## Repository map
 
-![Kafka persistence sequence](docs/images/readme-diagrams/javers-kafka-sequence-01.png)
+![JaVers Kafka repository map](../docs/images/readme-diagrams/javers-kafka-repository-map-01.png)
+
+Kafka repositories publish audit events only. Use
+`KafkaCdoSnapshotRepository` when the application already uses Spring Kafka, and
+`VanillaKafkaCdoSnapshotRepository` when the application owns an Apache Kafka
+`Producer<String, String>` directly. Both adapters share the same encoded
+snapshot event contract. Historical reads require `KafkaCdoSnapshotProjector` or
+another read-capable JaVers repository.
+
+## Publish flow
+
+![JaVers Kafka publish flow](../docs/images/readme-diagrams/javers-kafka-publish-flow-01.png)
+
+Each saved JaVers snapshot is encoded as the current Kafka wire value. The
+in-process `CdoSnapshotEvent<String>` carries metadata for key mapping,
+diagnostics, and future transport behavior, but consumers should treat the
+record value as the encoded JaVers snapshot payload today.
+
+## Projection flow
+
+![JaVers Kafka projection flow](../docs/images/readme-diagrams/javers-kafka-projection-flow-01.png)
+
+`KafkaCdoSnapshotProjector` replays encoded snapshot records into a read-capable
+`CdoSnapshotRepository`. It applies each polled batch in deterministic
+`partition, offset` order, can skip snapshots already present in the target
+repository, and commits offsets only after the batch is projected successfully.
 
 ## Features
 
@@ -82,8 +107,6 @@ historical reads.
 Kafka repositories stay write-only. When the application needs historical reads,
 project the Kafka stream into a read-capable `CdoSnapshotRepository` such as the
 Redis, Exposed, or Caffeine repositories from the bluetape4k JaVers ecosystem:
-
-![Kafka audit projection](docs/images/readme-diagrams/javers-kafka-projection-01.png)
 
 ```kotlin
 val readRepository = LettuceCdoSnapshotRepository("audit-read", redisClient)

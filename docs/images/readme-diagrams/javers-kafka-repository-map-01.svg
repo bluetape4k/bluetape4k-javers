@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2140" height="980" viewBox="0 0 2140 980" role="img" aria-label="javers kafka repository map">
+<defs>
+<filter id="shadow" x="-15%" y="-15%" width="130%" height="135%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#64748b" flood-opacity="0.12"/></filter>
+<marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#2563eb"/></marker>
+<marker id="soft" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto"><path d="M 0 0 L 11 5.5 L 0 11 Z" fill="#475569"/></marker>
+<style>
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:40px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:16px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:25px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:27px;fill:#183247;font-weight:700}
+.body{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:14px;fill:#475569}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:14px;fill:#64748b}
+.infra{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:24px;fill:#292524;font-weight:700}
+</style>
+</defs>
+<rect width="2140" height="980" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="2100" height="940" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="64">javers-persistence-kafka Repository Map</text>
+<text class="subtitle" x="56" y="94">Write-only Kafka snapshot publishers plus explicit read-side projection into a durable repository</text>
+
+<rect x="70" y="130" width="2000" height="220" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="166">Shared snapshot event contract</text>
+<rect x="95" y="205" width="610" height="96" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="400" y="242" text-anchor="middle">AbstractCdoSnapshotRepository&lt;String&gt;</text>
+<text class="body" x="145" y="272">write-only read path returns empty / false / 0</text>
+<rect x="760" y="205" width="410" height="96" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="965" y="242" text-anchor="middle">CdoSnapshotEvent&lt;String&gt;</text>
+<text class="body" x="790" y="272">metadata in process, payload on Kafka wire</text>
+<rect x="1320" y="205" width="560" height="96" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1600" y="242" text-anchor="middle">JaversCodecs.String</text>
+<text class="body" x="1350" y="272">encoded JaVers snapshot JSON string is the record value</text>
+<path d="M 705,253 L 760,253" fill="none" stroke="#059669" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M 1170,253 L 1320,253" fill="none" stroke="#d97706" stroke-width="1.7" marker-end="url(#arrow)"/>
+
+<rect x="70" y="395" width="960" height="420" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="431">Publisher adapters</text>
+<rect x="100" y="492" width="500" height="112" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="350" y="532" text-anchor="middle">KafkaCdoSnapshotRepository</text>
+<text class="body" x="135" y="564">Spring KafkaTemplate</text>
+<text class="body" x="135" y="583">sendDefault(key, payload)</text>
+<rect x="100" y="660" width="550" height="112" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="375" y="700" text-anchor="middle">VanillaKafkaCdoSnapshotRepository</text>
+<text class="body" x="135" y="732">Apache Producer or producerOf(...)</text>
+<text class="body" x="135" y="751">topic, timeout, flush, close ownership</text>
+<rect x="690" y="542" width="285" height="108" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#shadow)"/>
+<g transform="translate(695 559)">
+<circle cx="18" cy="18" r="11" fill="#111827"/><circle cx="64" cy="18" r="11" fill="#111827"/><circle cx="41" cy="57" r="11" fill="#111827"/>
+<path d="M 28 22 L 54 22 M 24 28 L 36 48 M 58 28 L 46 48" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
+</g>
+<text class="infra" x="872" y="584" text-anchor="middle">Kafka topic</text>
+<text class="body" x="772" y="620">key = GlobalId or mapper</text>
+<text class="body" x="772" y="639">value = encoded payload</text>
+<path d="M 600,548 L 690,585" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M 650,716 L 690,620" fill="none" stroke="#2563eb" stroke-width="1.7" marker-end="url(#arrow)"/>
+
+<rect x="1110" y="395" width="960" height="420" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="1136" y="431">Projection adapter</text>
+<rect x="1150" y="525" width="390" height="122" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1345" y="565" text-anchor="middle">KafkaCdoSnapshotProjector</text>
+<text class="body" x="1180" y="596">poll topic, decode payload</text>
+<text class="body" x="1180" y="615">sort by partition and offset</text>
+<rect x="1685" y="500" width="330" height="82" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1850" y="536" text-anchor="middle">Read repository</text>
+<text class="body" x="1715" y="562">Redis / Exposed / Caffeine</text>
+<rect x="1685" y="635" width="330" height="82" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1850" y="671" text-anchor="middle">Replay options</text>
+<text class="body" x="1715" y="697">skip existing, commit offsets</text>
+<path d="M 1540,586 L 1685,541" fill="none" stroke="#059669" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M 1540,586 L 1685,676" fill="none" stroke="#d97706" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M 1325,350 L 1325,395" fill="none" stroke="#475569" stroke-width="1.5" stroke-dasharray="7 5" marker-end="url(#soft)"/>
+
+<text class="small" x="96" y="890">Kafka repositories publish audit events only; historical reads require a projection or another read-capable JaVers repository.</text>
+</svg>

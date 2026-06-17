@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="1040" viewBox="0 0 1840 1040" role="img" aria-label="javers kafka projection flow">
+<defs>
+<filter id="shadow" x="-15%" y="-15%" width="130%" height="135%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#64748b" flood-opacity="0.12"/></filter>
+<marker id="blue" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#2563eb"/></marker>
+<marker id="green" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669"/></marker>
+<marker id="amber" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706"/></marker>
+<style>
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:40px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:16px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:25px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:27px;fill:#183247;font-weight:700}
+.body{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#475569}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:14px;fill:#64748b}
+.infra{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:24px;fill:#292524;font-weight:700}
+</style>
+</defs>
+<rect width="1840" height="1040" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1800" height="1000" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="64">javers-persistence-kafka Projection Flow</text>
+<text class="subtitle" x="56" y="94">Replay encoded Kafka snapshot records into a read-capable JaVers repository</text>
+
+<rect x="70" y="130" width="1700" height="430" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="166">Replay path</text>
+<rect x="110" y="270" width="400" height="132" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#shadow)"/>
+<g transform="translate(120 292)">
+<circle cx="18" cy="18" r="11" fill="#111827"/><circle cx="64" cy="18" r="11" fill="#111827"/><circle cx="41" cy="57" r="11" fill="#111827"/>
+<path d="M 28 22 L 54 22 M 24 28 L 36 48 M 58 28 L 46 48" stroke="#111827" stroke-width="4" stroke-linecap="round"/>
+</g>
+<text class="infra" x="325" y="319" text-anchor="middle">Kafka topic</text>
+<text class="body" x="225" y="360">value = encoded snapshot</text>
+<text class="body" x="225" y="381">key diagnostics are safe</text>
+<rect x="555" y="245" width="325" height="182" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="718" y="284" text-anchor="middle">Projector poll</text>
+<text class="body" x="585" y="318">subscribeOnStart option</text>
+<text class="body" x="585" y="339">poll timeout</text>
+<text class="body" x="585" y="360">sort partition, offset</text>
+<text class="body" x="585" y="381">close consumer only if owned</text>
+<rect x="1010" y="245" width="325" height="182" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1172" y="284" text-anchor="middle">Decode and dedupe</text>
+<text class="body" x="1040" y="318">JaversCodecs.String</text>
+<text class="body" x="1040" y="339">JsonConverter -> CdoSnapshot</text>
+<text class="body" x="1040" y="360">skip same GlobalId</text>
+<text class="body" x="1040" y="381">commit id + version</text>
+<rect x="1465" y="270" width="250" height="132" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1590" y="314" text-anchor="middle">Read store</text>
+<text class="body" x="1495" y="348">saveSnapshot(...)</text>
+<text class="body" x="1495" y="369">Redis / Exposed / Caffeine</text>
+<path d="M 510,336 L 555,336" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#blue)"/>
+<path d="M 880,336 L 1010,336" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#green)"/>
+<path d="M 1335,336 L 1465,336" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#amber)"/>
+
+<rect x="70" y="630" width="1700" height="275" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="666">Replay guarantees</text>
+<rect x="160" y="725" width="420" height="112" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="370" y="765" text-anchor="middle">Ordering scope</text>
+<text class="body" x="190" y="797">deterministic batch order</text>
+<text class="body" x="190" y="818">not a global Kafka total order</text>
+<rect x="710" y="725" width="420" height="112" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="920" y="765" text-anchor="middle">Idempotent replay</text>
+<text class="body" x="740" y="797">skip existing snapshots by default</text>
+<text class="body" x="740" y="818">not exactly-once transaction</text>
+<rect x="1260" y="725" width="420" height="112" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1470" y="765" text-anchor="middle">Offset commit</text>
+<text class="body" x="1290" y="797">commit after full batch success</text>
+<text class="body" x="1290" y="818">decode/store failure propagates</text>
+<text class="small" x="96" y="970">Projection uses the current wire value only: encoded JaVers snapshot payload, not metadata headers or an envelope.</text>
+</svg>
