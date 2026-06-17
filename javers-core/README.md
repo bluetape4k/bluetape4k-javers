@@ -2,24 +2,42 @@
 
 English | [한국어](./README.ko.md)
 
-[JaVers](https://javers.org) extension layer for Kotlin services. This module
-contains the shared codec, repository, JQL, metamodel, and convenience APIs used
-by every other `bluetape4k-javers` module.
+`javers-core` is the shared JaVers integration layer for Kotlin services. Use it
+when an application needs typed JaVers helper APIs, snapshot codecs, cache-backed
+repositories, or the repository contracts that Exposed, Redis, and Kafka modules
+build on.
 
-## Features
+This module does not choose a durable topology for the application. It gives you
+the common contracts and local implementations; add `javers-exposed`,
+`javers-persistence-redis`, or `javers-persistence-kafka` only when the runtime
+audit contract needs that adapter.
 
-- Kotlin extension functions for JaVers comparison, snapshot, shadow, and JQL
-  workflows.
-- `JaversCodec` implementations for string, binary, and compressed snapshot
-  payloads.
-- `AbstractCdoSnapshotRepository`, the shared base for cache, Redis, Kafka, and
-  Exposed snapshot repositories.
-- Cache-backed repository implementations for Caffeine, Cache2k, and JCache.
-- `CompositeCdoSnapshotRepository` for primary durable storage plus ordered
-  secondary fanout to event streams or projection stores.
-- Snowflake commit id generation support for cluster-friendly commit metadata.
+## Architecture
 
-## Usage
+![javers-core architecture](../docs/images/readme-diagrams/javers-core-architecture-01.png)
+
+## Core Responsibilities
+
+- **Kotlin JaVers extensions** for typed entity mapping, collection diffs,
+  latest snapshot lookup, shadow reconstruction, and sequence-based shadow
+  queries.
+- **Snapshot codec family** for JSON strings, compressed JSON strings, trusted
+  Kryo/Fory binary payloads, and `JsonObject` map conversion.
+- **Repository base contract** through `CdoSnapshotRepository` and
+  `AbstractCdoSnapshotRepository`, including common snapshot encoding, head
+  tracking, sequence assignment, and JQL-style filtering.
+- **Local cache repositories** for Caffeine, Cache2k, and JCache when a service
+  wants a local snapshot repository instead of a distributed durable store.
+- **Composite repository fanout** for one read/query source of truth plus
+  ordered secondary write targets.
+- **Dispatcher and metadata helpers** for saved/deleted object dispatch,
+  Snowflake-backed commit id generation, and snapshot event envelopes.
+
+## Class Diagram
+
+![javers-core class diagram](../docs/images/readme-diagrams/javers-core-class-diagram-01.png)
+
+## Quick Start
 
 ```kotlin
 val javers = JaversBuilder.javers()
@@ -27,23 +45,27 @@ val javers = JaversBuilder.javers()
 
 val diff = javers.compare(oldOrder, newOrder)
 val snapshot = javers.latestSnapshotOrNull<Order>(orderId)
+val query = queryByInstanceId<Order>(orderId)
+val shadows = javers.findShadowsAndSequence<Order>(query).toList()
 ```
 
-Use `javers-core` directly when the application needs JaVers helper APIs without
-a SQL, Redis, or Kafka persistence adapter.
+Use `javers-core` directly when the application only needs JaVers helper APIs or
+local cache-backed snapshot storage. If the snapshot history must survive process
+restart or be queried by SQL, use the Exposed adapter as the primary repository.
 
-## Codec Safety
+## Codec Choice
 
-Prefer the string codecs for durable JSON storage and prefer Kryo or Fory only
-for trusted binary payloads. The JDK-serialization aliases
-`JaversCodecs.Jdk`, `DeflateJdk`, `GZipJdk`, `LZ4Jdk`, `SnappyJdk`, and
-`ZstdJdk` are retained only as obsolete compatibility bridges because Java
-deserialization is unsafe for untrusted bytes. New code should use
-`JaversCodecs.String`, `JaversCodecs.Kryo`, or `JaversCodecs.Fory` instead.
+Prefer `JaversCodecs.String` for durable JSON storage. Use Kryo or Fory codecs
+only for trusted binary payloads where the storage boundary is controlled.
+
+The JDK-serialization aliases `JaversCodecs.Jdk`, `DeflateJdk`, `GZipJdk`,
+`LZ4Jdk`, `SnappyJdk`, and `ZstdJdk` are obsolete compatibility bridges. They
+are error-level deprecated because Java deserialization is unsafe for untrusted
+bytes.
 
 ## Composite Repository
 
-![Composite CDO snapshot repository](./docs/images/readme-diagrams/javers-core-composite-repository-01.png)
+![Composite CDO snapshot repository](../docs/images/readme-diagrams/javers-core-composite-repository-01.png)
 
 Use `CompositeCdoSnapshotRepository` when a service needs one read/query source
 of truth and one or more write-side fanout targets:
@@ -75,11 +97,12 @@ Recommended shapes:
 
 Writes are primary-first. `persist(commit)` calls the primary repository's
 native `persist()` implementation first so the primary keeps its own head and
-sequence semantics, then fans out to secondary repositories in order. This is
-not a distributed transaction: if a secondary fails after the primary succeeds,
-the primary may already expose the commit. Use `FAIL_FAST` to stop at the first
-secondary failure, or `BEST_EFFORT` to attempt all secondaries and receive an
-aggregate exception afterward.
+sequence semantics, then fans out to secondary repositories in order.
+
+This is not a distributed transaction. If a secondary fails after the primary
+succeeds, the primary may already expose the commit. Use `FAIL_FAST` to stop at
+the first secondary failure, or `BEST_EFFORT` to attempt all secondaries and
+receive an aggregate exception afterward.
 
 Kafka repositories remain write-only. Use `KafkaCdoSnapshotProjector` from
 `javers-persistence-kafka` when Kafka records must be replayed into a

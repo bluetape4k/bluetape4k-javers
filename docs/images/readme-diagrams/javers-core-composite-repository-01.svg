@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1000" viewBox="0 0 1700 1000" role="img" aria-label="javers-core composite CDO snapshot repository">
+<defs>
+<filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
+<marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/></marker>
+<marker id="arrowGreen" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#059669"/></marker>
+<marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706"/></marker>
+<marker id="arrowRose" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e11d48"/></marker>
+<style>
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:20px;fill:#183247;font-weight:700}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#587086}
+</style>
+</defs>
+<rect x="0" y="0" width="1700" height="1000" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1660" height="960" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="64">Composite CDO Snapshot Repository</text>
+<text class="subtitle" x="56" y="94">Reads go to primary; writes persist primary first, then fan out to secondaries in order</text>
+
+<rect x="70" y="132" width="1560" height="805" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="168">Runtime contract</text>
+
+<rect class="card" x="635" y="205" width="300" height="112" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="785" y="235" text-anchor="middle">Application writes</text>
+<text class="small" x="661" y="263">javers.commit()</text>
+<text class="small" x="661" y="281">persist(commit)</text>
+<text class="small" x="661" y="299">saveSnapshot()</text>
+
+<rect class="card" x="1105" y="618" width="300" height="112" rx="14" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1255" y="648" text-anchor="middle">JaVers reads</text>
+<text class="small" x="1131" y="676">latest snapshot</text>
+<text class="small" x="1131" y="694">state history</text>
+<text class="small" x="1131" y="712">JQL snapshots</text>
+
+<rect class="card" x="545" y="392" width="480" height="140" rx="16" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="785" y="424" text-anchor="middle">Composite repository</text>
+<text class="small" x="581" y="452">primary: CdoSnapshotRepository</text>
+<text class="small" x="581" y="470">secondaries: ordered list</text>
+<text class="small" x="581" y="488">FAIL_FAST / BEST_EFFORT</text>
+<text class="small" x="581" y="506">not a distributed transaction</text>
+
+<rect class="card" x="545" y="612" width="480" height="124" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="1.2" filter="url(#softShadow)"/>
+<path d="M 587,654 v42 c0,8 16,13 36,13 s36,-5 36,-13 v-42" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+<ellipse cx="623" cy="654" rx="36" ry="13" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+<path d="M 587,677 c0,8 16,13 36,13 s36,-5 36,-13" fill="none" stroke="#059669" stroke-width="1.2"/>
+<text class="label" x="705" y="650">Primary repository</text>
+<text class="small" x="705" y="678">read/query source of truth</text>
+<text class="small" x="705" y="696">Exposed, Redis, or cache</text>
+
+<rect class="card" x="295" y="805" width="360" height="112" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#softShadow)"/>
+<rect x="327" y="835" width="70" height="46" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="1.2"/>
+<path d="M 341,848 h42 M 341,858 h42 M 341,868 h42" stroke="#d97706" stroke-width="1.4" stroke-linecap="round"/>
+<text class="label" x="435" y="843">Secondary projection</text>
+<text class="small" x="435" y="871">Redis cache/projection target</text>
+<text class="small" x="435" y="889">ordered after primary success</text>
+
+<rect class="card" x="915" y="805" width="360" height="112" rx="16" fill="#ffe4e6" stroke="#e11d48" stroke-width="1.2" filter="url(#softShadow)"/>
+<path d="M 959,843 L 997,843" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M 959,843 L 978,881" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M 997,843 L 978,881" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="959" cy="843" r="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.2"/>
+<circle cx="997" cy="843" r="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.2"/>
+<circle cx="978" cy="881" r="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.2"/>
+<text class="label" x="1055" y="843">Secondary stream</text>
+<text class="small" x="1055" y="871">Kafka write-only repository</text>
+<text class="small" x="1055" y="889">replay with projector module</text>
+
+<path d="M 785,317 L 785,392" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"/>
+<path d="M 785,532 L 785,612" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowGreen)"/>
+<path d="M 1105,674 L 1025,674" fill="none" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowGreen)"/>
+<path d="M 785,736 L 785,770" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M 785,770 L 475,770 L 475,805" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)"/>
+<path d="M 785,770 L 1095,770 L 1095,805" fill="none" stroke="#e11d48" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"/>
+
+<text class="small" x="96" y="965">Primary remains the read source. Secondary write failures are policy-controlled, but the primary may already expose the commit.</text>
+</svg>
