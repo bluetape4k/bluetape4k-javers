@@ -1,65 +1,108 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="620" viewBox="0 0 1500 620" role="img" aria-labelledby="title desc">
-  <title id="title">Bluetape4k JaVers module composition</title>
-  <desc id="desc">Current 0.2.0 module composition including core, DDD, Exposed, Redis, Kafka, example, and BOM modules.</desc>
-  <defs>
-    <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%">
-      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#203040" flood-opacity="0.10"/>
-    </filter>
-    <style>
-      .canvas{fill:#F7FAFC}
-      .frame{fill:#FFFFFF;stroke:#D7E2EC;stroke-width:2}
-      .title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:44px;fill:#22344A;font-weight:400}
-      .subtitle{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:18px;fill:#536476;font-weight:400}
-      .band-title{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:26px;fill:#22344A;font-weight:400}
-      .module{font-family:"Architects Daughter","Comic Sans MS","Comic Sans",cursive;font-size:23px;fill:#22344A;font-weight:400}
-      .detail{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:14px;fill:#42556B;font-weight:400}
-      .small{font-family:"Comic Sans MS","Comic Sans","Comic Neue",Arial,sans-serif;font-size:13px;fill:#627184;font-weight:400}
-      .card{filter:url(#shadow);stroke-width:2}
-      .band{fill:#F3F7FB;stroke:#D7E2EC;stroke-width:2}
-    </style>
-  </defs>
-  <rect class="canvas" width="1500" height="620"/>
-  <rect class="frame" x="34" y="28" width="1432" height="564" rx="26"/>
-  <text class="title" x="72" y="84">Bluetape4k JaVers module composition</text>
-  <text class="subtitle" x="76" y="116">0.2.0 source-backed modules and their release role.</text>
-
-  <rect class="band" x="76" y="152" width="1348" height="102" rx="18"/>
-  <text class="band-title" x="106" y="188">Foundation</text>
-  <g transform="translate(326,172)">
-    <rect class="card" x="0" y="0" width="300" height="62" rx="12" fill="#E8F3FF" stroke="#75A9E8"/>
-    <text class="module" x="150" y="28" text-anchor="middle">javers-core</text>
-    <text class="detail" x="150" y="49" text-anchor="middle">extensions, codecs, repository SPI</text>
-  </g>
-  <g transform="translate(660,172)">
-    <rect class="card" x="0" y="0" width="300" height="62" rx="12" fill="#F7F1E7" stroke="#B88A44"/>
-    <text class="module" x="150" y="28" text-anchor="middle">bluetape4k-javers-bom</text>
-    <text class="detail" x="150" y="49" text-anchor="middle">aligned consumer dependency set</text>
-  </g>
-
-  <rect class="band" x="76" y="278" width="1348" height="126" rx="18"/>
-  <text class="band-title" x="106" y="324">Libraries</text>
-  <g transform="translate(326,306)">
-    <rect class="card" x="0" y="0" width="300" height="72" rx="12" fill="#EAF7EF" stroke="#69B888"/>
-    <text class="module" x="150" y="30" text-anchor="middle">javers-ddd</text>
-    <text class="detail" x="150" y="52" text-anchor="middle">aggregate and domain-event helpers</text>
-  </g>
-  <g transform="translate(660,306)">
-    <rect class="card" x="0" y="0" width="300" height="72" rx="12" fill="#FCE7F3" stroke="#DB7890"/>
-    <text class="module" x="150" y="30" text-anchor="middle">javers-exposed</text>
-    <text class="detail" x="150" y="52" text-anchor="middle">Exposed JDBC CDO snapshot storage</text>
-  </g>
-  <g transform="translate(994,306)">
-    <rect class="card" x="0" y="0" width="300" height="72" rx="12" fill="#FFF3D9" stroke="#D9AA4D"/>
-    <text class="module" x="150" y="30" text-anchor="middle">persistence adapters</text>
-    <text class="detail" x="150" y="52" text-anchor="middle">Redis and Kafka repository modules</text>
-  </g>
-
-  <rect class="band" x="76" y="428" width="1348" height="102" rx="18"/>
-  <text class="band-title" x="106" y="464">Example</text>
-  <g transform="translate(326,448)">
-    <rect class="card" x="0" y="0" width="420" height="62" rx="12" fill="#E9F7F6" stroke="#45A7A1"/>
-    <text class="module" x="210" y="28" text-anchor="middle">examples/javers-exposed-ddd</text>
-    <text class="detail" x="210" y="49" text-anchor="middle">CQRS command side, Kafka event, Redis projection</text>
-  </g>
-  <text class="small" x="750" y="566" text-anchor="middle">Published artifacts exclude example modules; all labels are generated from the current 0.2.0 module layout.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="760" viewBox="0 0 1700 760" role="img" aria-label="Module Composition Chart">
+<defs>
+<filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
+<marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<path d="M 0 0 L 14 7 L 0 14 Z" fill="#2563eb" stroke-dasharray="none"/>
+</marker>
+<marker id="arrowGreen" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<path d="M 0 0 L 14 7 L 0 14 Z" fill="#059669" stroke-dasharray="none"/>
+</marker>
+<marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<path d="M 0 0 L 14 7 L 0 14 Z" fill="#d97706" stroke-dasharray="none"/>
+</marker>
+<marker id="arrowPurple" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<path d="M 0 0 L 14 7 L 0 14 Z" fill="#7c3aed" stroke-dasharray="none"/>
+</marker>
+<marker id="arrowRose" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<path d="M 0 0 L 14 7 L 0 14 Z" fill="#e11d48" stroke-dasharray="none"/>
+</marker>
+<marker id="arrowCyan" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<path d="M 0 0 L 14 7 L 0 14 Z" fill="#0891b2" stroke-dasharray="none"/>
+</marker>
+<style>
+.title{font-family:'Architects Daughter', 'Comic Sans MS', cursive;font-size:34px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono', 'Comic Sans MS', 'DejaVu Sans', sans-serif;font-size:15px;fill:#587086}
+.label{font-family:'Comic Mono', 'Comic Sans MS', 'DejaVu Sans', sans-serif;font-size:15px;fill:#183247;font-weight:700}
+.small{font-family:'Comic Mono', 'Comic Sans MS', 'DejaVu Sans', sans-serif;font-size:12px;fill:#587086}
+.tiny{font-family:'Comic Mono', 'Comic Sans MS', 'DejaVu Sans', sans-serif;font-size:11px;fill:#587086}
+.lane{font-family:'Architects Daughter', 'Comic Sans MS', cursive;font-size:21px;fill:#183247;font-weight:700}
+</style>
+</defs>
+<rect x="0" y="0" width="1700" height="760" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1660" height="720" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="62">Module Composition Chart</text>
+<text class="subtitle" x="56" y="90">Runtime libraries, persistence adapters, examples, benchmark, and BOM responsibilities</text>
+<rect x="80" y="130" width="330" height="500" rx="18" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="104" y="164">Runtime libraries</text>
+<rect x="470" y="130" width="380" height="500" rx="18" fill="#f0fdf4" stroke="#86efac" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="494" y="164">Persistence adapters</text>
+<rect x="920" y="130" width="360" height="500" rx="18" fill="#ecfeff" stroke="#67e8f9" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="944" y="164">Runnable examples</text>
+<rect x="1350" y="130" width="270" height="500" rx="18" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="1374" y="164">Evidence and alignment</text>
+<rect x="125" y="218" width="240" height="96" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="245.0" y="246" text-anchor="middle">javers-core</text>
+<text class="small" x="141" y="272">extensions</text>
+<text class="small" x="141" y="290">codecs</text>
+<text class="small" x="141" y="308">composite repo</text>
+<rect x="125" y="500" width="240" height="96" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="245.0" y="528" text-anchor="middle">javers-ddd</text>
+<text class="small" x="141" y="554">aggregate repo</text>
+<text class="small" x="141" y="572">domain events</text>
+<rect x="530" y="200" width="260" height="96" rx="16" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#softShadow)"/>
+<path d="M 552,226.0 v44 c0,8 15,13 34,13 s34,-5 34,-13 v-44" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+<ellipse cx="586" cy="226.0" rx="34" ry="13" fill="#ffffff" stroke="#059669" stroke-width="1.2"/>
+<path d="M 552,249.0 c0,8 15,13 34,13 s34,-5 34,-13" fill="none" stroke="#059669" stroke-width="1.2"/>
+<text class="label" x="638" y="231">javers-exposed</text>
+<text class="small" x="638" y="258">Exposed schema</text>
+<text class="small" x="638" y="276">SQL snapshots</text>
+<rect x="530" y="350" width="260" height="96" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#softShadow)"/>
+<rect x="552" y="363.0" width="70" height="20" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+<circle cx="565" cy="373.0" r="3" fill="#d97706"/>
+<rect x="552" y="377.0" width="70" height="20" rx="5" fill="#fff7ed" stroke="#d97706" stroke-width="1.5"/>
+<circle cx="565" cy="387.0" r="3" fill="#d97706"/>
+<rect x="552" y="391.0" width="70" height="20" rx="5" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+<circle cx="565" cy="401.0" r="3" fill="#d97706"/>
+<text class="label" x="638" y="381">javers-redis</text>
+<text class="small" x="638" y="408">Lettuce</text>
+<text class="small" x="638" y="426">Redisson</text>
+<rect x="530" y="500" width="260" height="96" rx="16" fill="#ffe4e6" stroke="#e11d48" stroke-width="1.2" filter="url(#softShadow)"/>
+<path d="M 572,527.0 L 610,527.0" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M 572,527.0 L 591,565.0" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+<path d="M 610,527.0 L 591,565.0" stroke="#e11d48" stroke-width="1.2" stroke-linecap="round"/>
+<circle cx="572" cy="527.0" r="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.2"/>
+<circle cx="610" cy="527.0" r="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.2"/>
+<circle cx="591" cy="565.0" r="12" fill="#ffffff" stroke="#e11d48" stroke-width="1.2"/>
+<text class="label" x="638" y="531">javers-kafka</text>
+<text class="small" x="638" y="558">event stream</text>
+<text class="small" x="638" y="576">projection feed</text>
+<rect x="970" y="196" width="260" height="96" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1100.0" y="224" text-anchor="middle">examples-exposed-ddd</text>
+<text class="small" x="986" y="250">CQRS order flow</text>
+<text class="small" x="986" y="268">Kafka + Redis</text>
+<rect x="970" y="364" width="260" height="96" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1100.0" y="392" text-anchor="middle">examples-ktor</text>
+<text class="small" x="986" y="418">REST endpoints</text>
+<text class="small" x="986" y="436">explicit wiring</text>
+<rect x="970" y="500" width="260" height="96" rx="14" fill="#cffafe" stroke="#0891b2" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1100.0" y="528" text-anchor="middle">examples-spring-boot4</text>
+<text class="small" x="986" y="554">REST endpoints</text>
+<text class="small" x="986" y="572">explicit wiring</text>
+<rect x="1390" y="220" width="190" height="96" rx="14" fill="#fee2e2" stroke="#dc2626" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1485.0" y="248" text-anchor="middle">benchmark-exposed</text>
+<text class="small" x="1406" y="274">JMH smoke</text>
+<text class="small" x="1406" y="292">metadata indexes</text>
+<rect x="1390" y="500" width="190" height="96" rx="14" fill="#e2e8f0" stroke="#475569" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="label" x="1485.0" y="528" text-anchor="middle">javers-bom</text>
+<text class="small" x="1406" y="554">java-platform</text>
+<text class="small" x="1406" y="572">version constraints</text>
+<path d="M 365,266 L 448,266 L 448,248 L 530,248" fill="none" stroke="#059669" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)"/>
+<path d="M 365,548 L 448,548 L 448,398 L 530,398" fill="none" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)"/>
+<path d="M 365,548 L 448,548 L 448,548 L 530,548" fill="none" stroke="#e11d48" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"/>
+<path d="M 790,248 L 880,248 L 880,244 L 970,244" fill="none" stroke="#0891b2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowCyan)" stroke-dasharray="7 5"/>
+<path d="M 790,398 L 880,398 L 880,244 L 970,244" fill="none" stroke="#0891b2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowCyan)" stroke-dasharray="7 5"/>
+<path d="M 790,548 L 880,548 L 880,244 L 970,244" fill="none" stroke="#0891b2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowCyan)" stroke-dasharray="7 5"/>
+<path d="M 1230,244 L 1300,244 L 1300,268 L 1390,268" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" stroke-dasharray="7 5"/>
+<path d="M 1230,548 L 1300,548 L 1300,548 L 1390,548" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" stroke-dasharray="7 5"/>
+<text class="small" x="104" y="690">Published runtime artifacts are in the library and adapter lanes; examples and benchmarks prove behavior and guide adoption decisions.</text>
 </svg>

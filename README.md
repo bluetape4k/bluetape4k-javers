@@ -10,45 +10,42 @@ English | [한국어](./README.ko.md)
 ![Bluetape4k JaVers audit workbench](./docs/assets/javers-workbench.png)
 
 Kotlin/JVM integrations for [JaVers](https://javers.org) object auditing and
-diffing, with Exposed JDBC, Redis, and Kafka persistence options for CDO snapshots and
-event-sourced change streams.
+diffing. The repository gives bluetape4k applications a practical way to choose
+between SQL snapshots, Redis-backed snapshot state, Kafka audit events, and DDD
+command-side examples without wiring every JaVers detail by hand.
 
 ## Project Purpose
 
-`bluetape4k-javers` extends JaVers beyond its built-in in-memory, MongoDB, and
-JDBC storage choices. It focuses on Kotlin-friendly audit/diff infrastructure
-for services that need cache-backed reads, Redis persistence, Kafka event
-streams, and an Exposed-backed repository layer.
+`bluetape4k-javers` is for services that already want JaVers' object diff model,
+but also need bluetape4k-style Kotlin APIs, explicit persistence choices, and
+runnable examples. Start with `javers-core`, add the persistence adapter that
+matches the application's audit contract, then use the examples and benchmarks
+to validate the operational tradeoff.
 
-Use this repository when an application wants JaVers' object diff model together
-with the bluetape4k stack: Kotlin-first helpers, Exposed JDBC persistence,
-cache/stream adapters, and a CQRS example that shows how audit commits and
-domain events fit together.
+The most important decision is where audit snapshots are authoritative. Exposed
+is the SQL query path, Redis is a low-latency snapshot-state path, and Kafka is
+an event delivery path for projections. They can be combined, but they should
+not be treated as interchangeable stores.
 
 ## What It Provides
 
-- **JaVers core helpers** — extensions, codecs, and cache-backed repository
-  building blocks.
-- **Exposed JDBC persistence** — Exposed schema and repository for SQL-backed
-  JaVers CDO snapshots.
-- **DDD helpers** — aggregate root, domain event, repository, and publisher
-  adapters for JaVers-backed audit workflows.
-- **CQRS command-side example** — Exposed + JaVers + DDD helper order command
-  flow under `examples/javers-exposed-ddd`.
-- **Ktor REST example** — explicit Ktor wiring for Exposed command persistence
-  and JaVers audit history under `examples/javers-ktor`.
-- **Spring Boot 4 REST example** — explicit Spring Boot 4 wiring for Exposed
-  command persistence and JaVers audit history under `examples/javers-spring-boot4`.
-- **Redis persistence** — Lettuce and Redisson based snapshot storage paths.
-- **Kafka persistence** — event-stream backed CDO snapshot persistence.
-- **BOM support** — `bluetape4k-javers-bom` for aligned consumer dependency
-  versions.
-- **Implementation backlog** — documented phase chain for Exposed persistence,
-  DDD helpers, and CQRS/Event Sourcing examples.
+- **Core JaVers helpers** for Kotlin extensions, codecs, cache delegates, and
+  composite CDO snapshot repositories.
+- **Exposed JDBC persistence** for SQL-backed snapshots, repository-head
+  recovery, and query behavior that can be benchmarked against Envers paths.
+- **DDD helpers** for aggregate repositories, domain events, and publisher
+  boundaries around JaVers commits.
+- **Redis persistence** through Lettuce and Redisson when snapshot state must be
+  low-latency and recoverable after repository rebuilds.
+- **Kafka persistence** for snapshot event delivery and projection pipelines,
+  not for direct history queries.
+- **Runnable examples** for Exposed DDD CQRS, Ktor REST, and Spring Boot 4 REST
+  wiring.
+- **BOM support** through `bluetape4k-javers-bom` for aligned consumer versions.
 
 ## Persistence Options
 
-![JaVers persistence options relationship diagram](./docs/assets/javers-persistence-options.png)
+![JaVers persistence options relationship diagram](docs/images/readme-diagrams/javers-persistence-options-01.png)
 
 <!-- README_VISUAL_OVERVIEW:START -->
 ## Overview Diagram
@@ -71,11 +68,11 @@ domain events fit together.
 | `javers-core` | `io.github.bluetape4k.javers:javers-core` | JaVers extensions, codecs, cache-backed and composite repositories |
 | `javers-ddd` | `io.github.bluetape4k.javers:javers-ddd` | DDD aggregate/domain-event helpers for JaVers audit workflows |
 | `javers-exposed` | `io.github.bluetape4k.javers:javers-exposed` | Exposed JDBC CDO snapshot persistence |
+| `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
+| `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot event stream for projections |
 | `examples-javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
 | `examples-javers-ktor` | example module | Ktor REST example using explicit Exposed and JaVers wiring |
 | `examples-javers-spring-boot4` | example module | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |
-| `javers-persistence-redis` | `io.github.bluetape4k.javers:javers-persistence-redis` | Redis/Lettuce/Redisson CDO snapshot persistence |
-| `javers-persistence-kafka` | `io.github.bluetape4k.javers:javers-persistence-kafka` | Kafka-backed CDO snapshot persistence (write-only event stream; reads always return empty) |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
 
 ## Dependency Setup
@@ -91,9 +88,9 @@ dependencies {
 }
 ```
 
-Add only the persistence adapters that the application actually uses. Kafka,
-Redis, and Exposed modules intentionally serve different storage and eventing
-roles.
+Add only the persistence adapters that the application actually uses. Exposed,
+Redis, and Kafka intentionally serve different storage and eventing roles; the
+BOM aligns versions but does not decide the runtime topology for you.
 
 ## Quick Start
 

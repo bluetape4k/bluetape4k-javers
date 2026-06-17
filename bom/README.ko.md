@@ -2,33 +2,37 @@
 
 한국어 | [English](./README.md)
 
-**bluetape4k-javers** 생태계용 Maven BOM (Bill of Materials). 모든 `io.github.bluetape4k.javers:*`
-모듈의 버전을 중앙 관리한다.
+**bluetape4k-javers** 생태계용 Maven BOM (Bill of Materials). 애플리케이션이
+둘 이상의 배포 JaVers artifact를 함께 사용할 때 `bluetape4k-javers-core`,
+`bluetape4k-javers-ddd`, Exposed, Redis, Kafka artifact를 같은 release line으로
+맞춥니다.
 
 ## Architecture
 
 ![bom Architecture diagram](../docs/images/readme-diagrams/bom-architecture-01.png)
 
-BOM은 Gradle `java-platform` 으로 `<dependencyManagement>` constraint 만 게시한다.
+BOM은 Gradle `java-platform` 으로 배포 Maven artifact의 dependency-management
+constraint만 게시합니다. runtime class, runnable module, ecosystem-level metadata,
+auto-configuration, persistence topology 결정을 제공하지 않습니다.
 
 ## 핵심 기능
 
-- 모든 `bluetape4k-javers` 모듈 버전 중앙 관리
-- Javers audit/diff + Exposed/Redis/Kafka 백엔드 버전 일관성 보장
-- aggregate/domain-event workflow를 위한 DDD helper layer 포함
-- `bluetape4k-dependencies` 가 상위에서 통합
+- 게시되는 `bluetape4k-javers` artifact 버전 중앙 관리
+- core, DDD, Exposed, Redis, Kafka artifact ID의 JaVers audit/diff stack 정렬
+- runtime class, runnable module, auto-configuration, persistence behavior 없음
+- `bluetape4k-dependencies`가 상위에서 cross-ecosystem version을 통합
 
-## 관리 모듈
+## 관리하는 배포 Artifact
 
-| 모듈 | 설명 |
+| Artifact | 설명 |
 |------|------|
 | `bluetape4k-javers-core` | Javers audit/diff 코어 연동 |
 | `bluetape4k-javers-ddd` | DDD aggregate와 domain-event helper layer |
 | `bluetape4k-javers-exposed` | Exposed JDBC 기반 JaversRepository |
 | `bluetape4k-javers-persistence-redis` | Redis 기반 JaversRepository |
-| `bluetape4k-javers-persistence-kafka` | Kafka 감사 로그 producer/consumer |
+| `bluetape4k-javers-persistence-kafka` | projection pipeline을 위한 Kafka snapshot event delivery |
 
-## 사용 예제
+## 사용 방법
 
 ### Gradle Kotlin DSL
 

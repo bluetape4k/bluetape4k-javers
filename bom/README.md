@@ -2,34 +2,38 @@
 
 [한국어](./README.ko.md) | English
 
-Maven BOM (Bill of Materials) for the **bluetape4k-javers** ecosystem. Manages versions of all
-`io.github.bluetape4k.javers:*` modules so consumers can declare dependencies without specifying
-individual versions.
+Maven BOM (Bill of Materials) for the **bluetape4k-javers** ecosystem. Import it
+when an application uses more than one published JaVers artifact and should keep
+`bluetape4k-javers-core`, `bluetape4k-javers-ddd`, Exposed, Redis, and Kafka
+artifacts on the same release line.
 
 ## Architecture
 
 ![bom Architecture diagram](../docs/images/readme-diagrams/bom-architecture-01.png)
 
-The BOM is a Gradle `java-platform` that publishes only `<dependencyManagement>` constraints — no runtime classes.
+The BOM is a Gradle `java-platform` that publishes only dependency-management
+constraints for deployable Maven artifacts. It adds no runtime classes and does
+not publish runnable modules, ecosystem-level metadata, auto-configuration, or
+persistence topology decisions.
 
 ## Core Features
 
-- Centralized version management for all `bluetape4k-javers` modules
-- Single source of truth for Javers audit/diff stack with Exposed, Redis, and Kafka backends
-- Includes the DDD helper layer for aggregate/domain-event workflows
+- Centralized version management for published `bluetape4k-javers` artifacts
+- Aligned JaVers audit/diff stack across core, DDD, Exposed, Redis, and Kafka artifact IDs
+- No runtime classes, runnable modules, auto-configuration, or persistence behavior
 - Aggregated by `bluetape4k-dependencies` for cross-ecosystem version coordination
 
-## Modules Managed
+## Published Artifacts Managed
 
-| Module | Description |
+| Artifact | Description |
 |--------|-------------|
 | `bluetape4k-javers-core` | Javers audit/diff core integration |
 | `bluetape4k-javers-ddd` | DDD aggregate and domain-event helper layer |
 | `bluetape4k-javers-exposed` | Exposed JDBC-backed JaversRepository |
 | `bluetape4k-javers-persistence-redis` | Redis-backed JaversRepository |
-| `bluetape4k-javers-persistence-kafka` | Kafka audit-log producer/consumer |
+| `bluetape4k-javers-persistence-kafka` | Kafka snapshot event delivery for projection pipelines |
 
-## Usage Examples
+## Usage
 
 ### Gradle Kotlin DSL
 
