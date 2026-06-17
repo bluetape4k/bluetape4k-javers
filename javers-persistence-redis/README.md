@@ -2,12 +2,38 @@
 
 English | [한국어](./README.ko.md)
 
-Redis-backed JaVers CDO snapshot repositories for applications that want audit
-history in Redis instead of the built-in JaVers stores.
+Redis-backed JaVers CDO snapshot repositories for applications that use Redis as
+the durable audit snapshot store instead of the built-in JaVers stores.
 
-## Architecture
+## Repository map
 
-![Redis persistence sequence](docs/images/readme-diagrams/javers-redis-sequence-01.png)
+![JaVers Redis repository map](../docs/images/readme-diagrams/javers-redis-repository-map-01.png)
+
+This module publishes two repository implementations over the same JaVers
+snapshot contract. `LettuceCdoSnapshotRepository` stays close to Redis commands
+and explicit `MULTI`/`EXEC` writes. `RedissonCdoSnapshotRepository` uses
+Redisson collections while preserving the same newest-first query behavior,
+head restoration, and codec failure boundary.
+
+## Redis key layout
+
+![JaVers Redis key layout](../docs/images/readme-diagrams/javers-redis-key-layout-01.png)
+
+Lettuce stores repository-scoped Redis hashes for global ids and commit sequence
+metadata, plus one list per JaVers global id for encoded snapshots. Redisson
+stores the same audit data through a multimap for snapshots and a map for commit
+sequences. Both layouts use repository-scoped names derived from `name`, so
+different audit stores can share the same Redis deployment without key
+collisions.
+
+## Save and load flow
+
+![JaVers Redis save and load flow](../docs/images/readme-diagrams/javers-redis-save-load-flow-01.png)
+
+Snapshot writes encode `CdoSnapshot` instances through the configured
+`JaversCodec<ByteArray>` before the repository advances the head metadata. Read
+paths load encoded rows by JaVers global id, normalize the result to newest-first
+order, and decode bytes back to JaVers snapshots.
 
 ## Features
 
@@ -15,7 +41,8 @@ history in Redis instead of the built-in JaVers stores.
 - `RedissonCdoSnapshotRepository` for Redisson-based Redis access.
 - Encoded snapshot storage keyed by JaVers global id.
 - Commit id sequence tracking so repository heads survive instance rebuilds.
-- Shared codec support from `javers-core`.
+- Shared `JaversCodecs.LZ4Fory` default with custom `JaversCodec<ByteArray>`
+  support from `javers-core`.
 
 ## Usage
 
