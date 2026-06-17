@@ -24,21 +24,43 @@ managed through JetBrains Exposed.
   `EntityHook` subscription.
 - Supports H2, PostgreSQL, and MySQL through Exposed JDBC.
 
-## Architecture
+## Class and Schema Map
 
-![javers-exposed architecture](docs/images/readme-diagrams/javers-exposed-architecture-01.png)
+![javers-exposed class diagram](../docs/images/readme-diagrams/javers-exposed-class-diagram-01.png)
 
 `ExposedCdoSnapshotRepository` extends the shared
-`AbstractCdoSnapshotRepository` codec and query behavior, then maps JaVers
-commit metadata and encoded `CdoSnapshot` rows to Exposed tables.
+`AbstractCdoSnapshotRepository` codec and query behavior, then uses repository
+options to build an `ExposedJaversSchema` with commit and snapshot table
+mappings. The default mapping writes to `javers_commit` and `javers_snapshot`;
+custom table names create repository-local mappings for migration-owned schemas.
+
+## Schema ERD
+
+![javers-exposed ERD](../docs/images/readme-diagrams/javers-exposed-erd-01.png)
+
+The physical model is intentionally small: `javers_commit` stores one row per
+JaVers commit, while `javers_snapshot` stores one encoded snapshot version per
+global id. `commit_id` connects snapshots to commit metadata for repository
+head restoration and SQL-filtered queries.
 
 ## Persistence Flow
 
-![javers-exposed persistence sequence](docs/images/readme-diagrams/javers-exposed-sequence-01.png)
+![javers-exposed persistence flow](../docs/images/readme-diagrams/javers-exposed-persistence-flow-01.png)
 
 Writes run inside an Exposed transaction: the repository inserts commit metadata
-when needed, stores the encoded snapshot payload, and later decodes rows ordered
-by snapshot version for JaVers queries.
+when needed, stores the encoded snapshot payload, and keeps the commit sequence
+needed to restore the repository head. Reads push exact filters into SQL before
+decoding snapshot JSON, then fall back to the shared in-memory filtering path
+when a query needs JaVers semantics that are not represented by SQL columns.
+
+## DAO EntityHook Audit Flow
+
+![javers-exposed entity hook audit flow](../docs/images/readme-diagrams/javers-exposed-entity-hook-01.png)
+
+The optional EntityHook subscription is separate from the repository storage
+path. It listens only to Exposed DAO `Entity` lifecycle events, maps configured
+entities to detached audit objects, commits created and updated state, and uses
+`commitShallowDeleteById()` for deleted rows.
 
 ## Usage
 
