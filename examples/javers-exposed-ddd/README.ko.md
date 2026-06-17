@@ -7,9 +7,17 @@ JaVers, Exposed JDBC, Kafka, Redis, `javers-ddd` helper를 함께 사용하는 C
 
 ## 흐름
 
-![javers-exposed-ddd command and projection sequence](docs/images/readme-diagrams/javers-exposed-ddd-sequence-01.png)
+이 예제는 두 책임을 분리합니다. command side는 주문 row와 JaVers audit
+snapshot을 소유합니다. event/read side는 주문 domain event를 Kafka로
+발행하고, Redis `OrderSummary` projection으로 반영해 query read를 처리합니다.
 
-![javers-exposed-ddd CQRS flow](docs/images/readme-diagrams/javers-exposed-ddd-cqrs-flow-01.png)
+![javers-exposed-ddd CQRS flow](../../docs/images/readme-diagrams/examples-javers-exposed-ddd-cqrs-flow-01.png)
+
+Command handler는 Kafka event projection 전에 aggregate state를 먼저
+저장합니다. Read API는 의도적으로 Redis projection만 읽으며, `OrdersTable`이나
+JaVers snapshot을 조회하지 않습니다.
+
+![javers-exposed-ddd command and projection sequence](../../docs/images/readme-diagrams/examples-javers-exposed-ddd-sequence-01.png)
 
 ## 포함 범위
 
