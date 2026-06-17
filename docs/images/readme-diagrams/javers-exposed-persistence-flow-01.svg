@@ -4,6 +4,7 @@
 <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#2563eb"/></marker>
 <marker id="arrowGreen" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669"/></marker>
 <marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706"/></marker>
+<marker id="arrowRed" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#ef4444"/></marker>
 <style>
 .title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:38px;fill:#183247;font-weight:700}
 .subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
@@ -56,8 +57,8 @@
 <path d="M 385,304 L 500,304" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrow)"/>
 <path d="M 830,304 L 900,304 L 900,278 L 945,278" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)"/>
 <path d="M 830,304 L 900,304 L 900,440 L 945,440" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)"/>
-<path d="M 1240,278 L 1390,310" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowAmber)"/>
-<path d="M 1240,440 L 1390,368" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowGreen)"/>
+<path d="M 1240,278 L 1314,278 L 1314,310 L 1390,310" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)"/>
+<path d="M 1240,440 L 1320,440 L 1320,368 L 1390,368" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)"/>
 
 <rect x="64" y="575" width="1772" height="396" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
 <text class="lane" x="90" y="611">Read path: SQL pushdown first, shared in-memory filtering when needed</text>
@@ -90,10 +91,10 @@
 <text class="body" x="1420" y="795">returned to JaVers query engine</text>
 
 <path d="M 385,749 L 500,749" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrow)"/>
-<path d="M 830,736 L 945,719" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowGreen)"/>
-<path d="M 830,786 L 945,872" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrow)"/>
-<path d="M 1240,719 L 1390,760" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" marker-end="url(#arrowAmber)"/>
-<path d="M 1240,872 L 1340,872 L 1340,795 L 1390,795" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<path d="M 830,736 L 888,736 L 888,719 L 945,719" fill="none" stroke="#059669" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)"/>
+<path d="M 830,786 L 888,786 L 888,872 L 945,872" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRed)"/>
+<path d="M 1240,719 L 1315,719 L 1315,760 L 1390,760" fill="none" stroke="#d97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)"/>
+<path d="M 1240,872 L 1340,872 L 1340,795 L 1390,795" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRed)"/>
 
 <text class="small" x="96" y="1020">The SQL store is the durable JaVers audit source of truth; Redis/cache strategies belong to read models or an explicit composite repository.</text>
 </svg>
