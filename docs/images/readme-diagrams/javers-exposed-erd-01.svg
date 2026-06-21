@@ -5,11 +5,11 @@
     <filter id="shadow" x="-12%" y="-14%" width="124%" height="136%">
       <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#64748b" flood-opacity="0.13"/>
     </filter>
-    <marker id="arrowJoin" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
-      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#475569"/>
+    <marker id="arrowJoin" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#475569" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
-    <marker id="arrowSchema" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="strokeWidth">
-      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#16a34a"/>
+    <marker id="arrowSchema" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#16a34a" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
   </defs>
   <style>
@@ -138,10 +138,10 @@
     <text class="note" x="24" y="394">Indexes: PK ux_javers_snapshot_global_id_version; IX commit_id/type/managed_type.</text>
   </g>
 
-  <path class="schema-line" d="M 650 206 L 650 226 L 382 226 L 382 250"/>
-  <path class="schema-line" d="M 910 206 L 910 226 L 1178 226 L 1178 250"/>
+  <path class="schema-line" d="M 650 206 L 650 218 Q 650 226 642 226 L 390 226 Q 382 226 382 234 L 382 250"/>
+  <path class="schema-line" d="M 910 206 L 910 218 Q 910 226 918 226 L 1170 226 Q 1178 226 1178 234 L 1178 250"/>
 
-  <path class="join-line" d="M 868 450 L 780 450 L 780 382 L 692 382"/>
+  <path class="join-line" d="M 868 450 L 788 450 Q 780 450 780 442 L 780 390 Q 780 382 772 382 L 692 382"/>
   <rect class="label-bg" x="692" y="470" width="176" height="28" rx="14"/>
   <text class="note" x="780" y="488" text-anchor="middle">logical join, no FK</text>
   <text class="note" x="838" y="443">0..*</text>

@@ -3,11 +3,11 @@
 <desc id="desc">Ktor order request paths for command writes, current order reads, and JaVers history reads.</desc>
 <defs>
   <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#94a3b8" flood-opacity="0.22"/></filter>
-  <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb"/></marker>
-  <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#059669"/></marker>
-  <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706"/></marker>
-  <marker id="rose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e11d48"/></marker>
-  <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed"/></marker>
+  <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="rose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e11d48" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#7c3aed" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
   <style>
     .title{font-family:"Architects Daughter";font-size:52px;fill:#172033}
     .subtitle,.body,.footer{font-family:"Comic Mono";fill:#475569}
@@ -19,7 +19,7 @@
     .dash{stroke-dasharray:8 7}
   </style>
 
-<marker id="arrow0284C7" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#0284c7" stroke-dasharray="none"/></marker></defs>
+<marker id="arrow0284C7" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#0284c7" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
 
 <rect width="1960" height="1120" rx="30" fill="#f8fafc"/>
 <rect x="24" y="24" width="1912" height="1072" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
@@ -61,10 +61,11 @@
 <text class="body" x="1166" y="330">insert / update order row</text>
 <text class="body" x="1166" y="353">then commit snapshot</text>
 <g transform="translate(1190 515)">
-  <path d="M 0 30 C 0 12 210 12 210 30 L 210 142 C 210 160 0 160 0 142 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1.4" filter="url(#shadow)"/>
-  <path d="M 0 30 C 0 48 210 48 210 30" fill="none" stroke="#d97706" stroke-width="1.4"/>
-  <text class="infra" x="105" y="82" text-anchor="middle">Exposed DB</text>
-  <text class="body" x="105" y="113" text-anchor="middle">example_order</text>
+  <rect x="12" y="0" width="220" height="132" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+  <image data-bluetape4k-icon="libraries/exposed" x="34" y="28" width="58" height="58" preserveAspectRatio="xMidYMid meet" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA1MCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQ1LjI2NTEgMzEuMjAxOEM0NS44MDYzIDMwLjM3MjIgNDYuOTU1MiAyOC4xMTI4IDQ3LjQ3NyAyNy4wOTExQzQ3LjU0NzMgMjYuOTUzNCA0Ny41OTE3IDI2LjgxMzIgNDcuNjI0OSAyNi42NzE4QzUxLjE0NTkgMTkuNTA4MiA1MC42NzAyIDYuOTExMjkgNDYuNzQwMiAzLjA0MTM0QzQyLjc1NTMgLTAuODgyNjA3IDI5LjcxODkgLTAuOTcxODMzIDIyLjU5NjkgMi41NTUzQzIxLjU1OTQgMy4wNjkxNyAxOS41MDU5IDMuOTY2MjMgMTguMzkwOCA0LjY3NTY0QzE2LjY0NDcgNS43ODY0OCAxNC45MjU2IDYuOTIxMTMgMTQuODc2OCA4Ljg3NUMxNC44MzgyIDEwLjQxODYgMTcuMDcwNiAxMi41NjAzIDE2LjY5NzEgMTMuNDkyOEMxNS44NTkzIDE1LjU4MzggMTMuNzc3OSAxNC4xOTY3IDEwLjk0NTUgMTcuNzc2M0M5LjA4NjQgMjAuMTI1OCAxMS4wNDExIDIzLjcxMzkgMTAuNjk2NiAyNC4zMDc1QzguOTEzOTEgMjcuMzc5NCA1LjMyNTQgMjUuOTcwOCAzLjAxMTAxIDI3LjIxNjRDMS4zMzQwNCAyOC4xMTkgMC40MTg3MzQgMjkuNzY4IDAuMDQwMTA5MyAzMC42MTI4Qy0wLjA5NDUxMzYgMzAuOTEzMyAwLjEyNTg5NCAzMS4yNjA0IDAuNDYwNDY1IDMxLjI2NzRDMS4xNjI2OSAzMS4yODIyIDEuNzAyNjggMzAuOTM0IDMuNTUyMzkgMzAuNjM3MkM1Ljk1OTM2IDMwLjI1MSA3LjUwMjQyIDI5LjI0MjggOC4yMDI4MiAyOS45NzQ5QzguNTYxNzMgMzAuMzUgNi4zMjkzNSAzMC45Nzg4IDUuODc4ODMgMzEuMDk4OUM0LjY3MjczIDMxLjQyIDMuMDA5ODMgMzEuNzE4MSAyLjMzNjUzIDMyLjg3MTRDMi4xODE1NiAzMy4xMzcxIDIuMjg3MDIgMzMuNDc5NiAyLjU2ODM3IDMzLjYxNTVDMy42MTc0MiAzNC4xMjIgNC43OTEzMiAzNC43MDE0IDYuNjU5MTEgMzQuMjE2QzguNjEzNzQgMzMuNzA4MSA5LjkyNjkyIDMyLjMwOTUgMTAuOTQyNSAzMy4xOTY2QzExLjU5NyAzMy43Njg1IDUuMTc5NDkgMzUuNjQxMSA1LjYzNzA0IDM2Ljk2MUM1Ljk2MTEyIDM3Ljg5NTkgOS4zNDUyNyAzOC42OTY3IDExLjkzMjEgMzYuNTYwNUMxMi42NTkxIDM1Ljk2MDIgMTMuMzk2NCAzNS4yMzI3IDEzLjYxNzIgMzUuNzg5M0MxNC4xODI5IDM3LjIxNTEgMTAuMzMyNCAzOC42MjI1IDEwLjE4OTMgNDEuMjMxMkMxMC4xODI4IDQxLjM1MDkgMTAuMjcxNiA0MS40NTQ3IDEwLjM4NjIgNDEuNDk2M0MxNC4xMDk1IDQyLjg1MDMgMTUuMzE1OSAzNy45MzE2IDE2LjA3NjEgMzguMjA4MkMxOC4yMTk2IDM4Ljk4OCAxMy4wNjcyIDQxLjc4MjEgMTMuOTQzMSA0NC45OTIzQzEzLjk3NzEgNDUuMTE2NSAxNC4xMDI1IDQ1LjIwMTIgMTQuMjMyMyA0NS4xOTEzQzE1LjEyNzQgNDUuMTIyMyAxNi4wODA3IDQ0Ljk4NCAxNy40NTk4IDQzLjYyNkMxOC41Njk4IDQyLjUzMjkgMTguNDk4NiA0MC42OTAyIDE5LjE1ODIgNDAuNzY1MUMxOS44MTc3IDQwLjgzOTkgMTguODA2MSA0My4wMzE3IDE4LjA0MDUgNDQuNjQyOEMxNy40NjAzIDQ1Ljg2NCAxNy4wMjggNDcuMDA5IDE2Ljk3MyA0Ny42NDkxQzE2Ljk1MzUgNDcuODc4MyAxNy4xOTAxIDQ4LjA1NDQgMTcuNDEyIDQ3Ljk4NDVDMjAuOTMyMiA0Ni44NzY4IDIxLjk5MDIgNDQuNzU0MyAyMi4xOTIzIDQ0LjA4MjNDMjIuODQ0NCA0MS45MTgyIDIyLjgyMDkgMzkuNzM3OSAyNC45MDY2IDM4LjQxMzhDMjUuNTM0MiAzOC4wODk3IDI5LjMxMDIgMzkuOTkyIDMxLjc2NTYgMzguMjc4MkMzNS4xOTA1IDM1Ljg4NzggMzQuNDkzOCAzMy4zNzk1IDM2LjExNjcgMzIuNjE1N0MzNy4wNjM3IDMyLjI0NzggMzkuMjYyMyAzNC4yOTkgNDAuNzE2MiAzNC4yNTEyQzQyLjc0ODEgMzQuMTg0MiA0NC4xNDE2IDMyLjkyNDEgNDUuMjY1MSAzMS4yMDE4WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzEzNDFfMTk0KSIvPgo8cGF0aCBkPSJNMjYuMzk3NiAyOS4zMzg1QzI3Ljg4OTMgMjguMzYzNSAyOS45MDE2IDI4Ljc2NDIgMzAuODkxOCAzMC4yMzNDMzEuODgxOSAzMS43MDE5IDMxLjQ3NTMgMzMuNjgzOCAyOS45ODM2IDM0LjY1ODhDMjguNDkxOCAzNS42MzM2IDI2LjQ3OTUgMzUuMjMzMSAyNS40ODk0IDMzLjc2NDJDMjQuNDk5MyAzMi4yOTUzIDI0LjkwNTkgMzAuMzEzNSAyNi4zOTc2IDI5LjMzODVaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMTcuMzA1OCAyNy4yNDA4QzE4LjM5NzcgMjYuNTg1NSAxNy44MzY3IDI4LjQ5OTEgMTkuMTU1NCAzMC4wMTUyQzE5LjE4MzcgMzAuMDQ3OSAxOS4zMDI5IDMwLjE2NTIgMTkuMzM2MSAzMC4xOTI5QzIwLjg3NiAzMS40OTE2IDIyLjgxODkgMzAuOTM5NCAyMi4xNTI1IDMyLjAxNTJDMjEuOTc3OSAzMi4yOTQ2IDE5Ljk1NTEgMzMuNTI5NSAxNy44NTA3IDMxLjQ3ODFDMTUuNzY1OSAyOS40MDQ2IDE3LjAyMzIgMjcuNDEwNiAxNy4zMDU4IDI3LjI0MDhaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMTUuNTI4NSAxOC42MzUzQzE3LjAyMDIgMTcuNjYwNCAxOS4wMzI0IDE4LjA2MTEgMjAuMDIyNiAxOS41Mjk5QzIxLjAxMjcgMjAuOTk4OCAyMC42MDYyIDIyLjk4MDcgMTkuMTE0NCAyMy45NTU2QzE3LjYyMjcgMjQuOTMwNSAxNS42MTA0IDI0LjUzIDE0LjYyMDMgMjMuMDYxMUMxMy42MzAyIDIxLjU5MjIgMTQuMDM2OCAxOS42MTAzIDE1LjUyODUgMTguNjM1M1oiIGZpbGw9ImJsYWNrIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTM0MV8xOTQiIHgxPSI0MC41IiB5MT0iOS43NSIgeDI9IjE0LjI3OTgiIHkyPSIzNi4wMjg5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNFRjRGRkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjU5MTM0NiIgc3RvcC1jb2xvcj0iI0M3MTFFMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3RjUyRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K"/>
+  <text class="infra" x="150" y="76" text-anchor="middle">Exposed</text>
+  <text class="infra" x="150" y="100" text-anchor="middle">DB</text>
+  <text class="body" x="118" y="122" text-anchor="middle">example_order</text>
 </g>
 
 <rect x="1570" y="155" width="315" height="820" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
@@ -78,17 +79,17 @@
 <text class="body" x="1640" y="720">version + commit id</text>
 <text class="body" x="1640" y="743">changed properties</text>
 
-<path class="line" d="M 442 316 L 590 316 L 615 316" stroke="#2563eb" marker-end="url(#blue)"/>
+<path class="line" d="M 442,316 L 580,316 Q 590,316 600,316 L 615,316" stroke="#2563eb" marker-end="url(#blue)"/>
 <path class="line" d="M 782 372 L 782 465" stroke="#2563eb" marker-end="url(#blue)"/>
-<path class="line" d="M 940 526 L 1038 526 L 1038 319 L 1132 319" stroke="#059669" marker-end="url(#green)"/>
+<path class="line" d="M 940,526 L 1024,526 Q 1038,526 1038,512 L 1038,333 Q 1038,319 1052,319 L 1132,319" stroke="#059669" marker-end="url(#green)"/>
 <path class="line" d="M 1291 383 L 1291 515" stroke="#d97706" marker-end="url(#amber)"/>
-<path class="line" d="M 1450 319 L 1535 319 L 1535 364 L 1605 364" stroke="#e11d48" marker-end="url(#rose)"/>
+<path class="line" d="M 1450,319 L 1521,319 Q 1535,319 1535,333 L 1535,350 Q 1535,364 1549,364 L 1605,364" stroke="#e11d48" marker-end="url(#rose)"/>
 
-<path class="line" d="M 442 550 L 520 550 L 520 720 L 625 720" stroke="#0284c7" marker-end="url(#arrow0284C7)"/>
-<path class="line" d="M 940 742 L 1070 742 L 1070 595 L 1190 595" stroke="#d97706" marker-end="url(#amber)"/>
+<path class="line" d="M 442,550 L 506,550 Q 520,550 520,564 L 520,706 Q 520,720 534,720 L 625,720" stroke="#0284c7" marker-end="url(#arrow0284C7)"/>
+<path class="line" d="M 940,742 L 1056,742 Q 1070,742 1070,728 L 1070,609 Q 1070,595 1084,595 L 1190,595" stroke="#d97706" marker-end="url(#amber)"/>
 
-<path class="line" d="M 442 770 L 610 770 L 625 770" stroke="#7c3aed" marker-end="url(#purple)"/>
-<path class="line" d="M 940 790 L 1120 790 L 1120 875 L 1538 875 L 1538 709 L 1605 709" stroke="#7c3aed" marker-end="url(#purple)"/>
+<path class="line" d="M 442,770 L 625,770" stroke="#7c3aed" marker-end="url(#purple)"/>
+<path class="line" d="M 940,790 L 1106,790 Q 1120,790 1120,804 L 1120,861 Q 1120,875 1134,875 L 1524,875 Q 1538,875 1538,861 L 1538,723 Q 1538,709 1552,709 L 1605,709" stroke="#7c3aed" marker-end="url(#purple)"/>
 
 <text class="footer" x="980" y="1032" text-anchor="middle">History limit is bounded to 1..100; missing orders return bluetape4k JSON API errors.</text>
 </svg>
