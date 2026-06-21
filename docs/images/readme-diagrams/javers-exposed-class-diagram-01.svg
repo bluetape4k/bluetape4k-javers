@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1880" height="1040" viewBox="0 0 1880 1040" role="img" aria-label="javers-exposed class diagram">
 <defs>
 <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
-<marker id="arrowInherit" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" refX="12" refY="6.5" orient="auto"><path d="M 12 6.5 L 1 1 L 1 12 Z" fill="#ffffff" stroke="#475569" stroke-width="1.25" stroke-dasharray="none"/></marker>
-<marker id="arrowUse" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto"><path d="M 0 0 L 11 5.5 L 0 11 Z" fill="#2563eb" stroke-dasharray="none"/></marker>
+<marker id="arrowInherit" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="13" refX="12" refY="6.5" orient="auto"><path d="M 12 6.5 L 1 1 L 1 12 Z" fill="#ffffff" stroke="#475569" stroke-width="1.25" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowUse" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto"><path d="M 0 0 L 11 5.5 L 0 11 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
 <style>
 .title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:38px;fill:#183247;font-weight:700}
 .subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
@@ -13,11 +13,11 @@
 .small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#587086}
 </style>
 
-<marker id="arrow059669" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669" stroke-dasharray="none"/></marker>
-<marker id="arrowD97706" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706" stroke-dasharray="none"/></marker>
-<marker id="arrow06B6D4" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#06b6d4" stroke-dasharray="none"/></marker>
-<marker id="arrow8B5CF6" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#8b5cf6" stroke-dasharray="none"/></marker>
-<marker id="arrow475569" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#475569" stroke-dasharray="none"/></marker></defs>
+<marker id="arrow059669" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowD97706" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrow06B6D4" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#06b6d4" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrow8B5CF6" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#8b5cf6" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrow475569" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#475569" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
 <rect x="0" y="0" width="1880" height="1040" rx="26" fill="#f7fafc"/>
 <rect x="20" y="20" width="1840" height="1000" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
 <text class="title" x="54" y="64">javers-exposed Class Diagram</text>
@@ -85,11 +85,11 @@
 
 <path d="M 435,462 L 435,336" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" marker-end="url(#arrowInherit)"/>
 <path d="M 435,658 L 435,745" fill="none" stroke="#059669" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow059669)"/>
-<path d="M 705,548 L 875,548 L 875,283 L 975,283" fill="none" stroke="#d97706" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowD97706)"/>
+<path d="M 705,548 L 861,548 Q 875,548 875,534 L 875,297 Q 875,283 889,283 L 975,283" fill="none" stroke="#d97706" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowD97706)"/>
 <path d="M 1330,283 L 1410,283" fill="none" stroke="#06b6d4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow06B6D4)"/>
-<path d="M 1152,348 L 1152,404 L 1340,404 L 1340,462" fill="none" stroke="#8b5cf6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow8B5CF6)"/>
-<path d="M 1340,592 L 1340,670 L 1155,670 L 1155,735" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow475569)"/>
-<path d="M 1340,592 L 1340,670 L 1600,670 L 1600,735" fill="none" stroke="#2563eb" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowUse)"/>
+<path d="M 1152,348 L 1152,390 Q 1152,404 1166,404 L 1326,404 Q 1340,404 1340,418 L 1340,462" fill="none" stroke="#8b5cf6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow8B5CF6)"/>
+<path d="M 1340,592 L 1340,656 Q 1340,670 1326,670 L 1169,670 Q 1155,670 1155,684 L 1155,735" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow475569)"/>
+<path d="M 1340,592 L 1340,656 Q 1340,670 1354,670 L 1586,670 Q 1600,670 1600,684 L 1600,735" fill="none" stroke="#2563eb" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowUse)"/>
 
 <text class="small" x="96" y="962">Hollow arrow shows inheritance. Dashed arrows show construction/use dependencies; table mappings own SQL names and keys.</text>
 </svg>
