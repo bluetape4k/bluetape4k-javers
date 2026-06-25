@@ -6,9 +6,10 @@ plugins {
 
 dependencies {
     constraints {
+        val dependencyHandler = project.dependencies
         rootProject.subprojects {
             if (name != "bluetape4k-javers-bom") {
-                api(this)
+                api(dependencyHandler.project(mapOf("path" to path)))
             }
         }
     }
