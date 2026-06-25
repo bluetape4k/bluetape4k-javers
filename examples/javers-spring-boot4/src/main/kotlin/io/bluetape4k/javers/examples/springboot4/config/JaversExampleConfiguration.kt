@@ -42,7 +42,7 @@ class JaversExampleConfiguration {
     fun exampleSchemaInitializer(database: Database): InitializingBean {
         return InitializingBean {
             transaction(database) {
-                SchemaUtils.createMissingTablesAndColumns(CommitTable, CdoSnapshotTable, OrdersTable)
+                SchemaUtils.create(CommitTable, CdoSnapshotTable, OrdersTable)
             }
         }
     }

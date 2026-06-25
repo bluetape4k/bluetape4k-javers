@@ -54,9 +54,9 @@ val centralSnapshotsParallelism: Int = providers
     .orElse(4)
     .get()
 
-val projectGroup: String by project
-val baseVersion: String by project
-val snapshotVersion: String by project
+val projectGroup = providers.gradleProperty("projectGroup").get()
+val baseVersion = providers.gradleProperty("baseVersion").get()
+val snapshotVersion = providers.gradleProperty("snapshotVersion").get()
 
 allprojects {
     group = projectGroup
@@ -196,9 +196,8 @@ subprojects {
             showFullStackTraces = true
         }
 
-        val reportMerge by registering(ReportMergeTask::class) {
-            val file = rootProject.layout.buildDirectory.asFile.get().resolve("reports/detekt/merged.xml")
-            output.set(file)
+        val reportMerge = register<ReportMergeTask>("reportMerge") {
+            output.set(rootProject.layout.buildDirectory.file("reports/detekt/merged.xml"))
         }
         withType<Detekt>().configureEach detekt@{
             finalizedBy(reportMerge)
@@ -253,45 +252,40 @@ subprojects {
     }
 
     dependencies {
-        val api by configurations
-        val implementation by configurations
-        val testImplementation by configurations
-        val testRuntimeOnly by configurations
+        add("api", rootLibs.jetbrains.annotations)
 
-        api(rootLibs.jetbrains.annotations)
+        add("implementation", rootLibs.kotlin.stdlib)
+        add("implementation", rootLibs.kotlin.reflect)
+        add("testImplementation", rootLibs.kotlin.test)
+        add("testImplementation", rootLibs.kotlin.test.junit5)
 
-        implementation(rootLibs.kotlin.stdlib)
-        implementation(rootLibs.kotlin.reflect)
-        testImplementation(rootLibs.kotlin.test)
-        testImplementation(rootLibs.kotlin.test.junit5)
+        add("implementation", rootLibs.kotlinx.coroutines.core)
+        add("implementation", rootLibs.kotlinx.atomicfu)
 
-        implementation(rootLibs.kotlinx.coroutines.core)
-        implementation(rootLibs.kotlinx.atomicfu)
+        add("api", rootLibs.slf4j.api)
+        add("testImplementation", rootLibs.logback)
+        add("testImplementation", rootLibs.jcl.over.slf4j)
+        add("testImplementation", rootLibs.jul.to.slf4j)
+        add("testImplementation", rootLibs.log4j.over.slf4j)
 
-        api(rootLibs.slf4j.api)
-        testImplementation(rootLibs.logback)
-        testImplementation(rootLibs.jcl.over.slf4j)
-        testImplementation(rootLibs.jul.to.slf4j)
-        testImplementation(rootLibs.log4j.over.slf4j)
+        add("testImplementation", rootLibs.junit.jupiter)
+        add("testRuntimeOnly", rootLibs.junit.platform.engine)
 
-        testImplementation(rootLibs.junit.jupiter)
-        testRuntimeOnly(rootLibs.junit.platform.engine)
-
-        testImplementation(rootLibs.awaitility.kotlin)
-        testImplementation(rootLibs.mockk)
+        add("testImplementation", rootLibs.awaitility.kotlin)
+        add("testImplementation", rootLibs.mockk)
     }
 
     if (!isExampleProject()) {
         publishing {
             publications {
                 create<MavenPublication>("BluetapeJavers") {
-                    val sourcesJar by tasks.registering(Jar::class) {
+                    val sourcesJar = tasks.register<Jar>("sourcesJar") {
                         archiveClassifier.set("sources")
                         from(sourceSets["main"].allSource)
                     }
-                    val javadocJar by tasks.registering(Jar::class) {
+                    val javadocJar = tasks.register<Jar>("javadocJar") {
                         archiveClassifier.set("javadoc")
-                        from(layout.buildDirectory.asFile.get().resolve("javadoc"))
+                        from(layout.buildDirectory.dir("javadoc"))
                     }
                     from(components["java"])
                     artifact(sourcesJar)
