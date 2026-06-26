@@ -78,6 +78,26 @@ not be treated as interchangeable stores.
 | `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Spring Boot 4 conditional auto-configuration for Exposed, Redis, and Kafka JaVers repositories |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
 
+## Boundary with bluetape4k-exposed
+
+`bluetape4k-javers` owns JaVers audit and history semantics. Use it when an
+application needs object diffs, CDO snapshots, commit metadata, shadow queries,
+or a JaVers-aware aggregate workflow. It does not own the application
+source-of-truth repository or cache runtime.
+
+| Surface | Responsibility | Not responsible for |
+|---|---|---|
+| `bluetape4k-exposed` | Exposed repository execution, transaction boundaries, cache read/write behavior, Spring Boot/Ktor Exposed adapters | JaVers audit history, CDO snapshot storage, JaVers commit metadata |
+| `javers-exposed` | JaVers CDO snapshot and commit persistence through Exposed JDBC | Application repositories, write-through/write-behind cache modes, Ktor/Spring Exposed runtime helpers |
+| `javers-ddd` | JaVers-aware aggregate save flow, JaVers commit properties from domain events, event publisher adapters around JaVers commits | Generic DDD base model for all Exposed applications |
+
+When both repositories are used together, keep the Exposed repository as the
+source of truth for application state, then let JaVers record audit history from
+that state. Cache-aside, read-through, write-through, write-behind, and
+near-cache behavior should remain on application read models or projections
+unless a dedicated composite JaVers repository explicitly owns replay,
+invalidation, and failure semantics.
+
 ## Dependency Setup
 
 Use the BOM when consuming more than one module:

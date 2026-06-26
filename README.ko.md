@@ -71,6 +71,25 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 | `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Exposed, Redis, Kafka JaVers repository를 위한 Spring Boot 4 조건부 auto-configuration |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
 
+## bluetape4k-exposed와의 경계
+
+`bluetape4k-javers`는 JaVers audit와 history 의미를 담당합니다. 객체 diff, CDO
+snapshot, commit metadata, shadow query, JaVers를 의식한 aggregate workflow가 필요할
+때 사용하는 저장소입니다. 애플리케이션 source-of-truth Repository나 cache runtime을
+소유하지는 않습니다.
+
+| 영역 | 책임 | 책임이 아닌 것 |
+|---|---|---|
+| `bluetape4k-exposed` | Exposed Repository 실행, 트랜잭션 경계, cache read/write 동작, Spring Boot/Ktor Exposed adapter | JaVers audit history, CDO snapshot 저장, JaVers commit metadata |
+| `javers-exposed` | Exposed JDBC 기반 JaVers CDO snapshot과 commit persistence | 애플리케이션 Repository, write-through/write-behind cache mode, Ktor/Spring Exposed runtime helper |
+| `javers-ddd` | JaVers를 의식한 aggregate save flow, domain event 기반 JaVers commit property, JaVers commit 주변 event publisher adapter | 모든 Exposed 애플리케이션을 위한 범용 DDD base model |
+
+두 저장소를 함께 사용할 때는 Exposed Repository를 애플리케이션 상태의 source of
+truth로 두고, JaVers가 그 상태에서 audit history를 기록하게 합니다. Cache-aside,
+read-through, write-through, write-behind, near-cache 동작은 전용 composite JaVers
+repository가 replay, invalidation, failure semantics를 명시적으로 소유하지 않는 한
+애플리케이션 read model이나 projection에 머물러야 합니다.
+
 ## 의존성 설정
 
 여러 모듈을 함께 사용할 때는 BOM을 사용하세요:
