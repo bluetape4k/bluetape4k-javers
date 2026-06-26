@@ -49,6 +49,14 @@ Javers audit/diff integrations with Redis, Kafka, and Exposed.
 - Preserve audit/diff semantics; add regression tests for persistence behavior
   changes.
 - Follow existing codec and cache-backed repository patterns.
+- Keep DDD and Exposed boundaries explicit. `javers-ddd` is a JaVers audit
+  workflow helper that may adapt aggregate/domain-event workflows into JaVers
+  commits; it must not become the generic DDD contract owner for the
+  bluetape4k ecosystem.
+- `javers-exposed` is a JaVers CDO snapshot persistence adapter backed by
+  Exposed JDBC. It must not reimplement application Exposed repositories,
+  cache write modes, Ktor helpers, or Spring Boot Exposed repository
+  auto-configuration from `bluetape4k-exposed`.
 - For Redis/Kafka changes, verify the affected persistence module directly.
 
 ## Repo-Specific Guards
