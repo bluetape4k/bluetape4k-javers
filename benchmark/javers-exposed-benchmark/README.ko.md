@@ -1,0 +1,59 @@
+# JaVers Exposed Benchmark
+
+[English](README.md) | 한국어
+
+이 모듈은 JaVers Exposed persistence를 위한 제한된
+`kotlinx-benchmark`/JMH smoke benchmark를 담습니다. benchmark 코드는 일반
+example test와 분리되어 있어 CI와 full Nightly가 benchmark drift를 의도적으로
+검증할 수 있습니다.
+
+## 범위
+
+`ExposedCommitMetadataIndexBenchmark`는 JaVers Exposed commit metadata table의
+선택적 보조 인덱스를 측정합니다.
+
+- `baseline`: 현재 production schema.
+- `author`: benchmark 전용 `author` 인덱스.
+- `commit_date`: benchmark 전용 `commit_date` 인덱스.
+- `both`: benchmark 전용 `author` 및 `commit_date` 인덱스.
+
+benchmark는 trial마다 임시 PostgreSQL table을 만들고 tear-down에서 제거합니다.
+이 모듈은 production JaVers Exposed schema 기본값을 변경하지 않습니다.
+
+## 실행
+
+CI와 full Nightly에서 사용하는 smoke run:
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+로컬 full benchmark target:
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+benchmark task는 직렬로 실행해야 합니다. 이 모듈은 PostgreSQL Testcontainers,
+HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`,
+`bluetape4k-exposed-jdbc-tests`를 사용합니다.
+
+## 결과 Snapshot
+
+커밋된 snapshot은 JDK 21.0.11에서 warmup 1회, 측정 1회로 생성했습니다.
+점수는 초당 처리량이며 높을수록 좋습니다.
+
+Raw artifact:
+[`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](../../docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
+
+![JaVers Exposed commit metadata index evaluation](../../docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.png)
+
+| Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
+|---|---:|---:|---:|---|
+| Baseline | 481.4 | 917.5 | 916.5 | 현재 production schema의 안정 기준선입니다. |
+| Author index | 488.6 | 907.1 | 904.7 | 이 smoke run에서는 author query 이점이 없습니다. |
+| `commit_date` index | 499.3 | 931.2 | 923.2 | read throughput이 약간 높지만 bounded evidence입니다. |
+| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | author query는 가장 높지만 date-range throughput은 낮습니다. |
+
+이 결과는 로컬 smoke evidence이며 release-wide 성능 주장이 아닙니다. production
+schema를 바꾸려면 더 넓은 workload benchmark가 필요합니다.
