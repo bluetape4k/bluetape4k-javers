@@ -78,14 +78,8 @@ data class CdoSnapshotEventMetadata private constructor(
             idempotencyKey.requireNotBlank("idempotencyKey")
             commitMajorId.requirePositiveNumber("commitMajorId")
             commitMinorId.requireZeroOrPositiveNumber("commitMinorId")
-            require(snapshotVersion > 0) {
-                "snapshotVersion must be positive: $snapshotVersion"
-            }
-            repositorySequence?.let {
-                require(it >= 0) {
-                    "repositorySequence must be non-negative: $it"
-                }
-            }
+            snapshotVersion.requirePositiveNumber("snapshotVersion")
+            repositorySequence?.requireZeroOrPositiveNumber("repositorySequence")
 
             return CdoSnapshotEventMetadata(
                 globalIdValue = globalIdValue,

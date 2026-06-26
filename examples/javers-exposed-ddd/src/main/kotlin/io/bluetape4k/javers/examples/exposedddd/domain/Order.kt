@@ -1,6 +1,8 @@
 package io.bluetape4k.javers.examples.exposedddd.domain
 
 import io.bluetape4k.javers.ddd.AggregateRoot
+import io.bluetape4k.support.requireNotEmpty
+import io.bluetape4k.support.requirePositiveNumber
 import org.javers.core.metamodel.annotation.Id
 import java.io.Serializable
 import java.math.BigDecimal
@@ -14,7 +16,8 @@ import java.time.Instant
  * JaVers after every command-side state transition. The [id] property is marked
  * with JaVers [Id] so JaVers maps this class as an entity.
  */
-data class Order(
+@ConsistentCopyVisibility
+data class Order private constructor(
     @Id
     override val id: OrderId,
     val customerId: CustomerId,
@@ -23,12 +26,6 @@ data class Order(
     val createdAt: Instant,
     val updatedAt: Instant,
 ): AggregateRoot<OrderId>, Serializable {
-
-    init {
-        require(items.isNotEmpty()) { "items must not be empty" }
-        require(items.all { it.quantity > 0 }) { "item quantity must be positive" }
-        require(items.all { it.unitPrice > BigDecimal.ZERO }) { "item unit price must be positive" }
-    }
 
     val totalAmount: BigDecimal
         get() = items.fold(BigDecimal.ZERO) { acc, item -> acc + item.lineTotal }
@@ -41,13 +38,32 @@ data class Order(
     companion object {
         private const val serialVersionUID: Long = 1L
 
+        operator fun invoke(
+            id: OrderId,
+            customerId: CustomerId,
+            items: List<OrderItem>,
+            status: OrderStatus,
+            createdAt: Instant,
+            updatedAt: Instant,
+        ): Order {
+            validateItems(items)
+            return Order(
+                id = id,
+                customerId = customerId,
+                items = items,
+                status = status,
+                createdAt = createdAt,
+                updatedAt = updatedAt,
+            )
+        }
+
         fun place(
             id: OrderId,
             customerId: CustomerId,
             items: List<OrderItem>,
             now: Instant,
         ): Order {
-            return Order(
+            return invoke(
                 id = id,
                 customerId = customerId,
                 items = items,
@@ -55,6 +71,14 @@ data class Order(
                 createdAt = now,
                 updatedAt = now,
             )
+        }
+
+        private fun validateItems(items: List<OrderItem>) {
+            items.requireNotEmpty("items")
+            items.forEach { item ->
+                item.quantity.requirePositiveNumber("item.quantity")
+                item.unitPrice.requirePositiveNumber("item.unitPrice")
+            }
         }
     }
 }
