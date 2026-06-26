@@ -85,20 +85,26 @@ object CommitTable: CommitTableMapping() {
  * names. Use this named value object instead of passing two raw strings to
  * avoid commit/snapshot table ordering mistakes.
  */
-data class ExposedJaversTableNames(
+@ConsistentCopyVisibility
+data class ExposedJaversTableNames private constructor(
     val commitTableName: String = CommitTableMapping.DEFAULT_TABLE_NAME,
     val snapshotTableName: String = CdoSnapshotTableMapping.DEFAULT_TABLE_NAME,
 ): Serializable {
 
-    init {
-        commitTableName.requireNotBlank("commitTableName")
-        snapshotTableName.requireNotBlank("snapshotTableName")
-    }
-
     companion object {
         private const val serialVersionUID: Long = 1L
 
-        val Default: ExposedJaversTableNames = ExposedJaversTableNames()
+        operator fun invoke(
+            commitTableName: String = CommitTableMapping.DEFAULT_TABLE_NAME,
+            snapshotTableName: String = CdoSnapshotTableMapping.DEFAULT_TABLE_NAME,
+        ): ExposedJaversTableNames {
+            return ExposedJaversTableNames(
+                commitTableName = commitTableName.requireNotBlank("commitTableName"),
+                snapshotTableName = snapshotTableName.requireNotBlank("snapshotTableName"),
+            )
+        }
+
+        val Default: ExposedJaversTableNames = invoke()
     }
 }
 
