@@ -7,12 +7,13 @@ import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.error
 import io.bluetape4k.logging.trace
-import io.bluetape4k.redis.lettuce.LettuceClients
+import io.bluetape4k.logging.warn
 import io.bluetape4k.redis.lettuce.codec.LettuceBinaryCodecs
 import io.bluetape4k.support.asByteArray
 import io.bluetape4k.support.asInt
 import io.bluetape4k.support.asLongOrNull
 import io.lettuce.core.RedisClient
+import io.lettuce.core.api.StatefulRedisConnection
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import java.util.concurrent.locks.ReentrantLock
@@ -30,6 +31,8 @@ import kotlin.concurrent.withLock
  * - On transaction failure, DISCARD is attempted (failures during DISCARD are logged separately),
  *   and the original exception is propagated so that [persist] does not advance the audit-log head.
  * - The default codec is [JaversCodecs.LZ4Fory] (LZ4 + Fory serialization).
+ * - The caller owns [client]. This repository owns only the read/write connections it opens from that client
+ *   and closes them from [close].
  *
  * ```kotlin
  * val repo = LettuceCdoSnapshotRepository("user", redisClient)
@@ -48,7 +51,7 @@ class LettuceCdoSnapshotRepository(
     val name: String,
     private val client: RedisClient,
     codec: JaversCodec<ByteArray> = JaversCodecs.LZ4Fory,
-): AbstractCdoSnapshotRepository<ByteArray>(codec) {
+): AbstractCdoSnapshotRepository<ByteArray>(codec), AutoCloseable {
 
     companion object: KLogging() {
         private const val CACHE_KEY_SET = "globalId:set"
@@ -65,19 +68,21 @@ class LettuceCdoSnapshotRepository(
     // Prefix for Redis LIST keys that store snapshots per GlobalId
     private val snapshotPrefix = "javers:$name:$SNAPSHOT_SUFFIX"
 
-    // Read-only connection shared across all read operations.
-    private val commands by lazy {
-        LettuceClients.commands(client, codec = LettuceBinaryCodecs.lz4Fory())
-    }
+    private val redisCodec = LettuceBinaryCodecs.lz4Fory<Any>()
+
+    // Read-only connection owned by this repository.
+    private val readConnection = lazy { client.connect(redisCodec) }
+    private val commands by lazy { readConnection.value.sync() }
 
     // Dedicated connection used exclusively for MULTI/EXEC in saveSnapshot.
     // Keeping it separate from `commands` prevents read-path commands (lrange, hget, etc.)
     // from being queued into an open transaction on the same Lettuce connection.
     // `transactionLock` serializes concurrent saveSnapshot calls on this connection.
     private val transactionLock = ReentrantLock()
-    private val writeCommands by lazy {
-        LettuceClients.commands(client, codec = LettuceBinaryCodecs.lz4Fory())
-    }
+    private val closeLock = ReentrantLock()
+    private var closed = false
+    private val writeConnection = lazy { client.connect(redisCodec) }
+    private val writeCommands by lazy { writeConnection.value.sync() }
 
     override fun getKeys(): Set<String> {
         return commands.hkeys(cacheSetKey).sorted().toSet()
@@ -156,5 +161,29 @@ class LettuceCdoSnapshotRepository(
      */
     private fun makeSnapshotKey(id: String): String {
         return snapshotPrefix + id
+    }
+
+    override fun close() {
+        closeLock.withLock {
+            if (closed) {
+                return
+            }
+
+            closeConnection("write", writeConnection)
+            closeConnection("read", readConnection)
+            closed = true
+        }
+    }
+
+    private fun closeConnection(
+        role: String,
+        connection: Lazy<StatefulRedisConnection<String, Any>>,
+    ) {
+        if (!connection.isInitialized()) {
+            return
+        }
+
+        runCatching { connection.value.close() }
+            .onFailure { e -> log.warn(e) { "Failed to close $role Lettuce connection for repository name=$name" } }
     }
 }
