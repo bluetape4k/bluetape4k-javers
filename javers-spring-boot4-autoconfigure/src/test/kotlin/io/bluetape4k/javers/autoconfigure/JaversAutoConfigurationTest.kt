@@ -11,6 +11,9 @@ import io.bluetape4k.javers.persistence.kafka.repository.VanillaKafkaCdoSnapshot
 import io.bluetape4k.javers.persistence.redis.repository.LettuceCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.redis.repository.RedissonCdoSnapshotRepository
 import io.lettuce.core.RedisClient
+import io.lettuce.core.api.StatefulRedisConnection
+import io.lettuce.core.api.sync.RedisCommands
+import io.lettuce.core.codec.RedisCodec
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -133,6 +136,33 @@ class JaversAutoConfigurationTest {
                 context.containsBean("javersLettuceCdoSnapshotRepository").shouldBeTrue()
                 context.getBean(JaversRepository::class.java) shouldBeInstanceOf LettuceCdoSnapshotRepository::class
             }
+    }
+
+    @Test
+    fun `Spring context closes Lettuce repository connections but leaves RedisClient caller owned`() {
+        val client = mockk<RedisClient>(relaxed = true)
+        val connection = mockk<StatefulRedisConnection<String, Any>>(relaxed = true)
+        val commands = mockk<RedisCommands<String, Any>>(relaxed = true)
+
+        every { client.connect(any<RedisCodec<String, Any>>()) } returns connection
+        every { connection.sync() } returns commands
+        every { commands.hgetall(any()) } returns emptyMap()
+
+        contextRunner
+            .withPropertyValues("bluetape4k.javers.repository.type=lettuce")
+            .withBean(RedisClient::class.java, { client })
+            .run { context ->
+                val repository = context.getBean(
+                    "javersLettuceCdoSnapshotRepository",
+                    LettuceCdoSnapshotRepository::class.java,
+                )
+
+                repository.getHeadId()
+                verify(exactly = 0) { connection.close() }
+            }
+
+        verify(exactly = 1) { connection.close() }
+        verify(exactly = 0) { client.shutdown() }
     }
 
     @Test
