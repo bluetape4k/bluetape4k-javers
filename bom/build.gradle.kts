@@ -4,14 +4,23 @@ plugins {
     signing
 }
 
+fun Project.isPublishableJaversModule(): Boolean {
+    val relativeProjectDir = projectDir.relativeTo(rootProject.projectDir).invariantSeparatorsPath
+    return name != "bluetape4k-javers-bom" &&
+        !name.startsWith("examples-javers-") &&
+        !relativeProjectDir.startsWith("examples/") &&
+        !name.startsWith("benchmark-") &&
+        !relativeProjectDir.startsWith("benchmark/")
+}
+
 dependencies {
     constraints {
         val dependencyHandler = project.dependencies
-        rootProject.subprojects {
-            if (name != "bluetape4k-javers-bom") {
-                api(dependencyHandler.project(mapOf("path" to path)))
+        rootProject.subprojects
+            .filter { it.isPublishableJaversModule() }
+            .forEach {
+                api(dependencyHandler.project(mapOf("path" to it.path)))
             }
-        }
     }
 }
 
