@@ -12,6 +12,9 @@ This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Added `javers-spring-boot4-autoconfigure` for Spring Boot 4 conditional
   JaVers auto-configuration across Exposed, Redis, and Kafka repository
   backends ([#104](https://github.com/bluetape4k/bluetape4k-javers/issues/104)).
+- Added module-local benchmark documentation and CI/Nightly smoke coverage for
+  `benchmark/javers-exposed-benchmark`
+  ([#195](https://github.com/bluetape4k/bluetape4k-javers/issues/195)).
 
 ### Changed
 

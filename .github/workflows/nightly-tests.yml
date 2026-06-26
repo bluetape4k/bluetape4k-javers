@@ -77,7 +77,49 @@ jobs:
           path: 'build/reports/detekt/*.xml'
           retention-days: 14
 
-  # ── 2. javers-core (Docker 불필요) ────────────────────────────────────────
+  # ── 2. benchmark-javers-exposed-benchmark (PostgreSQL Testcontainers) ───
+  benchmark-javers-exposed:
+    name: Benchmark / javers-exposed
+    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+
+      - name: Run javers-exposed benchmark smoke
+        run: |
+          for attempt in 1 2 3; do
+            ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel && break
+            echo "Attempt $attempt failed"
+            [ $attempt -lt 3 ] && sleep 30 || exit 1
+          done
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: "true"
+          DOCKER_HOST: "unix:///var/run/docker.sock"
+
+      - name: Upload benchmark reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-results-javers-exposed
+          path: benchmark/javers-exposed-benchmark/build/reports/benchmarks/**/*.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  # ── 3. javers-core (Docker 불필요) ────────────────────────────────────────
   test-javers-core:
     name: Test / javers-core
     runs-on: ubuntu-latest
@@ -632,6 +674,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
+      - benchmark-javers-exposed
       - build
       - test-javers-core
       - test-javers-ddd
