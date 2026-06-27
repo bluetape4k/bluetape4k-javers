@@ -78,7 +78,7 @@ Use the BOM when consuming more than one module:
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.1"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
     implementation("io.github.bluetape4k.javers:javers-ddd")
