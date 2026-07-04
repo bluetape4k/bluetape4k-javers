@@ -2,6 +2,7 @@ package io.bluetape4k.javers.ddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
@@ -69,7 +70,7 @@ class AggregateRepositoryTest {
 
         loaded.id shouldBeEqualTo aggregate.id
         loaded.status shouldBeEqualTo "PAID"
-        repository.loadHistory(aggregate.id).size shouldBeEqualTo 2
+        repository.loadHistory(aggregate.id) shouldHaveSize 2
     }
 
     data class Order(

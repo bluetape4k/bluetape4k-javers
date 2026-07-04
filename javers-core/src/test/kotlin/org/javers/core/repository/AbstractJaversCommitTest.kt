@@ -3,6 +3,7 @@ package org.javers.core.repository
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldHaveSize
 import org.javers.core.Javers
 import org.javers.core.model.CategoryC
 import org.javers.core.model.PhoneWithShallowCategory
@@ -32,7 +33,7 @@ abstract class AbstractJaversCommitTest {
 
         // THEN: initial commit captures the entity snapshot
         commit.snapshots.forEach { log.debug { it } }
-        commit.snapshots.size shouldBeEqualTo 1
+        commit.snapshots shouldHaveSize 1
 
         // Changing a shallow reference should not produce a new snapshot
         reference.number = "other"
@@ -54,7 +55,7 @@ abstract class AbstractJaversCommitTest {
 
         // THEN: initial commit captures the entity snapshot
         commit.snapshots.forEach { log.debug { it } }
-        commit.snapshots.size shouldBeEqualTo 1
+        commit.snapshots shouldHaveSize 1
 
         // Changing a @ShallowReference property should not produce a new snapshot
         entity.shallowCategory?.name = "new shallow"

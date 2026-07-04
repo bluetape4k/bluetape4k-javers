@@ -2,6 +2,8 @@ package io.bluetape4k.javers.persistence.exposed.repository
 
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeFalse
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.exposed.tests.AbstractExposedTest
 import io.bluetape4k.exposed.tests.TestDB
@@ -70,7 +72,7 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
             commitKey.columns.map { it.name } shouldBeEqualTo listOf(CommitTable.commitId.name)
 
             val sequenceIndex = CommitTable.indices.single { it.indexName == CommitTable.SEQUENCE_INDEX }
-            sequenceIndex.unique shouldBeEqualTo false
+            sequenceIndex.unique.shouldBeFalse()
             sequenceIndex.columns shouldBeEqualTo listOf(CommitTable.sequence)
         }
     }
@@ -88,7 +90,7 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
 
             val snapshots = javers.findSnapshots(QueryBuilder.byInstanceId(1, SnapshotEntity::class.java).build())
 
-            snapshots.size shouldBeEqualTo 2
+            snapshots shouldHaveSize 2
             snapshots[0].version shouldBeEqualTo 2L
             snapshots[0].getPropertyValue("intProperty") shouldBeEqualTo 2
             snapshots[1].version shouldBeEqualTo 1L
@@ -115,7 +117,7 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
             entity.intProperty = 101
             val nextCommit = rebuiltJavers.commit("author", entity)
 
-            nextCommit.snapshots.size shouldBeEqualTo 1
+            nextCommit.snapshots shouldHaveSize 1
             rebuiltRepository.getHeadId() shouldBeEqualTo nextCommit.id
         }
     }
@@ -193,7 +195,7 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
             codec.reset()
             val snapshots = repository.getSnapshots(QueryParamsBuilder.withLimit(2).build())
 
-            snapshots.size shouldBeEqualTo 2
+            snapshots shouldHaveSize 2
             codec.decodeCount.get() shouldBeEqualTo 2
         }
     }
@@ -255,7 +257,7 @@ class ExposedCdoSnapshotRepositoryDatabaseSmokeTest : AbstractExposedTest() {
                     .build(),
             )
 
-            snapshots.size shouldBeEqualTo 2
+            snapshots shouldHaveSize 2
             snapshots.first().version shouldBeEqualTo 2L
         }
     }

@@ -4,6 +4,7 @@ import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeInstanceOf
 import io.bluetape4k.assertions.shouldBeTrue
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.kafka.repository.KafkaCdoSnapshotRepository
@@ -96,7 +97,7 @@ class JaversAutoConfigurationTest {
         contextRunner
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
-                context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
+                context.getBeansOfType(JaversRepository::class.java) shouldHaveSize 0
                 context.containsBean("javers").shouldBeFalse()
             }
     }
@@ -110,7 +111,7 @@ class JaversAutoConfigurationTest {
             )
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
-                context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
+                context.getBeansOfType(JaversRepository::class.java) shouldHaveSize 0
                 context.containsBean("javers").shouldBeFalse()
             }
     }
@@ -271,7 +272,7 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=exposed")
             .withUserConfiguration(ExposedDatabaseConfiguration::class.java)
             .run { context ->
-                context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
+                context.getBeansOfType(JaversRepository::class.java) shouldHaveSize 0
                 context.containsBean("javers").shouldBeFalse()
             }
     }
@@ -283,7 +284,7 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=spring-kafka")
             .withUserConfiguration(SpringKafkaConfiguration::class.java)
             .run { context ->
-                context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
+                context.getBeansOfType(JaversRepository::class.java) shouldHaveSize 0
                 context.containsBean("javers").shouldBeFalse()
             }
     }
@@ -295,7 +296,7 @@ class JaversAutoConfigurationTest {
             .withPropertyValues("bluetape4k.javers.repository.type=lettuce")
             .withUserConfiguration(LettuceConfiguration::class.java)
             .run { context ->
-                context.getBeansOfType(JaversRepository::class.java).size shouldBeEqualTo 0
+                context.getBeansOfType(JaversRepository::class.java) shouldHaveSize 0
                 context.containsBean("javers").shouldBeFalse()
             }
     }

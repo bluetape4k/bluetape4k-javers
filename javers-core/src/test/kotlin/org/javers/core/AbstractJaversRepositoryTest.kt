@@ -161,10 +161,10 @@ abstract class AbstractJaversRepositoryTest {
 
         // THEN
         val changes = javers.findChanges(queryAnyDomainObject())
-        changes.size shouldBeEqualTo 18
+        changes shouldHaveSize 18
 
         val valueChanges = changes.filterByType<ValueChange>()
-        valueChanges.size shouldBeEqualTo 17
+        valueChanges shouldHaveSize 17
         valueChanges.forEach { change ->
             log.debug { "old=${change.left}, new=${change.right}" }
         }
@@ -197,7 +197,7 @@ abstract class AbstractJaversRepositoryTest {
             log.debug { "change=$it" }
             it.affectedGlobalId.typeName shouldBeEqualTo DummyAddress::class.java.name
         }
-        changes.size shouldBeEqualTo 4
+        changes shouldHaveSize 4
         commitSeq(changes[0].commitMetadata.get()) shouldBeEqualTo 6
     }
 
@@ -238,7 +238,7 @@ abstract class AbstractJaversRepositoryTest {
 //        with(snapshots[0]) {
 //            commitSeq(commitMetadata) shouldBeEqualTo 2
 //            commitMetadata.author shouldBeEqualTo "author2"
-//            changed.size shouldBeEqualTo 1
+//            changed shouldHaveSize 1
 //            changed[0] shouldBeEqualTo "intProperty"
 //            isInitial.shouldBeFalse()
 //
@@ -311,7 +311,7 @@ abstract class AbstractJaversRepositoryTest {
         val shadows = javers.findShadows<DummyUser>(queryByInstance(user))
 
         // THEN
-        shadows.size shouldBeEqualTo 2
+        shadows shouldHaveSize 2
 
         val newUser = shadows[0].get()
         val oldUser = shadows[1].get()
@@ -375,7 +375,7 @@ abstract class AbstractJaversRepositoryTest {
         val changes = javers.findChanges(queryByValueObject<NewEntityWithTypeAlias>("valueObject"))
 
         // THEN
-        changes.size shouldBeEqualTo 2
+        changes shouldHaveSize 2
 
         val valueChange = changes.find { it is ValueChange && it.propertyName == "some" } as ValueChange
 
@@ -441,7 +441,7 @@ abstract class AbstractJaversRepositoryTest {
 
         // THEN
         val snapshots = javers.findSnapshots(queryByInstanceId<SnapshotEntity>(1))
-        snapshots.size shouldBeEqualTo 4
+        snapshots shouldHaveSize 4
         snapshots.forEach {
             log.debug { "version=${it.version}" }
         }
@@ -513,7 +513,7 @@ abstract class AbstractJaversRepositoryTest {
         // val snapshots = repository.getSnapshots(snapshotIdentifiers)
 
         // THEN:
-        // snapshots.size shouldBeEqualTo snapshotIdentifiers.size
+        // snapshots shouldHaveSize snapshotIdentifiers.size
     }
 
     @Test
@@ -566,7 +566,7 @@ abstract class AbstractJaversRepositoryTest {
         val snapshots = javers.findSnapshots(queryByInstanceId<SnapshotEntity>(1))
 
         // THEN
-        snapshots.size shouldBeEqualTo 1
+        snapshots shouldHaveSize 1
         repository.headId shouldBeEqualTo commit.id
 
         // WHEN: 변경이 없는 엔티티는 저장되면 안됩니다

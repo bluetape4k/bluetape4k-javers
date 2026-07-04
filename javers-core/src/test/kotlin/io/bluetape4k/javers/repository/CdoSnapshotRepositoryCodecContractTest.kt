@@ -3,6 +3,7 @@ package io.bluetape4k.javers.repository
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeGreaterThan
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.cache.jcache.JCaching
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.codecs.JaversCodec
@@ -63,7 +64,7 @@ class CdoSnapshotRepositoryCodecContractTest {
 
         val snapshots = javers.findSnapshots(QueryBuilder.byInstanceId(id, SnapshotEntity::class.java).build())
 
-        snapshots.size shouldBeEqualTo 2
+        snapshots shouldHaveSize 2
         snapshots[0].version shouldBeEqualTo 2L
         snapshots[0].getPropertyValue("intProperty") shouldBeEqualTo 2
         snapshots[1].version shouldBeEqualTo 1L

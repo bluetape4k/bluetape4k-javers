@@ -2,6 +2,7 @@ package io.bluetape4k.javers.examples.springboot4
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.examples.springboot4.domain.OrderPlaced
 import io.bluetape4k.javers.examples.springboot4.web.MarkOrderPaidRequest
@@ -46,7 +47,7 @@ class OrderApiIntegrationTest {
 
         history.response.status shouldBeEqualTo 200
         val historyBody = history.readBody<OrderHistoryResponse>()
-        historyBody.snapshots.size shouldBeEqualTo 1
+        historyBody.snapshots shouldHaveSize 1
         historyBody.snapshots.single().domainEventType shouldBeEqualTo OrderPlaced::class.qualifiedName
     }
 
@@ -69,7 +70,7 @@ class OrderApiIntegrationTest {
         history.response.status shouldBeEqualTo 200
         val historyBody = history.readBody<OrderHistoryResponse>()
         historyBody.limit shouldBeEqualTo 100
-        historyBody.snapshots.size shouldBeEqualTo 2
+        historyBody.snapshots shouldHaveSize 2
     }
 
     @Test

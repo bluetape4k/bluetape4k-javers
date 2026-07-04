@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.exposed.repository
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
@@ -100,7 +101,7 @@ class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
 
         val snapshots = javers.findSnapshots(QueryBuilder.byInstanceId(1, SnapshotEntity::class.java).build())
 
-        snapshots.size shouldBeEqualTo 2
+        snapshots shouldHaveSize 2
         snapshots[0].version shouldBeEqualTo 2L
         snapshots[0].getPropertyValue("intProperty") shouldBeEqualTo 2
         snapshots[1].version shouldBeEqualTo 1L
@@ -124,7 +125,7 @@ class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
         entity.intProperty = 101
         val nextCommit = rebuiltJavers.commit("author", entity)
 
-        nextCommit.snapshots.size shouldBeEqualTo 1
+        nextCommit.snapshots shouldHaveSize 1
         rebuiltRepository.getHeadId() shouldBeEqualTo nextCommit.id
     }
 
