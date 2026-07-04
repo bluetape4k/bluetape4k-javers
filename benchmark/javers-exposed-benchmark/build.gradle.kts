@@ -21,6 +21,7 @@ benchmark {
     configurations {
         named("main") {
             include(".*ExposedCommitMetadataIndexBenchmark.*")
+            include(".*EnversComparisonBenchmark.*")
             warmups = 1
             iterations = 3
             iterationTime = 1
@@ -35,10 +36,20 @@ benchmark {
             iterationTimeUnit = "s"
             reportFormat = "json"
         }
+        register("enversComparisonSmoke") {
+            include(".*EnversComparisonBenchmark.*")
+            warmups = 1
+            iterations = 1
+            iterationTime = 1
+            iterationTimeUnit = "s"
+            reportFormat = "json"
+        }
     }
 }
 
 dependencies {
+    implementation(project(":examples-javers-exposed-ddd"))
+    implementation(project(":javers-ddd"))
     implementation(project(":javers-exposed"))
 
     implementation(platform(bt4kLibrary("bluetape4k-exposed-bom")))
@@ -59,5 +70,7 @@ dependencies {
     implementation(libs.exposed.java.time)
     implementation(libs.hikaricp)
     implementation(libs.testcontainers.postgresql)
+    // The central catalog does not expose hibernate-envers yet; keep this benchmark-only pin narrow.
+    implementation("org.hibernate.orm:hibernate-envers:7.3.4.Final")
     runtimeOnly(libs.postgresql)
 }

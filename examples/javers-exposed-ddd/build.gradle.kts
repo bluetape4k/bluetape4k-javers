@@ -20,6 +20,4 @@ dependencies {
     testImplementation(libs.testcontainers.kafka)
     testImplementation(libs.testcontainers.postgresql)
     testRuntimeOnly(libs.postgresql)
-    // The central catalog does not expose hibernate-envers yet; keep this benchmark-only pin narrow.
-    testImplementation("org.hibernate.orm:hibernate-envers:7.3.4.Final")
 }

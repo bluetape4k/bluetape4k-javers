@@ -33,13 +33,14 @@ The read API intentionally reads the Redis projection only; it does not query
 ## Benchmark
 
 The Envers comparison benchmark is a local documentation benchmark, not a
-release-wide performance claim. It runs on H2 and measures the simple example
-shape used in this module. Lower milliseconds per operation is better.
+release-wide performance claim. It now runs from the dedicated benchmark module
+so ordinary example tests stay behavior-focused. Lower milliseconds per
+operation is better.
 
 Command:
 
 ```bash
-./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark \
   --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 

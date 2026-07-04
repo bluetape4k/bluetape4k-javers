@@ -161,7 +161,10 @@ jobs:
       - name: Run javers-exposed benchmark smoke
         run: |
           for attempt in 1 2 3; do
-            ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel && break
+            ./gradlew \
+              :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
+              :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark \
+              --no-daemon --no-configuration-cache --no-build-cache --no-parallel && break
             echo "Attempt $attempt failed"
             [ $attempt -lt 3 ] && sleep 30 || exit 1
           done

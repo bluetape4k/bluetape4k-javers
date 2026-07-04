@@ -175,9 +175,10 @@ endpoint 뒤에서 보여주며, bluetape4k Ktor JSON/health helper를 재사용
 
 아래 비교는 문서용으로 범위를 제한한 benchmark이며 release-wide 성능 주장이
 아닙니다.
-`./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-명령으로 생성했고, scenario마다 warmup 5회와 측정 40회를 실행했습니다. 단위는
-milliseconds per operation이며 낮을수록 좋습니다.
+새 실행은 전용 benchmark module 명령
+`./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain`
+을 사용합니다. 아래 committed snapshot은 scenario마다 warmup 5회와 측정 40회를
+실행해 생성했습니다. 단위는 milliseconds per operation이며 낮을수록 좋습니다.
 
 환경: PostgreSQL 18-alpine via Testcontainers, HikariCP, JDK 21.0.11, macOS
 aarch64. Raw artifact:
