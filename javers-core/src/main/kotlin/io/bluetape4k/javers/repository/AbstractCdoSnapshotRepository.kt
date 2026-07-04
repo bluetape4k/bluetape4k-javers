@@ -39,7 +39,8 @@ import kotlin.jvm.optionals.getOrNull
  *
  * ## Behavior / Contract
  * - Uses a [JaversCodec] to convert [CdoSnapshot] ↔ encoded format [T].
- * - [persist] is thread-safe via a lock, and assigns a [Snowflake]-based sequence number.
+ * - [persist] is thread-safe via a lock, assigns a [Snowflake]-based sequence number,
+ *   and delegates the whole commit write to [persistCommit].
  * - Common [QueryParams]-based filtering (author, date, version, commitId, etc.) is handled here.
  * - Subclasses must implement [getKeys], [contains], [getSeq], [updateCommitId],
  *   [getSnapshotSize], [saveSnapshot], and [loadSnapshots].
@@ -206,16 +207,28 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
             return
         }
         lock.withLock {
-            commit.snapshots.forEach {
-                saveSnapshot(it)
-            }
+            val sequence = commitIdSupplier.nextId()
+            persistCommit(commit, sequence)
             log.trace { "${commit.snapshots.size} snapshot(s) persisted" }
             head = commit.id
             headLoaded = true
-            head?.let {
-                updateCommitId(it, commitIdSupplier.nextId())
-            }
         }
+    }
+
+    /**
+     * Persists every snapshot in [commit] and stores the commit [sequence].
+     *
+     * ## Contract
+     * The default implementation preserves the original per-snapshot write
+     * behavior. Durable repositories that can provide commit-level atomicity
+     * should override this method and wrap the whole operation in the backend's
+     * transaction or batch primitive.
+     */
+    protected open fun persistCommit(commit: Commit, sequence: Long) {
+        commit.snapshots.forEach {
+            saveSnapshot(it)
+        }
+        updateCommitId(commit.id, sequence)
     }
 
     override fun getHeadId(): CommitId? {
