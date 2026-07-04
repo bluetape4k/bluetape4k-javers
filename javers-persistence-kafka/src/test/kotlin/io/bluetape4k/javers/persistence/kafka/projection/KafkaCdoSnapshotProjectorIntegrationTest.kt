@@ -42,7 +42,7 @@ class KafkaCdoSnapshotProjectorIntegrationTest {
             val entity = SnapshotEntity(1).apply { intProperty = 7 }
             val firstSnapshot = writeJavers.commit("projection", entity).snapshots.first()
             entity.intProperty = 11
-            writeJavers.commit("projection", entity)
+            val secondCommit = writeJavers.commit("projection", entity)
 
             val projector = KafkaCdoSnapshotProjector(
                 consumerConfigs = consumerConfigs(topic),
@@ -72,7 +72,10 @@ class KafkaCdoSnapshotProjectorIntegrationTest {
 
             firstReplay.projectedSnapshots shouldBeEqualTo 2
             duplicateReplay.skippedSnapshots shouldBeEqualTo 2
+            readRepository.getHeadId() shouldBeEqualTo secondCommit.id
             readRepository.loadSnapshots(firstSnapshot.globalId.value()) shouldHaveSize 2
+            readRepository.loadSnapshots(firstSnapshot.globalId.value())
+                .map { it.commitMetadata.id } shouldBeEqualTo listOf(secondCommit.id, firstSnapshot.commitMetadata.id)
         } finally {
             writeRepository.close()
         }

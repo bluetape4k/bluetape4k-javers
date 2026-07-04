@@ -22,7 +22,8 @@ import java.util.Properties
  * - Consumes Kafka records whose value is the encoded JaVers snapshot payload
  *   produced by `KafkaCdoSnapshotRepository` or `VanillaKafkaCdoSnapshotRepository`.
  * - Decodes each payload with [JaversCodecs.String] and [jsonConverter].
- * - Saves decoded snapshots into [projectionRepository].
+ * - Projects decoded snapshots into [projectionRepository] so repositories
+ *   that track commit metadata can restore head and sequence state.
  * - Skips already projected snapshots when
  *   [KafkaCdoSnapshotProjectionOptions.skipExistingSnapshots] is `true`.
  * - Commits Kafka offsets only after the complete polled batch is projected
@@ -143,7 +144,7 @@ class KafkaCdoSnapshotProjector private constructor(
                     return@forEach
                 }
 
-                projectionRepository.saveSnapshot(snapshot)
+                projectionRepository.projectSnapshot(snapshot)
                 projected++
             }
 

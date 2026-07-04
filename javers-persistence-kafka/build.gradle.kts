@@ -14,6 +14,7 @@ dependencies {
     api(libs.javers.core)
     api(project(":javers-core"))
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
+    testImplementation(project(":javers-exposed"))
     testImplementation(project(":javers-persistence-redis"))
 
     // Kafka
@@ -35,4 +36,5 @@ dependencies {
 
     // Test
     testImplementation(libs.testcontainers.kafka)
+    testRuntimeOnly(libs.h2)
 }
