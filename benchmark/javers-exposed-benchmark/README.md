@@ -16,6 +16,14 @@ the JaVers Exposed commit metadata table:
 - `commit_date`: benchmark-only `commit_date` index.
 - `both`: benchmark-only `author` plus `commit_date` indexes.
 
+`EnversComparisonBenchmark` compares the bounded audit workflow paths used by
+the Exposed DDD example:
+
+- `envers`: Hibernate Envers entity revisions.
+- `javers_in_memory`: JaVers core diff/query cost before persistence adapters.
+- `javers_exposed_repository`: JaVers Exposed snapshot repository cost.
+- `javers_exposed_ddd`: source-table persistence plus aggregate repository orchestration.
+
 The benchmark creates temporary PostgreSQL tables per trial and drops them at
 tear-down. Production JaVers Exposed schema defaults are not changed by this
 module.
@@ -26,6 +34,12 @@ Smoke run used by CI and full Nightly:
 
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Envers comparison smoke run:
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
 Full local benchmark target:

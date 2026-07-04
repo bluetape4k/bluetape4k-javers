@@ -17,6 +17,14 @@ example test와 분리되어 있어 CI와 full Nightly가 benchmark drift를 의
 - `commit_date`: benchmark 전용 `commit_date` 인덱스.
 - `both`: benchmark 전용 `author` 및 `commit_date` 인덱스.
 
+`EnversComparisonBenchmark`는 Exposed DDD example에서 사용하는 제한된 audit
+workflow 경로를 비교합니다.
+
+- `envers`: Hibernate Envers entity revision.
+- `javers_in_memory`: persistence adapter 전 JaVers core diff/query 비용.
+- `javers_exposed_repository`: JaVers Exposed snapshot repository 비용.
+- `javers_exposed_ddd`: source table persistence와 aggregate repository orchestration.
+
 benchmark는 trial마다 임시 PostgreSQL table을 만들고 tear-down에서 제거합니다.
 이 모듈은 production JaVers Exposed schema 기본값을 변경하지 않습니다.
 
@@ -26,6 +34,12 @@ CI와 full Nightly에서 사용하는 smoke run:
 
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
+```
+
+Envers 비교 smoke run:
+
+```bash
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
 로컬 full benchmark target:

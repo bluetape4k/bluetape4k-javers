@@ -33,13 +33,14 @@ JaVers snapshot을 조회하지 않습니다.
 ## Benchmark
 
 Envers 비교 benchmark는 로컬 문서화용 benchmark이며, release 전체 성능
-주장이 아닙니다. H2에서 이 예제의 단순 persistence shape만 측정합니다.
-milliseconds per operation 값은 낮을수록 좋습니다.
+주장이 아닙니다. 이제 일반 example test가 behavior 검증에 집중하도록 전용
+benchmark module에서 실행합니다. milliseconds per operation 값은 낮을수록
+좋습니다.
 
 명령:
 
 ```bash
-./gradlew :examples-javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' \
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark \
   --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
