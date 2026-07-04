@@ -27,6 +27,7 @@ import kotlin.concurrent.withLock
  * - Snapshots are stored newest-first in a Redis LIST keyed as `javers:{name}:snapshot:{globalId}`.
  * - [saveSnapshot] uses a MULTI/EXEC transaction to atomically LPUSH the snapshot and HSET the GlobalId index.
  * - [persist] batches every snapshot in a JaVers commit and the commit sequence update into one MULTI/EXEC boundary.
+ * - [projectSnapshot] restores a replayed snapshot and its commit sequence in one MULTI/EXEC boundary.
  * - The entire MULTI/EXEC sequence is serialized with a [ReentrantLock] because the shared synchronous
  *   Lettuce connection is not thread-safe for pipelined transactions — concurrent callers would otherwise
  *   interleave commands between `multi()` and `exec()`.
@@ -160,6 +161,23 @@ class LettuceCdoSnapshotRepository(
                 runCatching { writeCommands.discard() }
                     .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
                 throw RuntimeException("Failed to persist snapshot commit. commitId=${commit.id.value()}", e)
+            }
+        }
+    }
+
+    override fun persistProjectedSnapshot(snapshot: CdoSnapshot, sequence: Long) {
+        val value = encode(snapshot)
+        transactionLock.withLock {
+            try {
+                writeCommands.multi()
+                queueSaveSnapshot(snapshot, value)
+                writeCommands.hset(sequenceSetKey, snapshot.commitMetadata.id.value(), sequence.toString())
+                writeCommands.exec()
+                log.debug { "Projected Redis snapshot. commitId=${snapshot.commitMetadata.id.value()}, version=${snapshot.version}" }
+            } catch (e: Exception) {
+                runCatching { writeCommands.discard() }
+                    .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
+                throw RuntimeException("Failed to project snapshot. globalId=${snapshot.globalId.value()}", e)
             }
         }
     }

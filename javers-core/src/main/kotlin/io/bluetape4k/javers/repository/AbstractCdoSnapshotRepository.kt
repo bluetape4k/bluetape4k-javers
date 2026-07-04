@@ -41,6 +41,8 @@ import kotlin.jvm.optionals.getOrNull
  * - Uses a [JaversCodec] to convert [CdoSnapshot] ↔ encoded format [T].
  * - [persist] is thread-safe via a lock, assigns a [Snowflake]-based sequence number,
  *   and delegates the whole commit write to [persistCommit].
+ * - [projectSnapshot] restores decoded replay snapshots together with commit
+ *   head and sequence metadata.
  * - Common [QueryParams]-based filtering (author, date, version, commitId, etc.) is handled here.
  * - Subclasses must implement [getKeys], [contains], [getSeq], [updateCommitId],
  *   [getSnapshotSize], [saveSnapshot], and [loadSnapshots].
@@ -229,6 +231,42 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
             saveSnapshot(it)
         }
         updateCommitId(commit.id, sequence)
+    }
+
+    override fun projectSnapshot(snapshot: CdoSnapshot) {
+        lock.withLock {
+            val commitId = snapshot.commitMetadata.id
+            val sequence = getSeq(commitId).takeIf { it > 0L } ?: commitIdSupplier.nextId()
+
+            persistProjectedSnapshot(snapshot, sequence)
+            restoreHeadAfterProjection(commitId, sequence)
+        }
+    }
+
+    /**
+     * Persists a replayed [snapshot] and stores the commit [sequence].
+     *
+     * Backends with transaction or batch primitives should override this method
+     * so the snapshot row and sequence metadata are restored as one projection
+     * unit.
+     */
+    protected open fun persistProjectedSnapshot(snapshot: CdoSnapshot, sequence: Long) {
+        saveSnapshot(snapshot)
+        updateCommitId(snapshot.commitMetadata.id, sequence)
+    }
+
+    private fun restoreHeadAfterProjection(commitId: CommitId, sequence: Long) {
+        val currentHead = when {
+            headLoaded -> head
+            else -> head ?: loadHeadId()
+        }
+        val currentHeadSequence = currentHead?.let { getSeq(it) } ?: 0L
+        head = if (currentHead == null || sequence >= currentHeadSequence) {
+            commitId
+        } else {
+            currentHead
+        }
+        headLoaded = true
     }
 
     override fun getHeadId(): CommitId? {

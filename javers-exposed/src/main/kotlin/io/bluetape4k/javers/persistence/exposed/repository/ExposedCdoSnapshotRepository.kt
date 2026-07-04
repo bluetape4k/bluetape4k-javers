@@ -182,6 +182,12 @@ class ExposedCdoSnapshotRepository(
         }
     }
 
+    override fun persistProjectedSnapshot(snapshot: CdoSnapshot, sequence: Long) {
+        inTransaction {
+            super.persistProjectedSnapshot(snapshot, sequence)
+        }
+    }
+
     override fun saveSnapshot(snapshot: CdoSnapshot) {
         val encodedSnapshot = encode(snapshot)
         val metadata = snapshot.commitMetadata

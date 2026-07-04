@@ -9,6 +9,8 @@ import org.javers.repository.api.JaversRepository
  *
  * ## Contract
  * - Stores a single snapshot with [saveSnapshot].
+ * - Projects a decoded snapshot with [projectSnapshot]; repositories that track
+ *   commit metadata should restore head and sequence state there.
  * - Loads snapshots for a GlobalId with [loadSnapshots] in newest-first order.
  *
  * ```kotlin
@@ -24,6 +26,18 @@ interface CdoSnapshotRepository: JaversRepository {
      * Stores a [CdoSnapshot] in the repository.
      */
     fun saveSnapshot(snapshot: CdoSnapshot)
+
+    /**
+     * Projects a decoded [CdoSnapshot] into the repository during replay.
+     *
+     * The default implementation is snapshot-only for simple repositories.
+     * Durable repositories should override this method or inherit
+     * `AbstractCdoSnapshotRepository` so replay also restores commit head and
+     * sequence metadata.
+     */
+    fun projectSnapshot(snapshot: CdoSnapshot) {
+        saveSnapshot(snapshot)
+    }
 
     /**
      * Returns snapshots for the specified GlobalId value.

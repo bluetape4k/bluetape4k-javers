@@ -23,9 +23,9 @@ import org.redisson.codec.CompositeCodec
  * - Snapshot byte arrays are stored per GlobalId in an [RListMultimap].
  * - [loadSnapshots] retrieves entries from the multimap and returns them in reverse order (most-recent first).
  * - CommitId → sequence number mappings are stored in an [RMap] using string keys and long values.
- * - Commit persistence is best-effort across Redisson data structures. A failure after one snapshot write
- *   can leave partial snapshot data without advancing the restored head sequence. Use the Lettuce repository
- *   when Redis commit-level MULTI/EXEC atomicity is required.
+ * - Commit and projection metadata persistence are best-effort across Redisson data structures. A failure
+ *   after one snapshot write can leave partial snapshot data without advancing the restored head sequence.
+ *   Use the Lettuce repository when Redis commit-level or projection-level MULTI/EXEC atomicity is required.
  * - The default codec is [JaversCodecs.LZ4Fory] (LZ4 compression + Fory serialization).
  *
  * ```kotlin
