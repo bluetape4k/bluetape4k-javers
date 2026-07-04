@@ -10,6 +10,7 @@ import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeInstanceOf
 import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import org.javers.common.exception.JaversException
 import org.javers.core.AbstractJaversRepositoryTest
 import org.javers.core.commit.CommitId
@@ -35,7 +36,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         val shadows = javers.findShadowsAndStream<SnapshotEntity>(query).map { it.get() }.toList()
 
         // THEN
-        shadows.size shouldBeEqualTo 2
+        shadows shouldHaveSize 2
         with(shadows[0] as SnapshotEntity) {
             id shouldBeEqualTo 1
             intProperty shouldBeEqualTo 2
@@ -62,7 +63,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
             .toList()
 
         // THEN
-        shadows.size shouldBeEqualTo 5
+        shadows shouldHaveSize 5
         repeat(5) {
             commitSeq(shadows[it].commitMetadata) shouldBeEqualTo 20 - it
             shadows[it].get().id shouldBeEqualTo 1
@@ -107,7 +108,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         val shadows = javers.findShadowsAndStream<SnapshotEntity>(query).map { it.get() }.toList()
 
         // THEN
-        shadows.size shouldBeEqualTo 5
+        shadows shouldHaveSize 5
         shadows.first().intProperty shouldBeEqualTo 14
         shadows.last().intProperty shouldBeEqualTo 10
 
@@ -227,7 +228,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
         // THEN
         log.debug { "shadow=${shadows.firstOrNull()}" }
-        shadows.size shouldBeEqualTo 1
+        shadows shouldHaveSize 1
 
         assertThinShadowOfPhone(shadows.first().shallowPhone)
         assertThinShadowOfPhone(shadows.first().shallowPhones.first())
@@ -239,7 +240,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         javers.commit("a", entity)
 
         val shadows2 = javers.findShadows<SnapshotEntity>(query).map { it.get() }
-        shadows2.size shouldBeEqualTo 1
+        shadows2 shouldHaveSize 1
 
         // THEN
         log.debug { "shadow2 = ${shadows2.first()}" }

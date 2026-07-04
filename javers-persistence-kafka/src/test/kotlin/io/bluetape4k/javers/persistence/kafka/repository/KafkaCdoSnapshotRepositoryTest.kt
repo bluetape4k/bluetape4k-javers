@@ -12,6 +12,7 @@ import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldNotContain
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.javers.repository.event.CdoSnapshotEvent
 import io.bluetape4k.javers.repository.event.CdoSnapshotEventCodecIds
 import io.bluetape4k.javers.repository.event.CdoSnapshotEventMetadata
@@ -54,7 +55,7 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     @Test
     fun `CommitMetadata에 현재 LocalDateTime과 Instant를 사용한다`() {
         val commit = javers.commit("author", SnapshotEntity(1))
-        commit.snapshots.size shouldBeEqualTo 1
+        commit.snapshots shouldHaveSize 1
         val snapshot = commit.snapshots.first()
         snapshot.type shouldBeEqualTo SnapshotType.INITIAL
     }

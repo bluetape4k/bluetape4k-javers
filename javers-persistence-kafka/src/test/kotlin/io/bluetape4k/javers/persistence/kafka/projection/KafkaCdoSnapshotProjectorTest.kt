@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.kafka.projection
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.caffeine.CaffeineCdoSnapshotRepository
 import io.mockk.Runs
@@ -52,7 +53,7 @@ class KafkaCdoSnapshotProjectorTest {
         result.polledRecords shouldBeEqualTo 1
         result.projectedSnapshots shouldBeEqualTo 1
         result.skippedSnapshots shouldBeEqualTo 0
-        targetRepository.loadSnapshots(source.globalIdValue).size shouldBeEqualTo 1
+        targetRepository.loadSnapshots(source.globalIdValue) shouldHaveSize 1
         verify(exactly = 1) { consumer.commitSync() }
     }
 
@@ -75,7 +76,7 @@ class KafkaCdoSnapshotProjectorTest {
         result.polledRecords shouldBeEqualTo 1
         result.projectedSnapshots shouldBeEqualTo 0
         result.skippedSnapshots shouldBeEqualTo 1
-        targetRepository.loadSnapshots(source.globalIdValue).size shouldBeEqualTo 1
+        targetRepository.loadSnapshots(source.globalIdValue) shouldHaveSize 1
         verify(exactly = 1) { consumer.commitSync() }
     }
 

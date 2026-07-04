@@ -1,6 +1,7 @@
 package io.bluetape4k.javers.persistence.kafka.projection
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.kafka.repository.KafkaProvider
 import io.bluetape4k.javers.persistence.kafka.repository.VanillaKafkaCdoSnapshotRepository
@@ -71,7 +72,7 @@ class KafkaCdoSnapshotProjectorIntegrationTest {
 
             firstReplay.projectedSnapshots shouldBeEqualTo 2
             duplicateReplay.skippedSnapshots shouldBeEqualTo 2
-            readRepository.loadSnapshots(firstSnapshot.globalId.value()).size shouldBeEqualTo 2
+            readRepository.loadSnapshots(firstSnapshot.globalId.value()) shouldHaveSize 2
         } finally {
             writeRepository.close()
         }

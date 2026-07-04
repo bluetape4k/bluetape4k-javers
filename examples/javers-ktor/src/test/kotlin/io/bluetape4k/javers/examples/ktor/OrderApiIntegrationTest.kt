@@ -1,6 +1,7 @@
 package io.bluetape4k.javers.examples.ktor
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.javers.examples.ktor.domain.OrderPlaced
 import io.bluetape4k.ktor.core.HealthResponse
 import io.bluetape4k.ktor.testing.bluetape4kJsonClient
@@ -47,7 +48,7 @@ class OrderApiIntegrationTest {
 
         history shouldHaveStatus HttpStatusCode.OK
         val historyBody = history.decodeJsonBody<OrderHistoryResponse>()
-        historyBody.snapshots.size shouldBeEqualTo 1
+        historyBody.snapshots shouldHaveSize 1
         historyBody.snapshots.single().domainEventType shouldBeEqualTo
             OrderPlaced::class.qualifiedName
     }
@@ -82,7 +83,7 @@ class OrderApiIntegrationTest {
         history shouldHaveStatus HttpStatusCode.OK
         val historyBody = history.decodeJsonBody<OrderHistoryResponse>()
         historyBody.limit shouldBeEqualTo 100
-        historyBody.snapshots.size shouldBeEqualTo 2
+        historyBody.snapshots shouldHaveSize 2
     }
 
     @Test

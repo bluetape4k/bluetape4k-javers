@@ -2,6 +2,7 @@ package io.bluetape4k.javers.persistence.kafka.repository
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import org.javers.core.JaversBuilder
@@ -25,7 +26,7 @@ class KafkaCdoSnapshotRepositoryCodecContractTest {
 
         javers.commit("codec-contract", SnapshotEntity(1).apply { intProperty = 1 })
 
-        kafkaTemplate.records.size shouldBeEqualTo 1
+        kafkaTemplate.records shouldHaveSize 1
         val (key, payload) = kafkaTemplate.records.single()
 
         key shouldBeEqualTo "org.javers.core.model.SnapshotEntity/1"

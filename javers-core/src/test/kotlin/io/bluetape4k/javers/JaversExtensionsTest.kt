@@ -12,6 +12,7 @@ import io.bluetape4k.assertions.shouldBeInstanceOf
 import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.assertions.shouldNotBeEmpty
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.metamodel.`object`.InstanceId
@@ -76,7 +77,7 @@ class JaversExtensionsTest {
         val diff = javers.compareCollections(oldList, newList)
 
         diff.changes.shouldNotBeEmpty()
-        diff.changes.size shouldBeEqualTo 1
+        diff.changes shouldHaveSize 1
         log.debug { "Diff: ${diff.prettyPrint()}" }
     }
 
@@ -87,7 +88,7 @@ class JaversExtensionsTest {
 
         val diff = javers.compareCollections(list1, list2)
 
-        diff.changes.size shouldBeEqualTo 0
+        diff.changes shouldHaveSize 0
     }
 
     @Test

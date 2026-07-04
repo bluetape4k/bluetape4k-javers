@@ -2,6 +2,7 @@ package io.bluetape4k.javers.examples.exposedddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.ddd.DOMAIN_EVENT_TYPE_PROPERTY
 import io.bluetape4k.javers.ddd.DomainEvent
@@ -110,7 +111,7 @@ class OrderCommandHandlerTest {
         paid.status shouldBeEqualTo OrderStatus.PAID
         val loaded = repository.load(orderId).shouldNotBeNull()
         loaded.status shouldBeEqualTo OrderStatus.PAID
-        repository.loadHistory(orderId).size shouldBeEqualTo 2
+        repository.loadHistory(orderId) shouldHaveSize 2
         publishedEvents.map { it::class } shouldBeEqualTo listOf(OrderPlaced::class, OrderMarkedPaid::class)
     }
 }
