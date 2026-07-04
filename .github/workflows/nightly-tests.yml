@@ -602,6 +602,12 @@ jobs:
       - test-javers-spring-boot4-autoconfigure
     if: ${{ always() && ((github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full')) }}
     steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
       - name: Download all coverage artifacts
         uses: actions/download-artifact@v8
         with:
@@ -662,6 +668,9 @@ jobs:
           fi
 
           printf 'Validated %s expected full-scope coverage artifacts.\n' "${#expected_artifacts[@]}"
+
+      - name: Aggregate Kover coverage summary
+        run: python3 .github/scripts/aggregate-kover-coverage.py coverage-artifacts
 
       - name: Upload aggregated coverage
         if: always()
