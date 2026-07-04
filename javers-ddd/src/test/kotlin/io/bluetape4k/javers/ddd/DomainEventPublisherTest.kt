@@ -18,6 +18,20 @@ class DomainEventPublisherTest {
     }
 
     @Test
+    fun `publish all delegates events in iteration order`() {
+        val published = mutableListOf<DomainEvent>()
+        val publisher = FunctionDomainEventPublisher { published += it }
+        val events = listOf(
+            TestEvent(aggregateId = "order-1"),
+            TestEvent(aggregateId = "order-2"),
+        )
+
+        publisher.publishAll(events)
+
+        published shouldBeEqualTo events
+    }
+
+    @Test
     fun `composite publisher preserves publisher order`() {
         val calls = mutableListOf<String>()
         val publisher = CompositeDomainEventPublisher(
