@@ -9,9 +9,9 @@ import org.javers.repository.jql.QueryBuilder
  *
  * ## Contract
  * Subclasses own the source-of-truth persistence in [persist] and [findById].
- * This base class commits saved aggregates to JaVers, loads JaVers shadows for
- * history reconstruction, and publishes domain events after persistence and
- * JaVers commit succeed.
+ * This base class commits saved aggregates to JaVers inside [saveAuditBoundary],
+ * loads JaVers shadows for history reconstruction, and publishes domain events
+ * after persistence and JaVers commit succeed.
  *
  * ```kotlin
  * class OrderRepository(javers: Javers) :
@@ -44,8 +44,11 @@ abstract class AggregateRepository<T: AggregateRoot<ID>, ID: Any>(
      * and returns the saved aggregate.
      */
     fun save(aggregate: T, author: String, events: Collection<DomainEvent>): T {
-        val saved = persist(aggregate)
-        javers.commit(author, saved, events.toJaversProperties())
+        val saved = saveAuditBoundary {
+            val persisted = persist(aggregate)
+            javers.commit(author, persisted, events.toJaversProperties())
+            persisted
+        }
         eventPublisher.publishAll(events)
         return saved
     }
@@ -69,6 +72,17 @@ abstract class AggregateRepository<T: AggregateRoot<ID>, ID: Any>(
      * Persists the aggregate in the source-of-truth store.
      */
     protected abstract fun persist(aggregate: T): T
+
+    /**
+     * Runs source persistence and JaVers audit commit in one save boundary.
+     *
+     * ## Contract
+     * The default boundary is a direct call for stores that do not expose a
+     * shared transaction. Transaction-aware subclasses should override this and
+     * execute [block] inside their source store transaction so source state and
+     * JaVers audit state commit or roll back together.
+     */
+    protected open fun <R> saveAuditBoundary(block: () -> R): R = block()
 
     /**
      * Finds the aggregate in the source-of-truth store.

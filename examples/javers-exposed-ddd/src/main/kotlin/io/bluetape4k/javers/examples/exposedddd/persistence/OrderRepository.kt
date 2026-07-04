@@ -33,6 +33,12 @@ class OrderRepository(
 
     private val gson = Gson()
 
+    protected override fun <R> saveAuditBoundary(block: () -> R): R {
+        return transaction(database) {
+            block()
+        }
+    }
+
     override fun persist(aggregate: Order): Order {
         transaction(database) {
             val exists = OrdersTable

@@ -1,8 +1,10 @@
 package io.bluetape4k.javers.examples.exposedddd
 
+import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
-import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldNotBeNull
+import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.ddd.DOMAIN_EVENT_TYPE_PROPERTY
 import io.bluetape4k.javers.ddd.DomainEvent
@@ -22,10 +24,14 @@ import io.bluetape4k.javers.examples.exposedddd.service.OrderCommandHandler
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.mockk.every
+import io.mockk.mockk
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -113,5 +119,56 @@ class OrderCommandHandlerTest {
         loaded.status shouldBeEqualTo OrderStatus.PAID
         repository.loadHistory(orderId) shouldHaveSize 2
         publishedEvents.map { it::class } shouldBeEqualTo listOf(OrderPlaced::class, OrderMarkedPaid::class)
+    }
+
+    @Test
+    fun `save rolls back source row when JaVers commit fails`() {
+        val failingJavers = mockk<Javers>()
+        every { failingJavers.commit(any<String>(), any<Order>(), any<Map<String, String>>()) } throws
+            RuntimeException("audit failed")
+        val failingRepository = OrderRepository(database = database, javers = failingJavers)
+        val aggregate = Order.place(
+            id = OrderId("order-audit-fails"),
+            customerId = CustomerId("customer-audit-fails"),
+            items = listOf(OrderItem("sku-audit-fails", quantity = 1, unitPrice = BigDecimal("10.00"))),
+            now = clock.instant(),
+        )
+
+        assertFailsWith<RuntimeException> {
+            failingRepository.save(aggregate = aggregate, author = "tester")
+        }
+
+        transaction(database) {
+            OrdersTable
+                .selectAll()
+                .where { OrdersTable.id eq aggregate.id.value }
+                .empty()
+                .shouldBeTrue()
+        }
+    }
+
+    @Test
+    fun `publisher failure keeps committed source and audit state`() {
+        val failingRepository = OrderRepository(
+            database = database,
+            javers = javers,
+            eventPublisher = FunctionDomainEventPublisher {
+                throw RuntimeException("publisher failed")
+            },
+        )
+        val failingHandler = OrderCommandHandler(failingRepository, clock)
+        val command = PlaceOrderCommand(
+            orderId = OrderId("order-publisher-fails"),
+            author = "tester",
+            customerId = CustomerId("customer-publisher-fails"),
+            items = listOf(OrderItem("sku-publisher-fails", quantity = 1, unitPrice = BigDecimal("10.00"))),
+        )
+
+        assertFailsWith<RuntimeException> {
+            failingHandler.handle(command)
+        }
+
+        failingRepository.load(command.orderId).shouldNotBeNull().status shouldBeEqualTo OrderStatus.PLACED
+        failingRepository.loadHistory(command.orderId) shouldHaveSize 1
     }
 }
