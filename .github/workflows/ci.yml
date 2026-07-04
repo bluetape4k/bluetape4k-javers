@@ -98,22 +98,40 @@ jobs:
               - 'benchmark/javers-exposed-benchmark/**'
             examples-javers-exposed-ddd:
               - 'examples/javers-exposed-ddd/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             examples-javers-ktor:
               - 'examples/javers-ktor/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             examples-javers-spring-boot4:
               - 'examples/javers-spring-boot4/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             javers-core:
               - 'javers-core/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             javers-ddd:
               - 'javers-ddd/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             javers-exposed:
               - 'javers-exposed/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             javers-kafka:
               - 'javers-persistence-kafka/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             javers-redis:
               - 'javers-persistence-redis/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
             javers-spring-boot4-autoconfigure:
               - 'javers-spring-boot4-autoconfigure/**'
+              - '.github/workflows/ci.yml'
+              - '.github/scripts/**'
 
   # 3. Compile only
   build:
