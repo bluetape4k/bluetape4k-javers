@@ -2,12 +2,17 @@ package io.bluetape4k.javers.persistence.redis.repository
 
 import io.bluetape4k.javers.codecs.JaversCodec
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
+import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeGreaterThan
+import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.testcontainers.storage.RedisServer
 import io.lettuce.core.RedisClient
 import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
 import io.lettuce.core.codec.RedisCodec
+import org.javers.core.commit.CommitId
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -77,5 +82,103 @@ class LettuceJaversCommitTest: AbstractRedisCdoSnapshotRepositoryParityTest() {
         verify(exactly = 1) { readConnection.close() }
         verify(exactly = 1) { writeConnection.close() }
         verify(exactly = 0) { client.shutdown() }
+    }
+
+    @Test
+    fun `persist discards transaction and propagates exec failure`() {
+        val client = mockk<RedisClient>(relaxed = true)
+        val readConnection = mockk<StatefulRedisConnection<String, Any>>(relaxed = true)
+        val writeConnection = mockk<StatefulRedisConnection<String, Any>>(relaxed = true)
+        val readCommands = mockk<RedisCommands<String, Any>>(relaxed = true)
+        val writeCommands = mockk<RedisCommands<String, Any>>(relaxed = true)
+
+        every { client.connect(any<RedisCodec<String, Any>>()) } returnsMany listOf(readConnection, writeConnection)
+        every { readConnection.sync() } returns readCommands
+        every { writeConnection.sync() } returns writeCommands
+        every { readCommands.hgetall(any()) } returns emptyMap()
+        every { readCommands.hget(any(), any()) } returns null
+        every { writeCommands.exec() } throws IllegalStateException("exec failed")
+
+        val repository = LettuceCdoSnapshotRepository("transaction-failure", client)
+        val javers = JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
+
+        assertFailsWith<RuntimeException> {
+            javers.commit("author", SnapshotEntity(30))
+        }
+
+        verify(exactly = 1) { writeCommands.multi() }
+        verify(exactly = 1) { writeCommands.discard() }
+    }
+
+    @Test
+    fun `saveSnapshot directly appends encoded snapshot and updates key index`() {
+        val repository = LettuceCdoSnapshotRepository("direct-save", lettuceClient)
+        val javers = JaversBuilder.javers()
+            .registerJaversRepository(repository)
+            .build()
+        val snapshot = javers.commit("author", SnapshotEntity(10)).snapshots.single()
+
+        repository.saveSnapshot(snapshot)
+
+        repository.loadSnapshots(snapshot.globalId.value()) shouldHaveSize 2
+        repository.snapshotSize(snapshot.globalId.value()) shouldBeEqualTo 2
+    }
+
+    @Test
+    fun `projectSnapshot restores snapshot and sequence metadata`() {
+        val sourceRepository = LettuceCdoSnapshotRepository("projection-source", lettuceClient)
+        val sourceJavers = JaversBuilder.javers()
+            .registerJaversRepository(sourceRepository)
+            .build()
+        val snapshot = sourceJavers.commit("author", SnapshotEntity(20)).snapshots.single()
+
+        val targetRepository = LettuceCdoSnapshotRepository("projection-target", lettuceClient)
+        JaversBuilder.javers()
+            .registerJaversRepository(targetRepository)
+            .build()
+
+        targetRepository.projectSnapshot(snapshot)
+
+        targetRepository.loadSnapshots(snapshot.globalId.value()) shouldHaveSize 1
+        targetRepository.getHeadId() shouldBeEqualTo snapshot.commitMetadata.id
+        targetRepository.sequenceOf(snapshot.commitMetadata.id) shouldBeGreaterThan 0L
+    }
+
+    @Test
+    fun `sequence metadata can be updated independently`() {
+        val repositoryName = "sequence-update"
+        val commitId = CommitId(9000L, 0)
+        val repository = LettuceCdoSnapshotRepository(repositoryName, lettuceClient)
+
+        repository.updateSequence(commitId, 42L)
+
+        val rebuiltRepository = LettuceCdoSnapshotRepository(repositoryName, lettuceClient)
+
+        rebuiltRepository.getHeadId() shouldBeEqualTo commitId
+        rebuiltRepository.sequenceOf(commitId) shouldBeEqualTo 42L
+    }
+
+    private fun LettuceCdoSnapshotRepository.snapshotSize(globalIdValue: String): Int {
+        val method = LettuceCdoSnapshotRepository::class.java.getDeclaredMethod("getSnapshotSize", String::class.java)
+        method.isAccessible = true
+        return method.invoke(this, globalIdValue) as Int
+    }
+
+    private fun LettuceCdoSnapshotRepository.updateSequence(commitId: CommitId, sequence: Long) {
+        val method = LettuceCdoSnapshotRepository::class.java.getDeclaredMethod(
+            "updateCommitId",
+            CommitId::class.java,
+            java.lang.Long.TYPE,
+        )
+        method.isAccessible = true
+        method.invoke(this, commitId, sequence)
+    }
+
+    private fun LettuceCdoSnapshotRepository.sequenceOf(commitId: CommitId): Long {
+        val method = LettuceCdoSnapshotRepository::class.java.getDeclaredMethod("getSeq", CommitId::class.java)
+        method.isAccessible = true
+        return method.invoke(this, commitId) as Long
     }
 }
