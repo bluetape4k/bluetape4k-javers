@@ -1,10 +1,14 @@
 package io.bluetape4k.javers.persistence.exposed.repository
 
+import com.google.gson.JsonObject
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
-import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldBeNull
+import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.codec.Base58
+import io.bluetape4k.javers.codecs.JaversCodec
+import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
 import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
@@ -21,6 +25,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.concurrent.atomic.AtomicInteger
 
 class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
 
@@ -147,6 +152,26 @@ class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
     }
 
     @Test
+    fun `failed multi snapshot commit rolls back snapshots and metadata`() {
+        val repository = ExposedCdoSnapshotRepository(database, codec = FailAfterFirstEncodeCodec())
+        val javers = newJavers(repository)
+        val parent = SnapshotEntity(31).apply {
+            intProperty = 31
+            entityRef = SnapshotEntity(32).apply { intProperty = 32 }
+        }
+
+        assertFailsWith<RuntimeException> {
+            javers.commit("author", parent)
+        }
+
+        transaction(database) {
+            CdoSnapshotTable.selectAll().count() shouldBeEqualTo 0L
+            CommitTable.selectAll().count() shouldBeEqualTo 0L
+        }
+        repository.getHeadId().shouldBeNull()
+    }
+
+    @Test
     fun `query params filter by author`() {
         val repository = ExposedCdoSnapshotRepository(database)
         val javers = newJavers(repository)
@@ -166,5 +191,18 @@ class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
         return JaversBuilder.javers()
             .registerJaversRepository(repository)
             .build()
+    }
+
+    private class FailAfterFirstEncodeCodec: JaversCodec<String> {
+        private val encodedCount = AtomicInteger()
+
+        override fun encode(jsonElement: JsonObject): String {
+            if (encodedCount.incrementAndGet() > 1) {
+                throw RuntimeException("codec encode failed after first snapshot")
+            }
+            return JaversCodecs.String.encode(jsonElement)
+        }
+
+        override fun decode(encodedData: String): JsonObject? = JaversCodecs.String.decode(encodedData)
     }
 }

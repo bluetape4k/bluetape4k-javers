@@ -21,6 +21,7 @@ import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import io.bluetape4k.javers.repository.AbstractCdoSnapshotRepository
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.trace
+import org.javers.core.commit.Commit
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.javers.core.metamodel.`object`.GlobalId
@@ -173,6 +174,12 @@ class ExposedCdoSnapshotRepository(
             .where { snapshotTable.globalId eq globalIdValue }
             .count()
             .toInt()
+    }
+
+    override fun persistCommit(commit: Commit, sequence: Long) {
+        inTransaction {
+            super.persistCommit(commit, sequence)
+        }
     }
 
     override fun saveSnapshot(snapshot: CdoSnapshot) {

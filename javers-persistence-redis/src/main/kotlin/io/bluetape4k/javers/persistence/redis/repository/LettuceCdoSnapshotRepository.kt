@@ -14,6 +14,7 @@ import io.bluetape4k.support.asInt
 import io.bluetape4k.support.asLongOrNull
 import io.lettuce.core.RedisClient
 import io.lettuce.core.api.StatefulRedisConnection
+import org.javers.core.commit.Commit
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import java.util.concurrent.locks.ReentrantLock
@@ -25,6 +26,7 @@ import kotlin.concurrent.withLock
  * ## Behavior / Contract
  * - Snapshots are stored newest-first in a Redis LIST keyed as `javers:{name}:snapshot:{globalId}`.
  * - [saveSnapshot] uses a MULTI/EXEC transaction to atomically LPUSH the snapshot and HSET the GlobalId index.
+ * - [persist] batches every snapshot in a JaVers commit and the commit sequence update into one MULTI/EXEC boundary.
  * - The entire MULTI/EXEC sequence is serialized with a [ReentrantLock] because the shared synchronous
  *   Lettuce connection is not thread-safe for pipelined transactions — concurrent callers would otherwise
  *   interleave commands between `multi()` and `exec()`.
@@ -128,21 +130,44 @@ class LettuceCdoSnapshotRepository(
     }
 
     override fun saveSnapshot(snapshot: CdoSnapshot) {
-        val key = makeSnapshotKey(snapshot.globalId.value())
         val value = encode(snapshot)
         transactionLock.withLock {
             try {
                 writeCommands.multi()
-                writeCommands.lpush(key, value)
-                writeCommands.hset(cacheSetKey, snapshot.globalId.value(), snapshot.version)
+                queueSaveSnapshot(snapshot, value)
                 writeCommands.exec()
-                log.debug { "Saved snapshot key=$key, version=${snapshot.version}" }
+                log.debug { "Saved snapshot key=${makeSnapshotKey(snapshot.globalId.value())}, version=${snapshot.version}" }
             } catch (e: Exception) {
                 runCatching { writeCommands.discard() }
                     .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
                 throw RuntimeException("Failed to save snapshot. globalId=${snapshot.globalId.value()}", e)
             }
         }
+    }
+
+    override fun persistCommit(commit: Commit, sequence: Long) {
+        val encodedSnapshots = commit.snapshots.map { snapshot -> snapshot to encode(snapshot) }
+        transactionLock.withLock {
+            try {
+                writeCommands.multi()
+                encodedSnapshots.forEach { (snapshot, value) ->
+                    queueSaveSnapshot(snapshot, value)
+                }
+                writeCommands.hset(sequenceSetKey, commit.id.value(), sequence.toString())
+                writeCommands.exec()
+                log.debug { "Persisted Redis snapshot commit. commitId=${commit.id.value()}, snapshots=${encodedSnapshots.size}" }
+            } catch (e: Exception) {
+                runCatching { writeCommands.discard() }
+                    .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
+                throw RuntimeException("Failed to persist snapshot commit. commitId=${commit.id.value()}", e)
+            }
+        }
+    }
+
+    private fun queueSaveSnapshot(snapshot: CdoSnapshot, value: ByteArray) {
+        val key = makeSnapshotKey(snapshot.globalId.value())
+        writeCommands.lpush(key, value)
+        writeCommands.hset(cacheSetKey, snapshot.globalId.value(), snapshot.version)
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
