@@ -631,6 +631,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
+      - changes
       - test-javers-core
       - test-javers-ddd
       - test-examples-javers-exposed-ddd
@@ -640,7 +641,18 @@ jobs:
       - test-javers-spring-boot4-autoconfigure
       - test-persistence-redis
       - test-persistence-kafka
-    if: always()
+    if: >
+      always() && (
+        needs.changes.outputs.javers-core == 'true' ||
+        needs.changes.outputs.javers-ddd == 'true' ||
+        needs.changes.outputs.examples-javers-exposed-ddd == 'true' ||
+        needs.changes.outputs.examples-javers-ktor == 'true' ||
+        needs.changes.outputs.examples-javers-spring-boot4 == 'true' ||
+        needs.changes.outputs.javers-exposed == 'true' ||
+        needs.changes.outputs.javers-spring-boot4-autoconfigure == 'true' ||
+        needs.changes.outputs.javers-redis == 'true' ||
+        needs.changes.outputs.javers-kafka == 'true'
+      )
     steps:
       - uses: actions/checkout@v7
 
