@@ -18,7 +18,7 @@ hikaricp = "7.1.0"  # https://mvnrepository.com/artifact/com.zaxxer/HikariCP
 
 lettuce = "7.6.0.RELEASE"  # https://mvnrepository.com/artifact/io.lettuce/lettuce-core
 
-kafka4 = "4.3.1"  # https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
+kafka4 = "4.2.1"  # https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients; Spring Kafka 4.1 embedded-test ABI
 spring-kafka4 = "4.1.0"  # https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
 
 mongo-driver = "5.7.0"  # https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
