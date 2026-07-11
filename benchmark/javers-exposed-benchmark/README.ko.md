@@ -50,7 +50,11 @@ Envers 비교 smoke run:
 
 benchmark task는 직렬로 실행해야 합니다. 이 모듈은 PostgreSQL Testcontainers,
 HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`,
-`bluetape4k-exposed-jdbc-tests`를 사용합니다.
+`bluetape4k-exposed-jdbc-tests`를 사용합니다. 로컬 실행과 CI에서는 기본적으로
+컨테이너를 재사용하지 않습니다. 개발자가 로컬에서만 재사용하려면
+`~/.testcontainers.properties`에서 Testcontainers reuse를 활성화하고
+`JAVA_TOOL_OPTIONS`에 `-Dbluetape4k.testcontainers.reuse=true`를 명시해야 합니다.
+`CI`가 설정되어 있거나 `GITHUB_ACTIONS=true`이면 이 opt-in은 무시됩니다.
 
 ## 결과 Snapshot
 
