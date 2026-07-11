@@ -13,7 +13,6 @@ import io.bluetape4k.javers.examples.exposedddd.persistence.OrdersTable
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryOptions
 import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
-import io.bluetape4k.testcontainers.database.PostgreSQLServer
 import io.bluetape4k.testcontainers.database.getHikariDataSource
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -304,7 +303,7 @@ open class EnversComparisonBenchmark {
     }
 
     companion object {
-        private val postgres: PostgreSQLServer by lazy { PostgreSQLServer.Launcher.postgres }
+        private val postgres by lazy { BenchmarkPostgreSQL.server }
         private val NOW: Instant = Instant.parse("2026-06-08T00:00:00Z")
         private const val CORPUS_SIZE = 40
 

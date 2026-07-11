@@ -50,7 +50,11 @@ Full local benchmark target:
 
 Run benchmark tasks serially. The module uses PostgreSQL Testcontainers,
 HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`, and
-`bluetape4k-exposed-jdbc-tests`.
+`bluetape4k-exposed-jdbc-tests`. Containers are non-reusable by default in
+local runs and CI. A developer may explicitly opt in to local reuse by enabling
+Testcontainers reuse in `~/.testcontainers.properties` and adding
+`-Dbluetape4k.testcontainers.reuse=true` to `JAVA_TOOL_OPTIONS`. The opt-in is ignored
+when `CI` or `GITHUB_ACTIONS=true` is present.
 
 ## Result Snapshot
 

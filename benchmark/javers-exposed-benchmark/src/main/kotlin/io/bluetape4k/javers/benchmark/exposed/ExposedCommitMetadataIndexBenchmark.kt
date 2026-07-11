@@ -11,7 +11,6 @@ import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import io.bluetape4k.jdbc.hikari.hikariDataSourceOf
 import io.bluetape4k.jdbc.sql.withStatement
 import io.bluetape4k.support.requireNotNull
-import io.bluetape4k.testcontainers.database.PostgreSQLServer
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.Param
 import kotlinx.benchmark.Scope
@@ -216,7 +215,7 @@ open class ExposedCommitMetadataIndexBenchmark {
     }
 
     companion object {
-        private val postgres: PostgreSQLServer by lazy { PostgreSQLServer.Launcher.postgres }
+        private val postgres by lazy { BenchmarkPostgreSQL.server }
         private val benchmarkDb: TestDB = TestDB.POSTGRESQL
         private const val CORPUS_SIZE = 1_000
         private const val AUTHOR_BUCKETS = 12

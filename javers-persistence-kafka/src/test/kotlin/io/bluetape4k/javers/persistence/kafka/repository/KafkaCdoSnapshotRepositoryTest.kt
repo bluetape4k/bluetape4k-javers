@@ -53,6 +53,11 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
     val javers = newJavers()
 
     @Test
+    fun `module launcher does not enable container reuse`() {
+        KafkaProvider.kafka.isShouldBeReused.shouldBeFalse()
+    }
+
+    @Test
     fun `CommitMetadata에 현재 LocalDateTime과 Instant를 사용한다`() {
         val commit = javers.commit("author", SnapshotEntity(1))
         commit.snapshots shouldHaveSize 1

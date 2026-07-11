@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.redis
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldNotBeNull
 import org.junit.jupiter.api.Test
@@ -12,6 +13,11 @@ import org.redisson.api.redisnode.RedisNodes
 class RedisServerTest: AbstractJaversTest() {
 
     companion object: KLogging()
+
+    @Test
+    fun `module launcher does not enable container reuse`() {
+        redis.isShouldBeReused.shouldBeFalse()
+    }
 
     @Test
     fun `Lettuce Client 접속 테스트`() {
