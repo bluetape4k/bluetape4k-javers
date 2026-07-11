@@ -7,11 +7,16 @@ internal object BenchmarkPostgreSQL {
     const val REUSE_PROPERTY: String = "bluetape4k.testcontainers.reuse"
 
     val server: PostgreSQLServer by lazy {
-        PostgreSQLServer(reuse = reuseEnabled()).apply {
+        val reuse = reuseEnabled()
+        PostgreSQLServer(reuse = reuse).apply {
             start()
-            ShutdownQueue.register(this)
+            if (shouldRegisterForShutdown(reuse)) {
+                ShutdownQueue.register(this)
+            }
         }
     }
+
+    internal fun shouldRegisterForShutdown(reuse: Boolean): Boolean = !reuse
 
     internal fun reuseEnabled(
         propertyValue: String? = System.getProperty(REUSE_PROPERTY),
