@@ -54,7 +54,7 @@ HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`, and
 local runs and CI. A developer may explicitly opt in to local reuse by enabling
 Testcontainers reuse in `~/.testcontainers.properties` and adding
 `-Dbluetape4k.testcontainers.reuse=true` to `JAVA_TOOL_OPTIONS`. The opt-in is ignored
-when `CI` or `GITHUB_ACTIONS=true` is present. A reusable PostgreSQL container is
+when either `CI` or `GITHUB_ACTIONS` is present. A reusable PostgreSQL container is
 left running across benchmark JVM exits; a non-reusable container is closed when
 its benchmark JVM exits.
 
