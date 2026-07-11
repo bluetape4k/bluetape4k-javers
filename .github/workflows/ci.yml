@@ -670,20 +670,29 @@ jobs:
 
       - name: Validate coverage artifacts
         shell: bash
+        env:
+          JAVERS_CORE_CHANGED: ${{ needs.changes.outputs.javers-core }}
+          JAVERS_DDD_CHANGED: ${{ needs.changes.outputs.javers-ddd }}
+          EXAMPLES_EXPOSED_DDD_CHANGED: ${{ needs.changes.outputs.examples-javers-exposed-ddd }}
+          EXAMPLES_KTOR_CHANGED: ${{ needs.changes.outputs.examples-javers-ktor }}
+          EXAMPLES_SPRING_BOOT4_CHANGED: ${{ needs.changes.outputs.examples-javers-spring-boot4 }}
+          JAVERS_EXPOSED_CHANGED: ${{ needs.changes.outputs.javers-exposed }}
+          JAVERS_SPRING_BOOT4_AUTOCONFIGURE_CHANGED: ${{ needs.changes.outputs.javers-spring-boot4-autoconfigure }}
+          JAVERS_REDIS_CHANGED: ${{ needs.changes.outputs.javers-redis }}
+          JAVERS_KAFKA_CHANGED: ${{ needs.changes.outputs.javers-kafka }}
         run: |
           set -euo pipefail
 
-          expected_artifacts=(
-            coverage-javers-core
-            coverage-javers-ddd
-            coverage-examples-javers-exposed-ddd
-            coverage-examples-javers-ktor
-            coverage-examples-javers-spring-boot4
-            coverage-javers-exposed
-            coverage-javers-spring-boot4-autoconfigure
-            coverage-persistence-redis
-            coverage-persistence-kafka
-          )
+          expected_artifacts=()
+          [[ "${JAVERS_CORE_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-javers-core)
+          [[ "${JAVERS_DDD_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-javers-ddd)
+          [[ "${EXAMPLES_EXPOSED_DDD_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-examples-javers-exposed-ddd)
+          [[ "${EXAMPLES_KTOR_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-examples-javers-ktor)
+          [[ "${EXAMPLES_SPRING_BOOT4_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-examples-javers-spring-boot4)
+          [[ "${JAVERS_EXPOSED_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-javers-exposed)
+          [[ "${JAVERS_SPRING_BOOT4_AUTOCONFIGURE_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-javers-spring-boot4-autoconfigure)
+          [[ "${JAVERS_REDIS_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-persistence-redis)
+          [[ "${JAVERS_KAFKA_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-persistence-kafka)
 
           missing_artifacts=()
           empty_artifacts=()
