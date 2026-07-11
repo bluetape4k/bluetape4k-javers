@@ -35,9 +35,11 @@ class BenchmarkPostgreSQLTest {
             environment = mapOf("CI" to "true"),
         ).shouldBeFalse()
 
-        BenchmarkPostgreSQL.reuseEnabled(
-            propertyValue = "true",
-            environment = mapOf("GITHUB_ACTIONS" to "true"),
-        ).shouldBeFalse()
+        listOf("", "0", "false", "true").forEach { markerValue ->
+            BenchmarkPostgreSQL.reuseEnabled(
+                propertyValue = "true",
+                environment = mapOf("GITHUB_ACTIONS" to markerValue),
+            ).shouldBeFalse()
+        }
     }
 }

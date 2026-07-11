@@ -22,7 +22,7 @@ internal object BenchmarkPostgreSQL {
         propertyValue: String? = System.getProperty(REUSE_PROPERTY),
         environment: Map<String, String> = System.getenv(),
     ): Boolean {
-        val isCi = environment.containsKey("CI") || environment["GITHUB_ACTIONS"] == "true"
+        val isCi = environment.containsKey("CI") || environment.containsKey("GITHUB_ACTIONS")
         return !isCi && propertyValue?.toBooleanStrictOrNull() == true
     }
 }
