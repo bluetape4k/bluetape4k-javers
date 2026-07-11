@@ -7,6 +7,12 @@ import org.junit.jupiter.api.Test
 class BenchmarkPostgreSQLTest {
 
     @Test
+    fun `only non-reusable container lifecycle belongs to the benchmark JVM`() {
+        BenchmarkPostgreSQL.shouldRegisterForShutdown(reuse = false).shouldBeTrue()
+        BenchmarkPostgreSQL.shouldRegisterForShutdown(reuse = true).shouldBeFalse()
+    }
+
+    @Test
     fun `container reuse is disabled by default`() {
         BenchmarkPostgreSQL.reuseEnabled(
             propertyValue = null,

@@ -54,7 +54,9 @@ HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`,
 컨테이너를 재사용하지 않습니다. 개발자가 로컬에서만 재사용하려면
 `~/.testcontainers.properties`에서 Testcontainers reuse를 활성화하고
 `JAVA_TOOL_OPTIONS`에 `-Dbluetape4k.testcontainers.reuse=true`를 명시해야 합니다.
-`CI`가 설정되어 있거나 `GITHUB_ACTIONS=true`이면 이 opt-in은 무시됩니다.
+`CI`가 설정되어 있거나 `GITHUB_ACTIONS=true`이면 이 opt-in은 무시됩니다. 재사용
+PostgreSQL 컨테이너는 benchmark JVM 종료 후에도 실행 상태를 유지하며, 재사용하지
+않는 컨테이너는 해당 benchmark JVM 종료 시 닫힙니다.
 
 ## 결과 Snapshot
 
