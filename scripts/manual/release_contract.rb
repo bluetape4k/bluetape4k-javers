@@ -10,6 +10,8 @@ module ManualDocs
     REFERENCE_PATTERN = /^[ \t]{0,3}\[[^\]]+\]:[ \t]*(?:<([^>\r\n]+)>|([^ \t\r\n]+))/
     HTML_LINK_PATTERN = /<(?:a|img)\b[^>]*(?:href|src)=["']([^"']+)["']/i
     AUTOLINK_PATTERN = /<((?:https?:\/\/)[^ >]+)>/i
+    GITHUB_BLOB_PATTERN = %r{\A(?i:https?://github\.com/bluetape4k/bluetape4k-javers)/blob/([^/]+)/(.+)\z}
+    RAW_GITHUB_PATTERN = %r{\A(?i:https?://raw\.githubusercontent\.com/bluetape4k/bluetape4k-javers)/([^/]+)/(.+)\z}
 
     def initialize(repository_root:, tag:, expected_sha:, manifest_path: nil, git_runner: nil)
       @repository_root = File.expand_path(repository_root)
@@ -68,9 +70,9 @@ module ManualDocs
         file = Pathname.new(path).relative_path_from(Pathname.new(@repository_root)).to_s
         content = File.read(path)
         extracted_links(content).each_with_object([]) do |(line, target), found_links|
-          source = target.match(%r{\A(?i:https?://github\.com)/bluetape4k/bluetape4k-javers/blob/([^/]+)/(.+)\z})
+          source = source_coordinates(target)
           next unless source
-          found_links << [file, line, source[1], source[2].split(/[?#]/, 2).first]
+          found_links << [file, line, source[0], source[1].split(/[?#]/, 2).first]
         end
       end
       errors = links.each_with_object([]) do |(file, line, ref, path), found_errors|
@@ -135,6 +137,11 @@ module ManualDocs
           [content[0...match.begin(0)].count("\n") + 1, match.captures.compact.first]
         end
       end.uniq
+    end
+
+    def source_coordinates(target)
+      source = target.match(GITHUB_BLOB_PATTERN) || target.match(RAW_GITHUB_PATTERN)
+      source && [source[1], source[2]]
     end
 
     def safe_relative?(value)
