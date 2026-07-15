@@ -139,8 +139,10 @@ module ManualDocs
             next
           end
           absolute = File.expand_path(path, File.dirname(@manifest_path))
-          if within?(absolute, File.dirname(@manifest_path)) && File.file?(absolute)
+          if manual_file?(absolute)
             errors.concat(validate_document_references(absolute, "overview"))
+          elsif within?(absolute, File.dirname(@manifest_path)) && File.file?(absolute)
+            errors << "manual overview unsafe #{language} document realpath #{path}"
           else
             errors << "manual overview missing #{language} document #{path}"
           end
@@ -177,8 +179,10 @@ module ManualDocs
           next
         end
         absolute = File.expand_path(path, File.dirname(@manifest_path))
-        if within?(absolute, File.dirname(@manifest_path)) && File.file?(absolute)
+        if manual_file?(absolute)
           errors.concat(validate_document_references(absolute, entry["id"]))
+        elsif within?(absolute, File.dirname(@manifest_path)) && File.file?(absolute)
+          errors << "#{entry['id']}: unsafe #{language} document realpath"
         else
           errors << "#{entry['id']}: missing #{language} document"
         end
@@ -220,6 +224,11 @@ module ManualDocs
 
     def duplicates(rows, field)
       rows.grep(Hash).group_by { |row| row[field] }.select { |value, matches| value && matches.length > 1 }.keys
+    end
+
+    def manual_file?(path)
+      manual_root = File.dirname(@manifest_path)
+      within?(path, manual_root) && File.file?(path) && within?(File.realpath(path), File.realpath(manual_root))
     end
 
     def safe_relative?(value)

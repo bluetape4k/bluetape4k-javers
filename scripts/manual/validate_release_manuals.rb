@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "json"
+require "yaml"
 require_relative "manual_contract"
 require_relative "release_contract"
 
@@ -23,6 +24,19 @@ module ManualDocs
       errors = release_result.errors.dup
       return errors << "release inventory not found: #{@inventory_path}" unless File.file?(@inventory_path)
       return errors << "manual manifest not found: #{@manifest_path}" unless File.file?(@manifest_path)
+      manifest = YAML.safe_load(File.read(@manifest_path))
+      unless manifest.is_a?(Hash) && manifest.dig("publication", "contentStatus") == "complete"
+        errors << "final release manual publication contentStatus must be complete"
+      end
+      if manifest.is_a?(Hash) && manifest.dig("publication", "contentStatus") == "complete"
+        documents = manifest.dig("overview", "documents")
+        modules = manifest["modules"]
+        ManualDocs::Validator::LOCALES.keys.each do |locale|
+          registered = Array(documents.is_a?(Hash) ? documents[locale] : nil) +
+            Array(modules).grep(Hash).map { |entry| entry[locale] }.compact
+          errors << "final release manual must register non-empty #{locale} routes" if registered.empty?
+        end
+      end
       inventory = JSON.parse(File.read(@inventory_path))
       errors.concat(Validator.new(
         inventory: inventory, manifest_path: @manifest_path, repository_root: @repository_root,
@@ -31,6 +45,8 @@ module ManualDocs
       errors.sort
     rescue JSON::ParserError => error
       errors << "release inventory JSON is invalid: #{error.message}"
+    rescue Psych::SyntaxError => error
+      errors << "manual manifest YAML is invalid: #{error.problem}"
     end
 
     def checked_link_count
