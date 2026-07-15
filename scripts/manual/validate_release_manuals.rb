@@ -7,12 +7,30 @@ require_relative "release_contract"
 
 module ManualDocs
   class ReleaseManualValidator
-    def initialize(repository_root:, tag:, expected_sha:, inventory_path:, manifest_path:, release_contract: nil)
+    DEFAULT_TAG = "0.2.1"
+    DEFAULT_SHA = "bffe19439ca891fa5301a76421bdef7ba75252a0"
+    DEFAULT_INVENTORY_PATH = "build/manual/release-module-inventory.json"
+
+    def self.parse_cli(arguments)
+      positional = arguments.reject { |argument| argument == "--allow-planned" }
+      raise ArgumentError, "usage: validate_release_manuals.rb [tag] [sha] [inventory] [--allow-planned]" if positional.length > 3
+
+      {
+        tag: positional.fetch(0, DEFAULT_TAG),
+        expected_sha: positional.fetch(1, DEFAULT_SHA),
+        inventory_path: positional.fetch(2, DEFAULT_INVENTORY_PATH),
+        allow_planned: arguments.include?("--allow-planned"),
+      }
+    end
+
+    def initialize(repository_root:, tag:, expected_sha:, inventory_path:, manifest_path:, release_contract: nil,
+                   allow_planned: false)
       @repository_root = File.expand_path(repository_root)
       @tag = tag
       @expected_sha = expected_sha
       @inventory_path = File.expand_path(inventory_path, @repository_root)
       @manifest_path = File.expand_path(manifest_path, @repository_root)
+      @allow_planned = allow_planned
       @release_contract = release_contract || ReleaseContract.new(
         repository_root: @repository_root, tag: @tag, expected_sha: @expected_sha, manifest_path: @manifest_path,
       )
@@ -25,16 +43,18 @@ module ManualDocs
       return errors << "release inventory not found: #{@inventory_path}" unless File.file?(@inventory_path)
       return errors << "manual manifest not found: #{@manifest_path}" unless File.file?(@manifest_path)
       manifest = YAML.safe_load(File.read(@manifest_path))
-      unless manifest.is_a?(Hash) && manifest.dig("publication", "contentStatus") == "complete"
-        errors << "final release manual publication contentStatus must be complete"
-      end
-      if manifest.is_a?(Hash) && manifest.dig("publication", "contentStatus") == "complete"
-        documents = manifest.dig("overview", "documents")
-        modules = manifest["modules"]
-        ManualDocs::Validator::LOCALES.keys.each do |locale|
-          registered = Array(documents.is_a?(Hash) ? documents[locale] : nil) +
-            Array(modules).grep(Hash).map { |entry| entry[locale] }.compact
-          errors << "final release manual must register non-empty #{locale} routes" if registered.empty?
+      unless @allow_planned
+        unless manifest.is_a?(Hash) && manifest.dig("publication", "contentStatus") == "complete"
+          errors << "final release manual publication contentStatus must be complete"
+        end
+        if manifest.is_a?(Hash) && manifest.dig("publication", "contentStatus") == "complete"
+          documents = manifest.dig("overview", "documents")
+          modules = manifest["modules"]
+          ManualDocs::Validator::LOCALES.keys.each do |locale|
+            registered = Array(documents.is_a?(Hash) ? documents[locale] : nil) +
+              Array(modules).grep(Hash).map { |entry| entry[locale] }.compact
+            errors << "final release manual must register non-empty #{locale} routes" if registered.empty?
+          end
         end
       end
       inventory = JSON.parse(File.read(@inventory_path))
@@ -70,16 +90,16 @@ module ManualDocs
 end
 
 if $PROGRAM_NAME == __FILE__
-  tag = ARGV.fetch(0, "0.2.1")
-  sha = ARGV.fetch(1, "bffe19439ca891fa5301a76421bdef7ba75252a0")
-  inventory_path = ARGV.fetch(2, "build/manual/release-module-inventory.json")
+  options = ManualDocs::ReleaseManualValidator.parse_cli(ARGV)
   validator = ManualDocs::ReleaseManualValidator.new(
-    repository_root: Dir.pwd, tag: tag, expected_sha: sha,
-    inventory_path: inventory_path, manifest_path: "docs/manual/manifest.yaml",
+    repository_root: Dir.pwd, tag: options.fetch(:tag), expected_sha: options.fetch(:expected_sha),
+    inventory_path: options.fetch(:inventory_path), manifest_path: "docs/manual/manifest.yaml",
+    allow_planned: options.fetch(:allow_planned),
   )
   errors = validator.errors
   abort(errors.join("\n")) unless errors.empty?
-  puts "Strict release manual contract valid: annotated tag #{tag} -> #{sha}; " \
+  mode = options.fetch(:allow_planned) ? "Authoring release-tree" : "Strict release manual"
+  puts "#{mode} contract valid: annotated tag #{options.fetch(:tag)} -> #{options.fetch(:expected_sha)}; " \
        "#{validator.checked_source_path_count} source paths, #{validator.checked_evidence_path_count} benchmark evidence file, " \
        "and #{validator.checked_link_count} release-local links checked."
 end
