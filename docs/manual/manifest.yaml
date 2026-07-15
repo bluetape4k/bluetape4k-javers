@@ -1,0 +1,94 @@
+---
+schemaVersion: 2
+repository: bluetape4k-javers
+stableVersion: 0.2.1
+stableMinor: '0.2'
+releaseTag: 0.2.1
+releaseRef: 0.2.1
+releaseCommit: bffe19439ca891fa5301a76421bdef7ba75252a0
+publication:
+  manualVersion: '0.2'
+  sourceRoot: docs/manual
+  locales:
+  - en
+  - ko
+  contentStatus: planned
+overview:
+  documents:
+    en: []
+    ko: []
+evidence:
+- id: javers-exposed-ddd-envers-comparison
+  kind: benchmark
+  path: docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json
+modules:
+- id: bluetape4k-javers-bom
+  gradlePath: ":bluetape4k-javers-bom"
+  projectName: bluetape4k-javers-bom
+  sourceDir: bom
+  kind: bom
+  group: foundation
+  artifact: io.github.bluetape4k.javers:bluetape4k-javers-bom
+  status: stable
+  sourcePaths:
+  - bom
+- id: javers-core
+  gradlePath: ":javers-core"
+  projectName: javers-core
+  sourceDir: javers-core
+  kind: library
+  group: foundation
+  artifact: io.github.bluetape4k.javers:javers-core
+  status: stable
+  sourcePaths:
+  - javers-core
+- id: javers-ddd
+  gradlePath: ":javers-ddd"
+  projectName: javers-ddd
+  sourceDir: javers-ddd
+  kind: library
+  group: foundation
+  artifact: io.github.bluetape4k.javers:javers-ddd
+  status: stable
+  sourcePaths:
+  - javers-ddd
+- id: javers-exposed
+  gradlePath: ":javers-exposed"
+  projectName: javers-exposed
+  sourceDir: javers-exposed
+  kind: library
+  group: persistence
+  artifact: io.github.bluetape4k.javers:javers-exposed
+  status: stable
+  sourcePaths:
+  - javers-exposed
+- id: javers-exposed-ddd
+  gradlePath: ":examples-javers-exposed-ddd"
+  projectName: examples-javers-exposed-ddd
+  sourceDir: examples/javers-exposed-ddd
+  kind: example
+  group: examples
+  artifact:
+  status: example
+  sourcePaths:
+  - examples/javers-exposed-ddd
+- id: javers-persistence-kafka
+  gradlePath: ":javers-persistence-kafka"
+  projectName: javers-persistence-kafka
+  sourceDir: javers-persistence-kafka
+  kind: library
+  group: persistence
+  artifact: io.github.bluetape4k.javers:javers-persistence-kafka
+  status: stable
+  sourcePaths:
+  - javers-persistence-kafka
+- id: javers-persistence-redis
+  gradlePath: ":javers-persistence-redis"
+  projectName: javers-persistence-redis
+  sourceDir: javers-persistence-redis
+  kind: library
+  group: persistence
+  artifact: io.github.bluetape4k.javers:javers-persistence-redis
+  status: stable
+  sourcePaths:
+  - javers-persistence-redis
