@@ -21,4 +21,3 @@ A failure propagates to the caller, but earlier committed operations may remain.
 `ensureSchema()` calls `SchemaUtils.create`. Use it in tests and local startup when appropriate. In production, version and deploy the two tables with the service's migration process, and grant the runtime only the required DML permissions. The [bluetape4k-exposed transaction guide](https://bluetape4k.github.io/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/) covers application repository ownership; this adapter remains responsible only for JaVers CDO snapshots.
 
 The repository implementation is pinned at [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt). Continue with [testing](../guides/testing.md).
-

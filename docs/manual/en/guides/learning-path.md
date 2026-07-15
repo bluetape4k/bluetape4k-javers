@@ -15,4 +15,3 @@ Read [repository map](../architecture/repository-map.md), then [persistence sele
 Begin with [observability](../operations/observability.md) to identify commit failures, query cost, Kafka lag, and projection drift. [Testing](testing.md) then maps those risks to unit, database, and Testcontainers checks. The example's [`OrderProjectionFlowTest`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderProjectionFlowTest.kt) is the executable end-to-end reference.
 
 For background facilities, continue to the published [Projects manual](https://bluetape4k.github.io/manual/bluetape4k-projects/) and [Exposed manual](https://bluetape4k.github.io/manual/bluetape4k-exposed/). Their generic repository, transaction, Redis, Kafka, and Testcontainers contracts are intentionally not duplicated here.
-

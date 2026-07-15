@@ -16,4 +16,3 @@ Use [Exposed](exposed.md) when audit history must survive process restart and fi
 None of these adapters promises exactly-once end-to-end behavior. Exposed operations use separate transactions, Redis updates cover several structures, and Kafka waits up to 30 seconds for a send result. Plan retry and reconciliation around identifiers such as GlobalId, snapshot version, commit ID, aggregate ID, and consumer offset.
 
 For mixed designs, read [repository composition](../architecture/repository-composition.md) and [failure contracts](../operations/failure-contracts.md).
-

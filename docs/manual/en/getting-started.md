@@ -31,4 +31,3 @@ javers.commit("order-service", order)
 The class and table contracts are visible in [`ExposedCdoSnapshotRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt) and [`JaversExposedTables.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt).
 
 Next, read [the audit model](architecture/audit-model.md), then choose a persistence role in [the selection guide](persistence/selection-guide.md).
-

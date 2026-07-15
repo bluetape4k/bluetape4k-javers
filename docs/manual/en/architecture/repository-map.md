@@ -16,4 +16,3 @@ The application flow normally starts in its own domain repository. `AggregateRep
 For repository fundamentals such as JDBC transaction ownership, use the published [bluetape4k-exposed manual](https://bluetape4k.github.io/manual/bluetape4k-exposed/). For Redis, Kafka, and Testcontainers foundations, use the [bluetape4k-projects manual](https://bluetape4k.github.io/manual/bluetape4k-projects/). This manual covers how those facilities participate in a JaVers audit path.
 
 Release 0.2.1 has no composite `CdoSnapshotRepository` that automatically writes to Exposed and Redis or couples Kafka with a query repository. Composition is an application responsibility. Read [repository composition](repository-composition.md) before adding a second destination.
-

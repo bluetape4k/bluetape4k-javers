@@ -18,4 +18,3 @@ Successful API calls do not prove that audit and projection state remain aligned
 Sample an application aggregate ID, find its latest audit snapshot, and compare the expected business version or fields. Then compare the latest event/projection version in Redis. A mismatch should identify the broken boundary: domain-to-audit, audit-to-publication, consumer lag, or projection apply. Avoid comparing full sensitive payloads in metrics; put detailed evidence in secured diagnostic logs.
 
 The example consumer applies records in poll order and expects per-key Kafka ordering, but it does not expose lag metrics or offsets. Production wiring must add those. See [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt) and continue with [testing](../guides/testing.md).
-
