@@ -90,6 +90,34 @@ class ReleaseContractTest < Minitest::Test
     end
   end
 
+  def test_rejects_mixed_case_github_blob_autolink_with_unpinned_ref
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<HTTPS://GitHub.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert contract.errors.any? { |error| error.include?("source link commit develop") }
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
+  def test_accepts_mixed_case_scheme_and_host_for_pinned_blob_autolink
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<hTtPs://gItHuB.cOm/bluetape4k/bluetape4k-javers/blob/#{SHA}/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert_empty contract.errors
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
   def test_final_validation_requires_complete_content
     with_release_fixture(content_status: "planned") do |validator|
       assert validator.errors.any? { |error| error.include?("contentStatus must be complete") }

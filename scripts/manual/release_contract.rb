@@ -68,7 +68,7 @@ module ManualDocs
         file = Pathname.new(path).relative_path_from(Pathname.new(@repository_root)).to_s
         content = File.read(path)
         extracted_links(content).each_with_object([]) do |(line, target), found_links|
-          source = target.match(%r{\Ahttps://github\.com/bluetape4k/bluetape4k-javers/blob/([^/]+)/(.+)\z})
+          source = target.match(%r{\A(?i:https?://github\.com)/bluetape4k/bluetape4k-javers/blob/([^/]+)/(.+)\z})
           next unless source
           found_links << [file, line, source[1], source[2].split(/[?#]/, 2).first]
         end
