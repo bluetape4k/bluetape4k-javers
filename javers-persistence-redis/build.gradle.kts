@@ -3,15 +3,15 @@ configurations {
 }
 
 dependencies {
-    api(libs.bluetape4k.io)
-    api(libs.bluetape4k.protobuf)
-    api(libs.bluetape4k.jackson3)
-    api(libs.bluetape4k.idgenerators)
-    compileOnly(libs.bluetape4k.hibernate)
-    compileOnly(libs.bluetape4k.cache.core)
+    api(bt4k.bluetape4k.io)
+    api(bt4k.bluetape4k.protobuf)
+    api(bt4k.bluetape4k.jackson3)
+    api(bt4k.bluetape4k.idgenerators)
+    compileOnly(bt4k.bluetape4k.hibernate)
+    compileOnly(bt4k.bluetape4k.cache.core)
 
-    testImplementation(libs.bluetape4k.junit5)
-    testImplementation(libs.bluetape4k.testcontainers)
+    testImplementation(bt4k.bluetape4k.junit5)
+    testImplementation(bt4k.bluetape4k.testcontainers)
 
     // Javers
     api(libs.javers.core)
@@ -19,17 +19,17 @@ dependencies {
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
 
     // Redis
-    compileOnly(libs.bluetape4k.lettuce)
-    compileOnly(libs.bluetape4k.redisson)
+    compileOnly(bt4k.bluetape4k.lettuce)
+    compileOnly(bt4k.bluetape4k.redisson)
     compileOnly(libs.lettuce.core)
-    compileOnly(libs.redisson)
+    compileOnly(bt4k.redisson)
 
     // Codec
-    compileOnly(libs.fory.kotlin)
+    compileOnly(bt4k.fory.kotlin)
     compileOnly(libs.kryo5)
 
     // Compression
     compileOnly(libs.lz4.java)
     compileOnly(libs.snappy.java)
-    compileOnly(libs.zstd.jni)
+    compileOnly(bt4k.zstd.jni)
 }

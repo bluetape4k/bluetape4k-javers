@@ -20,17 +20,17 @@ dependencies {
     api(libs.javers.core)
 
     api(bt4kLibrary("bluetape4k-annotations"))
-    api(libs.bluetape4k.io)
-    api(libs.bluetape4k.jackson3)
-    implementation(libs.bluetape4k.cache.core)
-    implementation(libs.bluetape4k.protobuf)
-    implementation(libs.bluetape4k.hibernate)
-    implementation(libs.bluetape4k.idgenerators)
-    implementation(libs.bluetape4k.redisson)
+    api(bt4k.bluetape4k.io)
+    api(bt4k.bluetape4k.jackson3)
+    implementation(bt4k.bluetape4k.cache.core)
+    implementation(bt4k.bluetape4k.protobuf)
+    implementation(bt4k.bluetape4k.hibernate)
+    implementation(bt4k.bluetape4k.idgenerators)
+    implementation(bt4k.bluetape4k.redisson)
 
-    testImplementation(libs.bluetape4k.junit5)
-    testImplementation(libs.bluetape4k.testcontainers)
-    testImplementation(libs.guava)
+    testImplementation(bt4k.bluetape4k.junit5)
+    testImplementation(bt4k.bluetape4k.testcontainers)
+    testImplementation(bt4k.guava)
 
     // Cache for Javers repository
     compileOnly(libs.caffeine)
@@ -47,10 +47,10 @@ dependencies {
 
     // Codec
     compileOnly(libs.kryo5)
-    compileOnly(libs.fory.kotlin)
+    compileOnly(bt4k.fory.kotlin)
 
     // Compression
     compileOnly(libs.lz4.java)
     compileOnly(libs.snappy.java)
-    compileOnly(libs.zstd.jni)
+    compileOnly(bt4k.zstd.jni)
 }
