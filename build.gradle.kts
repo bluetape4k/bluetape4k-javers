@@ -9,27 +9,28 @@ plugins {
     base
     `maven-publish`
     signing
-    alias(libs.plugins.kotlin.jvm)
+    alias(bt4k.plugins.kotlin.jvm)
 
-    alias(libs.plugins.kotlin.spring) apply false
-    alias(libs.plugins.kotlin.allopen) apply false
-    alias(libs.plugins.kotlin.noarg) apply false
+    alias(bt4k.plugins.kotlin.spring) apply false
+    alias(bt4k.plugins.kotlin.allopen) apply false
+    alias(bt4k.plugins.kotlin.noarg) apply false
     alias(libs.plugins.kotlinx.atomicfu)
 
     alias(libs.plugins.detekt)
-    alias(libs.plugins.dependency.management)
+    alias(bt4k.plugins.dependency.management)
 
-    alias(libs.plugins.dokka)
+    alias(bt4k.plugins.dokka)
     alias(libs.plugins.test.logger)
 
-    alias(libs.plugins.nmcp.aggregation)
-    alias(libs.plugins.nmcp) apply false
+    alias(bt4k.plugins.nmcp.aggregation)
+    alias(bt4k.plugins.nmcp) apply false
 
-    alias(libs.plugins.kover)
+    alias(bt4k.plugins.kover)
 }
 
 val rootLibs = libs
 val bt4kCatalog = extensions.getByType<org.gradle.api.artifacts.VersionCatalogsExtension>().named("bt4k")
+fun bt4kLibrary(alias: String) = bt4kCatalog.findLibrary(alias).get()
 fun bt4kVersion(alias: String): String {
     val version = bt4kCatalog.findVersion(alias).get()
     return version.requiredVersion
@@ -235,14 +236,52 @@ subprojects {
     dependencyManagement {
         setApplyMavenExclusions(false)
         imports {
-            mavenBom(rootLibs.bluetape4k.bom.get().toString())
-            mavenBom(rootLibs.kotlinx.coroutines.bom.get().toString())
-            mavenBom(rootLibs.kotlin.bom.get().toString())
+            mavenBom(bt4kLibrary("bluetape4k-bom").get().toString())
+            mavenBom("org.jetbrains.kotlinx:kotlinx-coroutines-bom:${bt4kVersion("kotlinx-coroutines")}")
+            mavenBom("org.jetbrains.kotlin:kotlin-bom:${bt4kVersion("kotlin")}")
             mavenBom(rootLibs.junit.bom.get().toString())
-            mavenBom(rootLibs.testcontainers.bom.get().toString())
+            mavenBom("org.testcontainers:testcontainers-bom:${bt4kVersion("testcontainers")}")
         }
-    
+
         dependencies {
+
+            // <central-catalog-local-aliases>
+
+            dependency("com.google.protobuf:protobuf-kotlin:${bt4kVersion("protobuf")}")
+
+            dependency("io.lettuce:lettuce-core:${bt4kVersion("lettuce")}")
+
+            dependency("org.apache.kafka:kafka-clients:${bt4kVersion("kafka4")}")
+
+            dependency("org.awaitility:awaitility-kotlin:${bt4kVersion("awaitility")}")
+
+            dependency("org.jetbrains.exposed:exposed-bom:${bt4kVersion("exposed")}")
+
+            dependency("org.jetbrains.kotlin:kotlin-bom:${bt4kVersion("kotlin")}")
+
+            dependency("org.jetbrains.kotlinx:kotlinx-coroutines-bom:${bt4kVersion("kotlinx-coroutines")}")
+
+            dependency("org.slf4j:jcl-over-slf4j:${bt4kVersion("slf4j")}")
+
+            dependency("org.slf4j:jul-to-slf4j:${bt4kVersion("slf4j")}")
+
+            dependency("org.slf4j:log4j-over-slf4j:${bt4kVersion("slf4j")}")
+
+            dependency("org.springframework.kafka:spring-kafka:${bt4kVersion("spring-kafka4")}")
+
+            dependency("org.springframework.kafka:spring-kafka-test:${bt4kVersion("spring-kafka4")}")
+
+            dependency("org.testcontainers:testcontainers-bom:${bt4kVersion("testcontainers")}")
+
+            dependency("org.testcontainers:testcontainers-junit-jupiter:${bt4kVersion("testcontainers")}")
+
+            dependency("org.testcontainers:testcontainers-kafka:${bt4kVersion("testcontainers")}")
+
+            dependency("org.testcontainers:testcontainers-mysql:${bt4kVersion("testcontainers")}")
+
+            dependency("org.testcontainers:testcontainers-postgresql:${bt4kVersion("testcontainers")}")
+
+            // </central-catalog-local-aliases>
             dependency("org.apache.fory:fory-kotlin:${bt4kVersion("fory-kotlin")}")
             dependency("com.google.guava:guava:${bt4kVersion("guava")}")
             dependency("org.redisson:redisson:${bt4kVersion("redisson")}")
@@ -262,7 +301,7 @@ subprojects {
         add("implementation", rootLibs.kotlinx.coroutines.core)
         add("implementation", rootLibs.kotlinx.atomicfu)
 
-        add("api", rootLibs.slf4j.api)
+        add("api", bt4kLibrary("slf4j-api"))
         add("testImplementation", rootLibs.logback)
         add("testImplementation", rootLibs.jcl.over.slf4j)
         add("testImplementation", rootLibs.jul.to.slf4j)

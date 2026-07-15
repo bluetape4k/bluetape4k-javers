@@ -6,9 +6,9 @@ val bt4kCatalog = extensions.getByType<org.gradle.api.artifacts.VersionCatalogsE
 fun bt4kLibrary(alias: String) = bt4kCatalog.findLibrary(alias).get()
 
 dependencies {
-    api(libs.bluetape4k.core)
-    api(libs.bluetape4k.jackson3)
-    api(libs.bluetape4k.idgenerators)
+    api(bt4k.bluetape4k.core)
+    api(bt4k.bluetape4k.jackson3)
+    api(bt4k.bluetape4k.idgenerators)
 
     implementation(platform(bt4kLibrary("bluetape4k-exposed-bom")))
     api(bt4kLibrary("bluetape4k-exposed-jdbc"))
@@ -18,14 +18,14 @@ dependencies {
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
 
     api(platform(libs.exposed.bom))
-    api(libs.exposed.core)
+    api(bt4k.exposed.core)
     api(libs.exposed.dao)
-    api(libs.exposed.jdbc)
-    api(libs.exposed.java.time)
+    api(bt4k.exposed.jdbc)
+    api(bt4k.exposed.java.time)
 
-    testImplementation(libs.bluetape4k.junit5)
+    testImplementation(bt4k.bluetape4k.junit5)
     testImplementation(bt4kLibrary("bluetape4k-exposed-jdbc-tests"))
     testRuntimeOnly(libs.h2)
-    testRuntimeOnly(libs.postgresql)
-    testRuntimeOnly(libs.mysql.connector.j)
+    testRuntimeOnly(bt4k.postgresql)
+    testRuntimeOnly(bt4k.mysql.connector.j)
 }

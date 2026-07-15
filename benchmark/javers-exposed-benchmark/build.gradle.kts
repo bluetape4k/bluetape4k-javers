@@ -57,20 +57,20 @@ dependencies {
     implementation(bt4kLibrary("bluetape4k-exposed-jdbc"))
     implementation(bt4kLibrary("bluetape4k-exposed-jdbc-tests"))
 
-    implementation(libs.bluetape4k.core)
-    implementation(libs.bluetape4k.testcontainers)
+    implementation(bt4k.bluetape4k.core)
+    implementation(bt4k.bluetape4k.testcontainers)
     implementation(libs.javers.core)
     implementation(libs.kotlinx.benchmark.runtime)
     implementation(libs.kotlinx.benchmark.runtime.jvm)
     implementation(libs.jmh.core)
 
     implementation(platform(libs.exposed.bom))
-    implementation(libs.exposed.core)
-    implementation(libs.exposed.jdbc)
-    implementation(libs.exposed.java.time)
-    implementation(libs.hikaricp)
+    implementation(bt4k.exposed.core)
+    implementation(bt4k.exposed.jdbc)
+    implementation(bt4k.exposed.java.time)
+    implementation(bt4k.hikaricp)
     implementation(libs.testcontainers.postgresql)
     // The central catalog does not expose hibernate-envers yet; keep this benchmark-only pin narrow.
     implementation("org.hibernate.orm:hibernate-envers:7.3.4.Final")
-    runtimeOnly(libs.postgresql)
+    runtimeOnly(bt4k.postgresql)
 }
