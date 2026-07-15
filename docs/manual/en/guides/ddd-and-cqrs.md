@@ -16,4 +16,3 @@ The example teaches responsibility and ordering. It does not make the database w
 Production systems should add a transactional outbox or equivalent recovery record, stable event IDs, idempotent projection writes, controlled offset commits, dead-letter/retry policy, replay tools, and reconciliation between domain state, audit history, and Redis. `javers-ddd` helps this JaVers workflow; it is not the generic DDD contract owner for bluetape4k.
 
 Continue with [failure contracts](../operations/failure-contracts.md) and [testing](testing.md).
-

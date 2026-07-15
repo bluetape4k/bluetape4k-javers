@@ -11,4 +11,3 @@ The cache-backed repositories in `javers-core`â€”Caffeine, Cache2k, and JCacheâ€
 Choose one audit source that can answer required history queries. Add Kafka as publication, not as a query replacement. Build Redis projections from durable events only when the system also owns replay, deduplication, offset handling, and drift repair. If SQL and Redis are both written directly, define which one wins after partial failure and provide a reconciliation job.
 
 The 0.2.1 DDD example deliberately demonstrates order, not atomicity: application persistence, JaVers commit, event publication, then consumer-side Redis projection. The [DDD/CQRS guide](../guides/ddd-and-cqrs.md) explains where an outbox and idempotent consumer belong in production.
-

@@ -17,4 +17,3 @@ For Redis, run Lettuce and Redisson suites independently against Testcontainers.
 `OrderProjectionFlowTest` starts Kafka and Redis through bluetape4k Testcontainers, uses H2 for domain and audit tables, publishes `OrderPlaced` and `OrderMarkedPaid`, polls Kafka, and verifies Redis status. It proves the happy-path ordering under those fixtures. It does not prove crash recovery, duplicate delivery handling, offset correctness, or production database behavior.
 
 Run the module test that owns the boundary; keep Redis and Kafka container suites sequential when shared launchers or ports can interact. The [Projects manual](https://bluetape4k.github.io/manual/bluetape4k-projects/) covers the underlying Testcontainers launchers.
-

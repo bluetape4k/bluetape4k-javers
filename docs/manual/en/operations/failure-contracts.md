@@ -16,4 +16,3 @@ Idempotency is an application contract in 0.2.1. SQL has a unique GlobalId/versi
 Schema ownership also belongs to deployment. `ensureSchema()` is convenient, not a migration ledger. Kafka topic retention/partitioning and Redis persistence/eviction are equally part of correctness. Document owners and recovery commands alongside the service.
 
 Continue with [observability](observability.md) to turn these states into signals.
-
