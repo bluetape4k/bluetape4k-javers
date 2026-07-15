@@ -183,6 +183,35 @@ class ReleaseContractTest < Minitest::Test
     end
   end
 
+  def test_cli_parses_allow_planned
+    assert_respond_to ManualDocs::ReleaseManualValidator, :parse_cli
+    return unless ManualDocs::ReleaseManualValidator.respond_to?(:parse_cli)
+
+    parsed = ManualDocs::ReleaseManualValidator.parse_cli(
+      ["0.2.1", SHA, "build/manual/release-module-inventory.json", "--allow-planned"],
+    )
+    assert_equal true, parsed.fetch(:allow_planned)
+    assert_equal "0.2.1", parsed.fetch(:tag)
+    assert_equal SHA, parsed.fetch(:expected_sha)
+    assert_equal "build/manual/release-module-inventory.json", parsed.fetch(:inventory_path)
+  end
+
+  def test_authoring_release_tree_mode_accepts_planned_content
+    with_release_fixture(content_status: "planned", allow_planned: true) do |validator|
+      assert_empty validator.errors
+    end
+  end
+
+  def test_authoring_release_tree_mode_preserves_source_and_evidence_errors
+    release_errors = [
+      "core: sourcePath not found in release tree: javers-core/src/Missing.kt",
+      "benchmark: evidence path not found in release tree: docs/benchmark/missing.json",
+    ]
+    with_release_fixture(content_status: "planned", allow_planned: true, release_errors: release_errors) do |validator|
+      assert_equal release_errors.sort, validator.errors
+    end
+  end
+
   def test_rejects_manifest_source_path_outside_release_tree
     Dir.mktmpdir do |root|
       FileUtils.mkdir_p(File.join(root, "docs/manual"))
@@ -225,7 +254,7 @@ class ReleaseContractTest < Minitest::Test
 
   private
 
-  def with_release_fixture(content_status:)
+  def with_release_fixture(content_status:, allow_planned: false, release_errors: [])
     Dir.mktmpdir do |root|
       row = {
         "id" => "javers-core", "gradlePath" => ":javers-core", "projectName" => "javers-core",
@@ -255,11 +284,13 @@ class ReleaseContractTest < Minitest::Test
       File.write(manifest_path, YAML.dump(manifest))
       inventory_path = File.join(root, "inventory.json")
       File.write(inventory_path, JSON.generate([row.slice("gradlePath", "projectName", "sourceDir", "kind")]))
-      result = ManualDocs::ReleaseContract::ValidationResult.new(errors: [], checked_count: 0, source_path_count: 1, evidence_path_count: 1)
+      result = ManualDocs::ReleaseContract::ValidationResult.new(
+        errors: release_errors, checked_count: 0, source_path_count: 1, evidence_path_count: 1,
+      )
       yield ManualDocs::ReleaseManualValidator.new(
         repository_root: root, tag: "0.2.1", expected_sha: SHA,
         inventory_path: inventory_path, manifest_path: manifest_path,
-        release_contract: Struct.new(:validate).new(result),
+        release_contract: Struct.new(:validate).new(result), allow_planned: allow_planned,
       )
     end
   end
