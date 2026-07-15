@@ -63,6 +63,42 @@ class ReleaseContractTest < Minitest::Test
     end
   end
 
+  def test_rejects_github_blob_autolink_with_unpinned_ref
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert contract.errors.any? { |error| error.include?("source link commit develop") }
+    end
+  end
+
+  def test_accepts_pinned_github_blob_autolink_in_release_tree
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<https://github.com/bluetape4k/bluetape4k-javers/blob/#{SHA}/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert_empty contract.errors
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
+  def test_final_validation_requires_complete_content
+    with_release_fixture(content_status: "planned") do |validator|
+      assert validator.errors.any? { |error| error.include?("contentStatus must be complete") }
+    end
+    with_release_fixture(content_status: "complete") do |validator|
+      assert_empty validator.errors
+    end
+  end
+
   def test_rejects_manifest_source_path_outside_release_tree
     Dir.mktmpdir do |root|
       FileUtils.mkdir_p(File.join(root, "docs/manual"))
@@ -100,6 +136,47 @@ class ReleaseContractTest < Minitest::Test
         release_contract: Struct.new(:validate).new(result),
       )
       assert validator.errors.any? { |error| error.include?("release inventory not found") }
+    end
+  end
+
+  private
+
+  def with_release_fixture(content_status:)
+    Dir.mktmpdir do |root|
+      row = {
+        "id" => "javers-core", "gradlePath" => ":javers-core", "projectName" => "javers-core",
+        "sourceDir" => "javers-core", "kind" => "library", "group" => "foundation",
+        "artifact" => "io.github.bluetape4k.javers:javers-core", "status" => "stable",
+        "sourcePaths" => ["javers-core"], "en" => "en/modules/javers-core.md", "ko" => "ko/modules/javers-core.md",
+      }
+      FileUtils.mkdir_p(File.join(root, "javers-core"))
+      File.write(File.join(root, "javers-core/build.gradle.kts"), "")
+      documents = { "en" => ["en/index.md"], "ko" => ["ko/index.md"] }
+      (documents.values.flatten + [row["en"], row["ko"]]).each do |relative|
+        path = File.join(root, "docs/manual", relative)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, "manual\n")
+      end
+      evidence = File.join(root, "docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json")
+      FileUtils.mkdir_p(File.dirname(evidence))
+      File.write(evidence, "{}\n")
+      manifest = {
+        "schemaVersion" => 2, "repository" => "bluetape4k-javers", "releaseRef" => "0.2.1",
+        "stableVersion" => "0.2.1", "stableMinor" => "0.2", "releaseTag" => "0.2.1", "releaseCommit" => SHA,
+        "publication" => { "manualVersion" => "0.2", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => content_status },
+        "overview" => { "documents" => documents }, "evidence" => ManualDocs::Validator::PINNED_EVIDENCE.map(&:dup),
+        "modules" => [row],
+      }
+      manifest_path = File.join(root, "docs/manual/manifest.yaml")
+      File.write(manifest_path, YAML.dump(manifest))
+      inventory_path = File.join(root, "inventory.json")
+      File.write(inventory_path, JSON.generate([row.slice("gradlePath", "projectName", "sourceDir", "kind")]))
+      result = ManualDocs::ReleaseContract::ValidationResult.new(errors: [], checked_count: 0, source_path_count: 1, evidence_path_count: 1)
+      yield ManualDocs::ReleaseManualValidator.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        inventory_path: inventory_path, manifest_path: manifest_path,
+        release_contract: Struct.new(:validate).new(result),
+      )
     end
   end
 end

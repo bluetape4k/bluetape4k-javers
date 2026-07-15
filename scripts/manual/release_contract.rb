@@ -9,6 +9,7 @@ module ManualDocs
     LINK_PATTERN = /!?\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+["'][^)]*["'])?\s*\)/
     REFERENCE_PATTERN = /^[ \t]{0,3}\[[^\]]+\]:[ \t]*(?:<([^>\r\n]+)>|([^ \t\r\n]+))/
     HTML_LINK_PATTERN = /<(?:a|img)\b[^>]*(?:href|src)=["']([^"']+)["']/i
+    AUTOLINK_PATTERN = /<((?:https?:\/\/)[^ >]+)>/i
 
     def initialize(repository_root:, tag:, expected_sha:, manifest_path: nil, git_runner: nil)
       @repository_root = File.expand_path(repository_root)
@@ -127,13 +128,13 @@ module ManualDocs
     end
 
     def extracted_links(content)
-      patterns = [LINK_PATTERN, REFERENCE_PATTERN, HTML_LINK_PATTERN]
+      patterns = [LINK_PATTERN, REFERENCE_PATTERN, HTML_LINK_PATTERN, AUTOLINK_PATTERN]
       patterns.flat_map do |pattern|
         content.to_enum(:scan, pattern).map do
           match = Regexp.last_match
           [content[0...match.begin(0)].count("\n") + 1, match.captures.compact.first]
         end
-      end
+      end.uniq
     end
 
     def safe_relative?(value)

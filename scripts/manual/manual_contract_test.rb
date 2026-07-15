@@ -136,4 +136,54 @@ class ManualContractTest < Minitest::Test
       assert validator.errors.any? { |error| error.include?("inventory: duplicate gradlePath") }
     end
   end
+
+  def test_rejects_locale_route_symlinks_outside_manual_root
+    validate do |validator|
+      root = validator.instance_variable_get(:@repository_root)
+      manifest_path = validator.instance_variable_get(:@manifest_path)
+      outside = File.join(root, "outside.md")
+      File.write(outside, "outside\n")
+      %w[en ko].each do |locale|
+        route = File.join(root, "docs/manual/#{locale}/modules/javers-core.md")
+        FileUtils.mkdir_p(File.dirname(route))
+        File.symlink(outside, route)
+      end
+      manifest = YAML.safe_load(File.read(manifest_path))
+      manifest.fetch("modules").first.merge!("en" => "en/modules/javers-core.md", "ko" => "ko/modules/javers-core.md")
+      File.write(manifest_path, YAML.dump(manifest))
+
+      checked = ManualDocs::Validator.new(
+        inventory: validator.instance_variable_get(:@inventory), manifest_path: manifest_path,
+        repository_root: root, expected_release: RELEASE, strict: true,
+      )
+      assert checked.errors.any? { |error| error.include?("unsafe English document realpath") }
+      assert checked.errors.any? { |error| error.include?("unsafe Korean document realpath") }
+    end
+  end
+
+  def test_rejects_overview_symlinks_outside_manual_root
+    validate do |validator|
+      root = validator.instance_variable_get(:@repository_root)
+      manifest_path = validator.instance_variable_get(:@manifest_path)
+      outside = File.join(root, "outside.md")
+      File.write(outside, "outside\n")
+      documents = {}
+      %w[en ko].each do |locale|
+        route = File.join(root, "docs/manual/#{locale}/index.md")
+        FileUtils.mkdir_p(File.dirname(route))
+        File.symlink(outside, route)
+        documents[locale] = ["#{locale}/index.md"]
+      end
+      manifest = YAML.safe_load(File.read(manifest_path))
+      manifest["overview"] = { "documents" => documents }
+      File.write(manifest_path, YAML.dump(manifest))
+
+      checked = ManualDocs::Validator.new(
+        inventory: validator.instance_variable_get(:@inventory), manifest_path: manifest_path,
+        repository_root: root, expected_release: RELEASE, strict: true,
+      )
+      assert checked.errors.any? { |error| error.include?("unsafe English document realpath") }
+      assert checked.errors.any? { |error| error.include?("unsafe Korean document realpath") }
+    end
+  end
 end
