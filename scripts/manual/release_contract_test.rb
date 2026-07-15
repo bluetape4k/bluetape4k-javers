@@ -118,6 +118,62 @@ class ReleaseContractTest < Minitest::Test
     end
   end
 
+  def test_rejects_mixed_case_github_owner_and_repository_with_unpinned_ref
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<https://github.com/BlueTape4K/BlueTape4K-JaVers/blob/develop/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert contract.errors.any? { |error| error.include?("source link commit develop") }
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
+  def test_accepts_mixed_case_github_identity_when_ref_is_pinned
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<https://github.com/BlueTape4K/BlueTape4K-JaVers/blob/#{SHA}/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert_empty contract.errors
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
+  def test_rejects_raw_github_autolink_with_unpinned_ref
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<https://raw.githubusercontent.com/BlueTape4K/BlueTape4K-JaVers/develop/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert contract.errors.any? { |error| error.include?("source link commit develop") }
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
+  def test_accepts_raw_github_autolink_with_pinned_ref_and_release_path
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
+      File.write(File.join(root, "docs/manual/en/index.md"),
+        "<HTTPS://RAW.GITHUBUSERCONTENT.COM/BlueTape4K/BlueTape4K-JaVers/#{SHA}/javers-core/src/Present.kt>\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        git_runner: runner(tree: ["javers-core/src/Present.kt"]),
+      )
+      assert_empty contract.errors
+      assert_equal 1, contract.validate.checked_count
+    end
+  end
+
   def test_final_validation_requires_complete_content
     with_release_fixture(content_status: "planned") do |validator|
       assert validator.errors.any? { |error| error.include?("contentStatus must be complete") }
