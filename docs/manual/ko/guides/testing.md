@@ -1,0 +1,15 @@
+# 감사 경로 테스트
+
+감사 테스트는 커밋 호출이 끝났다는 사실보다 실제로 끊길 수 있는 경계를 검증해야 합니다.
+
+## 작은 테스트
+
+캐시-backed repository로 커밋, 스냅샷, change, shadow를 빠르게 확인합니다. 작성자와 커밋 프로퍼티, 최신순 스냅샷, shadow 복원을 검증하세요. 일부 codec은 손상된 데이터를 예외 대신 `null`로 처리하므로 깨진 payload도 넣어 봐야 합니다. `ShadowProvider`를 쓴다면 JaVers 내부 `typeMapper` reflection이 계속 동작하는 compatibility smoke test도 필요합니다.
+
+## 영속 저장 테스트
+
+Exposed에서는 스키마 생성과 migration 기반 시작을 나눠 검증합니다. 같은 entity를 여러 번 commit하고 repository를 다시 만든 뒤 head와 최신순 이력을 확인하세요. GlobalId/버전 중복, 스냅샷 저장과 sequence 갱신 사이의 실패도 다뤄야 합니다. 릴리스의 H2 검증은 [`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt)에 있습니다.
+
+Redis는 Lettuce와 Redisson을 각각 Testcontainers에서 실행합니다. 저장소 재생성, history, shadow, 연결 실패, persistence와 eviction 설정을 확인하세요. Kafka는 발행 key와 페이로드, 30초 실패 경계, 읽기 메서드가 계속 비어 있는지를 검증합니다.
+
+`OrderProjectionFlowTest`는 Kafka와 Redis container, H2 도메인·감사 table을 사용해 `OrderPlaced`, `OrderMarkedPaid`, Redis 상태를 확인합니다. 정상 순서는 증명하지만 crash 복구, 중복 처리, offset 정확성, 운영 DB 동작까지 증명하지는 않습니다. Redis와 Kafka의 공유 launcher가 간섭할 수 있으므로 container 기반 모듈 테스트는 순차 실행합니다.
