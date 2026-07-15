@@ -1,5 +1,6 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import groovy.json.JsonOutput
 import nmcp.NmcpAggregationExtension
 import nmcp.NmcpExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -335,6 +336,41 @@ extensions.configure<NmcpAggregationExtension>("nmcpAggregation") {
         password.set(centralPassword)
         publishingType.set("AUTOMATIC")
         uploadSnapshotsParallelism.set(centralSnapshotsParallelism)
+    }
+}
+
+val manualModuleInventory = subprojects
+    .map { subproject ->
+        val sourceDir = rootProject.projectDir.toPath()
+            .relativize(subproject.projectDir.toPath())
+            .toString()
+            .replace(File.separatorChar, '/')
+        val kind = when {
+            sourceDir == "bom" -> "bom"
+            sourceDir.startsWith("examples/") || sourceDir.startsWith("benchmark/") -> "example"
+            else -> "library"
+        }
+        linkedMapOf(
+            "gradlePath" to subproject.path,
+            "projectName" to subproject.name,
+            "sourceDir" to sourceDir,
+            "kind" to kind,
+        )
+    }
+    .sortedBy { it.getValue("gradlePath") }
+
+tasks.register("exportManualModuleInventory") {
+    group = "documentation"
+    description = "Exports the deterministic manual project inventory."
+    val outputFile = layout.buildDirectory.file("manual/module-inventory.json")
+    val inventoryJson = JsonOutput.prettyPrint(JsonOutput.toJson(manualModuleInventory)) + "\n"
+    outputs.file(outputFile)
+    inputs.property("manualModuleInventoryJson", inventoryJson)
+
+    doLast {
+        val target = outputs.files.singleFile
+        target.parentFile.mkdirs()
+        target.writeText(inventoryJson)
     }
 }
 
