@@ -84,9 +84,9 @@ The implementation audit found that the stable manual is pinned to release `0.2.
 | `javers-redis-save-load-flow-01` | sequence/flow | `modules/javers-persistence-redis.md` | Redis repository save/load methods |
 | `examples-javers-exposed-ddd-cqrs-flow-01` | architecture/flow | `examples/javers-exposed-ddd.md` | `OrderCommandHandler.kt`, `OrderProjectionEventConsumer.kt`, `RedisOrderSummaryProjection.kt` |
 | `examples-javers-exposed-ddd-sequence-01` | sequence | `examples/javers-exposed-ddd.md` | the same released example command/projection path |
-| `examples-javers-ktor-request-audit-flow-01` | sequence/flow | deferred: no manual route | `JaversKtorExampleApplication.kt`, `OrderCommandHandler.kt` |
+| `examples-javers-ktor-request-audit-flow-01` | architecture | deferred: no manual route | `JaversKtorExampleApplication.kt`, `OrderCommandHandler.kt` |
 | `examples-javers-ktor-wiring-01` | architecture | deferred: no manual route | `JaversKtorExampleApplication.kt` |
-| `examples-javers-spring-boot4-request-audit-flow-01` | sequence/flow | deferred: no manual route | `OrderController.kt`, `OrderCommandHandler.kt` |
+| `examples-javers-spring-boot4-request-audit-flow-01` | architecture | deferred: no manual route | `OrderController.kt`, `OrderCommandHandler.kt` |
 | `examples-javers-spring-boot4-wiring-01` | architecture | deferred: no manual route | `JaversExampleConfiguration.kt`, `JaversSpringBoot4ExampleApplication.kt` |
 
 ## Approved dark palette

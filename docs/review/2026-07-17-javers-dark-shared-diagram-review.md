@@ -337,3 +337,15 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: converted all frames, eight cards, shadows, shafts, and heads to the shared dark architecture family; added explicit card and connector metadata; widened the two order-module cards after the first original-size review exposed insufficient title margin; added a cyan marker so the Spring MVC dispatch head matches its shaft.
 - Original-size eye review: every title, endpoint, bean name, responsibility line, and footer fits; all nine arrowheads are visible and color-matched; controller dependencies and configuration-created beans remain distinct; the direct read dependency reaches the repository without crossing another route; persistence and audit routes use separate repository ports; no connector crosses another route or card; outer margins remain balanced.
 - Manual mirror: deferred by the current shared-diagram inventory.
+
+## Final set verification
+
+- Canonical inventory: 25 SVG/PNG pairs; every PNG is exactly twice its SVG canvas dimensions; forbidden pastel card fills `0`.
+- Text normalization: files `25`, text hazards `0`, unhighlighted code snippets `0`, changed files `0`.
+- Connector audit: 24 files pass the default screen. `bluetape4k-javers-architecture-01` reports six intended source/target boundary contacts at the default 1.5px threshold and passes the targeted `--card-padding 20` interior screen with connectors `14`, cards `16`, intrusions `0`, crossings `0`, shared segments `0`.
+- Geometry: 25 files, failures `0`; endpoint audit PASS for 25 files; mixed-corner audit PASS for 25 files with paths `221`, quadratic bends `157`, failures `0`.
+- Sequence family: seven actual sequence diagrams pass the sequence-style audit. The two request/audit lane maps are classified as architecture diagrams rather than false sequence diagrams.
+- README links: 22 README files, 64 local image references, missing files `0`, directly embedded SVG files `0`.
+- Stable manual contract: strict 0.2.1 release validation resolves seven source paths, one benchmark artifact, and 124 release-local links. Shared diagram sync reports `entries=25 selected=21 active=0 deferred=4 target=0.3 stable=0.2` with mirror files `0`.
+- Set-level eye review: `/tmp/javers-dark-diagrams-contact-sheet.jpg` compares all 25 final PNGs. Canvas, surface, border, text, semantic accent, shaft, arrowhead, card-radius, and footer treatment remain consistent across architecture, class, ERD, flow, and sequence families; unresolved style drift `0`.
+- Gradle/JVM tests: not run because production Kotlin behavior did not change. `exportManualModuleInventory` ran only as the documentation validator's required inventory-export step and completed successfully.
