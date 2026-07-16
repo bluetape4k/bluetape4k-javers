@@ -41,7 +41,6 @@ def card(x, y, w, h, title, lines, accent:, subtitle: nil, title_size: 25)
   <<~SVG
     <g class="card-group" data-card="#{esc(title)}">
       <rect class="card" x="#{x}" y="#{y}" width="#{w}" height="#{h}" rx="22" fill="#{PALETTE[:card]}" stroke="#{accent}" stroke-width="2.5"/>
-      <rect x="#{x}" y="#{y}" width="8" height="#{h}" rx="4" fill="#{accent}"/>
       #{text(x + 28, y + 43, title, size: title_size, weight: 700, family: "Architects Daughter")}
       #{subtitle ? text(x + 28, y + 70, subtitle, size: 16, fill: PALETTE[:muted]) : ""}
       #{multiline(x + 28, body_y, lines, size: 18, fill: PALETTE[:muted], gap: 27)}

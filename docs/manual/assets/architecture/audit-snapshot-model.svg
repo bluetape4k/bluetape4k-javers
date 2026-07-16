@@ -62,7 +62,6 @@
   <text class="subtitle" x="78" y="128" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">A commit records an operation; snapshots preserve state for change and shadow queries.</text>
   <g class="card-group" data-card="Domain object">
   <rect class="card" x="92" y="238" width="280" height="190" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
-  <rect x="92" y="238" width="8" height="190" rx="4" fill="#55c7e8"/>
   <text x="120" y="281" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Domain object</text>
 
   <text x="120" y="314" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">current application state</text>
@@ -71,7 +70,6 @@
 
 <g class="card-group" data-card="JaVers commit">
   <rect class="card" x="470" y="238" width="300" height="190" rx="22" fill="#11263b" stroke="#5ed6bd" stroke-width="2.5"/>
-  <rect x="470" y="238" width="8" height="190" rx="4" fill="#5ed6bd"/>
   <text x="498" y="281" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">JaVers commit</text>
 
   <text x="498" y="314" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">author + time + properties</text>
@@ -80,7 +78,6 @@
 
 <g class="card-group" data-card="Commit metadata">
   <rect class="card" x="900" y="180" width="290" height="190" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
-  <rect x="900" y="180" width="8" height="190" rx="4" fill="#b69af5"/>
   <text x="928" y="223" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Commit metadata</text>
 
   <text x="928" y="256" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">CommitId + sequence</text>
@@ -89,7 +86,6 @@
 
 <g class="card-group" data-card="CdoSnapshot">
   <rect class="card" x="900" y="470" width="290" height="218" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
-  <rect x="900" y="470" width="8" height="218" rx="4" fill="#e7b85c"/>
   <text x="928" y="513" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">CdoSnapshot</text>
 
   <text x="928" y="546" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">GlobalId + version</text>
@@ -99,7 +95,6 @@
 
 <g class="card-group" data-card="Changes">
   <rect class="card" x="1280" y="220" width="240" height="166" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
-  <rect x="1280" y="220" width="8" height="166" rx="4" fill="#ef8297"/>
   <text x="1308" y="263" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Changes</text>
 
   <text x="1308" y="296" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">what differs?</text>
@@ -108,7 +103,6 @@
 
 <g class="card-group" data-card="Shadows">
   <rect class="card" x="1280" y="510" width="240" height="166" rx="22" fill="#11263b" stroke="#9fbd72" stroke-width="2.5"/>
-  <rect x="1280" y="510" width="8" height="166" rx="4" fill="#9fbd72"/>
   <text x="1308" y="553" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Shadows</text>
 
   <text x="1308" y="586" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">what did it look like?</text>
@@ -117,7 +111,6 @@
 
 <g class="card-group" data-card="Repository SPI">
   <rect class="card" x="470" y="650" width="300" height="190" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
-  <rect x="470" y="650" width="8" height="190" rx="4" fill="#55c7e8"/>
   <text x="498" y="693" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Repository SPI</text>
 
   <text x="498" y="726" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">encode / decode</text>

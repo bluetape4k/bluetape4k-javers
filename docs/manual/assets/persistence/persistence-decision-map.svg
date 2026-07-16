@@ -62,7 +62,6 @@
   <text class="subtitle" x="78" y="128" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">Select one primary responsibility; composition and recovery remain application concerns.</text>
   <g class="card-group" data-card="Recovery question">
   <rect class="card" x="90" y="250" width="300" height="208" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
-  <rect x="90" y="250" width="8" height="208" rx="4" fill="#55c7e8"/>
   <text x="118" y="293" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Recovery question</text>
 
   <text x="118" y="326" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">What must remain after</text>
@@ -71,7 +70,6 @@
 
 <g class="card-group" data-card="Durable audit history">
   <rect class="card" x="510" y="178" width="300" height="166" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
-  <rect x="510" y="178" width="8" height="166" rx="4" fill="#b69af5"/>
   <text x="538" y="221" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Durable audit history</text>
 
   <text x="538" y="254" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">SQL operations</text>
@@ -80,7 +78,6 @@
 
 <g class="card-group" data-card="Redis is accepted store">
   <rect class="card" x="510" y="430" width="300" height="166" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
-  <rect x="510" y="430" width="8" height="166" rx="4" fill="#e7b85c"/>
   <text x="538" y="473" text-anchor="start" font-family="Architects Daughter, monospace" font-size="22" font-weight="700" fill="#eef6ff">Redis is accepted store</text>
 
   <text x="538" y="506" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">fast snapshot access</text>
@@ -89,7 +86,6 @@
 
 <g class="card-group" data-card="Publish snapshots">
   <rect class="card" x="510" y="682" width="300" height="166" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
-  <rect x="510" y="682" width="8" height="166" rx="4" fill="#ef8297"/>
   <text x="538" y="725" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Publish snapshots</text>
 
   <text x="538" y="758" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">consumer-owned queries</text>
@@ -98,7 +94,6 @@
 
 <g class="card-group" data-card="Choose Exposed">
   <rect class="card" x="960" y="178" width="300" height="166" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
-  <rect x="960" y="178" width="8" height="166" rx="4" fill="#b69af5"/>
   <text x="988" y="221" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Choose Exposed</text>
 
   <text x="988" y="254" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">commit + snapshot tables</text>
@@ -107,7 +102,6 @@
 
 <g class="card-group" data-card="Choose Redis">
   <rect class="card" x="960" y="430" width="300" height="166" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
-  <rect x="960" y="430" width="8" height="166" rx="4" fill="#e7b85c"/>
   <text x="988" y="473" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Choose Redis</text>
 
   <text x="988" y="506" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">Lettuce or Redisson</text>
@@ -116,7 +110,6 @@
 
 <g class="card-group" data-card="Choose Kafka">
   <rect class="card" x="960" y="682" width="300" height="166" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
-  <rect x="960" y="682" width="8" height="166" rx="4" fill="#ef8297"/>
   <text x="988" y="725" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Choose Kafka</text>
 
   <text x="988" y="758" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">write-only repository</text>
@@ -125,7 +118,6 @@
 
 <g class="card-group" data-card="Always add">
   <rect class="card" x="1325" y="380" width="200" height="250" rx="22" fill="#11263b" stroke="#5ed6bd" stroke-width="2.5"/>
-  <rect x="1325" y="380" width="8" height="250" rx="4" fill="#5ed6bd"/>
   <text x="1353" y="423" text-anchor="start" font-family="Architects Daughter, monospace" font-size="24" font-weight="700" fill="#eef6ff">Always add</text>
 
   <text x="1353" y="456" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">retry policy</text>
