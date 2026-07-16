@@ -7,12 +7,12 @@
 ```kotlin
 dependencies {
     implementation("io.github.bluetape4k.javers:javers-persistence-redis")
-    implementation("io.lettuce:lettuce-core") // choose this
+    implementation("io.github.bluetape4k:bluetape4k-lettuce") // choose this
     // implementation("org.redisson:redisson") // or this
 }
 ```
 
-The Redis clients are optional compile-time surfaces in the module build, so the application must add the client it uses. Lettuce uses a dedicated synchronous connection and a lock around `MULTI/EXEC` for each snapshot write. Redisson uses `RListMultimap` for snapshots and `RMap` for commit sequences. Do not configure both merely because both repository classes exist.
+The Redis integrations are optional compile-time surfaces in the module build, so the application must add the one it uses. The Lettuce repository calls helpers from `bluetape4k-lettuce`, which also supplies the Lettuce client dependency; `lettuce-core` alone is not enough. Lettuce uses a dedicated synchronous connection and a lock around `MULTI/EXEC` for each snapshot write. Redisson uses `RListMultimap` for snapshots and `RMap` for commit sequences. Do not configure both merely because both repository classes exist.
 
 ## Lettuce quick start
 

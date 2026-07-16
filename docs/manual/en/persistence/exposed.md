@@ -2,6 +2,8 @@
 
 Choose `ExposedCdoSnapshotRepository` when JaVers history belongs in a relational database already operated by the service. It stores audit data; it does not replace application repositories from `bluetape4k-exposed`.
 
+[![Exposed snapshot persistence flow](../../assets/persistence/exposed-snapshot-flow.png)](../../assets/persistence/exposed-snapshot-flow.svg)
+
 ```kotlin
 val auditRepository = ExposedCdoSnapshotRepository(database)
 auditRepository.ensureSchema()

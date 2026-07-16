@@ -2,6 +2,8 @@
 
 Pick a repository by the question it must answer after a failure, not by latency alone.
 
+[![Persistence decision map](../../assets/persistence/persistence-decision-map.png)](../../assets/persistence/persistence-decision-map.svg)
+
 | Concern | Exposed | Redis | Kafka repository |
 | --- | --- | --- | --- |
 | Primary role | durable SQL audit history | Redis-backed snapshot history | snapshot publication stream |

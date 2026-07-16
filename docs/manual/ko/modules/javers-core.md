@@ -10,7 +10,7 @@ dependencies {
 }
 ```
 
-`CdoSnapshotRepository`는 JaVers `JaversRepository`를 확장해 스냅샷 한 건 저장과 GlobalId별 최신순 조회를 정의합니다. `AbstractCdoSnapshotRepository`는 모든 어댑터가 공유하는 쿼리 필터, 코덱, head 커밋 관리, 저장 순서를 구현합니다. [`CdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt)와 [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt)가 실제 계약입니다.
+`CdoSnapshotRepository`는 JaVers `JaversRepository`를 확장해 스냅샷 한 건 저장과 GlobalId별 최신순 조회를 정의합니다. `AbstractCdoSnapshotRepository`는 모든 어댑터가 공유하는 쿼리 필터, 코덱, 최신 커밋 관리, 저장 순서를 구현합니다. [`CdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt)와 [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt)가 실제 계약입니다.
 
 ## 바로 실행하는 예제
 
@@ -43,19 +43,19 @@ check(changes.isNotEmpty())
 
 캐시 저장소는 인코딩한 스냅샷과 커밋 순서를 현재 프로세스에 둡니다. 캐시가 밀려나거나 프로세스가 재시작하면 이력을 잃고, JaVers가 기존 객체를 새 객체로 판단할 수도 있습니다. 테스트, 예제, 크기가 제한된 캐시처럼 이력을 버려도 되는 경우에만 맞습니다.
 
-`AbstractCdoSnapshotRepository.persist`는 저장소 인스턴스 하나를 잠근 뒤 스냅샷을 한 건씩 저장하고 마지막에 head와 sequence를 갱신합니다. 중간에 실패하면 뒤 작업은 멈추지만 이미 외부 저장소에 쓴 내용까지 되돌리지는 않습니다. 범위가 넓은 JQL 조회는 `getAll()`에서 모든 스냅샷을 메모리에 올립니다. 키가 10,000개를 넘을 때 경고할 뿐이므로 운영 쿼리는 범위를 좁히고 heap 사용량을 확인해야 합니다.
+`AbstractCdoSnapshotRepository.persist`는 저장소 인스턴스 하나를 잠근 뒤 스냅샷을 한 건씩 저장하고 마지막에 최신 커밋과 순서 값을 갱신합니다. 중간에 실패하면 뒤 작업은 멈추지만 이미 외부 저장소에 쓴 내용까지 되돌리지는 않습니다. 범위가 넓은 JQL 조회는 `getAll()`에서 모든 스냅샷을 메모리에 올립니다. 키가 10,000개를 넘을 때 경고할 뿐이므로 운영 쿼리는 범위를 좁히고 힙 사용량을 확인해야 합니다.
 
 코덱은 손상된 페이로드를 `null`로 돌려줄 수 있고, 저장소는 `mapNotNull`로 이를 제외합니다. 조회 전체가 실패하는 대신 일부 이력이 빠질 수 있다는 뜻입니다. 코덱 오류를 관측하고 운영과 같은 코덱으로 복원 테스트를 돌리세요.
 
 ## 운영과 테스트
 
-저장소 수명, 캐시 최대 크기, eviction, 코덱 버전, 커밋 ID 순서를 운영 설정으로 관리합니다. 캐시 저장소는 rolling restart만 해도 빈 상태에서 시작합니다.
+저장소 수명, 캐시 최대 크기, 캐시 축출, 코덱 버전, 커밋 ID 순서를 운영 설정으로 관리합니다. 캐시 저장소는 롤링 재시작만 해도 빈 상태에서 시작합니다.
 
 ```bash
 ./gradlew :javers-core:test
 ```
 
-릴리스 테스트는 커밋, 스냅샷, shadow, 코덱과 캐시 구현 세 가지를 검증합니다. 애플리케이션 테스트에서는 같은 객체를 두 번 커밋한 뒤 `findChanges`, 최신순 스냅샷, shadow 복원을 확인하세요.
+릴리스 테스트는 커밋, 스냅샷, 섀도, 코덱과 캐시 구현 세 가지를 검증합니다. 애플리케이션 테스트에서는 같은 객체를 두 번 커밋한 뒤 `findChanges`, 최신순 스냅샷, 섀도 복원을 확인하세요.
 
 ## 하지 않는 일
 
