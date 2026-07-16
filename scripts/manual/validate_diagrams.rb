@@ -28,6 +28,10 @@ ASSETS.each do |rel, expected|
 
   counts = {
     cards: REXML::XPath.match(doc, "//*[contains(concat(' ', normalize-space(@class), ' '), ' card ')]").size,
+    card_decorations: REXML::XPath.match(
+      doc,
+      "//*[contains(concat(' ', normalize-space(@class), ' '), ' card-group ')]/rect[not(contains(concat(' ', normalize-space(@class), ' '), ' card '))]"
+    ).size,
     participants: REXML::XPath.match(doc, "//*[contains(concat(' ', normalize-space(@class), ' '), ' participant ')]").size,
     headers: REXML::XPath.match(doc, "//*[contains(concat(' ', normalize-space(@class), ' '), ' header ')]").size,
     lifelines: REXML::XPath.match(doc, "//*[contains(concat(' ', normalize-space(@class), ' '), ' lifeline ')]").size,
@@ -41,6 +45,7 @@ ASSETS.each do |rel, expected|
   expected.each do |key, min|
     failures << "#{rel}: #{key}=#{counts[key]}, expected >= #{min}" if counts[key] < min
   end
+  failures << "#{rel}: card_decorations=#{counts[:card_decorations]}, expected 0" if counts[:card_decorations].positive?
 
   REXML::XPath.each(doc, "//marker") do |marker|
     size = marker.attributes["markerWidth"].to_i

@@ -62,7 +62,6 @@
   <text class="subtitle" x="78" y="128" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">Each snapshot write and the final sequence update use separate Exposed transactions.</text>
   <g class="card-group" data-card="JaVers persist">
   <rect class="card" x="78" y="236" width="250" height="176" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
-  <rect x="78" y="236" width="8" height="176" rx="4" fill="#55c7e8"/>
   <text x="106" y="279" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">JaVers persist</text>
 
   <text x="106" y="312" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">commit.snapshots</text>
@@ -71,7 +70,6 @@
 
 <g class="card-group" data-card="saveSnapshot">
   <rect class="card" x="420" y="236" width="280" height="176" rx="22" fill="#11263b" stroke="#5ed6bd" stroke-width="2.5"/>
-  <rect x="420" y="236" width="8" height="176" rx="4" fill="#5ed6bd"/>
   <text x="448" y="279" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">saveSnapshot</text>
 
   <text x="448" y="312" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">encode JSON</text>
@@ -80,7 +78,6 @@
 
 <g class="card-group" data-card="CommitTable">
   <rect class="card" x="820" y="160" width="300" height="176" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
-  <rect x="820" y="160" width="8" height="176" rx="4" fill="#b69af5"/>
   <text x="848" y="203" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">CommitTable</text>
 
   <text x="848" y="236" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">insert if absent</text>
@@ -89,7 +86,6 @@
 
 <g class="card-group" data-card="CdoSnapshotTable">
   <rect class="card" x="820" y="420" width="300" height="176" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
-  <rect x="820" y="420" width="8" height="176" rx="4" fill="#e7b85c"/>
   <text x="848" y="463" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">CdoSnapshotTable</text>
 
   <text x="848" y="496" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">GlobalId + commitId</text>
@@ -98,7 +94,6 @@
 
 <g class="card-group" data-card="updateCommitId">
   <rect class="card" x="1250" y="236" width="270" height="176" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
-  <rect x="1250" y="236" width="8" height="176" rx="4" fill="#ef8297"/>
   <text x="1278" y="279" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">updateCommitId</text>
 
   <text x="1278" y="312" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">separate transaction</text>
@@ -107,7 +102,6 @@
 
 <g class="card-group" data-card="loadHeadId">
   <rect class="card" x="420" y="670" width="280" height="176" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
-  <rect x="420" y="670" width="8" height="176" rx="4" fill="#b69af5"/>
   <text x="448" y="713" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">loadHeadId</text>
 
   <text x="448" y="746" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">highest sequence</text>
@@ -116,7 +110,6 @@
 
 <g class="card-group" data-card="loadSnapshots">
   <rect class="card" x="820" y="670" width="300" height="176" rx="22" fill="#11263b" stroke="#9fbd72" stroke-width="2.5"/>
-  <rect x="820" y="670" width="8" height="176" rx="4" fill="#9fbd72"/>
   <text x="848" y="713" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">loadSnapshots</text>
 
   <text x="848" y="746" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">filter GlobalId</text>

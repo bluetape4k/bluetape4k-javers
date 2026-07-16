@@ -62,7 +62,6 @@
   <text class="subtitle" x="78" y="128" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">Read by responsibility; choose persistence by recovery need.</text>
   <g class="card-group" data-card="1 · Audit model">
   <rect class="card" x="90" y="210" width="260" height="176" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
-  <rect x="90" y="210" width="8" height="176" rx="4" fill="#55c7e8"/>
   <text x="118" y="253" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">1 · Audit model</text>
 
   <text x="118" y="286" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">commit + snapshot</text>
@@ -71,7 +70,6 @@
 
 <g class="card-group" data-card="2 · Repository SPI">
   <rect class="card" x="455" y="210" width="290" height="176" rx="22" fill="#11263b" stroke="#5ed6bd" stroke-width="2.5"/>
-  <rect x="455" y="210" width="8" height="176" rx="4" fill="#5ed6bd"/>
   <text x="483" y="253" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">2 · Repository SPI</text>
 
   <text x="483" y="286" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">CdoSnapshotRepository</text>
@@ -80,7 +78,6 @@
 
 <g class="card-group" data-card="3A · Exposed">
   <rect class="card" x="850" y="176" width="280" height="150" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
-  <rect x="850" y="176" width="8" height="150" rx="4" fill="#b69af5"/>
   <text x="878" y="219" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">3A · Exposed</text>
 
   <text x="878" y="252" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">durable SQL history</text>
@@ -89,7 +86,6 @@
 
 <g class="card-group" data-card="3B · Redis">
   <rect class="card" x="850" y="350" width="280" height="150" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
-  <rect x="850" y="350" width="8" height="150" rx="4" fill="#e7b85c"/>
   <text x="878" y="393" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">3B · Redis</text>
 
   <text x="878" y="426" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">snapshot store</text>
@@ -98,7 +94,6 @@
 
 <g class="card-group" data-card="3C · Kafka">
   <rect class="card" x="850" y="524" width="280" height="150" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
-  <rect x="850" y="524" width="8" height="150" rx="4" fill="#ef8297"/>
   <text x="878" y="567" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">3C · Kafka</text>
 
   <text x="878" y="600" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">publication stream</text>
@@ -107,7 +102,6 @@
 
 <g class="card-group" data-card="4 · DDD path">
   <rect class="card" x="1235" y="210" width="270" height="176" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
-  <rect x="1235" y="210" width="8" height="176" rx="4" fill="#55c7e8"/>
   <text x="1263" y="253" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">4 · DDD path</text>
 
   <text x="1263" y="286" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">persist then audit</text>
@@ -116,7 +110,6 @@
 
 <g class="card-group" data-card="5 · Example">
   <rect class="card" x="455" y="650" width="290" height="176" rx="22" fill="#11263b" stroke="#9fbd72" stroke-width="2.5"/>
-  <rect x="455" y="650" width="8" height="176" rx="4" fill="#9fbd72"/>
   <text x="483" y="693" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">5 · Example</text>
 
   <text x="483" y="726" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">order command</text>
@@ -125,7 +118,6 @@
 
 <g class="card-group" data-card="6 · Operations">
   <rect class="card" x="90" y="650" width="260" height="176" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
-  <rect x="90" y="650" width="8" height="176" rx="4" fill="#ef8297"/>
   <text x="118" y="693" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">6 · Operations</text>
 
   <text x="118" y="726" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">failure windows</text>
