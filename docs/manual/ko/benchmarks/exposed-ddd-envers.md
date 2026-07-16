@@ -20,7 +20,7 @@
 
 ## 측정 환경
 
-0.2.1의 [JSON 산출물](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)에는 다음 환경이 기록돼 있습니다.
+0.2.1의 [JSON 산출물](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)에는 다음 실행 정보가 기록돼 있습니다.
 
 | 항목 | 값 |
 |---|---|
@@ -28,10 +28,11 @@
 | Java | `21.0.11` |
 | 운영체제 | macOS |
 | architecture | `aarch64` |
-| 데이터베이스 | 인메모리 H2 |
-| 준비 실행 횟수 | 5 |
+| 준비 실행 설정 | 5, 삽입 측정 전에만 적용 |
 | 측정 횟수 | 시나리오마다 40 |
 | 측정 단위 | 작업당 밀리초, 낮을수록 좋음 |
+
+JSON에는 데이터베이스 종류가 없습니다. 두 구현이 각각 새 인메모리 H2 데이터베이스를 사용한다는 사실은 릴리스의 벤치마크 테스트 소스에서 확인할 수 있습니다. JaVers 연결은 PostgreSQL 호환 모드를 켜고, Envers 연결은 해당 모드 없이 H2 dialect를 사용합니다.
 
 ## 대표 측정값
 
