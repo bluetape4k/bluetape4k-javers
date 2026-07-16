@@ -20,7 +20,7 @@ The exact reproduction command is:
 
 ## Recorded environment
 
-The released [JSON artifact](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json) records:
+The released [JSON artifact](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json) records the following run metadata:
 
 | Field | Value |
 |---|---|
@@ -28,10 +28,11 @@ The released [JSON artifact](https://github.com/bluetape4k/bluetape4k-javers/blo
 | Java | `21.0.11` |
 | operating system | macOS |
 | architecture | `aarch64` |
-| database | in-memory H2 |
-| warmup iterations | 5 |
+| warmup setting | 5; applied before insert measurement only |
 | measured iterations | 40 per scenario |
 | metric | milliseconds per operation; lower is better |
+
+The JSON does not name the database. The released benchmark source verifies that both implementations use fresh in-memory H2 databases. The JaVers connection enables PostgreSQL compatibility mode; the Envers connection uses the H2 dialect without that mode.
 
 ## Representative values
 
