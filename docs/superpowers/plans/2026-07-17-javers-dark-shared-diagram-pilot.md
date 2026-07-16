@@ -2,9 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Convert all 25 JaVers README technical diagrams to the approved dark visual system, publish 21 relevant canonical pairs into the bilingual 0.2 manual through deterministic mirrors, and prove visual and byte-level parity.
+**Goal:** Convert all 25 JaVers README technical diagrams to the approved dark visual system, stage 21 relevant canonical pairs for the bilingual 0.3 manual through deterministic mirrors, and prevent those develop-based assets from entering the stable 0.2 manual.
 
-**Architecture:** The editable source remains `docs/images/readme-diagrams/<asset>.svg`; CairoSVG regenerates the canonical PNG. `docs/manual/shared-diagrams.yaml` records source anchors, diagram kind, and manual placement, while a small Ruby contract copies only `manual: selected` pairs into `docs/manual/assets/readme-diagrams` and verifies SHA-256 equality. Existing manual-only diagrams remain only when they answer a distinct reader question.
+**Architecture:** The editable source remains `docs/images/readme-diagrams/<asset>.svg`; CairoSVG regenerates the canonical PNG. `docs/manual/shared-diagrams.yaml` records source anchors, diagram kind, target minor, and manual placement. A small Ruby contract copies `manual: selected` pairs into `docs/manual/assets/readme-diagrams` only when `targetMinor` equals the stable manual manifest's `stableMinor`, then verifies SHA-256 equality. Existing 0.2 manual-only diagrams remain until the 0.3 release source becomes authoritative.
+
+## Version-boundary amendment
+
+The implementation audit found that the stable manual is pinned to release `0.2.1`, while several canonical README diagrams describe `develop` behavior for `0.3.0`, including composite repositories, EntityHook auditing, Kafka projection, Spring/Ktor examples, and the shared Exposed audit transaction. Reusing those assets in the 0.2 manual would contradict its release provenance. The inventory therefore targets minor `0.3`; mirror generation and bilingual page integration stay inactive while `docs/manual/manifest.yaml` reports `stableMinor: '0.2'`.
 
 **Tech Stack:** SVG, CairoSVG, Ruby 3 standard library (`yaml`, `digest`, `fileutils`, `minitest`), existing JaVers manual validators, `bluetape-diagram` audit scripts, Markdown.
 
@@ -313,22 +317,28 @@ Create separate commits for root+BOM, Core, DDD, Exposed, Kafka, Redis, Exposed-
 ### Task 4: Generate selected manual mirrors and prove parity
 
 **Files:**
-- Create: `docs/manual/assets/readme-diagrams/*.{svg,png}` for 21 selected basenames
-- Modify: `docs/manual/manifest.yaml`
+- Modify: `docs/manual/shared-diagrams.yaml`
+- Modify: `scripts/manual/shared_diagram_contract.rb`
+- Modify: `scripts/manual/shared_diagram_contract_test.rb`
+- Modify: `scripts/manual/sync_shared_diagrams.rb`
 
-- [ ] **Step 1: Generate mirrors**
+- [x] **Step 1: Pin the mirror target to minor 0.3**
+
+Set `schemaVersion: 2` and `targetMinor: '0.3'`. The contract reads `stableMinor` from `docs/manual/manifest.yaml` and activates selected entries only when both minors match.
+
+- [x] **Step 2: Prove the stable 0.2 gate**
 
 ```bash
 ruby scripts/manual/sync_shared_diagrams.rb --write
 ```
 
-Expected: 21 SVG and 21 PNG files under `docs/manual/assets/readme-diagrams`.
+Expected while stable is 0.2: `selected=21 active=0 target=0.3 stable=0.2`, zero mirror files, and no contract errors.
 
-- [ ] **Step 2: Register exactly the selected mirror files**
+- [ ] **Step 3: Generate and register mirrors after the 0.3 stable transition**
 
-Add all 42 relative paths under `overview.assets` in `docs/manual/manifest.yaml`, sorted by basename and extension. Do not register the four deferred Ktor/Spring Boot pairs.
+After a real 0.3 release updates the manual manifest and release provenance, generate 21 SVG/PNG pairs and add the 42 paths under `overview.assets`. Do not register the four deferred Ktor/Spring Boot pairs.
 
-- [ ] **Step 3: Prove parity and absence of orphans**
+- [ ] **Step 4: Prove active parity and absence of orphans after release**
 
 ```bash
 ruby scripts/manual/sync_shared_diagrams.rb --check
@@ -338,11 +348,13 @@ find docs/manual/assets/readme-diagrams -maxdepth 1 -name '*.png' | wc -l
 
 Expected: parity PASS, `21` SVG, `21` PNG, no orphan diagnostics.
 
-- [ ] **Step 4: Commit mirror contract output**
+- [x] **Step 5: Commit the version-aware mirror contract**
 
-Commit the manifest and mirror directory. The commit message must state that mirror files are generated publication copies and must never be edited directly.
+Commit the schema and contract changes. The commit message must state that generated mirrors remain inactive until stable minor 0.3 and must never be edited directly.
 
 ### Task 5: Integrate shared diagrams into bilingual manuals
+
+This task is release-gated. Do not modify the 0.2 pages or delete their release-specific diagrams. Execute these steps only after the stable manual manifest and release provenance move to 0.3.
 
 **Files:**
 - Modify the 20 English/Korean pages listed in the file map.
@@ -416,7 +428,7 @@ Expected: 25 SVG files, zero audit failures. Run the class, ERD, and sequence-sp
 
 - [ ] **Step 3: Run README and manual link checks**
 
-Resolve every local PNG link in `README.md`, `README.ko.md`, module/example READMEs, and `docs/manual/{en,ko}`. Expected: missing links `0`, README SVG embeds `0`, selected manual mirror pairs `21`, deferred manual pairs `0`.
+Resolve every local PNG link in `README.md`, `README.ko.md`, module/example READMEs, and `docs/manual/{en,ko}`. Before the 0.3 release, expected: missing links `0`, README SVG embeds `0`, selected manual mirror pairs `0`, deferred manual pairs `0`, and the version gate reports `active=0`.
 
 - [ ] **Step 4: Perform final individual and set-level visual review**
 
@@ -629,4 +641,3 @@ Status is recorded with fresh evidence. An unchecked row blocks dependent work.
   - **Action:** Complete CG-16..CG-18 after fresh approval.
   - **Evidence:** PENDING until merge-ready approval.
   - **Failure:** Do not merge early.
-

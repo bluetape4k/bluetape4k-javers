@@ -1,5 +1,6 @@
 ---
-schemaVersion: 1
+schemaVersion: 2
+targetMinor: '0.3'
 diagrams:
 - id: root-readme-overview
   kind: architecture

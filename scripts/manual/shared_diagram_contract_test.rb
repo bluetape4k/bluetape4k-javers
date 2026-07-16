@@ -19,6 +19,7 @@ class SharedDiagramContractTest < Minitest::Test
     FileUtils.mkdir_p(@root.join("src"))
     File.write(@root.join("docs/manual/en/modules/sample.md"), "# Sample\n")
     File.write(@root.join("docs/manual/ko/modules/sample.md"), "# 샘플\n")
+    write_manifest("0.3")
     File.write(@root.join("src/Sample.kt"), "class Sample\n")
     write_pair("sample", "canonical")
     write_inventory([entry("sample", manual: "selected")])
@@ -80,6 +81,18 @@ class SharedDiagramContractTest < Minitest::Test
     assert_empty contract.errors
   end
 
+  def test_sync_keeps_future_minor_mirrors_inactive
+    write_manifest("0.2")
+
+    contract.sync!
+
+    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/sample.svg"))
+    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/sample.png"))
+    refute contract.target_active?
+    assert_empty contract.active_entries
+    assert_empty contract.errors
+  end
+
   private
 
   def contract
@@ -106,7 +119,14 @@ class SharedDiagramContractTest < Minitest::Test
   def write_inventory(entries)
     File.write(
       @root.join("docs/manual/shared-diagrams.yaml"),
-      YAML.dump({ "schemaVersion" => 1, "diagrams" => entries }),
+      YAML.dump({ "schemaVersion" => 2, "targetMinor" => "0.3", "diagrams" => entries }),
+    )
+  end
+
+  def write_manifest(stable_minor)
+    File.write(
+      @root.join("docs/manual/manifest.yaml"),
+      YAML.dump({ "stableMinor" => stable_minor }),
     )
   end
 

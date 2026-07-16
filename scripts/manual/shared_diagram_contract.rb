@@ -24,6 +24,8 @@ module SharedDiagrams
     VALID_KINDS = %w[architecture class erd flow sequence].freeze
     VALID_MANUAL_STATES = %w[selected deferred].freeze
 
+    MANUAL_MANIFEST = "docs/manual/manifest.yaml"
+
     attr_reader :root, :inventory_path
 
     def initialize(root:, inventory_path:)
@@ -33,6 +35,29 @@ module SharedDiagrams
 
     def entries
       @entries ||= load_entries
+    end
+
+    def target_minor
+      value = inventory_data["targetMinor"]
+      raise ContractError, "shared diagram targetMinor must use major.minor format" unless minor_version?(value)
+
+      value
+    end
+
+    def stable_minor
+      manifest = load_yaml(resolved(MANUAL_MANIFEST), "manual manifest")
+      value = manifest["stableMinor"]
+      raise ContractError, "manual manifest stableMinor must use major.minor format" unless minor_version?(value)
+
+      value
+    end
+
+    def target_active?
+      target_minor == stable_minor
+    end
+
+    def active_entries
+      target_active? ? entries.select(&:selected?) : []
     end
 
     def errors
@@ -49,7 +74,7 @@ module SharedDiagrams
 
       mirror_root.mkpath
       expected = []
-      entry_list.select(&:selected?).each do |entry|
+      active_entries.each do |entry|
         %w[svg png].each do |extension|
           source = canonical_path(entry, extension)
           target = mirror_path(entry, extension)
@@ -70,11 +95,8 @@ module SharedDiagrams
     private
 
     def load_entries
-      raise ContractError, "shared diagram inventory not found" unless inventory_path.file?
-
-      data = YAML.safe_load(inventory_path.read, permitted_classes: [], aliases: false)
-      raise ContractError, "shared diagram inventory must be a mapping" unless data.is_a?(Hash)
-      raise ContractError, "shared diagram schemaVersion must be 1" unless data["schemaVersion"] == 1
+      data = inventory_data
+      raise ContractError, "shared diagram schemaVersion must be 2" unless data["schemaVersion"] == 2
 
       rows = data["diagrams"]
       raise ContractError, "shared diagram inventory diagrams must be an array" unless rows.is_a?(Array)
@@ -87,8 +109,21 @@ module SharedDiagrams
         raise ContractError, "duplicate canonical diagrams: #{duplicate_canonical.sort.join(', ')}"
       end
       parsed.freeze
+    end
+
+    def inventory_data
+      @inventory_data ||= load_yaml(inventory_path, "shared diagram inventory")
+    end
+
+    def load_yaml(path, label)
+      raise ContractError, "#{label} not found" unless path.file?
+
+      data = YAML.safe_load(path.read, permitted_classes: [], aliases: false)
+      raise ContractError, "#{label} must be a mapping" unless data.is_a?(Hash)
+
+      data
     rescue Psych::SyntaxError => error
-      raise ContractError, "shared diagram inventory YAML is invalid: #{error.problem}"
+      raise ContractError, "#{label} YAML is invalid: #{error.problem}"
     end
 
     def parse_entry(row)
@@ -150,10 +185,11 @@ module SharedDiagrams
 
     def mirror_errors(entry_list)
       expected = []
+      active = active_entries.map(&:id).to_h { |id| [id, true] }
       failures = entry_list.flat_map do |entry|
         %w[svg png].flat_map do |extension|
           mirror = mirror_path(entry, extension)
-          if entry.selected?
+          if active[entry.id]
             expected << mirror.basename.to_s
             if !mirror.file?
               ["#{entry.id}: missing mirror #{extension.upcase}"]
@@ -163,7 +199,8 @@ module SharedDiagrams
               []
             end
           elsif mirror.file?
-            ["#{entry.id}: deferred diagram has mirror #{extension.upcase}"]
+            reason = entry.deferred? ? "deferred diagram" : "inactive manual target"
+            ["#{entry.id}: #{reason} has mirror #{extension.upcase}"]
           else
             []
           end
@@ -205,6 +242,10 @@ module SharedDiagrams
 
     def non_empty_string?(value)
       value.is_a?(String) && !value.empty?
+    end
+
+    def minor_version?(value)
+      non_empty_string?(value) && value.match?(/\A\d+\.\d+\z/)
     end
 
     def digest(path)
