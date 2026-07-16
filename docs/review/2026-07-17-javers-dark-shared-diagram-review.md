@@ -284,3 +284,16 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: converted all sequence surfaces, labels, shafts, heads, activations, and lifelines to the shared dark family; added explicit card/connector metadata; extended handler and repository activations through the publish acknowledgement; moved the transaction title away from the repository activation; widened messages 9 and 10 after the first full-size review exposed text overflow, then narrowed message 10 to restore the outer-frame margin.
 - Original-size eye review: all eight participant titles and roles fit; eleven numbered pills clear their message shafts; every arrowhead is visible and color-matched; the database transaction, Kafka publication, projection consumption, and query phases remain distinct; the transaction title clears all activations; the two projection pills fit inside the outer frame; no message crosses another connector or participant card; the ordering note and outer margins remain balanced.
 - Manual mirror: pending Task 4.
+
+### `examples-javers-ktor-request-audit-flow-01`
+
+- Reader question: Which Ktor requests write audited state, read the current order row, or read bounded JaVers history?
+- Authority: `examples/javers-ktor/README.md`, `JaversKtorExampleApplication.kt`, `OrderCommandHandler.kt`, and `OrderRepository.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/examples-javers-ktor-request-audit-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3920x2240` RGBA PNG. The first final whole-image review used the canonical PNG; after the app blackened the later render, the changed transaction card was rechecked at original scale with `/tmp/examples-javers-ktor-request-audit-flow-card-final.jpg`.
+- Audits: connectors `9`, cards `10`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `9`, quadratic bends `13`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: distinguished command writes, current-row reads, and bounded history reads; made the command-side save explicitly combine the order row and JaVers snapshot in one Exposed transaction; retained author and domain-event metadata on the snapshot commit; kept current reads on the Exposed table and history reads on JaVers snapshots.
+- Repairs made during audit: converted the canvas, lanes, ten cards, shadows, shafts, and primary heads to the shared dark architecture family; normalized residual light Ktor and JaVers cards; attached explicit card/connector metadata; replaced the ambiguous `save aggregate` wording with the actual audited transaction boundary.
+- Original-size eye review: all request paths, card titles, endpoint strings, and responsibility lines fit; every arrowhead is visible and color-matched; the write, current-read, and history-read routes remain distinct; both repository read routes use separate ports; no connector crosses another route or card; the history-limit footer and outer margins remain balanced.
+- Manual mirror: deferred by the current shared-diagram inventory.
