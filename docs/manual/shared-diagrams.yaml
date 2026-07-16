@@ -1,0 +1,149 @@
+---
+schemaVersion: 1
+diagrams:
+- id: root-readme-overview
+  kind: architecture
+  canonical: root-readme-overview-01
+  manual: selected
+  manualPages: { en: docs/manual/en/index.md, ko: docs/manual/ko/index.md }
+  sourcePaths: [settings.gradle.kts, README.md]
+- id: repository-architecture
+  kind: architecture
+  canonical: bluetape4k-javers-architecture-01
+  manual: selected
+  manualPages: { en: docs/manual/en/architecture/repository-map.md, ko: docs/manual/ko/architecture/repository-map.md }
+  sourcePaths: [settings.gradle.kts, README.md]
+- id: persistence-options
+  kind: architecture
+  canonical: javers-persistence-options-01
+  manual: selected
+  manualPages: { en: docs/manual/en/persistence/selection-guide.md, ko: docs/manual/ko/persistence/selection-guide.md }
+  sourcePaths: [javers-exposed/src/main, javers-persistence-redis/src/main, javers-persistence-kafka/src/main]
+- id: bom-architecture
+  kind: architecture
+  canonical: bom-architecture-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/bluetape4k-javers-bom.md, ko: docs/manual/ko/modules/bluetape4k-javers-bom.md }
+  sourcePaths: [bom/build.gradle.kts, gradle/libs.versions.toml]
+- id: core-architecture
+  kind: architecture
+  canonical: javers-core-architecture-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-core.md, ko: docs/manual/ko/modules/javers-core.md }
+  sourcePaths: [javers-core/src/main/kotlin/io/bluetape4k/javers]
+- id: core-class-diagram
+  kind: class
+  canonical: javers-core-class-diagram-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-core.md, ko: docs/manual/ko/modules/javers-core.md }
+  sourcePaths: [javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt, javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt]
+- id: core-composite-repository
+  kind: flow
+  canonical: javers-core-composite-repository-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-core.md, ko: docs/manual/ko/modules/javers-core.md }
+  sourcePaths: [javers-core/src/main/kotlin/io/bluetape4k/javers/repository/composite]
+- id: ddd-class-diagram
+  kind: class
+  canonical: javers-ddd-class-diagram-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-ddd.md, ko: docs/manual/ko/modules/javers-ddd.md }
+  sourcePaths: [javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd]
+- id: ddd-save-flow
+  kind: sequence
+  canonical: javers-ddd-save-flow-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-ddd.md, ko: docs/manual/ko/modules/javers-ddd.md }
+  sourcePaths: [javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt, javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEventPublisher.kt]
+- id: exposed-class-diagram
+  kind: class
+  canonical: javers-exposed-class-diagram-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-exposed.md, ko: docs/manual/ko/modules/javers-exposed.md }
+  sourcePaths: [javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt, javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt]
+- id: exposed-entity-hook
+  kind: sequence
+  canonical: javers-exposed-entity-hook-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-exposed.md, ko: docs/manual/ko/modules/javers-exposed.md }
+  sourcePaths: [javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/hook]
+- id: exposed-erd
+  kind: erd
+  canonical: javers-exposed-erd-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-exposed.md, ko: docs/manual/ko/modules/javers-exposed.md }
+  sourcePaths: [javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt]
+- id: exposed-persistence-flow
+  kind: sequence
+  canonical: javers-exposed-persistence-flow-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-exposed.md, ko: docs/manual/ko/modules/javers-exposed.md }
+  sourcePaths: [javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt]
+- id: kafka-repository-map
+  kind: architecture
+  canonical: javers-kafka-repository-map-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-persistence-kafka.md, ko: docs/manual/ko/modules/javers-persistence-kafka.md }
+  sourcePaths: [javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository]
+- id: kafka-publish-flow
+  kind: sequence
+  canonical: javers-kafka-publish-flow-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-persistence-kafka.md, ko: docs/manual/ko/modules/javers-persistence-kafka.md }
+  sourcePaths: [javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher.kt, javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaPublishTimeoutSupport.kt]
+- id: kafka-projection-flow
+  kind: sequence
+  canonical: javers-kafka-projection-flow-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-persistence-kafka.md, ko: docs/manual/ko/modules/javers-persistence-kafka.md }
+  sourcePaths: [javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt]
+- id: redis-repository-map
+  kind: architecture
+  canonical: javers-redis-repository-map-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-persistence-redis.md, ko: docs/manual/ko/modules/javers-persistence-redis.md }
+  sourcePaths: [javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository]
+- id: redis-key-layout
+  kind: architecture
+  canonical: javers-redis-key-layout-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-persistence-redis.md, ko: docs/manual/ko/modules/javers-persistence-redis.md }
+  sourcePaths: [javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository]
+- id: redis-save-load-flow
+  kind: sequence
+  canonical: javers-redis-save-load-flow-01
+  manual: selected
+  manualPages: { en: docs/manual/en/modules/javers-persistence-redis.md, ko: docs/manual/ko/modules/javers-persistence-redis.md }
+  sourcePaths: [javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository]
+- id: exposed-ddd-cqrs-flow
+  kind: flow
+  canonical: examples-javers-exposed-ddd-cqrs-flow-01
+  manual: selected
+  manualPages: { en: docs/manual/en/examples/javers-exposed-ddd.md, ko: docs/manual/ko/examples/javers-exposed-ddd.md }
+  sourcePaths: [examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt, examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt, examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt]
+- id: exposed-ddd-sequence
+  kind: sequence
+  canonical: examples-javers-exposed-ddd-sequence-01
+  manual: selected
+  manualPages: { en: docs/manual/en/examples/javers-exposed-ddd.md, ko: docs/manual/ko/examples/javers-exposed-ddd.md }
+  sourcePaths: [examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt, examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt, examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt]
+- id: ktor-request-audit-flow
+  kind: sequence
+  canonical: examples-javers-ktor-request-audit-flow-01
+  manual: deferred
+  sourcePaths: [examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/JaversKtorExampleApplication.kt, examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/service/OrderCommandHandler.kt]
+- id: ktor-wiring
+  kind: architecture
+  canonical: examples-javers-ktor-wiring-01
+  manual: deferred
+  sourcePaths: [examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/JaversKtorExampleApplication.kt]
+- id: spring-boot4-request-audit-flow
+  kind: sequence
+  canonical: examples-javers-spring-boot4-request-audit-flow-01
+  manual: deferred
+  sourcePaths: [examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/web/OrderController.kt, examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/service/OrderCommandHandler.kt]
+- id: spring-boot4-wiring
+  kind: architecture
+  canonical: examples-javers-spring-boot4-wiring-01
+  manual: deferred
+  sourcePaths: [examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/config/JaversExampleConfiguration.kt, examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/JaversSpringBoot4ExampleApplication.kt]
