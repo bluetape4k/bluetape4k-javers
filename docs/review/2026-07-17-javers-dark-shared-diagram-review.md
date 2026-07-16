@@ -177,3 +177,44 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: gave exact and fallback branches distinct cyan versus rose/violet message families; moved message 1 away from the write-frame title and message 13 away from the `else` condition after the first full-size review found both overlaps.
 - Original-size eye review: all participant names, phase titles, branch conditions, and seventeen pills fit; every arrowhead is visible and matches its message; the write and read phases are distinct; the exact and fallback paths do not collide; branch labels remain fully readable; no connector crosses a card or another route; footer and outer margins remain balanced.
 - Manual mirror: pending Task 4.
+
+### `javers-kafka-repository-map-01`
+
+- Reader question: How do the Spring and vanilla write-only repositories publish snapshot payloads, and how does the separate projector build a durable read model?
+- Authority: `javers-persistence-kafka/README.md` and all production sources under `javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/kafka`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/javers-kafka-repository-map-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `4280x1960` RGBA PNG. The original-size review used `/tmp/javers-kafka-repository-map-final.jpg`.
+- Audits: connectors `7`, cards `9`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `7`, quadratic bends `8`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: removed the false write-only claim from `AbstractCdoSnapshotRepository`; made `JaversCodecs.String` the encoded record-value step; kept `CdoSnapshotEvent` metadata explicitly in process while only its payload goes on the current Kafka wire; placed the empty/false/zero read contract on both concrete publisher repositories; retained deterministic projector ordering, skip-existing behavior, and post-batch offset commits.
+- Repairs made during audit: removed duplicate marker definitions; normalized primary arrowheads to 14x14 and the static dependency head to 10x10; replaced both diagonal publisher routes with separate orthogonal topic ports; replaced the floating frame-to-frame line with a real event-to-projector dependency; separated projector outputs and used a direct horizontal read-repository route to avoid a false shared junction.
+- Original-size eye review: every card title and responsibility line fits; all seven arrowheads are visible; publisher-to-topic routes remain distinct; the event-to-projector dependency reaches the projector from above without crossing a card; read-repository and replay-option routes leave separate projector ports; no connector crosses another route or card; lane, footer, and outer-frame margins remain balanced.
+- Manual mirror: pending Task 4.
+
+### `javers-kafka-publish-flow-01`
+
+- Reader question: When does a Kafka-backed snapshot write count as accepted, and how do timeout, send failure, and interruption propagate back to JaVers?
+- Authority: `KafkaCdoSnapshotRepository.kt`, `VanillaKafkaCdoSnapshotRepository.kt`, `KafkaSnapshotEventPublisher.kt`, `VanillaKafkaSnapshotEventPublisher.kt`, `KafkaSnapshotKeyDiagnostics.kt`, and `KafkaPublishTimeoutSupport.kt`.
+- Kind: sequence.
+- Canonical: `docs/images/readme-diagrams/javers-kafka-publish-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3600x2800` RGBA PNG. The final full-resolution review used `/tmp/javers-kafka-publish-flow-top-final.jpg` and `/tmp/javers-kafka-publish-flow-bottom-final.jpg` because the app blackened the large single preview.
+- Audits: sequence-style PASS with five participant headers, five lifelines, four activation bars, eleven visible numbered message pills, five fixed `userSpaceOnUse` markers, and one styled `alt/else` region; connectors `11`, cards `5`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `11`, quadratic bends `0`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the old two-lane card flowchart with an actual sequence; showed snapshot encoding and event construction before the synchronous publisher call; made Kafka acknowledgement the success gate; showed timeout/send/interruption as a propagated `RuntimeException` that prevents JaVers from advancing that snapshot write; retained Spring explicit/default topic selection, vanilla optional post-ACK flush, interrupt restoration, and fingerprint-only key diagnostics.
+- Risk contract: the footer calls out prefix publication during a multi-snapshot commit and the resulting retry-tolerance requirement for consumers and projectors.
+- Repairs made during audit: raised all message shafts to 4px and arrowheads to the required 14-unit 10x10 family; added participant roles, activation bars, numbered pills, and a subdued branch frame; widened the acknowledgement branch title after the first original-size preview exposed text beyond its capsule.
+- Original-size eye review: all participant titles and roles fit; eleven numbered pills clear their arrows; every arrowhead is visible and color-matched; the acknowledgement and failure branches are spatially distinct; branch titles fit their capsules; no message crosses another connector or participant card; the two-line operational warning fits the footer with balanced margins.
+- Manual mirror: pending Task 4.
+
+### `javers-kafka-projection-flow-01`
+
+- Reader question: In what deterministic order does the projector replay Kafka records, avoid duplicates, persist snapshots, and commit consumer offsets?
+- Authority: `KafkaCdoSnapshotProjector.kt` and `KafkaCdoSnapshotProjectionOptions.kt`.
+- Kind: sequence.
+- Canonical: `docs/images/readme-diagrams/javers-kafka-projection-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3600x3000` RGBA PNG. The final full-resolution review used `/tmp/javers-kafka-projection-flow-top.jpg`, `/tmp/javers-kafka-projection-flow-bottom-final.jpg`, and `/tmp/javers-kafka-projection-flow-middle-final.jpg`.
+- Audits: sequence-style PASS with five participant headers, five lifelines, four activation bars, eleven visible numbered message pills, five fixed `userSpaceOnUse` markers, and nested loop/alt regions; connectors `11`, cards `5`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `11`, quadratic bends `0`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the old card flowchart with an actual sequence; showed polling followed by partition/offset sorting, `JaversCodecs.String` plus `JsonConverter` decoding, conditional duplicate lookup by GlobalId and commit/version, `projectSnapshot` only for new snapshots, and `commitSync` only for a non-empty fully successful batch when enabled.
+- Failure and lifecycle contracts: the footer states that decode/project failures leave offsets unchanged for retry, explains the consecutive-empty-poll stop condition of `replayUntilIdle`, and keeps consumer ownership as the close-behavior boundary.
+- Repairs made during audit: used 4px message shafts and required 14-unit 10x10 heads; added explicit participant roles, activations, numbered pills, deterministic loop framing, duplicate-skip branching, and the post-batch commit gate; widened all three branch-title capsules after the first original-size review exposed text overflow; clarified that `loadSnapshots` runs only when skip-existing checks are enabled.
+- Original-size eye review: participant titles and roles fit; all eleven pills clear their arrows; every arrowhead is visible and color-matched; the loop, duplicate branch, and commit gate remain visually nested without collisions; branch titles fit their capsules; no message crosses another connector or a participant card; the two-line retry/lifecycle note fits the footer with balanced margins.
+- Manual mirror: pending Task 4.
