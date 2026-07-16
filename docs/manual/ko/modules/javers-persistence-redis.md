@@ -1,0 +1,79 @@
+# javers-persistence-redis
+
+`javers-persistence-redis`는 Lettuce와 Redisson용 `CdoSnapshotRepository`를 각각 제공합니다. Redis를 감사 스냅샷의 실제 저장소로 쓰고, Redis의 내구성·eviction·메모리 정책까지 감사 계약으로 관리할 때 선택하세요.
+
+## 의존성과 클라이언트 선택
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.javers:javers-persistence-redis")
+    implementation("io.lettuce:lettuce-core") // 둘 중 하나
+    // implementation("org.redisson:redisson")
+}
+```
+
+Redis 클라이언트는 모듈 빌드에서 선택 의존성이므로 애플리케이션이 사용할 클라이언트를 추가해야 합니다. Lettuce 구현은 전용 동기 connection을 두고 스냅샷을 쓸 때마다 lock 안에서 `MULTI/EXEC`를 실행합니다. Redisson 구현은 스냅샷에 `RListMultimap`, 커밋 sequence에 `RMap`을 사용합니다. 구현이 둘 다 있다고 두 클라이언트를 함께 넣을 이유는 없습니다.
+
+## Lettuce 시작 예제
+
+```kotlin
+val redisClient = RedisClient.create("redis://localhost:6379")
+val repository = LettuceCdoSnapshotRepository(
+    name = "orders",
+    client = redisClient,
+)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repository)
+    .registerEntity(Order::class.java)
+    .build()
+
+javers.commit("order-service", order)
+```
+
+Lettuce는 최신 스냅샷이 앞에 오도록 `javers:{name}:snapshot:{globalId}` list에 byte를 저장합니다. GlobalId 색인은 `javers:{name}:globalId:set`, 커밋 sequence는 `javers:{name}:sequence:set`에 둡니다. 스냅샷 list push와 GlobalId 색인 갱신은 Redis transaction 하나로 묶지만, 상위 저장 흐름이 나중에 수행하는 sequence 갱신은 별도입니다. 정확한 동작은 [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)에 있습니다.
+
+## Redisson 시작 예제
+
+```kotlin
+val config = Config().apply {
+    useSingleServer().address = "redis://127.0.0.1:6379"
+}
+val redisson = Redisson.create(config)
+val repository = RedissonCdoSnapshotRepository(
+    name = "orders",
+    redisson = redisson,
+)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repository)
+    .registerEntity(Order::class.java)
+    .build()
+
+javers.commit("order-service", order)
+```
+
+Redisson은 GlobalId별 스냅샷 list를 `javers:{name}:snapshot`, 커밋 sequence를 `javers:{name}:sequence`에 저장합니다. 스냅샷 append와 나중의 sequence 갱신은 서로 다른 원격 작업입니다. 구현은 [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)에서 확인하세요.
+
+두 저장소 모두 기본 LZ4/Fory 코덱을 쓰고 최신 스냅샷부터 반환합니다. 저장소를 다시 만들면 sequence map을 훑어 가장 최근 head를 복원합니다.
+
+## 실패와 운영
+
+Lettuce는 transaction 오류를 호출자에게 전달하고 `DISCARD`도 시도합니다. 다만 네트워크가 끊기면 명령이 Redis에 적용됐는지 클라이언트가 확신하지 못할 수 있습니다. Redisson도 스냅샷 append와 sequence 갱신을 한 transaction으로 묶지 않습니다. 두 구현 모두 감사 상태가 일부만 남을 수 있고, 커밋 전체를 재시도하면 스냅샷이 중복으로 들어갈 수 있습니다.
+
+디코딩은 `mapNotNull`을 사용하므로 손상됐거나 호환되지 않는 byte가 조회 결과에서 빠질 수 있습니다. Redis eviction은 스냅샷, 색인, sequence를 서로 따로 지울 수도 있습니다. 필요한 감사 보존 기간에 맞춰 persistence, eviction, replication, backup, keyspace 경고, 여유 메모리, 코덱 업그레이드 테스트를 정하세요. 환경과 bounded context마다 의도적으로 다른 `name`을 써서 키 충돌을 막습니다.
+
+## 테스트
+
+```bash
+./gradlew :javers-persistence-redis:test
+```
+
+릴리스는 Redis Testcontainers에서 Lettuce와 Redisson의 커밋·shadow 테스트를 각각 실행합니다. 저장소 재생성 뒤 head 복원은 [`LettuceJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceJaversCommitTest.kt)와 [`RedissonJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonJaversCommitTest.kt)가 검증합니다.
+
+## 하지 않는 일
+
+- CQRS projection API가 아닙니다.
+- append-only event log가 아닙니다.
+- 여러 키나 커밋 전체의 exactly-once 처리를 보장하지 않습니다.
+- Redis persistence, eviction, cluster, backup 정책을 정하지 않습니다.
+
+이어서 [Redis 영속 저장](../persistence/redis.md), [실패 계약](../operations/failure-contracts.md), [관측성](../operations/observability.md)을 읽어 보세요.
