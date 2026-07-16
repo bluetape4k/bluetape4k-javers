@@ -129,7 +129,7 @@ diagrams:
   manualPages: { en: docs/manual/en/examples/javers-exposed-ddd.md, ko: docs/manual/ko/examples/javers-exposed-ddd.md }
   sourcePaths: [examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt, examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt, examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt]
 - id: ktor-request-audit-flow
-  kind: sequence
+  kind: architecture
   canonical: examples-javers-ktor-request-audit-flow-01
   manual: deferred
   sourcePaths: [examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/JaversKtorExampleApplication.kt, examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/service/OrderCommandHandler.kt]
@@ -139,7 +139,7 @@ diagrams:
   manual: deferred
   sourcePaths: [examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/JaversKtorExampleApplication.kt]
 - id: spring-boot4-request-audit-flow
-  kind: sequence
+  kind: architecture
   canonical: examples-javers-spring-boot4-request-audit-flow-01
   manual: deferred
   sourcePaths: [examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/web/OrderController.kt, examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/service/OrderCommandHandler.kt]
