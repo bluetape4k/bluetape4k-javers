@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1040" viewBox="0 0 1600 1040" role="img" aria-labelledby="title desc">
+  <title id="title">Persistence decision map</title>
+  <desc id="desc">Select one primary responsibility; composition and recovery remain application concerns.</desc>
+  <defs>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+    <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000814" flood-opacity="0.42"/>
+  </filter>
+  <marker id="arrow-cyan-14" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#55c7e8" stroke="#55c7e8" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-cyan-16" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#55c7e8" stroke="#55c7e8" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-teal-14" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5ed6bd" stroke="#5ed6bd" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-teal-16" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#5ed6bd" stroke="#5ed6bd" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-purple-14" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#b69af5" stroke="#b69af5" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-purple-16" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#b69af5" stroke="#b69af5" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-amber-14" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#e7b85c" stroke="#e7b85c" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-amber-16" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#e7b85c" stroke="#e7b85c" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-rose-14" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ef8297" stroke="#ef8297" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-rose-16" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#ef8297" stroke="#ef8297" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-olive-14" markerWidth="14" markerHeight="14" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9fbd72" stroke="#9fbd72" stroke-width="0.6"/>
+</marker>
+
+<marker id="arrow-olive-16" markerWidth="16" markerHeight="16" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
+  <path d="M 0 0 L 10 5 L 0 10 Z" fill="#9fbd72" stroke="#9fbd72" stroke-width="0.6"/>
+</marker>
+
+</defs>
+
+  <rect width="1600" height="1040" fill="#07111f"/>
+  <rect class="frame" x="36" y="32" width="1528" height="976" rx="32" fill="none" stroke="#31506c" stroke-width="2"/>
+  <text class="title" x="76" y="92" text-anchor="start" font-family="Architects Daughter, monospace" font-size="42" font-weight="700" fill="#eef6ff">Persistence decision map</text>
+  <text class="subtitle" x="78" y="128" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">Select one primary responsibility; composition and recovery remain application concerns.</text>
+  <g class="card-group" data-card="Recovery question">
+  <rect class="card" x="90" y="250" width="300" height="208" rx="22" fill="#11263b" stroke="#55c7e8" stroke-width="2.5"/>
+  <rect x="90" y="250" width="8" height="208" rx="4" fill="#55c7e8"/>
+  <text x="118" y="293" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Recovery question</text>
+
+  <text x="118" y="326" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">What must remain after</text>
+<text x="118" y="353" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">process or store failure?</text>
+</g>
+
+<g class="card-group" data-card="Durable audit history">
+  <rect class="card" x="510" y="178" width="300" height="166" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
+  <rect x="510" y="178" width="8" height="166" rx="4" fill="#b69af5"/>
+  <text x="538" y="221" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Durable audit history</text>
+
+  <text x="538" y="254" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">SQL operations</text>
+<text x="538" y="281" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">restart head recovery</text>
+</g>
+
+<g class="card-group" data-card="Redis is accepted store">
+  <rect class="card" x="510" y="430" width="300" height="166" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
+  <rect x="510" y="430" width="8" height="166" rx="4" fill="#e7b85c"/>
+  <text x="538" y="473" text-anchor="start" font-family="Architects Daughter, monospace" font-size="22" font-weight="700" fill="#eef6ff">Redis is accepted store</text>
+
+  <text x="538" y="506" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">fast snapshot access</text>
+<text x="538" y="533" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">backup / persistence owned</text>
+</g>
+
+<g class="card-group" data-card="Publish snapshots">
+  <rect class="card" x="510" y="682" width="300" height="166" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
+  <rect x="510" y="682" width="8" height="166" rx="4" fill="#ef8297"/>
+  <text x="538" y="725" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Publish snapshots</text>
+
+  <text x="538" y="758" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">consumer-owned queries</text>
+<text x="538" y="785" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">retention + replay policy</text>
+</g>
+
+<g class="card-group" data-card="Choose Exposed">
+  <rect class="card" x="960" y="178" width="300" height="166" rx="22" fill="#11263b" stroke="#b69af5" stroke-width="2.5"/>
+  <rect x="960" y="178" width="8" height="166" rx="4" fill="#b69af5"/>
+  <text x="988" y="221" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Choose Exposed</text>
+
+  <text x="988" y="254" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">commit + snapshot tables</text>
+<text x="988" y="281" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">not app business rows</text>
+</g>
+
+<g class="card-group" data-card="Choose Redis">
+  <rect class="card" x="960" y="430" width="300" height="166" rx="22" fill="#11263b" stroke="#e7b85c" stroke-width="2.5"/>
+  <rect x="960" y="430" width="8" height="166" rx="4" fill="#e7b85c"/>
+  <text x="988" y="473" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Choose Redis</text>
+
+  <text x="988" y="506" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">Lettuce or Redisson</text>
+<text x="988" y="533" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">not a near-cache</text>
+</g>
+
+<g class="card-group" data-card="Choose Kafka">
+  <rect class="card" x="960" y="682" width="300" height="166" rx="22" fill="#11263b" stroke="#ef8297" stroke-width="2.5"/>
+  <rect x="960" y="682" width="8" height="166" rx="4" fill="#ef8297"/>
+  <text x="988" y="725" text-anchor="start" font-family="Architects Daughter, monospace" font-size="25" font-weight="700" fill="#eef6ff">Choose Kafka</text>
+
+  <text x="988" y="758" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">write-only repository</text>
+<text x="988" y="785" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">no JQL reads</text>
+</g>
+
+<g class="card-group" data-card="Always add">
+  <rect class="card" x="1325" y="380" width="200" height="250" rx="22" fill="#11263b" stroke="#5ed6bd" stroke-width="2.5"/>
+  <rect x="1325" y="380" width="8" height="250" rx="4" fill="#5ed6bd"/>
+  <text x="1353" y="423" text-anchor="start" font-family="Architects Daughter, monospace" font-size="24" font-weight="700" fill="#eef6ff">Always add</text>
+
+  <text x="1353" y="456" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">retry policy</text>
+<text x="1353" y="483" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">stable IDs</text>
+<text x="1353" y="510" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">reconciliation</text>
+<text x="1353" y="537" text-anchor="start" font-family="Comic Mono, monospace" font-size="18" font-weight="400" fill="#a9bfd2">observability</text>
+</g>
+
+<path class="connector" data-source="question" data-target="durable" d="M 390 320 H 450 Q 464 320 464 306 V 275 Q 464 261 478 261 H 510" fill="none" stroke="#b69af5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-purple-14)"/>
+<path class="connector" data-source="question" data-target="redis-need" d="M 390 354 H 510" fill="none" stroke="#e7b85c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber-14)"/>
+<path class="connector" data-source="question" data-target="publish" d="M 390 390 H 450 Q 464 390 464 404 V 751 Q 464 765 478 765 H 510" fill="none" stroke="#ef8297" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-rose-14)"/>
+<path class="connector" data-source="durable" data-target="exposed" d="M 810 261 H 960" fill="none" stroke="#b69af5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-purple-14)"/>
+<path class="connector" data-source="redis-need" data-target="redis" d="M 810 513 H 960" fill="none" stroke="#e7b85c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber-14)"/>
+<path class="connector" data-source="publish" data-target="kafka" d="M 810 765 H 960" fill="none" stroke="#ef8297" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-rose-14)"/>
+<path class="connector" data-source="exposed" data-target="always" d="M 1260 261 H 1285 Q 1299 261 1299 275 V 411 Q 1299 425 1313 425 H 1325" fill="none" stroke="#b69af5" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-purple-14)"/>
+<path class="connector" data-source="redis" data-target="always" d="M 1260 513 H 1325" fill="none" stroke="#e7b85c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-amber-14)"/>
+<path class="connector" data-source="kafka" data-target="always" d="M 1260 765 H 1285 Q 1299 765 1299 751 V 599 Q 1299 585 1313 585 H 1325" fill="none" stroke="#ef8297" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-rose-14)"/>
+<g class="label-pill">
+  <rect x="398" y="278" width="102" height="34" rx="17" fill="#07111f" stroke="#b69af5" stroke-width="2"/>
+  <text x="449.0" y="301" text-anchor="middle" font-family="Comic Mono, monospace" font-size="15" font-weight="700" fill="#b69af5">restart</text>
+</g>
+
+<g class="label-pill">
+  <rect x="398" y="474" width="102" height="34" rx="17" fill="#07111f" stroke="#e7b85c" stroke-width="2"/>
+  <text x="449.0" y="497" text-anchor="middle" font-family="Comic Mono, monospace" font-size="15" font-weight="700" fill="#e7b85c">Redis</text>
+</g>
+
+<g class="label-pill">
+  <rect x="398" y="730" width="102" height="34" rx="17" fill="#07111f" stroke="#ef8297" stroke-width="2"/>
+  <text x="449.0" y="753" text-anchor="middle" font-family="Comic Mono, monospace" font-size="15" font-weight="700" fill="#ef8297">fan out</text>
+</g>
+
+  <g class="legend"><g class="label-pill">
+  <rect x="90" y="904" width="224" height="34" rx="17" fill="#07111f" stroke="#b69af5" stroke-width="2"/>
+  <text x="202.0" y="927" text-anchor="middle" font-family="Comic Mono, monospace" font-size="15" font-weight="700" fill="#b69af5">Purple - SQL durability</text>
+</g>
+<g class="label-pill">
+  <rect x="330" y="904" width="202" height="34" rx="17" fill="#07111f" stroke="#e7b85c" stroke-width="2"/>
+  <text x="431.0" y="927" text-anchor="middle" font-family="Comic Mono, monospace" font-size="15" font-weight="700" fill="#e7b85c">Amber - Redis store</text>
+</g>
+<g class="label-pill">
+  <rect x="548" y="904" width="192" height="34" rx="17" fill="#07111f" stroke="#ef8297" stroke-width="2"/>
+  <text x="644.0" y="927" text-anchor="middle" font-family="Comic Mono, monospace" font-size="15" font-weight="700" fill="#ef8297">Rose - publication</text>
+</g>
+</g>
+  <text x="1520" y="980" text-anchor="end" font-family="Comic Mono, monospace" font-size="15" font-weight="400" fill="#7892aa">bluetape4k-javers 0.2.1</text>
+</svg>
