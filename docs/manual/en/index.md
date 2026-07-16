@@ -2,6 +2,15 @@
 
 Object auditing becomes difficult when application state, audit history, and query projections are treated as one store. `bluetape4k-javers` 0.2.1 gives Kotlin services a JaVers audit layer with Exposed, Redis, and Kafka adapters, but each adapter has a different responsibility. This manual starts with those boundaries so that a service does not accidentally use a cache or stream as its only recoverable record.
 
+## Core capabilities
+
+- **Audit snapshots and diffs:** The [audit model](architecture/audit-model.md) explains JaVers commits, snapshots, changes, shadows, and the query semantics built on them.
+- **DDD aggregate history:** [javers-ddd](modules/javers-ddd.md) and the [DDD/CQRS guide](guides/ddd-and-cqrs.md) connect aggregate commands and domain events to explicit JaVers commits.
+- **Relational persistence:** [Exposed persistence](persistence/exposed.md) stores recoverable CDO snapshots in a JDBC database without replacing the application's own Exposed repositories.
+- **Redis and Kafka adapters:** [Redis](persistence/redis.md) supports cache/read-model paths, while [Kafka](persistence/kafka.md) publishes audit records for downstream consumers; neither silently becomes the business source of truth.
+- **Failure and observability contracts:** [Failure contracts](operations/failure-contracts.md) and [observability](operations/observability.md) define partial-write, retry, lag, and recovery signals.
+- **Runnable learning and comparison:** The [Exposed DDD example](examples/javers-exposed-ddd.md) and [JaVers/Exposed DDD/Envers comparison](benchmarks/exposed-ddd-envers.md) connect the abstractions to code and measured evidence.
+
 The manual is pinned to release `0.2.1` (`bffe19439ca891fa5301a76421bdef7ba75252a0`). Ktor integration, Spring Boot 4 auto-configuration and examples, and the dedicated Gradle benchmark module were added after that release. They are not 0.2 features.
 
 [![Repository learning map](../assets/overview/repository-learning-map.png)](../assets/overview/repository-learning-map.svg)
