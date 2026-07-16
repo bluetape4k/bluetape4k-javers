@@ -1,0 +1,65 @@
+# javers-persistence-kafka
+
+`javers-persistence-kafka` turns JaVers snapshot writes into Kafka records through Spring Kafka's `KafkaTemplate`. It is a synchronous, write-only publisher shaped as a `JaversRepository`; it is not a readable audit repository.
+
+## Dependency and when to choose it
+
+```kotlin
+dependencies {
+    implementation("io.github.bluetape4k.javers:javers-persistence-kafka")
+    implementation("org.springframework.kafka:spring-kafka")
+}
+```
+
+Spring Kafka is an optional surface in this module, so the application must add it. Choose this adapter when another system consumes encoded `CdoSnapshot` records and the command path intentionally waits for broker acknowledgement. Do not choose it as the only repository when the application needs snapshots, changes, shadows, or restart head recovery.
+
+## Runnable quick start
+
+```kotlin
+val producerFactory = DefaultKafkaProducerFactory(
+    mapOf(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "localhost:9092"),
+    StringSerializer(),
+    StringSerializer(),
+)
+val kafkaTemplate = KafkaTemplate(producerFactory, true).also {
+    it.setDefaultTopic("javers.order-snapshots")
+}
+val repository = KafkaCdoSnapshotRepository(kafkaTemplate)
+val javers = JaversBuilder.javers()
+    .registerJaversRepository(repository)
+    .registerEntity(Order::class.java)
+    .build()
+
+javers.commit("order-service", order)
+```
+
+`saveSnapshot` uses `sendDefault(GlobalId, encodedSnapshot)` and waits for the returned future for up to 30 seconds by default. Configure the template's default topic before the first commit. The record key is the snapshot GlobalId and the value is uncompressed JSON produced by `JaversCodecs.String`. The exact contract is in [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt).
+
+## Publisher and repository responsibility
+
+All read-side methods return empty, false, or zero and log a warning. A repository instance remembers its in-memory head only after a successful local commit; a rebuilt instance has no head because Kafka is never read. Since previous state is unavailable, repeated commits can be treated as initial snapshots rather than meaningful diffs.
+
+JaVers calls `saveSnapshot` once per snapshot. A commit that produces several snapshots results in several blocking sends followed by a local head update. Kafka acknowledgement proves that the producer completed that send according to its configuration. It does not prove that a consumer processed the record or that the whole JaVers commit was published atomically.
+
+## Failure modes and delivery semantics
+
+Timeout, interruption, and producer errors become `RuntimeException`; interruption restores the thread interrupt flag. Earlier records from the same JaVers commit may already be accepted when a later send fails. Retrying the command may publish duplicates. Release 0.2.1 supplies no producer transaction, outbox, consumer, replay coordinator, deduplication key beyond GlobalId, or exactly-once workflow.
+
+Set producer `acks`, idempotence, retries, delivery timeout, topic partitions, retention, and ACLs explicitly. If ordering per aggregate matters, keep GlobalId as the key and verify partition behavior. Monitor send latency, timeouts, error rate, topic lag, dead-letter handling, and consumer projection drift. Treat the payload schema and codec as a versioned integration contract.
+
+## Testing
+
+```bash
+./gradlew :javers-persistence-kafka:test
+```
+
+[`KafkaCdoSnapshotRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/test/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepositoryTest.kt) verifies successful publication, failed-future propagation, and absent head restoration. Application tests should consume the record and assert topic, key, payload decoding, duplicate handling, and recovery after a partial multi-snapshot commit.
+
+## Non-goals
+
+- It is not a readable or durable JaVers query repository.
+- It is not a Kafka consumer or CQRS projection implementation.
+- It does not provide exactly-once delivery or atomic multi-snapshot publication.
+- It does not create or configure topics.
+
+Related reading: [Kafka persistence](../persistence/kafka.md), [failure contracts](../operations/failure-contracts.md), and the [DDD/CQRS guide](../guides/ddd-and-cqrs.md).
