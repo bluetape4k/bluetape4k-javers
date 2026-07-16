@@ -17,17 +17,25 @@ The Redis clients are optional compile-time surfaces in the module build, so the
 ## Lettuce quick start
 
 ```kotlin
-val redisClient = RedisClient.create("redis://localhost:6379")
-val repository = LettuceCdoSnapshotRepository(
-    name = "orders",
-    client = redisClient,
-)
-val javers = JaversBuilder.javers()
-    .registerJaversRepository(repository)
-    .registerEntity(Order::class.java)
-    .build()
+import io.bluetape4k.javers.persistence.redis.repository.LettuceCdoSnapshotRepository
+import io.lettuce.core.RedisClient
+import org.javers.core.JaversBuilder
+import org.javers.core.metamodel.annotation.Id
 
-javers.commit("order-service", order)
+data class Order(@Id val id: Long, val status: String)
+
+val redisClient = RedisClient.create("redis://localhost:6379")
+try {
+    val repository = LettuceCdoSnapshotRepository("orders", redisClient)
+    val javers = JaversBuilder.javers()
+        .registerJaversRepository(repository)
+        .registerEntity(Order::class.java)
+        .build()
+
+    javers.commit("order-service", Order(1, "PLACED"))
+} finally {
+    redisClient.shutdown()
+}
 ```
 
 Lettuce stores newest-first snapshot bytes in `javers:{name}:snapshot:{globalId}`, a GlobalId index in `javers:{name}:globalId:set`, and commit sequences in `javers:{name}:sequence:set`. The snapshot list push and GlobalId index update share one Redis transaction. The later sequence update from the inherited persist loop is separate. See [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt).
@@ -35,25 +43,36 @@ Lettuce stores newest-first snapshot bytes in `javers:{name}:snapshot:{globalId}
 ## Redisson quick start
 
 ```kotlin
+import io.bluetape4k.javers.persistence.redis.repository.RedissonCdoSnapshotRepository
+import org.javers.core.JaversBuilder
+import org.javers.core.metamodel.annotation.Id
+import org.redisson.Redisson
+import org.redisson.config.Config
+
+data class Order(@Id val id: Long, val status: String)
+
 val config = Config().apply {
     useSingleServer().address = "redis://127.0.0.1:6379"
 }
 val redisson = Redisson.create(config)
-val repository = RedissonCdoSnapshotRepository(
-    name = "orders",
-    redisson = redisson,
-)
-val javers = JaversBuilder.javers()
-    .registerJaversRepository(repository)
-    .registerEntity(Order::class.java)
-    .build()
+try {
+    val repository = RedissonCdoSnapshotRepository("orders", redisson)
+    val javers = JaversBuilder.javers()
+        .registerJaversRepository(repository)
+        .registerEntity(Order::class.java)
+        .build()
 
-javers.commit("order-service", order)
+    javers.commit("order-service", Order(1, "PLACED"))
+} finally {
+    redisson.shutdown()
+}
 ```
 
 Redisson stores per-GlobalId snapshot lists in `javers:{name}:snapshot` and commit sequences in `javers:{name}:sequence`. A snapshot append and the later sequence update are separate remote operations. The implementation is [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt).
 
 Both repositories default to the LZ4/Fory codec, return newest snapshots first, and scan the sequence map to restore the latest head after reconstruction.
+
+Keep the selected client alive for the lifetime of the repository and close it only after the service stops using JaVers. The `finally` blocks above demonstrate ownership for a short standalone process; a dependency-injection container should close the client during application shutdown.
 
 ## Failure modes and operations
 
