@@ -310,3 +310,16 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: converted all frames, eight cards, shadows, shafts, and heads to the shared dark architecture family; added explicit card/connector metadata; separated module-to-routes and module-to-core ports; routed both service-factory outputs through the lane gap without crossings.
 - Original-size eye review: all card titles and responsibility lines fit; every arrowhead is visible and color-matched; module installation and service construction are distinct; service-factory routes to handler and repository do not collide; repository storage routes use separate ports; no connector crosses another route or card; both boundary notes and outer margins remain balanced.
 - Manual mirror: deferred by the current shared-diagram inventory.
+
+### `examples-javers-spring-boot4-request-audit-flow-01`
+
+- Reader question: Which Spring MVC requests write audited state, read the current order row, or read bounded JaVers history?
+- Authority: `examples/javers-spring-boot4/README.md`, `OrderController.kt`, `OrderCommandHandler.kt`, and `OrderRepository.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/examples-javers-spring-boot4-request-audit-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3920x2240` RGBA PNG.
+- Audits: connectors `9`, cards `10`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `9`, quadratic bends `7`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: distinguished command writes, current-row reads, and bounded history reads; made the command-side save explicitly combine the order row and JaVers snapshot in one Exposed transaction; retained author and domain-event metadata on the snapshot commit; kept current reads on the Exposed table and history reads on JaVers snapshots.
+- Repairs made during audit: converted the canvas, lanes, ten cards, shadows, shafts, and primary heads to the shared dark architecture family; attached explicit card and connector metadata; replaced the ambiguous `save aggregate` wording with the actual audited transaction boundary.
+- Original-size eye review: all request paths, card titles, endpoint strings, and responsibility lines fit; every arrowhead is visible and color-matched; write, current-read, and history-read routes remain distinct; both repository read routes use separate ports; no connector crosses another route or card; the history-limit footer and outer margins remain balanced.
+- Manual mirror: deferred by the current shared-diagram inventory.
