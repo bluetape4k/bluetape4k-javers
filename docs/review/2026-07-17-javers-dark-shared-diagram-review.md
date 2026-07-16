@@ -218,3 +218,42 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: used 4px message shafts and required 14-unit 10x10 heads; added explicit participant roles, activations, numbered pills, deterministic loop framing, duplicate-skip branching, and the post-batch commit gate; widened all three branch-title capsules after the first original-size review exposed text overflow; clarified that `loadSnapshots` runs only when skip-existing checks are enabled.
 - Original-size eye review: participant titles and roles fit; all eleven pills clear their arrows; every arrowhead is visible and color-matched; the loop, duplicate branch, and commit gate remain visually nested without collisions; branch titles fit their capsules; no message crosses another connector or a participant card; the two-line retry/lifecycle note fits the footer with balanced margins.
 - Manual mirror: pending Task 4.
+
+### `javers-redis-repository-map-01`
+
+- Reader question: How do the Lettuce and Redisson adapters implement the shared binary snapshot contract, and where do their write guarantees differ?
+- Authority: `javers-persistence-redis/README.md`, `LettuceCdoSnapshotRepository.kt`, and `RedissonCdoSnapshotRepository.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/javers-redis-repository-map-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `4280x1960` RGBA PNG. The original-size review used the canonical PNG directly.
+- Audits: connectors `11`, cards `11`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `11`, quadratic bends `14`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the generic adapter summaries with the dedicated Lettuce read/transaction connections, lock-serialized `MULTI/EXEC` commit and projection boundary, Redisson `RListMultimap` plus `RMap` layout, and the best-effort multi-structure write risk; retained newest-first reads and restored-head semantics as shared behavior.
+- Repairs made during audit: removed duplicate markers; normalized primary heads to 14x14 and inheritance heads to 10x10; connected the abstract base to both concrete repositories; replaced diagonal fan-out with separate orthogonal ports; routed read and write storage paths to different keyspace edges so no line crosses or shares a terminal segment.
+- Original-size eye review: every title and responsibility line fits its card; all eleven arrowheads are visible; Lettuce and Redisson inheritance paths reach their concrete repositories; cyan read and amber write paths remain distinct; Redis icons and keyspace labels are readable; no connector crosses another route or card; both footer lines and outer margins remain balanced.
+- Manual mirror: pending Task 4.
+
+### `javers-redis-key-layout-01`
+
+- Reader question: Which Redis key families or distributed objects hold snapshots and commit sequences for each adapter?
+- Authority: `LettuceCdoSnapshotRepository.kt` and `RedissonCdoSnapshotRepository.kt`.
+- Kind: storage layout.
+- Canonical: `docs/images/readme-diagrams/javers-redis-key-layout-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3360x1840` RGBA PNG. The original-size review used the canonical PNG directly.
+- Audits: connectors `2`, cards/table groups `3`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `2`, quadratic bends `4`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: documented all three Lettuce key families with their exact repository-scoped suffixes and values; separated `saveSnapshot` from `persistCommit` transaction semantics; documented both Redisson object names, newest-first reversal, the default JaVers snapshot codec, and the Redisson byte-array storage codec.
+- Repairs made during audit: restored readable row text and table dividers after palette conversion; normalized the two summary heads to 10x10 and shafts to 4px; assigned separate summary-card target ports so the dashed routes do not share a segment or arrowhead.
+- Original-size eye review: all key names, object names, value descriptions, and operation notes fit their table areas; Redis icons remain crisp; row and divider contrast is sufficient on both cards; both arrowheads are visible and separately connected; no route crosses a card or another connector; the shared invariant and outer margins are balanced.
+- Manual mirror: pending Task 4.
+
+### `javers-redis-save-load-flow-01`
+
+- Reader question: How do Redis snapshot commits, projected snapshots, newest-first reads, and head restoration differ between the Lettuce and Redisson adapters?
+- Authority: `LettuceCdoSnapshotRepository.kt` and `RedissonCdoSnapshotRepository.kt`.
+- Kind: sequence.
+- Canonical: `docs/images/readme-diagrams/javers-redis-save-load-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3680x3600` RGBA PNG. The app blackened the final RGBA preview, so the original-size review used `/tmp/javers-redis-save-load-flow-final.jpg`.
+- Audits: sequence-style PASS with five participant headers, five lifelines, four activation bars, seventeen visible numbered message pills, five fixed `userSpaceOnUse` markers, and two styled branch regions; connectors `17`, cards `5`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `17`, quadratic bends `0`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the misleading single save/read card chain with an actual sequence; showed encoding before the write boundary, Lettuce `MULTI/EXEC` across snapshot/index and sequence metadata, Redisson snapshot writes before its sequence update, the resulting partial-prefix risk, adapter-specific loading, decoding, newest-first normalization, and maximum-sequence head restoration.
+- Repairs made during audit: added sequence-family participant, activation, pill, numbering, branch, and marker metadata; extended the repository activation after the endpoint audit found the final return on its bottom edge; retained separate colors for snapshot bytes, sequence metadata, codec work, and the Redisson risk path.
+- Original-size eye review: participant titles and roles fit; all seventeen numbered pills clear their arrows; every arrowhead is visible and color-matched; Lettuce and Redisson write branches are distinct; the read/head region is separated from persistence; no message crosses another connector or participant card; both footer warnings fit with balanced margins.
+- Manual mirror: pending Task 4.
