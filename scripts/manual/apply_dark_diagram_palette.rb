@@ -87,8 +87,12 @@ module DarkDiagramPalette
     transformed.gsub!('stroke-width="1.8"', 'stroke-width="4"')
     transformed.gsub!('stroke-width="1.2"', 'stroke-width="2"')
     transformed.each_line.map do |line|
-      line = line.sub("<rect ", '<rect class="card" ') if line.include?('filter="url(#softShadow)"') && !line.include?('class="card"')
-      line = line.sub("<path ", '<path class="connector" ') if line.include?("marker-end=") && !line.include?('class="connector"')
+      if line.include?('filter="url(#softShadow)"') && !line.match?(/class="[^"]*\bcard\b[^"]*"/)
+        line = line.include?('class="') ? line.sub(/class="([^"]*)"/, 'class="\1 card"') : line.sub("<rect ", '<rect class="card" ')
+      end
+      if line.include?("marker-end=") && !line.match?(/class="[^"]*\bconnector\b[^"]*"/)
+        line = line.include?('class="') ? line.sub(/class="([^"]*)"/, 'class="\1 connector"') : line.sub("<path ", '<path class="connector" ')
+      end
       line = line.gsub('stroke-width="1.6"', 'stroke-width="4"') if line.include?('class="connector"')
       line = line.gsub('stroke-width="1.7"', 'stroke-width="4"') if line.include?('class="connector"')
       if line.include?('id="arrowInherit"')

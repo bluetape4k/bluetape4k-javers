@@ -257,3 +257,17 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: added sequence-family participant, activation, pill, numbering, branch, and marker metadata; extended the repository activation after the endpoint audit found the final return on its bottom edge; retained separate colors for snapshot bytes, sequence metadata, codec work, and the Redisson risk path.
 - Original-size eye review: participant titles and roles fit; all seventeen numbered pills clear their arrows; every arrowhead is visible and color-matched; Lettuce and Redisson write branches are distinct; the read/head region is separated from persistence; no message crosses another connector or participant card; both footer warnings fit with balanced margins.
 - Manual mirror: pending Task 4.
+
+### `examples-javers-exposed-ddd-cqrs-flow-01`
+
+- Reader question: How does the example move an order command through the audited Exposed write model, Kafka, and a Redis-only query model?
+- Authority: `examples/javers-exposed-ddd/README.md`, `OrderCommandHandler.kt`, `OrderRepository.kt`, `OrderProjectionEventConsumer.kt`, `RedisOrderSummaryProjection.kt`, and `OrderQueryService.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/examples-javers-exposed-ddd-cqrs-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3840x2160` RGBA PNG. The app blackened the final RGBA preview, so the original-size review used `/tmp/examples-javers-exposed-ddd-cqrs-flow-final.jpg`.
+- Audits: connectors `9`, cards `10`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `9`, quadratic bends `10`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: made the Exposed source-row and JaVers writes an explicit single database transaction, placed domain-event publication after that commit, retained per-order Kafka keys, showed the consumer applying events to the Redis summary, and kept `OrderQueryService` on the Redis-only read path.
+- Boundary contract: the footer preserves the example's deliberate exclusions—no HTTP layer and no production outbox—and identifies the H2, Kafka, and Redis test-container boundary.
+- Repairs made during audit: merged existing SVG classes instead of emitting duplicate `class` attributes; converted the canvas, lanes, cards, shadows, shafts, and primary arrowheads to the shared dark architecture family; added ten explicit card audit anchors; split the repository transaction explanation into three lines after the first full-size review exposed text against the card edge.
+- Original-size eye review: all ten card titles and responsibility lines fit; every arrowhead remains visible and color-matched; command, write/audit, event-stream, and projection/read responsibilities are distinct; the two persistence routes leave separate repository ports; the Kafka-to-consumer route crosses no card; no connector overlaps another route; lane titles, footer, and outer margins remain balanced.
+- Manual mirror: pending Task 4.
