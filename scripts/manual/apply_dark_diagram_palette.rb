@@ -27,11 +27,17 @@ module DarkDiagramPalette
     "#ecfdf5" => "#223047",
     "#fff1f2" => "#223047",
     "#fffbeb" => "#223047",
+    "#ecfeff" => "#223047",
+    "#e0f2fe" => "#223047",
     "#183247" => "#f8fafc",
     "#587086" => "#d5dfeb",
     "#b6c7dc" => "#d5dfeb",
     "#4b5563" => "#d5dfeb",
     "#cbd5e1" => "#536377",
+    "#bae6fd" => "#536377",
+    "#bbf7d0" => "#536377",
+    "#ddd6fe" => "#536377",
+    "#fde68a" => "#536377",
     "#94a3b8" => "#536377",
     "#64748b" => "#536377",
     "#475569" => "#536377",
@@ -51,7 +57,9 @@ module DarkDiagramPalette
     "#0284c7" => "#55c7e8",
     "#06b6d4" => "#55c7e8",
     "#6366f1" => "#9b87d8",
+    "#818cf8" => "#9b87d8",
     "#22c55e" => "#4fb8a8",
+    "#86efac" => "#4fb8a8",
     "#f97316" => "#d0a24c",
     "#f59e0b" => "#d0a24c",
     "#db2777" => "#d66f7e",
@@ -66,15 +74,27 @@ module DarkDiagramPalette
     transformed = content.dup
     REPLACEMENTS.each { |from, to| transformed.gsub!(from, to) }
     transformed.gsub!("fill:#172033", "fill:#f8fafc")
+    transformed.gsub!("fill:#536377", "fill:#d5dfeb")
     transformed.gsub!('markerWidth="12"', 'markerWidth="14"')
     transformed.gsub!('markerHeight="12"', 'markerHeight="14"')
     transformed.gsub!('stroke-width="2.1"', 'stroke-width="4"')
     transformed.gsub!('stroke-width="2.4"', 'stroke-width="4"')
     transformed.gsub!('stroke-width="2.2"', 'stroke-width="4"')
+    transformed.gsub!('stroke-width="2.0"', 'stroke-width="4"')
+    transformed.gsub!('stroke-width="1.8"', 'stroke-width="4"')
     transformed.gsub!('stroke-width="1.2"', 'stroke-width="2"')
     transformed.each_line.map do |line|
       line = line.sub("<rect ", '<rect class="card" ') if line.include?('filter="url(#softShadow)"') && !line.include?('class="card"')
       line = line.sub("<path ", '<path class="connector" ') if line.include?("marker-end=") && !line.include?('class="connector"')
+      line = line.gsub('stroke-width="1.6"', 'stroke-width="4"') if line.include?('class="connector"')
+      line = line.gsub('stroke-width="1.7"', 'stroke-width="4"') if line.include?('class="connector"')
+      if line.include?('id="arrowInherit"')
+        line = line.gsub(/markerWidth="(?:13|14)"/, 'markerWidth="18"')
+        line = line.gsub(/markerHeight="(?:13|14)"/, 'markerHeight="16"')
+        line = line.gsub(/refX="(?:12|13)"/, 'refX="17"')
+        line = line.gsub(/refY="(?:6\.5|7)"/, 'refY="8"')
+        line = line.gsub(/d="M (?:12 6\.5 L 1 1 L 1 12|13 7 L 1 1 L 1 13) Z"/, 'd="M 17 8 L 1 1 L 1 15 Z"')
+      end
       line
     end.join
   end

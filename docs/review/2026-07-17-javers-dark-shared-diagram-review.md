@@ -59,3 +59,40 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Source-accuracy repair: added the published `bluetape4k-javers-spring-boot4-autoconfigure` constraint that was present in the BOM source and README but missing from the old diagram.
 - Original-size eye review: all six managed artifact names and descriptions fit; the single 14x14 arrowhead is visible and lands on the managed-artifact boundary; no connector crosses a card; Exposed, Redis, and Kafka icons remain readable; the expanded artifact frame and footer keep balanced vertical margins.
 - Manual mirror: pending Task 4.
+
+### `javers-core-architecture-01`
+
+- Reader question: How do application calls reach the core Kotlin APIs, repository primitives, local implementations, and downstream persistence adapters?
+- Authority: `javers-core/README.md` and the public production sources under `javers-core/src/main/kotlin/io/bluetape4k/javers`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/javers-core-architecture-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3360x1800` RGBA PNG.
+- Audits: connectors `8`, cards `10`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `8`, quadratic bends `10`, failures `0`.
+- Original-size eye review: all responsibility labels fit; every 14x14 arrowhead is visible; the three repository-base routes leave distinct ports and stay separated; no connector crosses a card or another route; dashed adapter flow remains legible; lane headings and footer retain clear margins.
+- Manual mirror: pending Task 4.
+
+### `javers-core-class-diagram-01`
+
+- Reader question: Which repository, codec, dispatcher, and commit-id contracts are implemented by the concrete core helpers?
+- Authority: `CdoSnapshotRepository.kt`, `AbstractCdoSnapshotRepository.kt`, the codec package, local repository packages, dispatcher package, and `SnowflakeCommitIdGenerator.kt`.
+- Kind: class.
+- Canonical: `docs/images/readme-diagrams/javers-core-class-diagram-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3520x2080` RGBA PNG.
+- Audits: connectors `9`, cards `12`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `9`, quadratic bends `10`, failures `0`.
+- Source-accuracy repair: added `projectSnapshot(snapshot)` to the public repository contract card.
+- Repairs made during audit: assigned separate inheritance target ports to String, Binary, and Map codecs so their three implementation routes no longer cross or share a terminal segment; raised member-text contrast after the original-size preview exposed low-contrast class details.
+- Original-size eye review: class names, stereotypes, and members fit their compartments; all inheritance triangles use the required 18x16 size and the dashed dependency arrow uses the 14x14 primary-flow size; no relationship line crosses a card or another connector; the codec fan-in reads as three distinct relationships; both responsibility lanes and the footer retain clear margins.
+- Manual mirror: pending Task 4.
+
+### `javers-core-composite-repository-01`
+
+- Reader question: How does a composite repository keep one read authority while persisting to ordered secondary projection and stream repositories?
+- Authority: `javers-core/README.md`, `CompositeCdoSnapshotRepository.kt`, and `CompositeCdoSnapshotRepositoryOptions.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/javers-core-composite-repository-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3400x2000` RGBA PNG.
+- Audits: connectors `5`, cards `6`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `5`, quadratic bends `4`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repair: clarified that `FAIL_FAST` and `BEST_EFFORT` govern secondary writes; retained the primary-first, non-transactional contract and primary-only read path.
+- Repairs made during audit: removed the shared fan-out trunk, assigned separate bottom ports on the primary card, routed Redis and Kafka through independent rounded corridors, and raised all primary-flow markers from 10x10 to 14x14.
+- Original-size eye review: all labels fit their cards; five arrowheads are visible and match their connectors; the amber and rose fan-out paths remain separate from their source ports to their targets; no connector crosses a card or another route; Redis, Kafka, and database icons remain readable; frame, title, and footer margins are balanced.
+- Manual mirror: pending Task 4.
