@@ -297,3 +297,16 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: converted the canvas, lanes, ten cards, shadows, shafts, and primary heads to the shared dark architecture family; normalized residual light Ktor and JaVers cards; attached explicit card/connector metadata; replaced the ambiguous `save aggregate` wording with the actual audited transaction boundary.
 - Original-size eye review: all request paths, card titles, endpoint strings, and responsibility lines fit; every arrowhead is visible and color-matched; the write, current-read, and history-read routes remain distinct; both repository read routes use separate ports; no connector crosses another route or card; the history-limit footer and outer margins remain balanced.
 - Manual mirror: deferred by the current shared-diagram inventory.
+
+### `examples-javers-ktor-wiring-01`
+
+- Reader question: What does the Ktor module install, what services does it create, and how do the order repository and JaVers share Exposed storage?
+- Authority: `examples/javers-ktor/README.md` and `JaversKtorExampleApplication.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/examples-javers-ktor-wiring-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3760x2080` RGBA PNG. The app blackened the canonical preview after the final route changes, so the original-size review used `/tmp/examples-javers-ktor-wiring-final.jpg`.
+- Audits: connectors `8`, cards `8`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `8`, quadratic bends `8`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: reversed the false routes-to-module dependency so `javersKtorModule` registers the routes, added the missing Ktor-core installation path, moved `OrderCommandHandler` construction under `createExampleServices`, retained repository construction from the same service factory, and kept the repository connected to both the order table and JaVers tables.
+- Repairs made during audit: converted all frames, eight cards, shadows, shafts, and heads to the shared dark architecture family; added explicit card/connector metadata; separated module-to-routes and module-to-core ports; routed both service-factory outputs through the lane gap without crossings.
+- Original-size eye review: all card titles and responsibility lines fit; every arrowhead is visible and color-matched; module installation and service construction are distinct; service-factory routes to handler and repository do not collide; repository storage routes use separate ports; no connector crosses another route or card; both boundary notes and outer margins remain balanced.
+- Manual mirror: deferred by the current shared-diagram inventory.
