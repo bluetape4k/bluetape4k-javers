@@ -3,54 +3,54 @@
   <desc id="desc">Dense ERD for javers-exposed commit metadata and encoded CDO snapshot tables.</desc>
   <defs>
     <filter id="shadow" x="-12%" y="-14%" width="124%" height="136%">
-      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#64748b" flood-opacity="0.13"/>
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#000814" flood-opacity="0.13"/>
     </filter>
-    <marker id="arrowJoin" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#475569" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    <marker id="arrowJoin" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#d5dfeb" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
-    <marker id="arrowSchema" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M 1 1 L 8 4 L 1 7 Z" fill="#16a34a" stroke-dasharray="none" style="stroke-dasharray:none"/>
+    <marker id="arrowSchema" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#4fb8a8" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
   </defs>
   <style>
-    text { font-family: "Comic Mono", monospace; fill: #263244; }
-    .title { font-family: "Architects Daughter", cursive; font-size: 36px; fill: #172033; }
-    .subtitle { font-size: 14px; fill: #64748b; }
-    .table-title { font-family: "Architects Daughter", cursive; font-size: 22px; fill: #172033; }
-    .table-name { font-size: 12px; fill: #64748b; }
-    .head { font-size: 11px; fill: #64748b; font-weight: 700; }
-    .row { font-size: 12.5px; fill: #334155; }
-    .note { font-size: 12px; fill: #64748b; }
-    .badge { font-size: 10px; fill: #ffffff; font-weight: 700; }
-    .footer { font-size: 12px; fill: #64748b; }
-    .frame { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.4; filter: url(#shadow); }
-    .schema { fill: #f0fdf4; stroke: #86efac; stroke-width: 1.3; }
-    .commit { fill: #fff7ed; stroke: #fdba74; stroke-width: 1.4; }
-    .snapshot { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.4; }
-    .info { fill: #f8fafc; stroke: #dbe4f0; stroke-width: 1.1; }
+    text { font-family: "Comic Mono", monospace; fill: #d5dfeb; }
+    .title { font-family: "Architects Daughter", cursive; font-size: 36px; fill: #f8fafc; }
+    .subtitle { font-size: 14px; fill: #d5dfeb; }
+    .table-title { font-family: "Architects Daughter", cursive; font-size: 22px; fill: #f8fafc; }
+    .table-name { font-size: 12px; fill: #d5dfeb; }
+    .head { font-size: 11px; fill: #d5dfeb; font-weight: 700; }
+    .row { font-size: 12.5px; fill: #d5dfeb; }
+    .note { font-size: 12px; fill: #d5dfeb; }
+    .badge { font-size: 10px; fill: #f8fafc; font-weight: 700; }
+    .footer { font-size: 12px; fill: #d5dfeb; }
+    .frame { fill: #172033; stroke: #536377; stroke-width: 2; filter: url(#shadow); }
+    .schema { fill: #223047; stroke: #4fb8a8; stroke-width: 2; }
+    .commit { fill: #223047; stroke: #d0a24c; stroke-width: 2; }
+    .snapshot { fill: #223047; stroke: #5b8def; stroke-width: 2; }
+    .info { fill: #182331; stroke: #536377; stroke-width: 2; }
     .header { fill-opacity: 0.48; }
-    .line { stroke: rgba(100,116,139,0.28); stroke-width: 1; }
-    .schema-line { stroke: #16a34a; stroke-width: 1.35; fill: none; marker-end: url(#arrowSchema); }
-    .join-line { stroke: #475569; stroke-width: 1.45; fill: none; stroke-dasharray: 6 5; marker-end: url(#arrowJoin); }
-    .pk { fill: #2563eb; }
-    .ix { fill: #0f766e; }
-    .join { fill: #475569; }
-    .label-bg { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1; }
+    .line { stroke: #536377; stroke-width: 1; opacity: 0.65; }
+    .schema-line { stroke: #4fb8a8; stroke-width: 4; fill: none; marker-end: url(#arrowSchema); }
+    .join-line { stroke: #d5dfeb; stroke-width: 4; fill: none; stroke-dasharray: 8 7; marker-end: url(#arrowJoin); }
+    .pk { fill: #5b8def; }
+    .ix { fill: #4fb8a8; }
+    .join { fill: #536377; }
+    .label-bg { fill: #172033; stroke: #536377; stroke-width: 1; }
   </style>
 
-  <rect width="1560" height="860" fill="#f6f8fb"/>
+  <rect width="1560" height="860" fill="#020617"/>
   <rect class="frame" x="34" y="30" width="1492" height="790" rx="18"/>
   <text class="title" x="780" y="76" text-anchor="middle">javers-exposed Table ERD</text>
   <text class="subtitle" x="780" y="104" text-anchor="middle">Commit metadata, encoded CDO snapshots, logical join key, indexes, nullability, and query-use columns.</text>
 
   <g id="Schema" transform="translate(520 132)">
-    <rect class="schema" width="520" height="74" rx="10"/>
+    <rect class="card schema" width="520" height="74" rx="10"/>
     <text class="table-title" x="260" y="28" text-anchor="middle">ExposedJaversSchema.tables</text>
     <text class="note" x="260" y="51" text-anchor="middle">CommitTableMapping + CdoSnapshotTableMapping</text>
   </g>
 
   <g id="CommitTable" transform="translate(72 250)">
-    <rect class="commit" width="620" height="386" rx="10"/>
+    <rect class="card commit" width="620" height="386" rx="10"/>
     <rect class="commit header" width="620" height="62" rx="10"/>
     <text class="table-title" x="310" y="28" text-anchor="middle">CommitTableMapping</text>
     <text class="table-name" x="310" y="50" text-anchor="middle">javers_commit</text>
@@ -90,7 +90,7 @@
   </g>
 
   <g id="SnapshotTable" transform="translate(868 250)">
-    <rect class="snapshot" width="620" height="420" rx="10"/>
+    <rect class="card snapshot" width="620" height="420" rx="10"/>
     <rect class="snapshot header" width="620" height="62" rx="10"/>
     <text class="table-title" x="310" y="28" text-anchor="middle">CdoSnapshotTableMapping</text>
     <text class="table-name" x="310" y="50" text-anchor="middle">javers_snapshot</text>
@@ -138,17 +138,17 @@
     <text class="note" x="24" y="394">Indexes: PK ux_javers_snapshot_global_id_version; IX commit_id/type/managed_type.</text>
   </g>
 
-  <path class="schema-line" d="M 650 206 L 650 218 Q 650 226 642 226 L 390 226 Q 382 226 382 234 L 382 250"/>
-  <path class="schema-line" d="M 910 206 L 910 218 Q 910 226 918 226 L 1170 226 Q 1178 226 1178 234 L 1178 250"/>
+  <path class="connector schema-line" d="M 650 206 L 650 218 Q 650 226 642 226 L 390 226 Q 382 226 382 234 L 382 250"/>
+  <path class="connector schema-line" d="M 910 206 L 910 218 Q 910 226 918 226 L 1170 226 Q 1178 226 1178 234 L 1178 250"/>
 
-  <path class="join-line" d="M 868 450 L 788 450 Q 780 450 780 442 L 780 390 Q 780 382 772 382 L 692 382"/>
+  <path class="connector join-line" d="M 868 450 L 788 450 Q 780 450 780 442 L 780 390 Q 780 382 772 382 L 692 382"/>
   <rect class="label-bg" x="692" y="470" width="176" height="28" rx="14"/>
   <text class="note" x="780" y="488" text-anchor="middle">logical join, no FK</text>
   <text class="note" x="838" y="443">0..*</text>
   <text class="note" x="704" y="375">1</text>
 
   <g id="Summary" transform="translate(82 720)">
-    <rect fill="#f8fafc" stroke="#dbe4f0" width="1396" height="42" rx="12"/>
+    <rect fill="#182331" stroke="#536377" stroke-width="2" width="1396" height="42" rx="12"/>
     <text class="footer" x="698" y="26" text-anchor="middle">Custom table names preserve the same logical columns; SQL pushdown uses commit_id, author, date, version, type, managed_type, skip, and limit before JSON decode.</text>
   </g>
 </svg>

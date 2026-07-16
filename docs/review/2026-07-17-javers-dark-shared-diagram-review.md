@@ -122,3 +122,58 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: normalized sequence markers to the established 14-unit 10x10 triangle family; added explicit sequence-family classes for lifelines, activations, message pills, numbering, and branch regions; enlarged the branch frame and separated the branch title, numbered message labels, arrows, and divider after the first full-size review exposed label overlap.
 - Original-size eye review: all participant names and roles fit; every numbered pill has clear space above its own arrow; all eight arrowheads are visible and match the message color; the transaction boundary encloses only persistence and JaVers commit steps; the `alt/else` titles no longer collide with message labels; no connector crosses a card or another route; the outbox warning and outer-frame margins remain balanced.
 - Manual mirror: pending Task 4.
+
+### `javers-exposed-class-diagram-01`
+
+- Reader question: How does the SQL-backed repository inherit shared JaVers behavior and construct the configurable Exposed schema and table mappings?
+- Authority: `javers-exposed/README.md`, `ExposedCdoSnapshotRepository.kt`, and `JaversExposedTables.kt`.
+- Kind: class.
+- Canonical: `docs/images/readme-diagrams/javers-exposed-class-diagram-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3760x2080` RGBA PNG. The full-size review used `/tmp/javers-exposed-class-flat-20260717.png` to avoid the app RGBA preview defect.
+- Audits: connectors `7`, cards `8`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `7`, quadratic bends `8`, failures `0`; text hazards `0`, code without highlight `0`.
+- Relationship inventory: one repository inheritance and six constructor/ownership/use dependencies. The inheritance marker uses an 18x16 hollow triangle; all dependency markers use 10x10 solid heads.
+- Source-accuracy repairs: replaced generic `Repository Options` and `Table Names` labels with `ExposedCdoSnapshotRepositoryOptions` and `ExposedJaversTableNames`; expanded the commit and snapshot mapping fields to include `commit_date_instant` and `changed_properties`; retained the repository codec default and SQL-query fallback contract.
+- Repairs made during audit: separated the two schema-to-table source ports and corridors, restored visible compartment dividers after palette conversion, and used a smaller exact-name title style instead of abbreviating public types.
+- Original-size eye review: all exact type names, members, and table fields fit their compartments; the inheritance head and six dependency heads are visible and semantically distinct; dashed dependencies keep solid heads; no relationship crosses another line or card; the two schema-owned table routes leave separate ports; lane and outer-frame margins remain balanced.
+- Manual mirror: pending Task 4.
+
+### `javers-exposed-entity-hook-01`
+
+- Reader question: How does an Exposed DAO lifecycle event become a JaVers object commit or shallow-delete commit, and which writes remain outside the hook?
+- Authority: `javers-exposed/README.md`, `ExposedJaversEntityHookMapping.kt`, and `ExposedJaversEntityHookSubscription.kt`.
+- Kind: sequence.
+- Canonical: `docs/images/readme-diagrams/javers-exposed-entity-hook-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3680x2560` RGBA PNG. The full-size review used `/tmp/javers-exposed-entity-hook-flat2-20260717.jpg` because the app intermittently blackens large PNG previews even after RGB flattening.
+- Audits: sequence-style PASS with six participant headers, six lifelines, five activation bars, twelve visible numbered message pills, six fixed `userSpaceOnUse` markers, and one styled `alt/else` region; connectors `12`, cards `6`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `12`, quadratic bends `0`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the old card flowchart with an actual sequence; showed the final-registered-event check through `TransactionManager`, mapping selection, `toAuditObject` for Created/Updated, `toGlobalId` for Removed, and the two distinct JaVers commit APIs; retained the recursion/closed guard as the subscription responsibility and the application-scope close requirement in the footer.
+- Scope note: the footer explicitly excludes raw Exposed DSL writes, external database writes, and CDC streams, matching the module contract.
+- Repairs made during audit: extended three activation bars after the endpoint audit found bottom-corner contacts; moved the Created/Updated messages down and right after the first full-size review exposed overlap between the branch title and message 7.
+- Original-size eye review: all participant labels fit; twelve numbered pills remain readable and clear their arrows; all message heads are visible and color-matched; Created/Updated and Removed branches are spatially distinct; no route crosses a card or another connector; the branch title, divider, cleanup note, and outer margins have clear separation.
+- Manual mirror: pending Task 4.
+
+### `javers-exposed-erd-01`
+
+- Reader question: Which physical columns and keys store JaVers commit metadata and snapshot versions, and how are the two tables logically related?
+- Authority: `javers-exposed/README.md` and `JaversExposedTables.kt`.
+- Kind: ERD.
+- Canonical: `docs/images/readme-diagrams/javers-exposed-erd-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3120x1720` RGBA PNG. The full-size review used `/tmp/javers-exposed-erd-flat-20260717.jpg`.
+- Audits: connectors `3`, cards/table groups `3`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `3`, quadratic bends `6`, failures `0`; text hazards `0`, code without highlight `0`.
+- ERD fallback inventory: two physical tables, one schema owner card, two schema-ownership connectors, one logical join connector, two visible cardinality labels (`1`, `0..*`), and one relationship label (`logical join, no FK`); label/table/connector overlap count `0` by full-size inspection.
+- Source-accuracy result: all production columns, types, nullability, primary keys, the commit sequence index, snapshot query indexes, and the non-enforced `commit_id` logical join match `JaversExposedTables.kt`.
+- Repairs made during audit: converted all table, header, badge, divider, and footer surfaces to the shared dark palette; raised connector shafts to 4px; normalized schema and join heads to 10x10; attached explicit card/connector metadata for non-zero audit evidence.
+- Original-size eye review: every column and constraint fits its table; PK/IX/JOIN badges remain distinct; the `1` and `0..*` labels identify the correct endpoints without touching the dashed join; the relationship label clears the connector; both ownership routes are separate and visible; no line crosses a table or another route; bottom whitespace is occupied by the query-pushdown summary rather than unused canvas.
+- Manual mirror: pending Task 4.
+
+### `javers-exposed-persistence-flow-01`
+
+- Reader question: What does the SQL repository write, and when does a JaVers read use exact SQL pushdown instead of the shared in-memory filter semantics?
+- Authority: `javers-exposed/README.md` and `ExposedCdoSnapshotRepository.kt`.
+- Kind: sequence.
+- Canonical: `docs/images/readme-diagrams/javers-exposed-persistence-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3800x3360` RGBA PNG. Because the app blackened the large single preview, the final full-resolution review used two original-scale crops: `/tmp/javers-exposed-persistence-flow-top-final.jpg` and `/tmp/javers-exposed-persistence-flow-bottom-final.jpg`.
+- Audits: sequence-style PASS with four participant headers, four lifelines, six activation bars, seventeen visible numbered message pills, six fixed `userSpaceOnUse` markers, and one styled `alt/else` region; connectors `17`, cards `4`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `17`, quadratic bends `0`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the two-row card flowchart with a write/read sequence; showed codec serialization before the SQL transaction, commit metadata insertion only when absent, snapshot-row persistence, exact SQL filter/page pushdown, decoded selected rows, and the conservative fallback for aggregate, changed-property, commit-property, range, and other unsupported JaVers semantics.
+- Repairs made during audit: gave exact and fallback branches distinct cyan versus rose/violet message families; moved message 1 away from the write-frame title and message 13 away from the `else` condition after the first full-size review found both overlaps.
+- Original-size eye review: all participant names, phase titles, branch conditions, and seventeen pills fit; every arrowhead is visible and matches its message; the write and read phases are distinct; the exact and fallback paths do not collide; branch labels remain fully readable; no connector crosses a card or another route; footer and outer margins remain balanced.
+- Manual mirror: pending Task 4.
