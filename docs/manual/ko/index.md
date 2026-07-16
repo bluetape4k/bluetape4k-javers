@@ -2,6 +2,15 @@
 
 애플리케이션의 현재 상태, 감사 이력, 조회용 프로젝션을 한 저장소의 역할로 묶으면 장애 복구 기준이 흐려집니다. `bluetape4k-javers` 0.2.1은 Exposed, Redis, Kafka를 JaVers에 연결하지만 세 방식이 맡는 일은 서로 다릅니다. 이 매뉴얼은 기능 목록보다 먼저 그 경계를 설명합니다.
 
+## 핵심 기능
+
+- **감사 스냅샷과 변경 비교:** [감사 모델](architecture/audit-model.md)에서 JaVers 커밋, 스냅샷, 변경 내역, 섀도와 이를 이용한 조회 규칙을 설명합니다.
+- **DDD 애그리게이트 이력:** [javers-ddd](modules/javers-ddd.md)와 [DDD·CQRS 가이드](guides/ddd-and-cqrs.md)가 애그리게이트 명령과 도메인 이벤트를 명시적인 JaVers 커밋으로 연결합니다.
+- **관계형 영속성:** [Exposed 영속 방식](persistence/exposed.md)은 복구 가능한 CDO 스냅샷을 JDBC 데이터베이스에 저장하되 애플리케이션의 Exposed 저장소를 대신하지 않습니다.
+- **Redis·Kafka 어댑터:** [Redis](persistence/redis.md)는 캐시와 조회 모델 경로를, [Kafka](persistence/kafka.md)는 하위 소비자를 위한 감사 레코드 발행을 맡습니다. 어느 쪽도 업무 원본으로 암묵적으로 바뀌지 않습니다.
+- **실패와 관측성 계약:** [실패 계약](operations/failure-contracts.md)과 [관측성](operations/observability.md)에서 부분 쓰기, 재시도, 지연, 복구 신호를 정합니다.
+- **실행 예제와 비교 자료:** [Exposed DDD 예제](examples/javers-exposed-ddd.md)와 [JaVers·Exposed DDD·Envers 비교](benchmarks/exposed-ddd-envers.md)를 통해 추상화가 실제 코드와 측정 근거로 어떻게 이어지는지 확인할 수 있습니다.
+
 설명 기준은 `0.2.1` 릴리스와 커밋 `bffe19439ca891fa5301a76421bdef7ba75252a0`입니다. Ktor 연동, Spring Boot 4 자동 구성과 예제, 전용 Gradle 벤치마크 모듈은 0.2.1 뒤에 추가됐으므로 0.2 기능으로 다루지 않습니다.
 
 [![저장소 학습 지도](../assets/overview/repository-learning-map.png)](../assets/overview/repository-learning-map.svg)
