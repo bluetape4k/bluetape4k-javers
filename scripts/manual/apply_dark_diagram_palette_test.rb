@@ -13,6 +13,9 @@ class ApplyDarkDiagramPaletteTest < Minitest::Test
         <rect fill="#dbeafe" stroke="#2563eb" filter="url(#softShadow)"/>
         <rect fill="#eff6ff" stroke="#3b82f6"/>
         <rect fill="#ecfdf5" stroke="#10b981"/>
+        <rect fill="#fce7f3" stroke="#db2777"/>
+        <path stroke="#fbcfe8"/>
+        <path stroke="#fecaca"/>
         <text fill="#183247">Core</text>
         <text fill="#59677a">Supporting detail</text>
         <style>.label{fill:#172033}.section{fill:#4b5563}.member{fill:#475569}</style>
@@ -36,6 +39,8 @@ class ApplyDarkDiagramPaletteTest < Minitest::Test
     assert_includes transformed, '.label{fill:#f8fafc}.section{fill:#d5dfeb}.member{fill:#d5dfeb}'
     assert_includes transformed, 'fill="#223047" stroke="#5b8def"'
     assert_includes transformed, 'fill="#223047" stroke="#4fb8a8"'
+    assert_includes transformed, 'fill="#223047" stroke="#d66f7e"'
+    assert_equal 3, transformed.scan('stroke="#536377"/>').size
     assert_includes transformed, 'stroke="#d0a24c" stroke-width="4"'
     assert_includes transformed, 'stroke="#9b87d8" stroke-width="4"'
     assert_includes transformed, 'stroke="#4fb8a8" stroke-width="4"'

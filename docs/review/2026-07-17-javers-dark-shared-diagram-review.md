@@ -81,7 +81,7 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Audits: connectors `9`, cards `12`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `9`, quadratic bends `10`, failures `0`.
 - Source-accuracy repair: added `projectSnapshot(snapshot)` to the public repository contract card.
 - Repairs made during audit: assigned separate inheritance target ports to String, Binary, and Map codecs so their three implementation routes no longer cross or share a terminal segment; raised member-text contrast after the original-size preview exposed low-contrast class details.
-- Original-size eye review: class names, stereotypes, and members fit their compartments; all inheritance triangles use the required 18x16 size and the dashed dependency arrow uses the 14x14 primary-flow size; no relationship line crosses a card or another connector; the codec fan-in reads as three distinct relationships; both responsibility lanes and the footer retain clear margins.
+- Original-size eye review: class names, stereotypes, and members fit their compartments; all inheritance triangles use the required 18x16 size and the dashed static dependency arrow uses the required 10x10 size; no relationship line crosses a card or another connector; the codec fan-in reads as three distinct relationships; both responsibility lanes and the footer retain clear margins.
 - Manual mirror: pending Task 4.
 
 ### `javers-core-composite-repository-01`
@@ -95,4 +95,30 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Source-accuracy repair: clarified that `FAIL_FAST` and `BEST_EFFORT` govern secondary writes; retained the primary-first, non-transactional contract and primary-only read path.
 - Repairs made during audit: removed the shared fan-out trunk, assigned separate bottom ports on the primary card, routed Redis and Kafka through independent rounded corridors, and raised all primary-flow markers from 10x10 to 14x14.
 - Original-size eye review: all labels fit their cards; five arrowheads are visible and match their connectors; the amber and rose fan-out paths remain separate from their source ports to their targets; no connector crosses a card or another route; Redis, Kafka, and database icons remain readable; frame, title, and footer margins are balanced.
+- Manual mirror: pending Task 4.
+
+### `javers-ddd-class-diagram-01`
+
+- Reader question: Which aggregate, audit-boundary, commit-property, and publisher contracts make up the DDD helper layer?
+- Authority: `javers-ddd/README.md` and all production sources under `javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd`.
+- Kind: class.
+- Canonical: `docs/images/readme-diagrams/javers-ddd-class-diagram-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3720x2080` RGBA PNG. A second CairoSVG render had the same SHA-256; the full-size review used an RGB-flattened temporary copy because the app preview intermittently misdisplays nearly opaque RGBA images.
+- Audits: connectors `10`, cards `12`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `10`, quadratic bends `13`, failures `0`; text hazards `0`, code without highlight `0`.
+- Relationship inventory: six direct `DomainEventPublisher` implementations and four dashed/static dependencies. Inheritance markers use 18x16 hollow triangles; dependency markers use 10x10 solid heads.
+- Source-accuracy repairs: replaced the false Spring-to-Noop, Kafka-to-Function, and NATS-to-Composite relationships with direct interface implementations; repeated the interface card for the integration-adapter group to keep all six relationships explicit and crossing-free; added the overridable `saveAuditBoundary(block)` contract to `AggregateRepository`.
+- Original-size eye review: every type, member, group label, and footer fits; all inheritance and dependency heads remain visible; no relationship crosses a card or another line; the two interface groups clearly state that the contract is repeated only for readability; lane and outer-frame margins remain balanced.
+- Manual mirror: pending Task 4.
+
+### `javers-ddd-save-flow-01`
+
+- Reader question: In what order does `AggregateRepository` persist application state, commit the saved aggregate to JaVers, and publish collected domain events?
+- Authority: `javers-ddd/README.md`, `AggregateRepository.kt`, `DomainEventPublisher.kt`, and the Spring/Kafka publisher implementations under `javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd`.
+- Kind: sequence.
+- Canonical: `docs/images/readme-diagrams/javers-ddd-save-flow-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3600x2400` RGBA PNG. The full-size review used `/tmp/javers-ddd-save-flow-flat-20260717.png` because the app preview intermittently renders nearly opaque RGBA regions as black.
+- Audits: sequence-style PASS with six participant headers, six lifelines, five activation bars, eight visible numbered message pills, six fixed `userSpaceOnUse` markers, and one styled `alt/else` region; connectors `8`, cards `6`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `8`, quadratic bends `0`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the old card flowchart with an actual sequence; made source persistence and the JaVers commit finish inside `saveAuditBoundary` before `publishAll`; represented Spring transaction synchronization as an explicit `afterCommit` versus immediate-delivery branch; stated that the helper is not a durable outbox.
+- Repairs made during audit: normalized sequence markers to the established 14-unit 10x10 triangle family; added explicit sequence-family classes for lifelines, activations, message pills, numbering, and branch regions; enlarged the branch frame and separated the branch title, numbered message labels, arrows, and divider after the first full-size review exposed label overlap.
+- Original-size eye review: all participant names and roles fit; every numbered pill has clear space above its own arrow; all eight arrowheads are visible and match the message color; the transaction boundary encloses only persistence and JaVers commit steps; the `alt/else` titles no longer collide with message labels; no connector crosses a card or another route; the outbox warning and outer-frame margins remain balanced.
 - Manual mirror: pending Task 4.
