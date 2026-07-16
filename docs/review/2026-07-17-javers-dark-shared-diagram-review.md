@@ -323,3 +323,16 @@ Each asset entry records its reader question, source anchors, kind, XML/render r
 - Repairs made during audit: converted the canvas, lanes, ten cards, shadows, shafts, and primary heads to the shared dark architecture family; attached explicit card and connector metadata; replaced the ambiguous `save aggregate` wording with the actual audited transaction boundary.
 - Original-size eye review: all request paths, card titles, endpoint strings, and responsibility lines fit; every arrowhead is visible and color-matched; write, current-read, and history-read routes remain distinct; both repository read routes use separate ports; no connector crosses another route or card; the history-limit footer and outer margins remain balanced.
 - Manual mirror: deferred by the current shared-diagram inventory.
+
+### `examples-javers-spring-boot4-wiring-01`
+
+- Reader question: How does explicit Spring configuration assemble MVC dispatch, controller dependencies, the order command path, and shared Exposed-backed audit storage?
+- Authority: `examples/javers-spring-boot4/README.md`, `JaversExampleConfiguration.kt`, `OrderController.kt`, `OrderCommandHandler.kt`, and `OrderRepository.kt`.
+- Kind: architecture.
+- Canonical: `docs/images/readme-diagrams/examples-javers-spring-boot4-wiring-01.{svg,png}`.
+- XML/render: `xmllint --noout` PASS; CairoSVG `-s 2` produced a `3760x2080` RGBA PNG. The app blackened the final RGBA preview, so the original-size review used `/tmp/examples-javers-spring-boot4-wiring-final.jpg`.
+- Audits: connectors `9`, cards `8`, intrusions `0`, crossings `0`, shared segments `0`; geometry failures `0`; endpoint PASS; mixed-corner paths `9`, quadratic bends `9`, failures `0`; text hazards `0`, code without highlight `0`.
+- Source-accuracy repairs: replaced the false controller-to-configuration dependency with Spring MVC dispatch into `OrderController`; showed the controller depending directly on both the command handler and repository; kept `JaversExampleConfiguration` responsible for the explicit bean graph; and retained separate repository paths to the order table and JaVers tables.
+- Repairs made during audit: converted all frames, eight cards, shadows, shafts, and heads to the shared dark architecture family; added explicit card and connector metadata; widened the two order-module cards after the first original-size review exposed insufficient title margin; added a cyan marker so the Spring MVC dispatch head matches its shaft.
+- Original-size eye review: every title, endpoint, bean name, responsibility line, and footer fits; all nine arrowheads are visible and color-matched; controller dependencies and configuration-created beans remain distinct; the direct read dependency reaches the repository without crossing another route; persistence and audit routes use separate repository ports; no connector crosses another route or card; outer margins remain balanced.
+- Manual mirror: deferred by the current shared-diagram inventory.
