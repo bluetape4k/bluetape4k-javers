@@ -16,24 +16,40 @@ Spring Kafka is an optional surface in this module, so the application must add 
 ## Runnable quick start
 
 ```kotlin
-val producerFactory = DefaultKafkaProducerFactory(
+import io.bluetape4k.javers.persistence.kafka.repository.KafkaCdoSnapshotRepository
+import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.StringSerializer
+import org.javers.core.JaversBuilder
+import org.javers.core.metamodel.annotation.Id
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
+import org.springframework.kafka.core.KafkaTemplate
+
+data class Order(@Id val id: Long, val status: String)
+
+val producerFactory = DefaultKafkaProducerFactory<String, String>(
     mapOf(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "localhost:9092"),
     StringSerializer(),
     StringSerializer(),
 )
-val kafkaTemplate = KafkaTemplate(producerFactory, true).also {
+val kafkaTemplate = KafkaTemplate<String, String>(producerFactory, true).also {
     it.setDefaultTopic("javers.order-snapshots")
 }
-val repository = KafkaCdoSnapshotRepository(kafkaTemplate)
-val javers = JaversBuilder.javers()
-    .registerJaversRepository(repository)
-    .registerEntity(Order::class.java)
-    .build()
+try {
+    val repository = KafkaCdoSnapshotRepository(kafkaTemplate)
+    val javers = JaversBuilder.javers()
+        .registerJaversRepository(repository)
+        .registerEntity(Order::class.java)
+        .build()
 
-javers.commit("order-service", order)
+    javers.commit("order-service", Order(1, "PLACED"))
+} finally {
+    producerFactory.destroy()
+}
 ```
 
 `saveSnapshot` uses `sendDefault(GlobalId, encodedSnapshot)` and waits for the returned future for up to 30 seconds by default. Configure the template's default topic before the first commit. The record key is the snapshot GlobalId and the value is uncompressed JSON produced by `JaversCodecs.String`. The exact contract is in [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt).
+
+Keep the producer factory alive while the repository can publish. The `finally` block is appropriate for a short standalone process; a managed application should destroy the factory during application shutdown, after in-flight commits have finished.
 
 ## Publisher and repository responsibility
 

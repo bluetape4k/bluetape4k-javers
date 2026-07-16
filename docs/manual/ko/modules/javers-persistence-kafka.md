@@ -16,24 +16,40 @@ Spring Kafka는 이 모듈의 선택 의존성이므로 애플리케이션에 �
 ## 바로 실행하는 예제
 
 ```kotlin
-val producerFactory = DefaultKafkaProducerFactory(
+import io.bluetape4k.javers.persistence.kafka.repository.KafkaCdoSnapshotRepository
+import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.common.serialization.StringSerializer
+import org.javers.core.JaversBuilder
+import org.javers.core.metamodel.annotation.Id
+import org.springframework.kafka.core.DefaultKafkaProducerFactory
+import org.springframework.kafka.core.KafkaTemplate
+
+data class Order(@Id val id: Long, val status: String)
+
+val producerFactory = DefaultKafkaProducerFactory<String, String>(
     mapOf(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to "localhost:9092"),
     StringSerializer(),
     StringSerializer(),
 )
-val kafkaTemplate = KafkaTemplate(producerFactory, true).also {
+val kafkaTemplate = KafkaTemplate<String, String>(producerFactory, true).also {
     it.setDefaultTopic("javers.order-snapshots")
 }
-val repository = KafkaCdoSnapshotRepository(kafkaTemplate)
-val javers = JaversBuilder.javers()
-    .registerJaversRepository(repository)
-    .registerEntity(Order::class.java)
-    .build()
+try {
+    val repository = KafkaCdoSnapshotRepository(kafkaTemplate)
+    val javers = JaversBuilder.javers()
+        .registerJaversRepository(repository)
+        .registerEntity(Order::class.java)
+        .build()
 
-javers.commit("order-service", order)
+    javers.commit("order-service", Order(1, "PLACED"))
+} finally {
+    producerFactory.destroy()
+}
 ```
 
 `saveSnapshot`은 `sendDefault(GlobalId, encodedSnapshot)`을 호출하고 반환된 future를 기본 30초까지 기다립니다. 첫 커밋 전에 template의 기본 토픽을 지정해야 합니다. 레코드 키는 스냅샷 GlobalId이고 값은 `JaversCodecs.String`이 만든 압축하지 않은 JSON입니다. 정확한 계약은 [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)에 있습니다.
+
+저장소가 발행할 수 있는 동안 producer factory도 살아 있어야 합니다. 위 `finally`는 짧게 실행하는 독립 프로그램에 맞습니다. 관리형 애플리케이션에서는 진행 중인 커밋이 끝난 뒤 애플리케이션 종료 단계에서 factory를 닫으세요.
 
 ## 발행자와 저장소의 책임
 
