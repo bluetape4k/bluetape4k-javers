@@ -2,6 +2,8 @@
 
 The 0.2.1 example answers one concrete question: in what order does a command-side service save business state, record audit history, publish an event, and update a query projection?
 
+[![DDD and CQRS order sequence](../../assets/examples/ddd-cqrs-sequence.png)](../../assets/examples/ddd-cqrs-sequence.svg)
+
 `AggregateRepository.save` executes:
 
 1. subclass `persist(aggregate)` writes the domain source of truth;

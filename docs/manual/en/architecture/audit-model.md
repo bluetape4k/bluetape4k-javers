@@ -2,6 +2,8 @@
 
 A JaVers audit record is not a second copy of an application row. A commit describes one audited operation, snapshots record object state at that commit, changes are calculated differences, and shadows reconstruct domain-shaped historical objects from snapshots.
 
+[![JaVers audit snapshot model](../../assets/architecture/audit-snapshot-model.png)](../../assets/architecture/audit-snapshot-model.svg)
+
 ## Commit and snapshot
 
 `javers.commit(author, object, properties)` creates commit metadata and one or more `CdoSnapshot` values. Metadata includes the commit ID, author, time, and string properties. In `bluetape4k-javers`, [`CommitMetadataExtensions.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/commit/CommitMetadataExtensions.kt) exposes the commit ID pair and epoch-millisecond timestamp. `AbstractCdoSnapshotRepository` filters snapshots by commit ID, author, date, version, changed properties, type, and commit properties.

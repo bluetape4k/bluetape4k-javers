@@ -1,6 +1,6 @@
 # javers-ddd
 
-`javers-ddd` connects source-of-truth aggregate persistence, a JaVers commit, and synchronous domain-event publication. It gives the application a fixed order for those steps; it does not make them one transaction.
+`javers-ddd` connects source-of-truth aggregate persistence, a JaVers commit, and a domain-event publisher call. It fixes the order in which those contracts are invoked; the adapter still decides when delivery happens and whether the caller observes a delivery failure.
 
 ## Dependency and when to choose it
 
@@ -54,11 +54,13 @@ For one event, `toJaversProperties()` records `domainEventType`, `aggregateId`, 
 
 ## Execution and failure semantics
 
-`save` calls subclass `persist`, then `javers.commit`, then `eventPublisher.publishAll`. The publisher is synchronous and events keep collection order. If domain persistence fails, no audit or event follows. If the JaVers commit fails, domain state may already exist. If a publisher fails, domain state and audit may exist while later publishers or events have not run.
+`save` calls subclass `persist`, then `javers.commit`, then `eventPublisher.publishAll`. `publishAll` invokes each publisher in collection order, but actual delivery semantics depend on the implementation. The no-op, function, and composite publishers run immediately and propagate an exception from `publish`. The Spring application-event and Kafka adapters use `publishAfterCommit`, so an active Spring transaction can defer their work until `afterCommit`. The Kafka adapter starts `KafkaTemplate.send()` without waiting for the returned future, so a broker-side send failure is not necessarily reported through `save`.
+
+If domain persistence fails, no audit or publisher call follows. If the JaVers commit fails, domain state may already exist. An immediate publisher failure can leave domain state and audit in place while later publishers or events have not run. Deferred or non-blocking adapters require their own delivery-failure monitoring and recovery.
 
 `load` checks the source-of-truth repository first and falls back to the latest JaVers shadow. `loadHistory` returns snapshots for the aggregate ID. A shadow is useful for audit reconstruction, but it should not silently replace a required operational database.
 
-The provided no-op, function, and composite publishers are immediate adapters. Spring application events, Spring Kafka, and NATS surfaces require their matching runtime dependencies. None is a transactional outbox.
+The provided no-op, function, and composite publishers are immediate adapters. Spring application events, Spring Kafka, and NATS surfaces require their matching runtime dependencies and have adapter-specific timing. None is a transactional outbox.
 
 ## Operations and testing
 

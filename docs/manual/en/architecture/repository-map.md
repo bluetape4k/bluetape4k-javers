@@ -11,7 +11,7 @@
 | `javers-persistence-kafka` | publish encoded snapshots to Kafka | snapshot queries or relational history |
 | `examples/javers-exposed-ddd` | executable command/audit/event/projection lesson | a production transaction/outbox design |
 
-The application flow normally starts in its own domain repository. `AggregateRepository.save()` calls the subclass `persist`, then `javers.commit`, then synchronous publishers. The exact order is implemented in [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt).
+The application flow normally starts in its own domain repository. `AggregateRepository.save()` calls the subclass `persist`, then `javers.commit`, then `eventPublisher.publishAll`. The invocation order is fixed, but delivery timing and failure propagation depend on the publisher adapter. The exact order is implemented in [`AggregateRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt).
 
 For repository fundamentals such as JDBC transaction ownership, use the published [bluetape4k-exposed manual](https://bluetape4k.github.io/manual/bluetape4k-exposed/). For Redis, Kafka, and Testcontainers foundations, use the [bluetape4k-projects manual](https://bluetape4k.github.io/manual/bluetape4k-projects/). This manual covers how those facilities participate in a JaVers audit path.
 

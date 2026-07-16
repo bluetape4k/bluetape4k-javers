@@ -9,108 +9,194 @@
   "modules": [
     {
       "artifact": "io.github.bluetape4k.javers:bluetape4k-javers-bom",
+      "en": "en/modules/bluetape4k-javers-bom.md",
       "gradlePath": ":bluetape4k-javers-bom",
       "group": "foundation",
       "id": "bluetape4k-javers-bom",
       "kind": "bom",
+      "ko": "ko/modules/bluetape4k-javers-bom.md",
       "projectName": "bluetape4k-javers-bom",
       "sourceDir": "bom",
       "sourcePaths": [
         "bom"
       ],
-      "status": "stable"
+      "status": "stable",
+      "title": {
+        "en": "Javers BOM",
+        "ko": "Javers BOM"
+      }
     },
     {
       "artifact": "io.github.bluetape4k.javers:javers-core",
+      "en": "en/modules/javers-core.md",
       "gradlePath": ":javers-core",
       "group": "foundation",
       "id": "javers-core",
       "kind": "library",
+      "ko": "ko/modules/javers-core.md",
       "projectName": "javers-core",
       "sourceDir": "javers-core",
       "sourcePaths": [
         "javers-core"
       ],
-      "status": "stable"
+      "status": "stable",
+      "title": {
+        "en": "Javers core library",
+        "ko": "Javers 핵심 라이브러리"
+      }
     },
     {
       "artifact": "io.github.bluetape4k.javers:javers-ddd",
+      "en": "en/modules/javers-ddd.md",
       "gradlePath": ":javers-ddd",
       "group": "foundation",
       "id": "javers-ddd",
       "kind": "library",
+      "ko": "ko/modules/javers-ddd.md",
       "projectName": "javers-ddd",
       "sourceDir": "javers-ddd",
       "sourcePaths": [
         "javers-ddd"
       ],
-      "status": "stable"
+      "status": "stable",
+      "title": {
+        "en": "Javers DDD library",
+        "ko": "Javers DDD 라이브러리"
+      }
     },
     {
       "artifact": "io.github.bluetape4k.javers:javers-exposed",
+      "en": "en/modules/javers-exposed.md",
       "gradlePath": ":javers-exposed",
       "group": "persistence",
       "id": "javers-exposed",
       "kind": "library",
+      "ko": "ko/modules/javers-exposed.md",
       "projectName": "javers-exposed",
       "sourceDir": "javers-exposed",
       "sourcePaths": [
         "javers-exposed"
       ],
-      "status": "stable"
+      "status": "stable",
+      "title": {
+        "en": "Javers Exposed persistence",
+        "ko": "Javers Exposed 영속 모듈"
+      }
     },
     {
       "artifact": null,
+      "en": "en/examples/javers-exposed-ddd.md",
       "gradlePath": ":examples-javers-exposed-ddd",
       "group": "examples",
       "id": "javers-exposed-ddd",
       "kind": "example",
+      "ko": "ko/examples/javers-exposed-ddd.md",
       "projectName": "examples-javers-exposed-ddd",
       "sourceDir": "examples/javers-exposed-ddd",
       "sourcePaths": [
         "examples/javers-exposed-ddd"
       ],
-      "status": "example"
+      "status": "example",
+      "title": {
+        "en": "Javers and Exposed DDD example",
+        "ko": "Javers와 Exposed DDD 예제"
+      }
     },
     {
       "artifact": "io.github.bluetape4k.javers:javers-persistence-kafka",
+      "en": "en/modules/javers-persistence-kafka.md",
       "gradlePath": ":javers-persistence-kafka",
       "group": "persistence",
       "id": "javers-persistence-kafka",
       "kind": "library",
+      "ko": "ko/modules/javers-persistence-kafka.md",
       "projectName": "javers-persistence-kafka",
       "sourceDir": "javers-persistence-kafka",
       "sourcePaths": [
         "javers-persistence-kafka"
       ],
-      "status": "stable"
+      "status": "stable",
+      "title": {
+        "en": "Javers Kafka event publication",
+        "ko": "Javers Kafka 이벤트 발행"
+      }
     },
     {
       "artifact": "io.github.bluetape4k.javers:javers-persistence-redis",
+      "en": "en/modules/javers-persistence-redis.md",
       "gradlePath": ":javers-persistence-redis",
       "group": "persistence",
       "id": "javers-persistence-redis",
       "kind": "library",
+      "ko": "ko/modules/javers-persistence-redis.md",
       "projectName": "javers-persistence-redis",
       "sourceDir": "javers-persistence-redis",
       "sourcePaths": [
         "javers-persistence-redis"
       ],
-      "status": "stable"
+      "status": "stable",
+      "title": {
+        "en": "Javers Redis snapshot cache",
+        "ko": "Javers Redis 스냅샷 캐시"
+      }
     }
   ],
   "overview": {
+    "assets": [
+      "assets/overview/repository-learning-map.svg",
+      "assets/overview/repository-learning-map.png",
+      "assets/architecture/audit-snapshot-model.svg",
+      "assets/architecture/audit-snapshot-model.png",
+      "assets/persistence/persistence-decision-map.svg",
+      "assets/persistence/persistence-decision-map.png",
+      "assets/persistence/exposed-snapshot-flow.svg",
+      "assets/persistence/exposed-snapshot-flow.png",
+      "assets/examples/ddd-cqrs-sequence.svg",
+      "assets/examples/ddd-cqrs-sequence.png"
+    ],
     "documents": {
       "en": [
-
+        "en/index.md",
+        "en/getting-started.md",
+        "en/architecture/repository-map.md",
+        "en/architecture/audit-model.md",
+        "en/architecture/repository-composition.md",
+        "en/guides/learning-path.md",
+        "en/guides/ddd-and-cqrs.md",
+        "en/guides/testing.md",
+        "en/guides/cross-repository-paths.md",
+        "en/persistence/selection-guide.md",
+        "en/persistence/exposed.md",
+        "en/persistence/redis.md",
+        "en/persistence/kafka.md",
+        "en/operations/failure-contracts.md",
+        "en/operations/observability.md",
+        "en/benchmarks/overview.md",
+        "en/benchmarks/exposed-ddd-envers.md"
       ],
       "ko": [
-
+        "ko/index.md",
+        "ko/getting-started.md",
+        "ko/architecture/repository-map.md",
+        "ko/architecture/audit-model.md",
+        "ko/architecture/repository-composition.md",
+        "ko/guides/learning-path.md",
+        "ko/guides/ddd-and-cqrs.md",
+        "ko/guides/testing.md",
+        "ko/guides/cross-repository-paths.md",
+        "ko/persistence/selection-guide.md",
+        "ko/persistence/exposed.md",
+        "ko/persistence/redis.md",
+        "ko/persistence/kafka.md",
+        "ko/operations/failure-contracts.md",
+        "ko/operations/observability.md",
+        "ko/benchmarks/overview.md",
+        "ko/benchmarks/exposed-ddd-envers.md"
       ]
     }
   },
   "publication": {
-    "contentStatus": "planned",
+    "contentStatus": "complete",
     "locales": [
       "en",
       "ko"
