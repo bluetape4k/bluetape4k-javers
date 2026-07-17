@@ -64,7 +64,7 @@ dependencies {
     implementation(libs.kotlinx.benchmark.runtime.jvm)
     implementation(libs.jmh.core)
 
-    implementation(platform(libs.exposed.bom))
+    implementation(platform(bt4k.exposed.bom))
     implementation(bt4k.exposed.core)
     implementation(bt4k.exposed.jdbc)
     implementation(bt4k.exposed.java.time)
