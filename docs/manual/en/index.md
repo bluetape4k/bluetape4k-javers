@@ -15,9 +15,9 @@ The manual is pinned to release `0.2.1` (`bffe19439ca891fa5301a76421bdef7ba75252
 
 ## Release overview
 
-This repository overview is copied from the `0.2.1` release. It shows only the structure available to users of this manual; newer Snapshot modules and relationships are intentionally excluded.
+This repository overview is loaded directly from the immutable `0.2.1` release commit. It shows only the structure available to users of this manual; newer Snapshot modules and relationships are intentionally excluded. Select the preview to open the SVG at the same release commit.
 
-[![bluetape4k-javers 0.2.1 repository overview](../assets/readme-diagrams/root-readme-overview-01.png)](../assets/readme-diagrams/root-readme-overview-01.svg)
+[![bluetape4k-javers 0.2.1 repository overview](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/root-readme-overview-01.svg)
 
 ## Learning map
 

@@ -152,13 +152,7 @@
       "assets/persistence/exposed-snapshot-flow.svg",
       "assets/persistence/exposed-snapshot-flow.png",
       "assets/examples/ddd-cqrs-sequence.svg",
-      "assets/examples/ddd-cqrs-sequence.png",
-      "assets/readme-diagrams/root-readme-overview-01.svg",
-      "assets/readme-diagrams/root-readme-overview-01.png",
-      "assets/readme-diagrams/bluetape4k-javers-architecture-01.svg",
-      "assets/readme-diagrams/bluetape4k-javers-architecture-01.png",
-      "assets/readme-diagrams/bom-architecture-01.svg",
-      "assets/readme-diagrams/bom-architecture-01.png"
+      "assets/examples/ddd-cqrs-sequence.png"
     ],
     "documents": {
       "en": [
