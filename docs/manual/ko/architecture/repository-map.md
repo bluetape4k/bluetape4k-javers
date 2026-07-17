@@ -2,6 +2,12 @@
 
 `bluetape4k-javers`는 JaVers 감사와 이력의 의미를 맡습니다. 현재 업무 상태를 저장하는 애플리케이션 저장소까지 대신하지는 않습니다. 이 둘을 나눠야 장애가 났을 때 어느 데이터를 기준으로 복구할지 정할 수 있습니다.
 
+## 배포본 아키텍처
+
+아래 그림은 `0.2.1` 릴리스에 들어 있던 아키텍처입니다. Snapshot 개발 과정에서 README 구조가 계속 바뀌고 있으므로, 현재 README 그림과 섞지 않고 배포본 자산을 그대로 사용합니다.
+
+[![bluetape4k-javers 0.2.1 아키텍처](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.svg)
+
 | 릴리스 모듈 | 맡는 일 | 맡지 않는 일 |
 | --- | --- | --- |
 | `javers-core` | 코덱, JaVers 확장, 캐시 기반 CDO 저장소 | 업무 데이터 영속 저장 |

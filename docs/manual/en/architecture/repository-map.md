@@ -2,6 +2,12 @@
 
 `bluetape4k-javers` owns JaVers audit and history semantics. It does not replace the application repository that owns current business state. Keeping those responsibilities separate makes recovery questions answerable.
 
+## Released architecture
+
+The following architecture is the original `0.2.1` release diagram. It is kept separate from the current README diagram because the Snapshot line has continued to evolve.
+
+[![bluetape4k-javers 0.2.1 architecture](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.svg)
+
 | Release module | Responsibility | Not its job |
 | --- | --- | --- |
 | `javers-core` | codecs, JaVers extensions, cache-backed CDO repositories | durable business storage |

@@ -2,6 +2,7 @@
 
 require "digest"
 require "fileutils"
+require "open3"
 require "pathname"
 require "yaml"
 
@@ -21,10 +22,9 @@ module SharedDiagrams
   class Contract
     CANONICAL_ROOT = "docs/images/readme-diagrams"
     MIRROR_ROOT = "docs/manual/assets/readme-diagrams"
+    MANUAL_MANIFEST = "docs/manual/manifest.yaml"
     VALID_KINDS = %w[architecture class erd flow sequence].freeze
     VALID_MANUAL_STATES = %w[selected deferred].freeze
-
-    MANUAL_MANIFEST = "docs/manual/manifest.yaml"
 
     attr_reader :root, :inventory_path
 
@@ -37,48 +37,48 @@ module SharedDiagrams
       @entries ||= load_entries
     end
 
-    def target_minor
-      value = inventory_data["targetMinor"]
-      raise ContractError, "shared diagram targetMinor must use major.minor format" unless minor_version?(value)
-
-      value
-    end
-
-    def stable_minor
-      manifest = load_yaml(resolved(MANUAL_MANIFEST), "manual manifest")
-      value = manifest["stableMinor"]
-      raise ContractError, "manual manifest stableMinor must use major.minor format" unless minor_version?(value)
-
-      value
-    end
-
-    def target_active?
-      target_minor == stable_minor
-    end
-
     def active_entries
-      target_active? ? entries.select(&:selected?) : []
+      entries.select(&:selected?)
+    end
+
+    def release_ref
+      value = manual_manifest["releaseRef"]
+      unless non_empty_string?(value) && !value.start_with?("-") && !value.include?("..") && value.match?(/\A[0-9A-Za-z][0-9A-Za-z._\/-]*\z/)
+        raise ContractError, "manual manifest releaseRef is invalid"
+      end
+
+      value
+    end
+
+    def release_commit
+      value = manual_manifest["releaseCommit"]
+      raise ContractError, "manual manifest releaseCommit must be a full SHA" unless value.is_a?(String) && value.match?(/\A[0-9a-f]{40}\z/)
+
+      value
     end
 
     def errors
       entry_list = entries
-      canonical_errors(entry_list) + reference_errors(entry_list) + mirror_errors(entry_list)
+      failures = canonical_errors(entry_list) + reference_errors(entry_list)
+      release_failures = release_provenance_errors
+      release_failures += release_entry_errors(active_entries) if release_failures.empty?
+      failures + release_failures + (release_failures.empty? ? mirror_errors(entry_list) : [])
     rescue ContractError => error
       [error.message]
     end
 
     def sync!
       entry_list = entries
-      blockers = canonical_errors(entry_list) + reference_errors(entry_list)
+      blockers = canonical_errors(entry_list) + reference_errors(entry_list) + release_provenance_errors
+      blockers += release_entry_errors(active_entries) if blockers.empty?
       raise ContractError, blockers.join("\n") unless blockers.empty?
 
       mirror_root.mkpath
       expected = []
       active_entries.each do |entry|
         %w[svg png].each do |extension|
-          source = canonical_path(entry, extension)
           target = mirror_path(entry, extension)
-          FileUtils.cp(source, target)
+          File.binwrite(target, release_asset(entry, extension))
           expected << target.basename.to_s
         end
       end
@@ -96,7 +96,8 @@ module SharedDiagrams
 
     def load_entries
       data = inventory_data
-      raise ContractError, "shared diagram schemaVersion must be 2" unless data["schemaVersion"] == 2
+      raise ContractError, "shared diagram schemaVersion must be 3" unless data["schemaVersion"] == 3
+      raise ContractError, "shared diagram sourcePolicy must be manual-release" unless data["sourcePolicy"] == "manual-release"
 
       rows = data["diagrams"]
       raise ContractError, "shared diagram inventory diagrams must be an array" unless rows.is_a?(Array)
@@ -105,14 +106,17 @@ module SharedDiagrams
       duplicate_ids = parsed.group_by(&:id).select { |_id, matches| matches.size > 1 }.keys
       raise ContractError, "duplicate diagram ids: #{duplicate_ids.sort.join(', ')}" unless duplicate_ids.empty?
       duplicate_canonical = parsed.group_by(&:canonical).select { |_id, matches| matches.size > 1 }.keys
-      unless duplicate_canonical.empty?
-        raise ContractError, "duplicate canonical diagrams: #{duplicate_canonical.sort.join(', ')}"
-      end
+      raise ContractError, "duplicate canonical diagrams: #{duplicate_canonical.sort.join(', ')}" unless duplicate_canonical.empty?
+
       parsed.freeze
     end
 
     def inventory_data
       @inventory_data ||= load_yaml(inventory_path, "shared diagram inventory")
+    end
+
+    def manual_manifest
+      @manual_manifest ||= load_yaml(resolved(MANUAL_MANIFEST), "manual manifest")
     end
 
     def load_yaml(path, label)
@@ -183,6 +187,22 @@ module SharedDiagrams
       end
     end
 
+    def release_provenance_errors
+      actual = git_capture("rev-parse", "#{release_ref}^{commit}").strip
+      actual == release_commit ? [] : ["manual releaseRef #{release_ref} resolves to #{actual}, expected #{release_commit}"]
+    rescue ContractError => error
+      [error.message]
+    end
+
+    def release_entry_errors(entry_list)
+      entry_list.flat_map do |entry|
+        paths = %w[svg png].map { |extension| canonical_relative_path(entry, extension) } + entry.source_paths
+        paths.each_with_object([]) do |path, failures|
+          failures << "#{entry.id}: missing release source #{release_ref}:#{path}" unless git_object_exists?(path)
+        end
+      end
+    end
+
     def mirror_errors(entry_list)
       expected = []
       active = active_entries.map(&:id).to_h { |id| [id, true] }
@@ -193,14 +213,13 @@ module SharedDiagrams
             expected << mirror.basename.to_s
             if !mirror.file?
               ["#{entry.id}: missing mirror #{extension.upcase}"]
-            elsif canonical_path(entry, extension).file? && digest(canonical_path(entry, extension)) != digest(mirror)
-              ["#{entry.id}: canonical and mirror #{extension.upcase} digests differ"]
+            elsif Digest::SHA256.file(mirror).hexdigest != Digest::SHA256.hexdigest(release_asset(entry, extension))
+              ["#{entry.id}: release and mirror #{extension.upcase} digests differ"]
             else
               []
             end
           elsif mirror.file?
-            reason = entry.deferred? ? "deferred diagram" : "inactive manual target"
-            ["#{entry.id}: #{reason} has mirror #{extension.upcase}"]
+            ["#{entry.id}: deferred diagram has mirror #{extension.upcase}"]
           else
             []
           end
@@ -214,8 +233,30 @@ module SharedDiagrams
       failures
     end
 
+    def release_asset(entry, extension)
+      git_capture("show", "#{release_ref}:#{canonical_relative_path(entry, extension)}")
+    end
+
+    def git_object_exists?(path)
+      _stdout, _stderr, status = Open3.capture3("git", "-C", root.to_s, "cat-file", "-e", "#{release_ref}:#{path}")
+      status.success?
+    end
+
+    def git_capture(*arguments)
+      stdout, stderr, status = Open3.capture3("git", "-C", root.to_s, *arguments, binmode: true)
+      raise ContractError, "git #{arguments.first} failed: #{stderr.strip}" unless status.success?
+
+      stdout
+    rescue Errno::ENOENT => error
+      raise ContractError, "git executable not found: #{error.message}"
+    end
+
+    def canonical_relative_path(entry, extension)
+      "#{CANONICAL_ROOT}/#{entry.canonical}.#{extension}"
+    end
+
     def canonical_path(entry, extension)
-      resolved("#{CANONICAL_ROOT}/#{entry.canonical}.#{extension}")
+      resolved(canonical_relative_path(entry, extension))
     end
 
     def mirror_path(entry, extension)
@@ -242,14 +283,6 @@ module SharedDiagrams
 
     def non_empty_string?(value)
       value.is_a?(String) && !value.empty?
-    end
-
-    def minor_version?(value)
-      non_empty_string?(value) && value.match?(/\A\d+\.\d+\z/)
-    end
-
-    def digest(path)
-      Digest::SHA256.file(path).hexdigest
     end
   end
 end

@@ -1,125 +1,117 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1040" viewBox="0 0 1860 1040" role="img" aria-label="javers-ddd class diagram">
 <defs>
-<filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#000814" flood-opacity="0.04"/></filter>
-<marker id="arrowInherit" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="16" refX="17" refY="8" orient="auto"><path d="M 17 8 L 1 1 L 1 15 Z" fill="#172033" stroke="#536377" stroke-width="1.3" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-<marker id="arrowUse" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5b8def" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
+<marker id="arrowInherit" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M 13 7 L 1 1 L 1 13 Z" fill="#ffffff" stroke="#475569" stroke-width="1.3" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowUse" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
 <style>
-.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#f8fafc;font-weight:700}
-.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#d5dfeb}
-.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#f8fafc;font-weight:700}
-.className{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#f8fafc;font-weight:700}
-.stereo{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:11px;fill:#d5dfeb}
-.member{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:11.5px;fill:#d5dfeb}
-.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#d5dfeb}
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#183247;font-weight:700}
+.className{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:22px;fill:#183247;font-weight:700}
+.stereo{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:11px;fill:#64748b}
+.member{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:11.5px;fill:#475569}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#587086}
 </style>
 
-<marker id="arrow059669" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#4fb8a8" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-<marker id="arrowD97706" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d0a24c" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
-<rect x="0" y="0" width="1860" height="1040" rx="26" fill="#020617"/>
-<rect x="20" y="20" width="1820" height="1000" rx="24" fill="#172033" stroke="#536377" stroke-width="2"/>
+<marker id="arrow059669" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowD97706" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
+<rect x="0" y="0" width="1860" height="1040" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1820" height="1000" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
 <text class="title" x="54" y="64">javers-ddd Class Diagram</text>
 <text class="subtitle" x="56" y="94">Aggregate contracts, repository base behavior, commit-property helpers, and publisher adapters</text>
 
-<rect x="70" y="132" width="805" height="780" rx="18" fill="#182331" stroke="#536377" stroke-width="2" stroke-dasharray="8 6"/>
+<rect x="70" y="132" width="805" height="780" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
 <text class="lane" x="96" y="168">Aggregate and JaVers contract</text>
 
-<rect class="card" x="120" y="220" width="275" height="118" rx="10" fill="#223047" stroke="#5b8def" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="120" y="220" width="275" height="118" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="stereo" x="257" y="246" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
 <text class="className" x="257" y="272" text-anchor="middle">AggregateRoot&lt;ID&gt;</text>
-<path d="M 120,288 H395" stroke="#223047" stroke-width="1"/>
+<path d="M 120,288 H395" stroke="#bfdbfe" stroke-width="1"/>
 <text class="member" x="140" y="313">+ id: ID</text>
 
-<rect class="card" x="480" y="198" width="330" height="162" rx="10" fill="#223047" stroke="#4fb8a8" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="480" y="198" width="330" height="162" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="stereo" x="645" y="224" text-anchor="middle">&lt;&lt;interface&gt;&gt;</text>
 <text class="className" x="645" y="250" text-anchor="middle">DomainEvent</text>
-<path d="M 480,266 H810" stroke="#536377" stroke-width="1"/>
+<path d="M 480,266 H810" stroke="#bbf7d0" stroke-width="1"/>
 <text class="member" x="500" y="291">+ aggregateId: Any</text>
 <text class="member" x="500" y="309">+ occurredOn: Instant</text>
 <text class="member" x="500" y="327">+ attributes: Map&lt;String, String&gt;</text>
 
-<rect class="card" x="278" y="455" width="410" height="194" rx="10" fill="#223047" stroke="#d66f7e" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="278" y="455" width="410" height="176" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="stereo" x="483" y="481" text-anchor="middle">&lt;&lt;abstract&gt;&gt;</text>
 <text class="className" x="483" y="507" text-anchor="middle">AggregateRepository&lt;T, ID&gt;</text>
-<path d="M 278,523 H688" stroke="#536377" stroke-width="1"/>
+<path d="M 278,523 H688" stroke="#fbcfe8" stroke-width="1"/>
 <text class="member" x="298" y="548">+ save(aggregate, author)</text>
 <text class="member" x="298" y="566">+ save(aggregate, author, event/events)</text>
 <text class="member" x="298" y="584">+ load(id), loadHistory(id)</text>
 <text class="member" x="298" y="602"># persist(aggregate), findById(id)</text>
 <text class="member" x="298" y="620">- loadLatestShadow(id)</text>
-<text class="member" x="298" y="638"># saveAuditBoundary(block)</text>
 
-<rect class="card" x="310" y="735" width="345" height="104" rx="10" fill="#223047" stroke="#d0a24c" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="310" y="735" width="345" height="104" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="className" x="482" y="768" text-anchor="middle">DomainEvent properties</text>
-<path d="M 310,785 H655" stroke="#536377" stroke-width="1"/>
+<path d="M 310,785 H655" stroke="#fde68a" stroke-width="1"/>
 <text class="member" x="330" y="809">+ toJaversProperties()</text>
 <text class="member" x="330" y="827">domainEventType, aggregateId, occurredOn</text>
 
-<rect x="930" y="132" width="860" height="780" rx="18" fill="#182331" stroke="#536377" stroke-width="2" stroke-dasharray="8 6"/>
+<rect x="930" y="132" width="860" height="780" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
 <text class="lane" x="956" y="168">Publisher contract and adapters</text>
 
-<rect class="card" x="1190" y="205" width="340" height="130" rx="10" fill="#223047" stroke="#d0a24c" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="1190" y="205" width="340" height="130" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="stereo" x="1360" y="231" text-anchor="middle">&lt;&lt;fun interface&gt;&gt;</text>
 <text class="className" x="1360" y="257" text-anchor="middle">DomainEventPublisher</text>
-<path d="M 1190,273 H1530" stroke="#536377" stroke-width="1"/>
+<path d="M 1190,273 H1530" stroke="#fde68a" stroke-width="1"/>
 <text class="member" x="1210" y="298">+ publish(event)</text>
 <text class="member" x="1210" y="316">+ publishAll(events)</text>
 
 <text class="small" x="980" y="376">Built-in publishers</text>
-<rect class="card" x="980" y="430" width="220" height="96" rx="10" fill="#223047" stroke="#536377" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="980" y="430" width="220" height="96" rx="10" fill="#e2e8f0" stroke="#475569" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="className" x="1090" y="466" text-anchor="middle">Noop</text>
 <text class="className" x="1090" y="488" text-anchor="middle">Publisher</text>
-<path d="M 980,504 H1200" stroke="#536377" stroke-width="1"/>
+<path d="M 980,504 H1200" stroke="#cbd5e1" stroke-width="1"/>
 <text class="member" x="1000" y="522">drops events</text>
 
-<rect class="card" x="1250" y="430" width="220" height="96" rx="10" fill="#223047" stroke="#55c7e8" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="1250" y="430" width="220" height="96" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="className" x="1360" y="466" text-anchor="middle">Function</text>
 <text class="className" x="1360" y="488" text-anchor="middle">Publisher</text>
-<path d="M 1250,504 H1470" stroke="#536377" stroke-width="1"/>
+<path d="M 1250,504 H1470" stroke="#bae6fd" stroke-width="1"/>
 <text class="member" x="1270" y="522">(DomainEvent) -&gt; Unit</text>
 
-<rect class="card" x="1520" y="430" width="220" height="96" rx="10" fill="#223047" stroke="#9b87d8" stroke-width="2" filter="url(#softShadow)"/>
+<rect x="1520" y="430" width="220" height="96" rx="10" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.2" filter="url(#softShadow)"/>
 <text class="className" x="1630" y="466" text-anchor="middle">Composite</text>
 <text class="className" x="1630" y="488" text-anchor="middle">Publisher</text>
-<path d="M 1520,504 H1740" stroke="#536377" stroke-width="1"/>
+<path d="M 1520,504 H1740" stroke="#ddd6fe" stroke-width="1"/>
 <text class="member" x="1540" y="522">ordered fan-out</text>
 
-<text class="small" x="980" y="566">Integration adapters - same contract repeated for clarity</text>
-<rect class="card" x="1190" y="575" width="340" height="130" rx="10" fill="#223047" stroke="#d0a24c" stroke-width="2" filter="url(#softShadow)"/>
-<text class="stereo" x="1360" y="601" text-anchor="middle">&lt;&lt;fun interface&gt;&gt;</text>
-<text class="className" x="1360" y="627" text-anchor="middle">DomainEventPublisher</text>
-<path d="M 1190,643 H1530" stroke="#536377" stroke-width="1"/>
-<text class="member" x="1210" y="668">+ publish(event)</text>
-<text class="member" x="1210" y="686">+ publishAll(events)</text>
+<text class="small" x="980" y="618">Integration adapters</text>
+<rect x="980" y="646" width="220" height="96" rx="10" fill="#ecfeff" stroke="#06b6d4" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="className" x="1090" y="682" text-anchor="middle">Spring Event</text>
+<text class="className" x="1090" y="704" text-anchor="middle">Adapter</text>
+<path d="M 980,720 H1200" stroke="#cffafe" stroke-width="1"/>
+<text class="member" x="1000" y="738">afterCommit when active</text>
 
-<rect class="card" x="980" y="780" width="220" height="96" rx="10" fill="#223047" stroke="#55c7e8" stroke-width="2" filter="url(#softShadow)"/>
-<text class="className" x="1090" y="816" text-anchor="middle">Spring Event</text>
-<text class="className" x="1090" y="838" text-anchor="middle">Adapter</text>
-<path d="M 980,854 H1200" stroke="#536377" stroke-width="1"/>
-<text class="member" x="1000" y="872">afterCommit when active</text>
+<rect x="1250" y="646" width="220" height="96" rx="10" fill="#fee2e2" stroke="#ef4444" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="className" x="1360" y="682" text-anchor="middle">Kafka</text>
+<text class="className" x="1360" y="704" text-anchor="middle">Adapter</text>
+<path d="M 1250,720 H1470" stroke="#fecaca" stroke-width="1"/>
+<text class="member" x="1270" y="738">topic + key resolvers</text>
 
-<rect class="card" x="1250" y="780" width="220" height="96" rx="10" fill="#223047" stroke="#d66f7e" stroke-width="2" filter="url(#softShadow)"/>
-<text class="className" x="1360" y="816" text-anchor="middle">Kafka</text>
-<text class="className" x="1360" y="838" text-anchor="middle">Adapter</text>
-<path d="M 1250,854 H1470" stroke="#536377" stroke-width="1"/>
-<text class="member" x="1270" y="872">topic + key resolvers</text>
+<rect x="1520" y="646" width="220" height="96" rx="10" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.2" filter="url(#softShadow)"/>
+<text class="className" x="1630" y="682" text-anchor="middle">NATS</text>
+<text class="className" x="1630" y="704" text-anchor="middle">Adapter</text>
+<path d="M 1520,720 H1740" stroke="#bbf7d0" stroke-width="1"/>
+<text class="member" x="1540" y="738">subject + serializer</text>
 
-<rect class="card" x="1520" y="780" width="220" height="96" rx="10" fill="#223047" stroke="#4fb8a8" stroke-width="2" filter="url(#softShadow)"/>
-<text class="className" x="1630" y="816" text-anchor="middle">NATS</text>
-<text class="className" x="1630" y="838" text-anchor="middle">Adapter</text>
-<path d="M 1520,854 H1740" stroke="#536377" stroke-width="1"/>
-<text class="member" x="1540" y="872">subject + serializer</text>
+<path d="M 395,280 L 424,280 Q 438,280 438,294 L 438,455" fill="none" stroke="#2563eb" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowUse)"/>
+<path d="M 645,360 L 645,384 Q 645,398 631,398 L 542,398 Q 528,398 528,412 L 528,455" fill="none" stroke="#059669" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow059669)"/>
+<path d="M 482,631 L 482,735" fill="none" stroke="#d97706" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowD97706)"/>
+<path d="M 688,545 L 886,545 Q 900,545 900,531 L 900,284 Q 900,270 914,270 L 1190,270" fill="none" stroke="#d97706" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowD97706)"/>
 
-<path class="connector" d="M 395,280 L 424,280 Q 438,280 438,294 L 438,455" fill="none" stroke="#5b8def" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowUse)"/>
-<path class="connector" d="M 645,360 L 645,384 Q 645,398 631,398 L 542,398 Q 528,398 528,412 L 528,455" fill="none" stroke="#4fb8a8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrow059669)"/>
-<path class="connector" d="M 482,649 L 482,735" fill="none" stroke="#d0a24c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowD97706)"/>
-<path class="connector" d="M 688,545 L 886,545 Q 900,545 900,531 L 900,284 Q 900,270 914,270 L 1190,270" fill="none" stroke="#d0a24c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 5" marker-end="url(#arrowD97706)"/>
-
-<path class="connector" d="M 1090,430 L 1090,404 Q 1090,390 1104,390 L 1306,390 Q 1320,390 1320,376 L 1320,335" fill="none" stroke="#536377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
-<path class="connector" d="M 1360,430 L 1360,335" fill="none" stroke="#536377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
-<path class="connector" d="M 1630,430 L 1630,404 Q 1630,390 1616,390 L 1414,390 Q 1400,390 1400,376 L 1400,335" fill="none" stroke="#536377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
-<path class="connector" d="M 1090,780 L 1090,748 Q 1090,734 1104,734 L 1306,734 Q 1320,734 1320,720 L 1320,705" fill="none" stroke="#536377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
-<path class="connector" d="M 1360,780 L 1360,705" fill="none" stroke="#536377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
-<path class="connector" d="M 1630,780 L 1630,748 Q 1630,734 1616,734 L 1414,734 Q 1400,734 1400,720 L 1400,705" fill="none" stroke="#536377" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
+<path d="M 1090,430 L 1090,404 Q 1090,390 1104,390 L 1306,390 Q 1320,390 1320,376 L 1320,335" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
+<path d="M 1360,430 L 1360,335" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
+<path d="M 1630,430 L 1630,404 Q 1630,390 1616,390 L 1414,390 Q 1400,390 1400,376 L 1400,335" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowInherit)"/>
+<path d="M 1144,646 L 1144,526" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 1414,646 L 1414,526" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 1684,646 L 1684,526" fill="none" stroke="#475569" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
 
 <text class="small" x="96" y="962">Dashed lines show usage/type-bound dependencies. Hollow arrows show DomainEventPublisher implementations.</text>
 </svg>
