@@ -4,9 +4,9 @@
 
 ## Released architecture
 
-The following architecture is the original `0.2.1` release diagram. It is kept separate from the current README diagram because the Snapshot line has continued to evolve.
+The following architecture is loaded directly from the immutable `0.2.1` release commit. It stays separate from the current README diagram because the Snapshot line has continued to evolve. Select the preview to open the SVG at the same release commit.
 
-[![bluetape4k-javers 0.2.1 architecture](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.png)](../../assets/readme-diagrams/bluetape4k-javers-architecture-01.svg)
+[![bluetape4k-javers 0.2.1 architecture](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bluetape4k-javers-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bluetape4k-javers-architecture-01.svg)
 
 | Release module | Responsibility | Not its job |
 | --- | --- | --- |

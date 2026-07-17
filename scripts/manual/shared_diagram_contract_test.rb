@@ -18,8 +18,8 @@ class SharedDiagramContractTest < Minitest::Test
     FileUtils.mkdir_p(@root.join("docs/manual/en/modules"))
     FileUtils.mkdir_p(@root.join("docs/manual/ko/modules"))
     FileUtils.mkdir_p(@root.join("src"))
-    File.write(@root.join("docs/manual/en/modules/sample.md"), "# Sample\n")
-    File.write(@root.join("docs/manual/ko/modules/sample.md"), "# 샘플\n")
+    File.write(@root.join("docs/manual/en/modules/sample.md"), "[![Sample](../../assets/readme-diagrams/sample.png)](../../assets/readme-diagrams/sample.svg)\n")
+    File.write(@root.join("docs/manual/ko/modules/sample.md"), "[![샘플](../../assets/readme-diagrams/sample.png)](../../assets/readme-diagrams/sample.svg)\n")
     File.write(@root.join("src/Sample.kt"), "class Sample\n")
     write_pair("sample", "release")
     git("init", "-q")
@@ -72,30 +72,25 @@ class SharedDiagramContractTest < Minitest::Test
     assert_includes contract.errors, "future: missing release source 0.2.1:docs/images/readme-diagrams/future.png"
   end
 
-  def test_check_reports_release_digest_mismatch
+  def test_check_reports_manual_mirror_directory
     contract.sync!
+    FileUtils.mkdir_p(@root.join("docs/manual/assets/readme-diagrams"))
     File.binwrite(@root.join("docs/manual/assets/readme-diagrams/sample.png"), "different")
 
-    assert_includes contract.errors, "sample: release and mirror PNG digests differ"
+    assert_includes contract.errors, "manual mirror directory still exists: docs/manual/assets/readme-diagrams"
   end
 
-  def test_check_reports_orphan_mirror
-    contract.sync!
-    File.write(@root.join("docs/manual/assets/readme-diagrams/orphan.svg"), "<svg/>")
-
-    assert_includes contract.errors, "orphan mirror asset: orphan.svg"
-  end
-
-  def test_sync_copies_release_pair_not_snapshot_pair_and_skips_deferred_pair
+  def test_sync_links_release_pair_and_removes_mirror
     write_pair("deferred", "snapshot-deferred")
     write_inventory([entry("sample", manual: "selected"), entry("deferred", manual: "deferred")])
 
     contract.sync!
 
-    assert_equal "release-svg", File.read(@root.join("docs/manual/assets/readme-diagrams/sample.svg"))
-    assert_equal "release-png", File.read(@root.join("docs/manual/assets/readme-diagrams/sample.png"))
-    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/deferred.svg"))
-    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/deferred.png"))
+    page = File.read(@root.join("docs/manual/en/modules/sample.md"))
+    assert_includes page, "https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/#{@release_commit}/docs/images/readme-diagrams/sample.png"
+    assert_includes page, "https://github.com/bluetape4k/bluetape4k-javers/blob/#{@release_commit}/docs/images/readme-diagrams/sample.svg"
+    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams"))
+    refute_includes File.read(@root.join("docs/manual/manifest.yaml")), "assets/readme-diagrams/"
     assert_empty contract.errors
   end
 
@@ -132,7 +127,13 @@ class SharedDiagramContractTest < Minitest::Test
   def write_manifest(commit)
     File.write(
       @root.join("docs/manual/manifest.yaml"),
-      YAML.dump({ "stableMinor" => "0.2", "releaseRef" => "0.2.1", "releaseCommit" => commit }),
+      YAML.dump({
+        "repository" => "bluetape4k-javers",
+        "stableMinor" => "0.2",
+        "releaseRef" => "0.2.1",
+        "releaseCommit" => commit,
+        "overview" => { "assets" => ["assets/readme-diagrams/sample.png", "assets/readme-diagrams/sample.svg"] },
+      }),
     )
   end
 

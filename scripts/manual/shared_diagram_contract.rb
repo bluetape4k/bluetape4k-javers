@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "digest"
 require "fileutils"
 require "open3"
 require "pathname"
@@ -41,6 +40,14 @@ module SharedDiagrams
       entries.select(&:selected?)
     end
 
+    def repository
+      value = manual_manifest["repository"]
+      return value if value.is_a?(String) && value.match?(%r{\A[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\z})
+      return "bluetape4k/#{value}" if value.is_a?(String) && value.match?(/\A[A-Za-z0-9_.-]+\z/)
+
+      raise ContractError, "manual manifest repository must use owner/name or a repository slug"
+    end
+
     def release_ref
       value = manual_manifest["releaseRef"]
       unless non_empty_string?(value) && !value.start_with?("-") && !value.include?("..") && value.match?(/\A[0-9A-Za-z][0-9A-Za-z._\/-]*\z/)
@@ -59,10 +66,11 @@ module SharedDiagrams
 
     def errors
       entry_list = entries
-      failures = canonical_errors(entry_list) + reference_errors(entry_list)
+      failures = canonical_errors(entry_list) + reference_errors(entry_list) + manual_link_errors(active_entries)
+      failures += manifest_errors + mirror_errors
       release_failures = release_provenance_errors
       release_failures += release_entry_errors(active_entries) if release_failures.empty?
-      failures + release_failures + (release_failures.empty? ? mirror_errors(entry_list) : [])
+      failures + release_failures
     rescue ContractError => error
       [error.message]
     end
@@ -73,18 +81,11 @@ module SharedDiagrams
       blockers += release_entry_errors(active_entries) if blockers.empty?
       raise ContractError, blockers.join("\n") unless blockers.empty?
 
-      mirror_root.mkpath
-      expected = []
       active_entries.each do |entry|
-        %w[svg png].each do |extension|
-          target = mirror_path(entry, extension)
-          File.binwrite(target, release_asset(entry, extension))
-          expected << target.basename.to_s
-        end
+        entry.manual_pages.each_value { |path| rewrite_page!(path, entry) }
       end
-      mirror_root.children.select(&:file?).each do |path|
-        path.delete unless expected.include?(path.basename.to_s)
-      end
+      remove_manifest_mirrors!
+      FileUtils.rm_rf(mirror_root)
 
       failures = errors
       raise ContractError, failures.join("\n") unless failures.empty?
@@ -116,7 +117,11 @@ module SharedDiagrams
     end
 
     def manual_manifest
-      @manual_manifest ||= load_yaml(resolved(MANUAL_MANIFEST), "manual manifest")
+      @manual_manifest ||= load_yaml(manual_manifest_path, "manual manifest")
+    end
+
+    def manual_manifest_path
+      @manual_manifest_path ||= resolved(MANUAL_MANIFEST)
     end
 
     def load_yaml(path, label)
@@ -187,6 +192,28 @@ module SharedDiagrams
       end
     end
 
+    def manual_link_errors(entry_list)
+      entry_list.flat_map do |entry|
+        entry.manual_pages.each_with_object([]) do |(locale, path), failures|
+          page = resolved(path)
+          next unless page.file?
+
+          content = page.read
+          failures << "#{entry.id}: #{locale} manual page does not reference release PNG URL" unless content.include?(raw_url(entry, "png"))
+          failures << "#{entry.id}: #{locale} manual page does not reference release SVG URL" unless content.include?(blob_url(entry, "svg"))
+          failures << "#{entry.id}: #{locale} manual page still references a mirrored asset" if content.include?("assets/readme-diagrams/#{entry.canonical}")
+        end
+      end
+    end
+
+    def manifest_errors
+      manual_manifest_path.read.include?("assets/readme-diagrams/") ? ["manual manifest still publishes mirrored release diagrams"] : []
+    end
+
+    def mirror_errors
+      mirror_root.exist? ? ["manual mirror directory still exists: #{MIRROR_ROOT}"] : []
+    end
+
     def release_provenance_errors
       actual = git_capture("rev-parse", "#{release_ref}^{commit}").strip
       actual == release_commit ? [] : ["manual releaseRef #{release_ref} resolves to #{actual}, expected #{release_commit}"]
@@ -203,38 +230,29 @@ module SharedDiagrams
       end
     end
 
-    def mirror_errors(entry_list)
-      expected = []
-      active = active_entries.map(&:id).to_h { |id| [id, true] }
-      failures = entry_list.flat_map do |entry|
-        %w[svg png].flat_map do |extension|
-          mirror = mirror_path(entry, extension)
-          if active[entry.id]
-            expected << mirror.basename.to_s
-            if !mirror.file?
-              ["#{entry.id}: missing mirror #{extension.upcase}"]
-            elsif Digest::SHA256.file(mirror).hexdigest != Digest::SHA256.hexdigest(release_asset(entry, extension))
-              ["#{entry.id}: release and mirror #{extension.upcase} digests differ"]
-            else
-              []
-            end
-          elsif mirror.file?
-            ["#{entry.id}: deferred diagram has mirror #{extension.upcase}"]
-          else
-            []
-          end
-        end
+    def rewrite_page!(path, entry)
+      page = resolved(path)
+      content = page.read
+      %w[png svg].each do |extension|
+        local_reference = %r{(?:\.\./)+assets/readme-diagrams/#{Regexp.escape(entry.canonical)}\.#{extension}}
+        replacement = extension == "png" ? raw_url(entry, extension) : blob_url(entry, extension)
+        content = content.gsub(local_reference, replacement)
       end
-      if mirror_root.directory?
-        mirror_root.children.select(&:file?).each do |path|
-          failures << "orphan mirror asset: #{path.basename}" unless expected.include?(path.basename.to_s)
-        end
-      end
-      failures
+      page.write(content)
     end
 
-    def release_asset(entry, extension)
-      git_capture("show", "#{release_ref}:#{canonical_relative_path(entry, extension)}")
+    def remove_manifest_mirrors!
+      content = manual_manifest_path.read.lines.reject { |line| line.include?("assets/readme-diagrams/") }.join
+      manual_manifest_path.write(content)
+      @manual_manifest = nil
+    end
+
+    def raw_url(entry, extension)
+      "https://raw.githubusercontent.com/#{repository}/#{release_commit}/#{canonical_relative_path(entry, extension)}"
+    end
+
+    def blob_url(entry, extension)
+      "https://github.com/#{repository}/blob/#{release_commit}/#{canonical_relative_path(entry, extension)}"
     end
 
     def git_object_exists?(path)
@@ -257,10 +275,6 @@ module SharedDiagrams
 
     def canonical_path(entry, extension)
       resolved(canonical_relative_path(entry, extension))
-    end
-
-    def mirror_path(entry, extension)
-      resolved("#{MIRROR_ROOT}/#{entry.canonical}.#{extension}")
     end
 
     def mirror_root

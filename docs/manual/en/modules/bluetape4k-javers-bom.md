@@ -4,9 +4,9 @@
 
 ## Released dependency structure
 
-This diagram is copied from release `0.2.1` and shows the BOM structure for the version documented here.
+This diagram is loaded directly from the immutable `0.2.1` release commit and shows the BOM structure documented here. Select the preview to open the SVG at the same release commit.
 
-[![bluetape4k-javers 0.2.1 BOM structure](../../assets/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+[![bluetape4k-javers 0.2.1 BOM structure](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.svg)
 
 ## Coordinate and selection
 

@@ -4,9 +4,9 @@
 
 ## 배포본 의존성 구조
 
-아래 그림은 `0.2.1` 릴리스에서 가져온 것으로, 이 매뉴얼이 설명하는 버전의 BOM 구성을 보여 줍니다.
+아래 그림은 `0.2.1` 배포 커밋의 README 자산을 직접 불러와 이 매뉴얼 버전의 BOM 구성을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
-[![bluetape4k-javers 0.2.1 BOM 구조](../../assets/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+[![bluetape4k-javers 0.2.1 BOM 구조](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.svg)
 
 ## 좌표와 선택 기준
 
