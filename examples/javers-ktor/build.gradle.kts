@@ -14,7 +14,7 @@ dependencies {
     implementation(project(":javers-exposed"))
 
     implementation(platform("io.ktor:ktor-bom:${bt4k.versions.ktor.get()}"))
-    implementation(platform(libs.exposed.bom))
+    implementation(platform(bt4k.exposed.bom))
     implementation("io.github.bluetape4k:bluetape4k-ktor-core")
     implementation(bt4k.exposed.core)
     implementation(bt4k.exposed.jdbc)

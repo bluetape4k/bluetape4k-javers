@@ -5,8 +5,8 @@ plugins {
 dependencies {
     implementation(platform("org.springframework.boot:spring-boot-dependencies:${bt4k.versions.spring.boot4.get()}"))
     testImplementation(platform("org.springframework.boot:spring-boot-dependencies:${bt4k.versions.spring.boot4.get()}"))
-    compileOnly(platform(libs.exposed.bom))
-    testImplementation(platform(libs.exposed.bom))
+    compileOnly(platform(bt4k.exposed.bom))
+    testImplementation(platform(bt4k.exposed.bom))
 
     compileOnly(libs.javers.core)
     compileOnly(bt4k.bluetape4k.core)

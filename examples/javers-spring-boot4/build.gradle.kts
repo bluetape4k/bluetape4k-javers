@@ -9,7 +9,7 @@ dependencies {
     implementation(project(":javers-exposed"))
 
     implementation(platform("org.springframework.boot:spring-boot-dependencies:${bt4k.versions.spring.boot4.get()}"))
-    implementation(platform(libs.exposed.bom))
+    implementation(platform(bt4k.exposed.bom))
     implementation(bt4k.exposed.core)
     implementation(bt4k.exposed.jdbc)
     implementation(bt4k.exposed.java.time)

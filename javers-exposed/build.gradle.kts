@@ -17,7 +17,7 @@ dependencies {
     api(project(":javers-core"))
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
 
-    api(platform(libs.exposed.bom))
+    api(platform(bt4k.exposed.bom))
     api(bt4k.exposed.core)
     api(libs.exposed.dao)
     api(bt4k.exposed.jdbc)
