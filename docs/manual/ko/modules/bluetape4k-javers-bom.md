@@ -2,6 +2,12 @@
 
 `bluetape4k-javers-bom`은 이 저장소가 배포하는 라이브러리 아티팩트 다섯 개의 버전을 맞춥니다. 일반 애플리케이션이라면 `bluetape4k-dependencies` 생태계 버전 하나를 가져오는 편이 낫습니다. 이 BOM은 나머지 bluetape4k 라이브러리와의 호환성을 빌드에서 직접 관리해야 할 때만 선택하세요.
 
+## 배포본 의존성 구조
+
+아래 그림은 `0.2.1` 릴리스에서 가져온 것으로, 이 매뉴얼이 설명하는 버전의 BOM 구성을 보여 줍니다.
+
+[![bluetape4k-javers 0.2.1 BOM 구조](../../assets/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+
 ## 좌표와 선택 기준
 
 ```kotlin

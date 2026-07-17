@@ -3,6 +3,7 @@
 
 require "fileutils"
 require "minitest/autorun"
+require "open3"
 require "pathname"
 require "tmpdir"
 require "yaml"
@@ -19,9 +20,18 @@ class SharedDiagramContractTest < Minitest::Test
     FileUtils.mkdir_p(@root.join("src"))
     File.write(@root.join("docs/manual/en/modules/sample.md"), "# Sample\n")
     File.write(@root.join("docs/manual/ko/modules/sample.md"), "# 샘플\n")
-    write_manifest("0.3")
     File.write(@root.join("src/Sample.kt"), "class Sample\n")
-    write_pair("sample", "canonical")
+    write_pair("sample", "release")
+    git("init", "-q")
+    git("config", "user.email", "test@example.com")
+    git("config", "user.name", "Shared Diagram Test")
+    git("config", "tag.gpgSign", "false")
+    git("add", ".")
+    git("commit", "-qm", "release fixture")
+    @release_commit = git("rev-parse", "HEAD")
+    git("tag", "0.2.1")
+    write_manifest(@release_commit)
+    write_pair("sample", "snapshot")
     write_inventory([entry("sample", manual: "selected")])
   end
 
@@ -29,15 +39,15 @@ class SharedDiagramContractTest < Minitest::Test
     FileUtils.remove_entry(@tmp)
   end
 
-  def test_inventory_contains_all_25_canonical_pairs
-    entries = 21.times.map { |index| entry("selected-#{index}", manual: "selected") } +
-              4.times.map { |index| entry("deferred-#{index}", manual: "deferred") }
+  def test_inventory_contains_three_release_diagrams_and_22_deferred_diagrams
+    entries = 3.times.map { |index| entry("selected-#{index}", manual: "selected") } +
+              22.times.map { |index| entry("deferred-#{index}", manual: "deferred") }
     entries.each { |row| write_pair(row.fetch("canonical"), row.fetch("canonical")) }
     write_inventory(entries)
 
     assert_equal 25, contract.entries.size
-    assert_equal 21, contract.entries.count(&:selected?)
-    assert_equal 4, contract.entries.count(&:deferred?)
+    assert_equal 3, contract.entries.count(&:selected?)
+    assert_equal 22, contract.entries.count(&:deferred?)
   end
 
   def test_rejects_unsafe_relative_paths
@@ -48,17 +58,25 @@ class SharedDiagramContractTest < Minitest::Test
     assert_match(/unsafe canonical path/, error.message)
   end
 
-  def test_check_reports_missing_canonical_pair
-    FileUtils.rm(@root.join("docs/images/readme-diagrams/sample.png"))
+  def test_rejects_release_ref_commit_mismatch
+    write_manifest("0" * 40)
 
-    assert_includes contract.errors, "sample: missing canonical PNG"
+    assert_includes contract.errors, "manual releaseRef 0.2.1 resolves to #{@release_commit}, expected #{'0' * 40}"
   end
 
-  def test_check_reports_digest_mismatch
+  def test_check_reports_selected_asset_missing_from_release
+    write_pair("future", "snapshot")
+    write_inventory([entry("future", manual: "selected")])
+
+    assert_includes contract.errors, "future: missing release source 0.2.1:docs/images/readme-diagrams/future.svg"
+    assert_includes contract.errors, "future: missing release source 0.2.1:docs/images/readme-diagrams/future.png"
+  end
+
+  def test_check_reports_release_digest_mismatch
     contract.sync!
     File.binwrite(@root.join("docs/manual/assets/readme-diagrams/sample.png"), "different")
 
-    assert_includes contract.errors, "sample: canonical and mirror PNG digests differ"
+    assert_includes contract.errors, "sample: release and mirror PNG digests differ"
   end
 
   def test_check_reports_orphan_mirror
@@ -68,28 +86,16 @@ class SharedDiagramContractTest < Minitest::Test
     assert_includes contract.errors, "orphan mirror asset: orphan.svg"
   end
 
-  def test_sync_copies_selected_pairs_and_skips_deferred_pairs
-    write_pair("deferred", "deferred")
+  def test_sync_copies_release_pair_not_snapshot_pair_and_skips_deferred_pair
+    write_pair("deferred", "snapshot-deferred")
     write_inventory([entry("sample", manual: "selected"), entry("deferred", manual: "deferred")])
 
     contract.sync!
 
-    assert_equal "canonical-svg", File.read(@root.join("docs/manual/assets/readme-diagrams/sample.svg"))
-    assert_equal "canonical-png", File.read(@root.join("docs/manual/assets/readme-diagrams/sample.png"))
+    assert_equal "release-svg", File.read(@root.join("docs/manual/assets/readme-diagrams/sample.svg"))
+    assert_equal "release-png", File.read(@root.join("docs/manual/assets/readme-diagrams/sample.png"))
     refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/deferred.svg"))
     refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/deferred.png"))
-    assert_empty contract.errors
-  end
-
-  def test_sync_keeps_future_minor_mirrors_inactive
-    write_manifest("0.2")
-
-    contract.sync!
-
-    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/sample.svg"))
-    refute File.exist?(@root.join("docs/manual/assets/readme-diagrams/sample.png"))
-    refute contract.target_active?
-    assert_empty contract.active_entries
     assert_empty contract.errors
   end
 
@@ -119,19 +125,26 @@ class SharedDiagramContractTest < Minitest::Test
   def write_inventory(entries)
     File.write(
       @root.join("docs/manual/shared-diagrams.yaml"),
-      YAML.dump({ "schemaVersion" => 2, "targetMinor" => "0.3", "diagrams" => entries }),
+      YAML.dump({ "schemaVersion" => 3, "sourcePolicy" => "manual-release", "diagrams" => entries }),
     )
   end
 
-  def write_manifest(stable_minor)
+  def write_manifest(commit)
     File.write(
       @root.join("docs/manual/manifest.yaml"),
-      YAML.dump({ "stableMinor" => stable_minor }),
+      YAML.dump({ "stableMinor" => "0.2", "releaseRef" => "0.2.1", "releaseCommit" => commit }),
     )
   end
 
   def write_pair(id, content)
     File.write(@root.join("docs/images/readme-diagrams/#{id}.svg"), "#{content}-svg")
     File.binwrite(@root.join("docs/images/readme-diagrams/#{id}.png"), "#{content}-png")
+  end
+
+  def git(*arguments)
+    stdout, stderr, status = Open3.capture3("git", "-C", @root.to_s, *arguments)
+    raise "git #{arguments.join(' ')} failed: #{stderr}" unless status.success?
+
+    stdout.strip
   end
 end

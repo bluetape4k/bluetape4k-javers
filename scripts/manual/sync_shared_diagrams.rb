@@ -11,11 +11,11 @@ begin
   case ARGV
   when ["--write"]
     contract.sync!
-    puts "shared-diagrams: synchronized selected=#{contract.entries.count(&:selected?)} active=#{contract.active_entries.size} target=#{contract.target_minor} stable=#{contract.stable_minor}"
+    puts "shared-diagrams: synchronized entries=#{contract.entries.size} selected=#{contract.active_entries.size} deferred=#{contract.entries.count(&:deferred?)} release=#{contract.release_ref}"
   when ["--check"]
     failures = contract.errors
     if failures.empty?
-      puts "shared-diagrams: failures=0 entries=#{contract.entries.size} selected=#{contract.entries.count(&:selected?)} active=#{contract.active_entries.size} deferred=#{contract.entries.count(&:deferred?)} target=#{contract.target_minor} stable=#{contract.stable_minor}"
+      puts "shared-diagrams: failures=0 entries=#{contract.entries.size} selected=#{contract.active_entries.size} deferred=#{contract.entries.count(&:deferred?)} release=#{contract.release_ref}"
     else
       warn failures.join("\n")
       exit 1

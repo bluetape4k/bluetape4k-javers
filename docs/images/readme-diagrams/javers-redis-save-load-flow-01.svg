@@ -1,92 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="1800" viewBox="0 0 1840 1800" role="img" aria-label="javers redis save load sequence">
+<svg xmlns="http://www.w3.org/2000/svg" width="1840" height="1060" viewBox="0 0 1840 1060" role="img" aria-label="javers redis save load flow">
 <defs>
-  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#000814" flood-opacity="0.18"/></filter>
-  <marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5b8def"/></marker>
-  <marker id="arrowRose" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d66f7e"/></marker>
-  <marker id="arrowTeal" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#4fb8a8"/></marker>
-  <marker id="arrowCyan" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#55c7e8"/></marker>
-  <marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" viewBox="0 0 10 10" refX="9" refY="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d0a24c"/></marker>
-  <style>
-    .title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#f8fafc;font-weight:700}
-    .subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#d5dfeb}
-    .participant{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:21px;fill:#f8fafc;font-weight:700}
-    .role{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#d5dfeb}
-    .frameTitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:13px;fill:#d5dfeb;font-weight:700}
-    .message{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:13px;font-weight:700}
-    .badgeText{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#f8fafc;font-weight:700}
-    .note{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:13px;fill:#d5dfeb}
-  </style>
-</defs>
+<filter id="shadow" x="-15%" y="-15%" width="168%" height="135%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#64748b" flood-opacity="0.12"/></filter>
+<marker id="blue" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="green" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="amber" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<style>
+.title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:40px;fill:#183247;font-weight:700}
+.subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:16px;fill:#587086}
+.lane{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:25px;fill:#183247;font-weight:700}
+.label{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:27px;fill:#183247;font-weight:700}
+.body{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:14px;fill:#475569}
+.small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:14px;fill:#64748b}
+.infra{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:21px;fill:#991b1b;font-weight:700}
+</style>
 
-<rect width="1840" height="1800" rx="26" fill="#020617"/>
-<rect class="frame" x="20" y="20" width="1800" height="1760" rx="24" fill="#172033" stroke="#536377" stroke-width="2"/>
-<text class="title" x="54" y="64">javers-persistence-redis Save / Load Sequence</text>
-<text class="subtitle" x="56" y="94">Lettuce commits snapshots and sequence metadata atomically; Redisson writes the same structures with best-effort ordering</text>
+<marker id="arrow06B6D4" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#06b6d4" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
+<rect width="1840" height="1060" rx="26" fill="#f7fafc"/>
+<rect x="20" y="20" width="1800" height="1020" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+<text class="title" x="54" y="64">javers-persistence-redis Save / Load Flow</text>
+<text class="subtitle" x="56" y="94">Snapshot writes, head metadata, newest-first reads, and codec failure boundary</text>
 
-<rect class="card header" x="55" y="140" width="220" height="92" rx="14" fill="#223047" stroke="#5b8def" stroke-width="2" filter="url(#softShadow)"/>
-<text class="participant" x="165" y="176" text-anchor="middle">JaVers</text><text class="role" x="165" y="203" text-anchor="middle">commit + query caller</text>
-<rect class="card header" x="335" y="140" width="300" height="92" rx="14" fill="#223047" stroke="#d66f7e" stroke-width="2" filter="url(#softShadow)"/>
-<text class="participant" x="485" y="176" text-anchor="middle">Redis Repository</text><text class="role" x="485" y="203" text-anchor="middle">Lettuce or Redisson adapter</text>
-<rect class="card header" x="735" y="140" width="230" height="92" rx="14" fill="#223047" stroke="#4fb8a8" stroke-width="2" filter="url(#softShadow)"/>
-<text class="participant" x="850" y="176" text-anchor="middle">Snapshot Codec</text><text class="role" x="850" y="203" text-anchor="middle">default LZ4Fory</text>
-<rect class="card header" x="1080" y="140" width="280" height="92" rx="14" fill="#223047" stroke="#55c7e8" stroke-width="2" filter="url(#softShadow)"/>
-<text class="participant" x="1220" y="176" text-anchor="middle">Snapshot Storage</text><text class="role" x="1220" y="203" text-anchor="middle">LIST or RListMultimap</text>
-<rect class="card header" x="1450" y="140" width="260" height="92" rx="14" fill="#223047" stroke="#d0a24c" stroke-width="2" filter="url(#softShadow)"/>
-<text class="participant" x="1580" y="176" text-anchor="middle">Sequence Metadata</text><text class="role" x="1580" y="203" text-anchor="middle">CommitId to sequence</text>
+<rect x="70" y="130" width="1700" height="380" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="166">Save path</text>
+<rect x="168" y="250" width="255" height="108" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="296" y="288" text-anchor="middle">JaVers commit</text>
+<text class="body" x="196" y="318">produces CdoSnapshot</text>
+<rect x="543" y="235" width="290" height="138" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="688" y="274" text-anchor="middle">Encode snapshot</text>
+<text class="body" x="573" y="306">JaversCodecs.LZ4Fory</text>
+<text class="body" x="573" y="325">custom ByteArray codec allowed</text>
+<text class="body" x="573" y="344">failure aborts head advance</text>
+<rect x="953" y="220" width="300" height="168" rx="10" fill="#fff7ed" stroke="#f97316" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1103" y="259" text-anchor="middle">Persist snapshot bytes</text>
+<image data-bluetape4k-icon="redis/redis-icon" x="982" y="272" width="58" height="58" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBoZWlnaHQ9IjY0IiB2aWV3Qm94PSIwIDAgMzIgMzIiIHdpZHRoPSI2NCI+PGcgdHJhbnNmb3JtPSJtYXRyaXgoLjg0ODMyNyAwIDAgLjg0ODMyNyAtNy44ODM1NzMgLTkuNDQ5NjkxKSI+PHVzZSB4bGluazpocmVmPSIjQiIgZmlsbD0iI2E0MWUxMSIvPjxwYXRoIGQ9Ik00NS41MzYgMzQuOTVjLTIuMDEzIDEuMDUtMTIuNDQgNS4zMzctMTQuNjYgNi40OTRzLTMuNDUzIDEuMTQ2LTUuMjA3LjMwOC0xMi44NS01LjMyLTE0Ljg1LTYuMjc2LTIuMDQtMS42MTMtLjA3Ny0yLjM4MmwxNS4zMzItNS45MzZjMi4zMzItLjgzNiAzLjE0LS44NjcgNS4xMjYtLjE0UzQzLjU1IDMxLjg3IDQ1LjUxIDMyLjZzMi4wMzcgMS4zMS4wMjQgMi4zNnoiIGZpbGw9IiNkODJjMjAiLz48dXNlIHhsaW5rOmhyZWY9IiNCIiB5PSItNi4yMTgiIGZpbGw9IiNhNDFlMTEiLz48dXNlIHhsaW5rOmhyZWY9IiNDIiBmaWxsPSIjZDgyYzIwIi8+PHBhdGggZD0iTTQ1LjUzNiAyNi4wOThjLTIuMDEzIDEuMDUtMTIuNDQgNS4zMzctMTQuNjYgNi40OTVzLTMuNDUzIDEuMTQ2LTUuMjA3LjMwOC0xMi44NS01LjMyLTE0Ljg1LTYuMjc2Yy0xLS40NzgtMS41MjQtLjg4LTEuNTI0LTEuMjZWMjEuNTVzMTQuNDQ3LTMuMTQ1IDE2Ljc4LTMuOTgyIDMuMTQtLjg2NyA1LjEyNi0uMTQgMTMuODUzIDIuODY4IDE1LjgxNCAzLjU4N3YzLjc2YzAgLjM3Ny0uNDUyLjgtMS40NzcgMS4zMjR6IiBmaWxsPSIjYTQxZTExIi8+PHVzZSB4bGluazpocmVmPSIjQyIgeT0iLTYuNDQ5IiBmaWxsPSIjZDgyYzIwIi8+PGcgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTI5LjA5NiAyMC43MTJsLTEuMTgyLTEuOTY1LTMuNzc0LS4zNCAyLjgxNi0xLjAxNi0uODQ1LTEuNTYgMi42MzYgMS4wMyAyLjQ4Ni0uODE0LS42NzIgMS42MTIgMi41MzQuOTUtMy4yNjguMzR6TTIyLjggMjQuNjI0bDguNzQtMS4zNDItMi42NCAzLjg3MnoiLz48ZWxsaXBzZSBjeD0iMjAuNDQ0IiByeD0iNC42NzIiIHJ5PSIxLjgxMSIgY3k9IjIxLjQwMiIvPjwvZz48cGF0aCBkPSJNNDIuMTMyIDIxLjEzOGwtNS4xNyAyLjA0Mi0uMDA0LTQuMDg3eiIgZmlsbD0iIzdhMGMwMCIvPjxwYXRoIGQ9Ik0zNi45NjMgMjMuMThsLS41Ni4yMi01LjE2Ni0yLjA0MiA1LjcyMy0yLjI2NHoiIGZpbGw9IiNhZDIxMTUiLz48L2c+PGRlZnMgPjxwYXRoIGlkPSJCIiBkPSJNNDUuNTM2IDM4Ljc2NGMtMi4wMTMgMS4wNS0xMi40NCA1LjMzNy0xNC42NiA2LjQ5NHMtMy40NTMgMS4xNDYtNS4yMDcuMzA4LTEyLjg1LTUuMzItMTQuODUtNi4yNzZjLTEtLjQ3OC0xLjUyNC0uODgtMS41MjQtMS4yNnYtMy44MTNzMTQuNDQ3LTMuMTQ1IDE2Ljc4LTMuOTgyIDMuMTQtLjg2NyA1LjEyNi0uMTQgMTMuODUzIDIuODY4IDE1LjgxNCAzLjU4N3YzLjc2YzAgLjM3Ny0uNDUyLjgtMS40NzcgMS4zMjR6Ii8+PHBhdGggaWQ9IkMiIGQ9Ik00NS41MzYgMjguNzMzYy0yLjAxMyAxLjA1LTEyLjQ0IDUuMzM3LTE0LjY2IDYuNDk0cy0zLjQ1MyAxLjE0Ni01LjIwNy4zMDgtMTIuODUtNS4zMi0xNC44NS02LjI3Ni0yLjA0LTEuNjEzLS4wNzctMi4zODJsMTUuMzMyLTUuOTM1YzIuMzMyLS44MzcgMy4xNC0uODY3IDUuMTI2LS4xNHMxMi4zNSA0Ljg1MyAxNC4zMTIgNS41NyAyLjAzNyAxLjMxLjAyNCAyLjM2eiIvPjwvZGVmcz48L3N2Zz4="/>
+<text class="infra" x="1056" y="300">Redis store</text>
+<text class="body" x="983" y="346">Lettuce: LPUSH in MULTI/EXEC</text>
+<text class="body" x="983" y="365">Redisson: multimap put</text>
+<text class="body" x="983" y="384">keyed by GlobalId</text>
+<rect x="1373" y="235" width="300" height="138" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1523" y="274" text-anchor="middle">Commit sequence</text>
+<text class="body" x="1403" y="306">CommitId -> sequence</text>
+<text class="body" x="1403" y="325">used by loadHeadId()</text>
+<text class="body" x="1403" y="344">restores repository head</text>
+<path d="M 423,304 L 543,304" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#blue)"/>
+<path d="M 833,304 L 953,304" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#green)"/>
+<path d="M 1253,304 L 1373,304" fill="none" stroke="#d97706" stroke-width="1.8" marker-end="url(#amber)"/>
 
-<g stroke="#536377" stroke-width="2" stroke-dasharray="8 8">
-  <line class="lifeline" x1="165" y1="232" x2="165" y2="1690"/><line class="lifeline" x1="485" y1="232" x2="485" y2="1690"/>
-  <line class="lifeline" x1="850" y1="232" x2="850" y2="1690"/><line class="lifeline" x1="1220" y1="232" x2="1220" y2="1690"/><line class="lifeline" x1="1580" y1="232" x2="1580" y2="1690"/>
-</g>
-<rect class="activation" x="475" y="300" width="20" height="1390" rx="8" fill="#223047" stroke="#d66f7e" stroke-width="2"/>
-<rect class="activation" x="840" y="390" width="20" height="1060" rx="8" fill="#223047" stroke="#4fb8a8" stroke-width="2"/>
-<rect class="activation" x="1210" y="585" width="20" height="990" rx="8" fill="#223047" stroke="#55c7e8" stroke-width="2"/>
-<rect class="activation" x="1570" y="665" width="20" height="990" rx="8" fill="#223047" stroke="#d0a24c" stroke-width="2"/>
-
-<path class="connector" data-source="javers" data-target="repository" d="M 165,320 L 475,320" fill="none" stroke="#5b8def" stroke-width="4" marker-end="url(#arrowBlue)"/>
-<g transform="translate(230 274)"><rect class="label" x="0" y="0" width="210" height="34" rx="17" fill="#172033" stroke="#5b8def" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#5b8def"/><text class="badgeText num" x="18" y="21" text-anchor="middle">1</text><text class="message" x="39" y="22" fill="#5b8def">persist(commit, sequence)</text></g>
-<path class="connector" data-source="repository" data-target="codec" d="M 495,410 L 840,410" fill="none" stroke="#4fb8a8" stroke-width="4" marker-end="url(#arrowTeal)"/>
-<g transform="translate(560 364)"><rect class="label" x="0" y="0" width="225" height="34" rx="17" fill="#172033" stroke="#4fb8a8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#4fb8a8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">2</text><text class="message" x="39" y="22" fill="#4fb8a8">encode all snapshots</text></g>
-<path class="connector" data-source="codec" data-target="repository" d="M 840,485 L 495,485" fill="none" stroke="#4fb8a8" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arrowTeal)"/>
-<g transform="translate(580 439)"><rect class="label" x="0" y="0" width="190" height="34" rx="17" fill="#172033" stroke="#4fb8a8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#4fb8a8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">3</text><text class="message" x="39" y="22" fill="#4fb8a8">encoded byte arrays</text></g>
-
-<rect class="alt" x="425" y="535" width="1215" height="470" rx="18" fill="none" stroke="#536377" stroke-width="2" stroke-dasharray="10 8"/>
-<rect x="441" y="547" width="430" height="34" rx="17" fill="#172033" stroke="#536377" stroke-width="2"/><text class="frameTitle" x="461" y="569">alt Lettuce persistCommit / persistProjectedSnapshot</text>
-<path class="connector" data-source="repository" data-target="snapshot-storage" d="M 495,625 L 1210,625" fill="none" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrowCyan)"/>
-<g transform="translate(700 579)"><rect class="label" x="0" y="0" width="310" height="34" rx="17" fill="#172033" stroke="#55c7e8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#55c7e8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">4</text><text class="message" x="39" y="22" fill="#55c7e8">MULTI; LPUSH + HSET GlobalId</text></g>
-<path class="connector" data-source="repository" data-target="sequence-metadata" d="M 495,705 L 1570,705" fill="none" stroke="#d0a24c" stroke-width="4" marker-end="url(#arrowAmber)"/>
-<g transform="translate(865 659)"><rect class="label" x="0" y="0" width="330" height="34" rx="17" fill="#172033" stroke="#d0a24c" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#d0a24c"/><text class="badgeText num" x="18" y="21" text-anchor="middle">5</text><text class="message" x="39" y="22" fill="#d0a24c">HSET CommitId sequence; EXEC</text></g>
-<path class="connector" data-source="sequence-metadata" data-target="repository" d="M 1570,775 L 495,775" fill="none" stroke="#d0a24c" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arrowAmber)"/>
-<g transform="translate(890 729)"><rect class="label" x="0" y="0" width="280" height="34" rx="17" fill="#172033" stroke="#d0a24c" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#d0a24c"/><text class="badgeText num" x="18" y="21" text-anchor="middle">6</text><text class="message" x="39" y="22" fill="#d0a24c">all writes accepted atomically</text></g>
-<line class="branchDivider" x1="425" y1="815" x2="1640" y2="815" stroke="#536377" stroke-width="2" stroke-dasharray="8 7"/>
-<rect x="441" y="827" width="315" height="32" rx="16" fill="#172033" stroke="#536377" stroke-width="2"/><text class="frameTitle" x="461" y="848">else Redisson best-effort multi-structure writes</text>
-<path class="connector" data-source="repository" data-target="snapshot-storage" d="M 495,905 L 1210,905" fill="none" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrowCyan)"/>
-<g transform="translate(710 859)"><rect class="label" x="0" y="0" width="290" height="34" rx="17" fill="#172033" stroke="#55c7e8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#55c7e8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">7</text><text class="message" x="39" y="22" fill="#55c7e8">put each encoded snapshot</text></g>
-<path class="connector" data-source="repository" data-target="sequence-metadata" d="M 495,975 L 1570,975" fill="none" stroke="#d66f7e" stroke-width="4" marker-end="url(#arrowRose)"/>
-<g transform="translate(875 929)"><rect class="label" x="0" y="0" width="310" height="34" rx="17" fill="#172033" stroke="#d66f7e" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#d66f7e"/><text class="badgeText num" x="18" y="21" text-anchor="middle">8</text><text class="message" x="39" y="22" fill="#d66f7e">fastPut only after snapshots</text></g>
-
-<rect class="alt" x="85" y="1030" width="1585" height="650" rx="18" fill="none" stroke="#536377" stroke-width="2" stroke-dasharray="10 8"/>
-<rect x="101" y="1042" width="205" height="34" rx="17" fill="#172033" stroke="#536377" stroke-width="2"/><text class="frameTitle" x="121" y="1064">load snapshots and head</text>
-<path class="connector" data-source="javers" data-target="repository" d="M 165,1120 L 475,1120" fill="none" stroke="#5b8def" stroke-width="4" marker-end="url(#arrowBlue)"/>
-<g transform="translate(230 1074)"><rect class="label" x="0" y="0" width="210" height="34" rx="17" fill="#172033" stroke="#5b8def" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#5b8def"/><text class="badgeText num" x="18" y="21" text-anchor="middle">9</text><text class="message" x="39" y="22" fill="#5b8def">loadSnapshots(GlobalId)</text></g>
-<path class="connector" data-source="repository" data-target="snapshot-storage" d="M 495,1200 L 1210,1200" fill="none" stroke="#55c7e8" stroke-width="4" marker-end="url(#arrowCyan)"/>
-<g transform="translate(700 1154)"><rect class="label" x="0" y="0" width="310" height="34" rx="17" fill="#172033" stroke="#55c7e8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#55c7e8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">10</text><text class="message" x="39" y="22" fill="#55c7e8">LRANGE or getAll(GlobalId)</text></g>
-<path class="connector" data-source="snapshot-storage" data-target="repository" d="M 1210,1270 L 495,1270" fill="none" stroke="#55c7e8" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arrowCyan)"/>
-<g transform="translate(735 1224)"><rect class="label" x="0" y="0" width="240" height="34" rx="17" fill="#172033" stroke="#55c7e8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#55c7e8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">11</text><text class="message" x="39" y="22" fill="#55c7e8">stored byte arrays</text></g>
-<path class="connector" data-source="repository" data-target="codec" d="M 495,1340 L 840,1340" fill="none" stroke="#4fb8a8" stroke-width="4" marker-end="url(#arrowTeal)"/>
-<g transform="translate(575 1294)"><rect class="label" x="0" y="0" width="190" height="34" rx="17" fill="#172033" stroke="#4fb8a8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#4fb8a8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">12</text><text class="message" x="39" y="22" fill="#4fb8a8">decode each value</text></g>
-<path class="connector" data-source="codec" data-target="repository" d="M 840,1410 L 495,1410" fill="none" stroke="#4fb8a8" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arrowTeal)"/>
-<g transform="translate(565 1364)"><rect class="label" x="0" y="0" width="210" height="34" rx="17" fill="#172033" stroke="#4fb8a8" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#4fb8a8"/><text class="badgeText num" x="18" y="21" text-anchor="middle">13</text><text class="message" x="39" y="22" fill="#4fb8a8">decoded snapshots</text></g>
-<path class="connector" data-source="repository" data-target="javers" d="M 475,1480 L 165,1480" fill="none" stroke="#5b8def" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arrowBlue)"/>
-<g transform="translate(220 1434)"><rect class="label" x="0" y="0" width="235" height="34" rx="17" fill="#172033" stroke="#5b8def" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#5b8def"/><text class="badgeText num" x="18" y="21" text-anchor="middle">14</text><text class="message" x="39" y="22" fill="#5b8def">newest-first snapshots</text></g>
-<path class="connector" data-source="javers" data-target="repository" d="M 165,1545 L 475,1545" fill="none" stroke="#5b8def" stroke-width="4" marker-end="url(#arrowBlue)"/>
-<g transform="translate(240 1499)"><rect class="label" x="0" y="0" width="200" height="34" rx="17" fill="#172033" stroke="#5b8def" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#5b8def"/><text class="badgeText num" x="18" y="21" text-anchor="middle">15</text><text class="message" x="39" y="22" fill="#5b8def">loadHeadId()</text></g>
-<path class="connector" data-source="repository" data-target="sequence-metadata" d="M 495,1605 L 1570,1605" fill="none" stroke="#d0a24c" stroke-width="4" marker-end="url(#arrowAmber)"/>
-<g transform="translate(875 1559)"><rect class="label" x="0" y="0" width="310" height="34" rx="17" fill="#172033" stroke="#d0a24c" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#d0a24c"/><text class="badgeText num" x="18" y="21" text-anchor="middle">16</text><text class="message" x="39" y="22" fill="#d0a24c">read all CommitId sequences</text></g>
-<path class="connector" data-source="repository" data-target="javers" d="M 475,1660 L 165,1660" fill="none" stroke="#d0a24c" stroke-width="4" stroke-dasharray="9 7" marker-end="url(#arrowAmber)"/>
-<g transform="translate(245 1614)"><rect class="label" x="0" y="0" width="190" height="34" rx="17" fill="#172033" stroke="#d0a24c" stroke-width="2"/><circle cx="18" cy="17" r="13" fill="#d0a24c"/><text class="badgeText num" x="18" y="21" text-anchor="middle">17</text><text class="message" x="39" y="22" fill="#d0a24c">head CommitId</text></g>
-
-<rect x="90" y="1710" width="1660" height="52" rx="18" fill="#182331" stroke="#536377" stroke-width="2"/>
-<text class="note" x="920" y="1732" text-anchor="middle">Lettuce encodes before locking and discards a failed transaction; Redisson can retain a snapshot prefix when a later write fails.</text>
-<text class="note" x="920" y="1752" text-anchor="middle">Lettuce is the required adapter when commit or projection atomicity matters. Both return newest-first snapshots and restore the head by maximum sequence.</text>
+<rect x="70" y="575" width="1700" height="380" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="8 6"/>
+<text class="lane" x="96" y="611">Read path</text>
+<rect x="168" y="700" width="255" height="108" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="296" y="738" text-anchor="middle">JaVers query</text>
+<text class="body" x="196" y="768">get snapshots/history</text>
+<rect x="543" y="685" width="290" height="138" rx="10" fill="#ecfeff" stroke="#06b6d4" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="688" y="724" text-anchor="middle">Load encoded rows</text>
+<text class="body" x="573" y="756">Lettuce: LRANGE list</text>
+<text class="body" x="573" y="775">Redisson: getAll multimap</text>
+<text class="body" x="573" y="794">GlobalId scoped</text>
+<rect x="953" y="685" width="300" height="138" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1103" y="724" text-anchor="middle">Newest first</text>
+<text class="body" x="983" y="756">Lettuce list already LPUSH order</text>
+<text class="body" x="983" y="775">Redisson reverses loaded entries</text>
+<text class="body" x="983" y="794">contract parity verifies order</text>
+<rect x="1373" y="700" width="300" height="108" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
+<text class="label" x="1523" y="738" text-anchor="middle">Decode result</text>
+<text class="body" x="1403" y="768">ByteArray -> CdoSnapshot</text>
+<path d="M 423,754 L 543,754" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#blue)"/>
+<path d="M 833,754 L 953,754" fill="none" stroke="#06b6d4" stroke-width="1.8" marker-end="url(#arrow06B6D4)"/>
+<path d="M 1253,754 L 1373,754" fill="none" stroke="#059669" stroke-width="1.8" marker-end="url(#green)"/>
+<text class="small" x="96" y="1008">Redis is the durable audit store in this module; SQL durability, projection replay, and cache invalidation belong to other modules or a future composite repository.</text>
 </svg>

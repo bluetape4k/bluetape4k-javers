@@ -2,6 +2,12 @@
 
 `bluetape4k-javers-bom` aligns the five published library artifacts from this repository. Most applications should import one `bluetape4k-dependencies` ecosystem version instead; use this narrower BOM only when the application deliberately manages compatibility with the rest of bluetape4k.
 
+## Released dependency structure
+
+This diagram is copied from release `0.2.1` and shows the BOM structure for the version documented here.
+
+[![bluetape4k-javers 0.2.1 BOM structure](../../assets/readme-diagrams/bom-architecture-01.png)](../../assets/readme-diagrams/bom-architecture-01.svg)
+
 ## Coordinate and selection
 
 ```kotlin

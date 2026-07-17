@@ -2,85 +2,83 @@
 <title id="title">examples-javers-ktor wiring</title>
 <desc id="desc">Explicit Ktor application wiring for routes, command handler, order repository, Exposed database, and JaVers snapshot repository.</desc>
 <defs>
-  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#000814" flood-opacity="0.28"/></filter>
-  <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#5b8def" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-  <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#4fb8a8" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-  <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d0a24c" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-  <marker id="rose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d66f7e" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-  <marker id="cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="14" markerHeight="14" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#55c7e8" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <filter id="shadow" x="-8%" y="-8%" width="116%" height="116%"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#94a3b8" flood-opacity="0.22"/></filter>
+  <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+  <marker id="rose" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" orient="auto" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 Z" fill="#e11d48" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
   <style>
-    .title{font-family:"Architects Daughter";font-size:52px;fill:#f8fafc}
-    .subtitle,.body,.footer{font-family:"Comic Mono";fill:#d5dfeb}
+    .title{font-family:"Architects Daughter";font-size:52px;fill:#172033}
+    .subtitle,.body,.footer{font-family:"Comic Mono";fill:#475569}
     .subtitle{font-size:18px}.body{font-size:17px}.footer{font-size:15px}
-    .lane{font-family:"Architects Daughter";font-size:30px;fill:#f8fafc}
-    .label{font-family:"Architects Daughter";font-size:29px;fill:#f8fafc}
-    .infra{font-family:"Architects Daughter";font-size:28px;fill:#f8fafc}
-    .line{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+    .lane{font-family:"Architects Daughter";font-size:30px;fill:#172033}
+    .label{font-family:"Architects Daughter";font-size:29px;fill:#172033}
+    .infra{font-family:"Architects Daughter";font-size:28px;fill:#111827}
+    .line{fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
   </style>
 
-<marker id="arrow4F46E5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#5b8def" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
+<marker id="arrow4F46E5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#4f46e5" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
 
-<rect width="1880" height="1040" rx="30" fill="#020617"/>
-<rect x="24" y="24" width="1832" height="992" rx="26" fill="#172033" stroke="#536377" stroke-width="1.4"/>
+<rect width="1880" height="1040" rx="30" fill="#f8fafc"/>
+<rect x="24" y="24" width="1832" height="992" rx="26" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4"/>
 <text class="title" x="60" y="82">examples-javers-ktor Wiring</text>
 <text class="subtitle" x="62" y="116">The example wires Ktor, Exposed JDBC, JaVers, and the order repository explicitly.</text>
 
-<rect x="70" y="152" width="390" height="770" rx="18" fill="#182331" stroke="#536377" stroke-width="2" stroke-dasharray="8 7"/>
+<rect x="70" y="152" width="390" height="770" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
 <text class="lane" x="100" y="196">1. HTTP API</text>
-<rect class="card" x="112" y="280" width="306" height="122" rx="10" fill="#223047" stroke="#5b8def" stroke-width="2" filter="url(#shadow)"/>
+<rect x="112" y="280" width="306" height="122" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="265" y="318" text-anchor="middle">Ktor routes</text>
 <text class="body" x="145" y="353">POST /orders</text>
 <text class="body" x="145" y="376">GET /orders/{id}</text>
-<rect class="card" x="106" y="540" width="318" height="126" rx="10" fill="#223047" stroke="#55c7e8" stroke-width="2" filter="url(#shadow)"/>
+<rect x="106" y="540" width="318" height="126" rx="10" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="265" y="578" text-anchor="middle">Ktor core</text>
 <text class="body" x="136" y="612">JSON error responses</text>
 <text class="body" x="136" y="635">/healthz and /readyz</text>
 
-<rect x="525" y="152" width="420" height="770" rx="18" fill="#182331" stroke="#536377" stroke-width="2" stroke-dasharray="8 7"/>
+<rect x="525" y="152" width="420" height="770" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
 <text class="lane" x="555" y="196">2. Application wiring</text>
-<rect class="card" x="590" y="250" width="290" height="128" rx="10" fill="#182331" stroke="#5b8def" stroke-width="2" filter="url(#shadow)"/>
+<rect x="590" y="250" width="290" height="128" rx="10" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="735" y="290" text-anchor="middle">javersKtorModule</text>
 <text class="body" x="625" y="324">install Ktor core</text>
 <text class="body" x="625" y="347">register order routes</text>
-<rect class="card" x="575" y="555" width="320" height="142" rx="10" fill="#223047" stroke="#4fb8a8" stroke-width="2" filter="url(#shadow)"/>
+<rect x="575" y="555" width="320" height="142" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="735" y="595" text-anchor="middle">createExampleServices</text>
 <text class="body" x="610" y="630">create H2 Database</text>
 <text class="body" x="610" y="653">create schemas</text>
 <text class="body" x="610" y="676">build Javers + repo</text>
 
-<rect x="1010" y="152" width="390" height="770" rx="18" fill="#182331" stroke="#536377" stroke-width="2" stroke-dasharray="8 7"/>
+<rect x="1010" y="152" width="390" height="770" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
 <text class="lane" x="1040" y="196">3. Order module</text>
-<rect class="card" x="1052" y="270" width="306" height="122" rx="10" fill="#223047" stroke="#55c7e8" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1052" y="270" width="306" height="122" rx="10" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="1205" y="308" text-anchor="middle">OrderCommandHandler</text>
 <text class="body" x="1085" y="343">place order</text>
 <text class="body" x="1085" y="366">mark paid</text>
-<rect class="card" x="1050" y="562" width="310" height="136" rx="10" fill="#223047" stroke="#4fb8a8" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1050" y="562" width="310" height="136" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="1205" y="602" text-anchor="middle">OrderRepository</text>
 <text class="body" x="1084" y="637">persist command state</text>
 <text class="body" x="1084" y="660">load current order</text>
 
-<rect x="1465" y="152" width="345" height="770" rx="18" fill="#182331" stroke="#536377" stroke-width="2" stroke-dasharray="8 7"/>
+<rect x="1465" y="152" width="345" height="770" rx="18" fill="#f8fafc" stroke="#b6c7dc" stroke-width="1.2" stroke-dasharray="8 7"/>
 <text class="lane" x="1495" y="196">4. Storage / audit</text>
 <g transform="translate(1538 278)">
-  <rect class="card" x="8" y="0" width="220" height="132" rx="10" fill="#223047" stroke="#4fb8a8" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="8" y="0" width="220" height="132" rx="10" fill="#dcfce7" stroke="#059669" stroke-width="1.2" filter="url(#shadow)"/>
   <image data-bluetape4k-icon="libraries/exposed" x="34" y="28" width="58" height="58" preserveAspectRatio="xMidYMid meet" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA1MCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQ1LjI2NTEgMzEuMjAxOEM0NS44MDYzIDMwLjM3MjIgNDYuOTU1MiAyOC4xMTI4IDQ3LjQ3NyAyNy4wOTExQzQ3LjU0NzMgMjYuOTUzNCA0Ny41OTE3IDI2LjgxMzIgNDcuNjI0OSAyNi42NzE4QzUxLjE0NTkgMTkuNTA4MiA1MC42NzAyIDYuOTExMjkgNDYuNzQwMiAzLjA0MTM0QzQyLjc1NTMgLTAuODgyNjA3IDI5LjcxODkgLTAuOTcxODMzIDIyLjU5NjkgMi41NTUzQzIxLjU1OTQgMy4wNjkxNyAxOS41MDU5IDMuOTY2MjMgMTguMzkwOCA0LjY3NTY0QzE2LjY0NDcgNS43ODY0OCAxNC45MjU2IDYuOTIxMTMgMTQuODc2OCA4Ljg3NUMxNC44MzgyIDEwLjQxODYgMTcuMDcwNiAxMi41NjAzIDE2LjY5NzEgMTMuNDkyOEMxNS44NTkzIDE1LjU4MzggMTMuNzc3OSAxNC4xOTY3IDEwLjk0NTUgMTcuNzc2M0M5LjA4NjQgMjAuMTI1OCAxMS4wNDExIDIzLjcxMzkgMTAuNjk2NiAyNC4zMDc1QzguOTEzOTEgMjcuMzc5NCA1LjMyNTQgMjUuOTcwOCAzLjAxMTAxIDI3LjIxNjRDMS4zMzQwNCAyOC4xMTkgMC40MTg3MzQgMjkuNzY4IDAuMDQwMTA5MyAzMC42MTI4Qy0wLjA5NDUxMzYgMzAuOTEzMyAwLjEyNTg5NCAzMS4yNjA0IDAuNDYwNDY1IDMxLjI2NzRDMS4xNjI2OSAzMS4yODIyIDEuNzAyNjggMzAuOTM0IDMuNTUyMzkgMzAuNjM3MkM1Ljk1OTM2IDMwLjI1MSA3LjUwMjQyIDI5LjI0MjggOC4yMDI4MiAyOS45NzQ5QzguNTYxNzMgMzAuMzUgNi4zMjkzNSAzMC45Nzg4IDUuODc4ODMgMzEuMDk4OUM0LjY3MjczIDMxLjQyIDMuMDA5ODMgMzEuNzE4MSAyLjMzNjUzIDMyLjg3MTRDMi4xODE1NiAzMy4xMzcxIDIuMjg3MDIgMzMuNDc5NiAyLjU2ODM3IDMzLjYxNTVDMy42MTc0MiAzNC4xMjIgNC43OTEzMiAzNC43MDE0IDYuNjU5MTEgMzQuMjE2QzguNjEzNzQgMzMuNzA4MSA5LjkyNjkyIDMyLjMwOTUgMTAuOTQyNSAzMy4xOTY2QzExLjU5NyAzMy43Njg1IDUuMTc5NDkgMzUuNjQxMSA1LjYzNzA0IDM2Ljk2MUM1Ljk2MTEyIDM3Ljg5NTkgOS4zNDUyNyAzOC42OTY3IDExLjkzMjEgMzYuNTYwNUMxMi42NTkxIDM1Ljk2MDIgMTMuMzk2NCAzNS4yMzI3IDEzLjYxNzIgMzUuNzg5M0MxNC4xODI5IDM3LjIxNTEgMTAuMzMyNCAzOC42MjI1IDEwLjE4OTMgNDEuMjMxMkMxMC4xODI4IDQxLjM1MDkgMTAuMjcxNiA0MS40NTQ3IDEwLjM4NjIgNDEuNDk2M0MxNC4xMDk1IDQyLjg1MDMgMTUuMzE1OSAzNy45MzE2IDE2LjA3NjEgMzguMjA4MkMxOC4yMTk2IDM4Ljk4OCAxMy4wNjcyIDQxLjc4MjEgMTMuOTQzMSA0NC45OTIzQzEzLjk3NzEgNDUuMTE2NSAxNC4xMDI1IDQ1LjIwMTIgMTQuMjMyMyA0NS4xOTEzQzE1LjEyNzQgNDUuMTIyMyAxNi4wODA3IDQ0Ljk4NCAxNy40NTk4IDQzLjYyNkMxOC41Njk4IDQyLjUzMjkgMTguNDk4NiA0MC42OTAyIDE5LjE1ODIgNDAuNzY1MUMxOS44MTc3IDQwLjgzOTkgMTguODA2MSA0My4wMzE3IDE4LjA0MDUgNDQuNjQyOEMxNy40NjAzIDQ1Ljg2NCAxNy4wMjggNDcuMDA5IDE2Ljk3MyA0Ny42NDkxQzE2Ljk1MzUgNDcuODc4MyAxNy4xOTAxIDQ4LjA1NDQgMTcuNDEyIDQ3Ljk4NDVDMjAuOTMyMiA0Ni44NzY4IDIxLjk5MDIgNDQuNzU0MyAyMi4xOTIzIDQ0LjA4MjNDMjIuODQ0NCA0MS45MTgyIDIyLjgyMDkgMzkuNzM3OSAyNC45MDY2IDM4LjQxMzhDMjUuNTM0MiAzOC4wODk3IDI5LjMxMDIgMzkuOTkyIDMxLjc2NTYgMzguMjc4MkMzNS4xOTA1IDM1Ljg4NzggMzQuNDkzOCAzMy4zNzk1IDM2LjExNjcgMzIuNjE1N0MzNy4wNjM3IDMyLjI0NzggMzkuMjYyMyAzNC4yOTkgNDAuNzE2MiAzNC4yNTEyQzQyLjc0ODEgMzQuMTg0MiA0NC4xNDE2IDMyLjkyNDEgNDUuMjY1MSAzMS4yMDE4WiIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzEzNDFfMTk0KSIvPgo8cGF0aCBkPSJNMjYuMzk3NiAyOS4zMzg1QzI3Ljg4OTMgMjguMzYzNSAyOS45MDE2IDI4Ljc2NDIgMzAuODkxOCAzMC4yMzNDMzEuODgxOSAzMS43MDE5IDMxLjQ3NTMgMzMuNjgzOCAyOS45ODM2IDM0LjY1ODhDMjguNDkxOCAzNS42MzM2IDI2LjQ3OTUgMzUuMjMzMSAyNS40ODk0IDMzLjc2NDJDMjQuNDk5MyAzMi4yOTUzIDI0LjkwNTkgMzAuMzEzNSAyNi4zOTc2IDI5LjMzODVaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMTcuMzA1OCAyNy4yNDA4QzE4LjM5NzcgMjYuNTg1NSAxNy44MzY3IDI4LjQ5OTEgMTkuMTU1NCAzMC4wMTUyQzE5LjE4MzcgMzAuMDQ3OSAxOS4zMDI5IDMwLjE2NTIgMTkuMzM2MSAzMC4xOTI5QzIwLjg3NiAzMS40OTE2IDIyLjgxODkgMzAuOTM5NCAyMi4xNTI1IDMyLjAxNTJDMjEuOTc3OSAzMi4yOTQ2IDE5Ljk1NTEgMzMuNTI5NSAxNy44NTA3IDMxLjQ3ODFDMTUuNzY1OSAyOS40MDQ2IDE3LjAyMzIgMjcuNDEwNiAxNy4zMDU4IDI3LjI0MDhaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMTUuNTI4NSAxOC42MzUzQzE3LjAyMDIgMTcuNjYwNCAxOS4wMzI0IDE4LjA2MTEgMjAuMDIyNiAxOS41Mjk5QzIxLjAxMjcgMjAuOTk4OCAyMC42MDYyIDIyLjk4MDcgMTkuMTE0NCAyMy45NTU2QzE3LjYyMjcgMjQuOTMwNSAxNS42MTA0IDI0LjUzIDE0LjYyMDMgMjMuMDYxMUMxMy42MzAyIDIxLjU5MjIgMTQuMDM2OCAxOS42MTAzIDE1LjUyODUgMTguNjM1M1oiIGZpbGw9ImJsYWNrIi8+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MF9saW5lYXJfMTM0MV8xOTQiIHgxPSI0MC41IiB5MT0iOS43NSIgeDI9IjE0LjI3OTgiIHkyPSIzNi4wMjg5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiNFRjRGRkYiLz4KPHN0b3Agb2Zmc2V0PSIwLjU5MTM0NiIgc3RvcC1jb2xvcj0iI0M3MTFFMSIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM3RjUyRkYiLz4KPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8L3N2Zz4K"/>
   <text class="infra" x="150" y="76" text-anchor="middle">Exposed</text>
   <text class="infra" x="150" y="100" text-anchor="middle">DB</text>
   <text class="body" x="118" y="122" text-anchor="middle">example_order</text>
 </g>
-<rect class="card" x="1510" y="572" width="256" height="124" rx="10" fill="#223047" stroke="#d66f7e" stroke-width="2" filter="url(#shadow)"/>
+<rect x="1510" y="572" width="256" height="124" rx="10" fill="#fff1f2" stroke="#e11d48" stroke-width="1.2" filter="url(#shadow)"/>
 <text class="label" x="1638" y="612" text-anchor="middle">JaVers audit</text>
 <text class="body" x="1548" y="647">jv_commit</text>
 <text class="body" x="1548" y="670">jv_snapshot</text>
 
-<path class="line connector" d="M 590,314 L 555.8,314 Q 545,314 545,324.8 L 545,330.2 Q 545,341 534.2,341 L 418,341" stroke="#5b8def" marker-end="url(#blue)"/>
-<path class="line connector" d="M 590,350 L 534,350 Q 520,350 520,364 L 520,589 Q 520,603 506,603 L 424,603" stroke="#55c7e8" marker-end="url(#cyan)"/>
-<path class="line connector" d="M 735 378 L 735 555" stroke="#5b8def" marker-end="url(#arrow4F46E5)"/>
-<path class="line connector" d="M 895,590 L 961,590 Q 975,590 975,576 L 975,345 Q 975,331 989,331 L 1052,331" stroke="#55c7e8" marker-end="url(#cyan)"/>
-<path class="line connector" d="M 1205 392 L 1205 562" stroke="#4fb8a8" marker-end="url(#green)"/>
-<path class="line connector" d="M 1360,630 L 1416,630 Q 1430,630 1430,616 L 1430,372 Q 1430,358 1444,358 L 1538,358" stroke="#d0a24c" marker-end="url(#amber)"/>
-<path class="line connector" d="M 1360,646 L 1510,646" stroke="#d66f7e" marker-end="url(#rose)"/>
-<path class="line connector" d="M 895,626 L 1050,626" stroke="#4fb8a8" marker-end="url(#green)"/>
+<path class="line" d="M 418,341 L 534.2,341 Q 545,341 545,330.2 L 545,324.8 Q 545,314 555.8,314 L 590,314" stroke="#2563eb" marker-end="url(#blue)"/>
+<path class="line" d="M 735 378 L 735 555" stroke="#4f46e5" marker-end="url(#arrow4F46E5)"/>
+<path class="line" d="M 880,314 L 1052,314" stroke="#2563eb" marker-end="url(#blue)"/>
+<path class="line" d="M 1205 392 L 1205 562" stroke="#059669" marker-end="url(#green)"/>
+<path class="line" d="M 1360,630 L 1416,630 Q 1430,630 1430,616 L 1430,372 Q 1430,358 1444,358 L 1538,358" stroke="#d97706" marker-end="url(#amber)"/>
+<path class="line" d="M 1360,646 L 1510,646" stroke="#e11d48" marker-end="url(#rose)"/>
+<path class="line" d="M 895,626 L 1050,626" stroke="#059669" marker-end="url(#green)"/>
 
 <text class="footer" x="940" y="944" text-anchor="middle">Example boundary: no Redis projection, no Kafka publication, no production outbox.</text>
 <text class="footer" x="940" y="970" text-anchor="middle">Tests run the same module through Ktor testApplication with isolated H2 database names.</text>
