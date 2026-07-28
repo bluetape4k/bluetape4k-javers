@@ -1,110 +1,154 @@
-# Changelog
+# 변경 이력
 
-All notable changes to `bluetape4k-javers` are documented here.
+`bluetape4k-javers`의 중요한 변경 사항을 이 문서에 기록한다.
 
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-This project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+형식은 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)를 따른다.
+이 프로젝트는 [Semantic Versioning](https://semver.org/spec/v2.0.0.html)을 따른다.
 
-## [Unreleased]
+## [미공개]
 
-### Added
+### 추가
 
-- Added `javers-spring-boot4-autoconfigure` for Spring Boot 4 conditional
-  JaVers auto-configuration across Exposed, Redis, and Kafka repository
-  backends ([#104](https://github.com/bluetape4k/bluetape4k-javers/issues/104)).
-- Added module-local benchmark documentation and CI/Nightly smoke coverage for
-  `benchmark/javers-exposed-benchmark`
+- Exposed, Redis, Kafka repository backend 전반에서 Spring Boot 4 조건부
+  JaVers auto-configuration을 제공하는 `javers-spring-boot4-autoconfigure`를
+  추가했다 ([#104](https://github.com/bluetape4k/bluetape4k-javers/issues/104)).
+- `benchmark/javers-exposed-benchmark`를 위한 module-local benchmark 문서와
+  CI/Nightly smoke coverage를 추가했다
   ([#195](https://github.com/bluetape4k/bluetape4k-javers/issues/195)).
 
-### Changed
+### 변경
 
-- Opened the `0.3.0` development line after the `0.2.1` release-train patch.
-- Aligned the local `bluetape4k-bom` reference to `1.11.0-SNAPSHOT`.
+- `0.2.1` release-train patch 이후 `0.3.0` 개발 라인을 열었다.
+- local `bluetape4k-bom` 참조를 `1.11.0-SNAPSHOT`에 맞췄다.
 
 ## [0.2.1] - 2026-06-01
 
-### Changed
+### 변경
 
-- Updated `javers-exposed` to consume the release-train
-  `bluetape4k-exposed-bom` line through an implementation-scoped platform
-  import instead of exporting the BOM platform through API scope.
-- Updated the default bluetape4k dependencies catalog ref to
-  `catalog/2026-06-01-00` for release workflow alignment.
+- `javers-exposed`가 API scope로 BOM platform을 노출하지 않고,
+  implementation scope platform import를 통해 release-train
+  `bluetape4k-exposed-bom` 라인을 소비하도록 변경했다.
+- release workflow 정렬을 위해 기본 bluetape4k dependencies catalog ref를
+  `catalog/2026-06-01-00`으로 갱신했다.
 
 ## [0.2.0] - 2026-05-27
 
-### Added
+### 추가
 
-- Added `javers-exposed`, an Exposed JDBC-backed JaVers CDO snapshot repository
-  with schema management and repository contract tests ([#3](https://github.com/bluetape4k/bluetape4k-javers/issues/3), [PR #86](https://github.com/bluetape4k/bluetape4k-javers/pull/86)).
-- Added `javers-ddd` aggregate root and domain event helpers for JaVers-friendly
-  DDD models ([#4](https://github.com/bluetape4k/bluetape4k-javers/issues/4), [PR #87](https://github.com/bluetape4k/bluetape4k-javers/pull/87)).
-- Added `examples/javers-exposed-ddd`, a CQRS/Event Sourcing example with
-  command-side persistence, Kafka events, Redis projection, and measured Envers
-  comparison notes ([#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5), [#88](https://github.com/bluetape4k/bluetape4k-javers/issues/88), [#89](https://github.com/bluetape4k/bluetape4k-javers/issues/89), [#90](https://github.com/bluetape4k/bluetape4k-javers/issues/90), [PR #91](https://github.com/bluetape4k/bluetape4k-javers/pull/91), [PR #92](https://github.com/bluetape4k/bluetape4k-javers/pull/92), [PR #93](https://github.com/bluetape4k/bluetape4k-javers/pull/93)).
-- Added a persistence relationship diagram to the root README to clarify the
-  repository/module split ([#77](https://github.com/bluetape4k/bluetape4k-javers/issues/77), [PR #85](https://github.com/bluetape4k/bluetape4k-javers/pull/85)).
+- schema management와 repository contract test를 갖춘 Exposed JDBC-backed
+  JaVers CDO snapshot repository인 `javers-exposed`를 추가했다
+  ([#3](https://github.com/bluetape4k/bluetape4k-javers/issues/3), [PR #86](https://github.com/bluetape4k/bluetape4k-javers/pull/86)).
+- JaVers-friendly DDD model을 위한 aggregate root와 domain event helper인
+  `javers-ddd`를 추가했다
+  ([#4](https://github.com/bluetape4k/bluetape4k-javers/issues/4), [PR #87](https://github.com/bluetape4k/bluetape4k-javers/pull/87)).
+- command-side persistence, Kafka event, Redis projection, 측정된 Envers 비교
+  note를 포함한 CQRS/Event Sourcing 예제 `examples/javers-exposed-ddd`를
+  추가했다 ([#5](https://github.com/bluetape4k/bluetape4k-javers/issues/5), [#88](https://github.com/bluetape4k/bluetape4k-javers/issues/88), [#89](https://github.com/bluetape4k/bluetape4k-javers/issues/89), [#90](https://github.com/bluetape4k/bluetape4k-javers/issues/90), [PR #91](https://github.com/bluetape4k/bluetape4k-javers/pull/91), [PR #92](https://github.com/bluetape4k/bluetape4k-javers/pull/92), [PR #93](https://github.com/bluetape4k/bluetape4k-javers/pull/93)).
+- repository/module 분리를 명확히 하기 위해 root README에 persistence
+  relationship diagram을 추가했다
+  ([#77](https://github.com/bluetape4k/bluetape4k-javers/issues/77), [PR #85](https://github.com/bluetape4k/bluetape4k-javers/pull/85)).
 
-### Changed
+### 변경
 
-- Aligned the default bluetape4k dependencies catalog reference and consumed the
-  bluetape4k projects BOM 1.9.2 line ([PR #81](https://github.com/bluetape4k/bluetape4k-javers/pull/81), [PR #83](https://github.com/bluetape4k/bluetape4k-javers/pull/83)).
-- Moved `javers-exposed` database smoke coverage to the shared
-  `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix
+- 기본 bluetape4k dependencies catalog 참조를 정렬하고 bluetape4k projects
+  BOM 1.9.2 라인을 소비하도록 했다
+  ([PR #81](https://github.com/bluetape4k/bluetape4k-javers/pull/81), [PR #83](https://github.com/bluetape4k/bluetape4k-javers/pull/83)).
+- `javers-exposed` database smoke coverage를 공유
+  `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix로 옮겼다
   ([#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95), [PR #96](https://github.com/bluetape4k/bluetape4k-javers/pull/96)).
 
-### Fixed
+### 수정
 
-- Restored persistent JaVers repository head recovery for persistent backends,
-  including Redis rebuild scenarios ([PR #78](https://github.com/bluetape4k/bluetape4k-javers/pull/78), [PR #80](https://github.com/bluetape4k/bluetape4k-javers/pull/80)).
-- Removed a dialect-specific `insertIgnore` dependency from the Exposed
-  repository commit metadata path so the mandatory database matrix remains
-  portable across H2, PostgreSQL, and MySQL_V8 ([#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95), [PR #96](https://github.com/bluetape4k/bluetape4k-javers/pull/96)).
+- Redis rebuild scenario를 포함한 persistent backend에서 persistent JaVers
+  repository head recovery를 복구했다
+  ([PR #78](https://github.com/bluetape4k/bluetape4k-javers/pull/78), [PR #80](https://github.com/bluetape4k/bluetape4k-javers/pull/80)).
+- 필수 database matrix가 H2, PostgreSQL, MySQL_V8 전반에서 portable하게 유지되도록
+  Exposed repository commit metadata 경로에서 dialect-specific `insertIgnore`
+  의존성을 제거했다
+  ([#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95), [PR #96](https://github.com/bluetape4k/bluetape4k-javers/pull/96)).
 
 ## [0.1.1] - 2026-05-22
 
-### Changed
+### 변경
 
-- Opened and prepared the 0.1.1 release line after the 0.1.0 tag ([#60](https://github.com/bluetape4k/bluetape4k-javers/issues/60)).
-- Refreshed WIP from live GitHub issue state and kept the 0.2.0 feature lane separate from the 0.1.1 release gate ([#63](https://github.com/bluetape4k/bluetape4k-javers/issues/63)).
-- Prepared the 0.1.1 release line to consume `io.github.bluetape4k:bluetape4k-bom:1.9.0`.
-- Refreshed README overview visuals and dependency catalog maintenance since 0.1.0.
+- 0.1.0 tag 이후 0.1.1 release line을 열고 준비했다
+  ([#60](https://github.com/bluetape4k/bluetape4k-javers/issues/60)).
+- live GitHub issue state에서 WIP를 갱신하고 0.2.0 feature lane을 0.1.1 release
+  gate와 분리해 유지했다
+  ([#63](https://github.com/bluetape4k/bluetape4k-javers/issues/63)).
+- 0.1.1 release line이 `io.github.bluetape4k:bluetape4k-bom:1.9.0`을
+  소비하도록 준비했다.
+- 0.1.0 이후 README overview visual과 dependency catalog maintenance를 갱신했다.
 
 ## [0.1.0] - 2026-05-17
 
-### Added
+### 추가
 
-- Root README hero image plus refreshed purpose, feature, and Mermaid architecture documentation.
-- GitHub Actions workflows for CI, nightly, snapshot, release, and code-quality checks ([PR #2](https://github.com/bluetape4k/bluetape4k-javers/pull/2)).
-- `bluetape4k-javers-bom` BOM module for JaVers library consumers ([PR #10](https://github.com/bluetape4k/bluetape4k-javers/pull/10)).
-- English and Korean README files for the JaVers BOM module ([PR #11](https://github.com/bluetape4k/bluetape4k-javers/pull/11)).
-- JaVers implementation backlog captured in repository docs ([PR #12](https://github.com/bluetape4k/bluetape4k-javers/pull/12)).
-- `JCacheCommitTest` covering `JCacheCdoSnapshotRepository` with a Caffeine JCache manager ([#46][i46], [PR #49][pr49]).
-- `KafkaCdoSnapshotRepositoryTest`: `saveSnapshot propagates RuntimeException when Kafka publish fails` test verifying error-propagation contract ([#46][i46], [PR #49][pr49]).
+- root README hero image와 갱신된 purpose, feature, Mermaid architecture 문서를
+  추가했다.
+- CI, nightly, snapshot, release, code-quality check를 위한 GitHub Actions
+  workflow를 추가했다
+  ([PR #2](https://github.com/bluetape4k/bluetape4k-javers/pull/2)).
+- JaVers library consumer를 위한 `bluetape4k-javers-bom` BOM module을 추가했다
+  ([PR #10](https://github.com/bluetape4k/bluetape4k-javers/pull/10)).
+- JaVers BOM module의 영어/한국어 README 파일을 추가했다
+  ([PR #11](https://github.com/bluetape4k/bluetape4k-javers/pull/11)).
+- JaVers implementation backlog를 repository docs에 기록했다
+  ([PR #12](https://github.com/bluetape4k/bluetape4k-javers/pull/12)).
+- Caffeine JCache manager로 `JCacheCdoSnapshotRepository`를 검증하는
+  `JCacheCommitTest`를 추가했다 ([#46][i46], [PR #49][pr49]).
+- error-propagation contract를 검증하는
+  `KafkaCdoSnapshotRepositoryTest`의 `saveSnapshot propagates RuntimeException
+  when Kafka publish fails` test를 추가했다 ([#46][i46], [PR #49][pr49]).
 
-### Changed
+### 변경
 
-- Updated WIP snapshot from current assigned GitHub issues and refreshed agent guidance.
-- Dependency governance, compatibility guard, Nightly lane, and Kover policy maintenance landed through PR #14 through PR #24.
-- CI uses path filtering and retry configuration ([PR #8](https://github.com/bluetape4k/bluetape4k-javers/pull/8)).
-- Test code migrated from Kluent to `bluetape4k-assertions` via `bluetape4k-junit5` ([PR #9](https://github.com/bluetape4k/bluetape4k-javers/pull/9)).
-- `DebugDispacher` renamed to `DebugDispatcher` (typo fix, pre-1.0 API cleanup) ([#41][i41], [PR #47][pr47]).
-- `EntityEnvelop` renamed to `EntityEnvelope` (typo fix, pre-1.0 API cleanup) ([#42][i42], [PR #47][pr47]).
-- `CompressableStringJaversCodec` / `CompressableBinaryJaversCodec` renamed to `CompressibleStringJaversCodec` / `CompressibleBinaryJaversCodec` (typo fix, pre-1.0 API cleanup) ([#43][i43], [PR #47][pr47]).
+- 현재 assigned GitHub issue에서 WIP snapshot을 갱신하고 agent guidance를 갱신했다.
+- Dependency governance, compatibility guard, Nightly lane, Kover policy
+  maintenance가 PR #14부터 PR #24까지 반영됐다.
+- CI가 path filtering과 retry configuration을 사용하도록 했다
+  ([PR #8](https://github.com/bluetape4k/bluetape4k-javers/pull/8)).
+- test code를 Kluent에서 `bluetape4k-junit5`를 통한 `bluetape4k-assertions`로
+  migration했다 ([PR #9](https://github.com/bluetape4k/bluetape4k-javers/pull/9)).
+- `DebugDispacher`를 `DebugDispatcher`로 이름 변경했다
+  (typo fix, pre-1.0 API cleanup) ([#41][i41], [PR #47][pr47]).
+- `EntityEnvelop`를 `EntityEnvelope`로 이름 변경했다
+  (typo fix, pre-1.0 API cleanup) ([#42][i42], [PR #47][pr47]).
+- `CompressableStringJaversCodec` / `CompressableBinaryJaversCodec`를
+  `CompressibleStringJaversCodec` / `CompressibleBinaryJaversCodec`로 이름
+  변경했다 (typo fix, pre-1.0 API cleanup) ([#43][i43], [PR #47][pr47]).
 
-### Fixed
+### 수정
 
-- `AbstractCdoSnapshotRepository.saveSnapshot()` now propagates exceptions instead of silently swallowing them ([#33][i33], [PR #47][pr47]).
-- `AbstractCdoSnapshotRepository.encode()` replaced unsafe `!!` on `jsonConverter` with `requireNotNull` and a descriptive error message ([#34][i34], [PR #47][pr47]).
-- `ShadowProvider` reflection field lookup now uses `error()` with a descriptive message instead of `!!` ([#35][i35], [PR #47][pr47]).
-- `KafkaCdoSnapshotRepository` publish now enforces a 30-second timeout instead of blocking indefinitely ([#36][i36], [PR #48][pr48]).
-- `AbstractCdoSnapshotRepository.head` marked `@Volatile` to prevent stale reads across threads ([#37][i37], [PR #48][pr48]).
-- `CaffeineCdoSnapshotRepository` and `Cache2KCdoSnapshotRepository` `loadSnapshots()` now hold the write lock during cache reads to prevent torn reads under concurrent access ([#38][i38], [PR #48][pr48]).
-- `LettuceCdoSnapshotRepository` MULTI/EXEC transactions now use a dedicated connection (`writeCommands`) to prevent shared-connection races under concurrent writes ([#39][i39], [PR #48][pr48]).
-- `KafkaCdoSnapshotRepository` read-path methods (`getKeys`, `contains`, `getSeq`, `getSnapshotSize`, `loadSnapshots`) now emit a `WARN` log on every call to make the write-only contract visible ([#40][i40], [PR #48][pr48]).
-- `AbstractCdoSnapshotRepository.getAll()` now logs a warning and short-circuits when the key set exceeds 10 000 entries to prevent unbounded heap allocation ([#44][i44], [PR #48][pr48]).
-- `AbstractJaversCommitTest` no-op `isEmpty()` assertions replaced with `shouldBeEqualTo emptyList()` so test failures surface correctly ([#45][i45], [PR #49][pr49]).
-- `KafkaCdoSnapshotRepositoryTest` disabled inherited `@ShallowReference` snapshot tests that cannot pass on a write-only Kafka repository ([#46][i46], [PR #49][pr49]).
+- `AbstractCdoSnapshotRepository.saveSnapshot()`이 예외를 조용히 삼키지 않고
+  전파하도록 수정했다 ([#33][i33], [PR #47][pr47]).
+- `AbstractCdoSnapshotRepository.encode()`가 `jsonConverter`에 대한 unsafe `!!`
+  대신 `requireNotNull`과 설명적인 error message를 사용하도록 수정했다
+  ([#34][i34], [PR #47][pr47]).
+- `ShadowProvider` reflection field lookup이 `!!` 대신 설명적인 message가 있는
+  `error()`를 사용하도록 수정했다 ([#35][i35], [PR #47][pr47]).
+- `KafkaCdoSnapshotRepository` publish가 무기한 block되지 않고 30초 timeout을
+  강제하도록 수정했다 ([#36][i36], [PR #48][pr48]).
+- thread 간 stale read를 막기 위해 `AbstractCdoSnapshotRepository.head`에
+  `@Volatile`을 표시했다 ([#37][i37], [PR #48][pr48]).
+- concurrent access에서 torn read를 막기 위해 `CaffeineCdoSnapshotRepository`와
+  `Cache2KCdoSnapshotRepository`의 `loadSnapshots()`가 cache read 중 write lock을
+  잡도록 수정했다 ([#38][i38], [PR #48][pr48]).
+- concurrent write 중 shared-connection race를 막기 위해
+  `LettuceCdoSnapshotRepository` MULTI/EXEC transaction이 dedicated connection
+  (`writeCommands`)을 사용하도록 수정했다 ([#39][i39], [PR #48][pr48]).
+- write-only contract가 드러나도록 `KafkaCdoSnapshotRepository` read-path method
+  (`getKeys`, `contains`, `getSeq`, `getSnapshotSize`, `loadSnapshots`)가 호출될
+  때마다 `WARN` log를 남기도록 수정했다 ([#40][i40], [PR #48][pr48]).
+- unbounded heap allocation을 막기 위해 `AbstractCdoSnapshotRepository.getAll()`이
+  key set이 10 000개를 넘으면 warning을 남기고 short-circuit하도록 수정했다
+  ([#44][i44], [PR #48][pr48]).
+- test failure가 제대로 드러나도록 `AbstractJaversCommitTest`의 no-op
+  `isEmpty()` assertion을 `shouldBeEqualTo emptyList()`로 교체했다
+  ([#45][i45], [PR #49][pr49]).
+- write-only Kafka repository에서 통과할 수 없는 inherited `@ShallowReference`
+  snapshot test를 `KafkaCdoSnapshotRepositoryTest`에서 비활성화했다
+  ([#46][i46], [PR #49][pr49]).
 
 [i33]: https://github.com/bluetape4k/bluetape4k-javers/issues/33
 [i34]: https://github.com/bluetape4k/bluetape4k-javers/issues/34
