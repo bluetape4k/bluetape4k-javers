@@ -1,11 +1,11 @@
 # Issue #177 - Snapshot Event Metadata Invariants Review
 
-## Scope
+## 범위
 
-Issue #177 hardens `CdoSnapshotEventMetadata` numeric commit component
-invariants in `javers-core`.
+Issue #177은 `javers-core`의 `CdoSnapshotEventMetadata` numeric commit component
+invariant를 강화한다.
 
-Reviewed files:
+검토한 파일:
 
 - `javers-core/src/main/kotlin/io/bluetape4k/javers/repository/event/CdoSnapshotEvent.kt`
 - `javers-core/src/test/kotlin/io/bluetape4k/javers/repository/event/CdoSnapshotEventTest.kt`
@@ -13,40 +13,40 @@ Reviewed files:
 
 ## Upstream Domain Evidence
 
-JaVers 7.11.0 source was inspected from the local Gradle source jar:
+local Gradle source jar에서 JaVers 7.11.0 source를 inspected했다.
 
-- `CommitSeqGenerator.nextId(head)` creates `CommitId(major, 0)` when no same-major id was handed out, where `major = getHeadMajorId(head) + 1`.
-- `CommitSeqGenerator.getHeadMajorId(null)` returns `0`, so generated major ids start at `1`.
-- Repeated synchronized sequence commits increment `minorId` from the last returned value.
-- `DistributedCommitSeqGenerator.nextId()` creates a non-negative random major id with `minorId = 0`.
+- `CommitSeqGenerator.nextId(head)`는 same-major id가 아직 발급되지 않았을 때 `CommitId(major, 0)`을 만든다. 여기서 `major = getHeadMajorId(head) + 1`이다.
+- `CommitSeqGenerator.getHeadMajorId(null)`은 `0`을 반환하므로 generated major id는 `1`에서 시작한다.
+- Repeated synchronized sequence commit은 마지막 반환값에서 `minorId`를 증가시킨다.
+- `DistributedCommitSeqGenerator.nextId()`는 `minorId = 0`인 non-negative random major id를 만든다.
 
 ## Step 6-R Lite Review
 
-| Tier | Scope | Findings | Counts |
+| Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
-| 1 Security | Event metadata construction | The change only rejects invalid metadata values earlier. It does not add parsing, deserialization, or new trust boundaries. | P0=0, P1=0, P2=0, P3=0 |
-| 2 Ops/SRE | Replay/order metadata | Future transports can rely on commit components failing fast when invalid. No runtime retry, timeout, or lifecycle behavior changes. | P0=0, P1=0, P2=0, P3=0 |
-| 3 Structural | Public factory boundary | The existing private-constructor plus companion factory pattern is preserved. No new public type or dependency is introduced. | P0=0, P1=0, P2=0, P3=0 |
-| 4 Kotlin/API quality | Validation helpers and KDoc | Numeric guards use bluetape4k-core `requirePositiveNumber` and `requireZeroOrPositiveNumber`. KDoc now documents commit component invariants. | P0=0, P1=0, P2=0, P3=0 |
-| 5 Tests/types/silent failure | Regression tests | Tests now reject `commitMajorId = 0` and `commitMinorId = -1` through the public companion factory. Existing valid metadata tests still pass. | P0=0, P1=0, P2=0, P3=0 |
-| 6 Performance/stability | Runtime overhead | Validation is constant-time construction work only. No hot-path allocation beyond existing factory construction. | P0=0, P1=0, P2=0, P3=0 |
-| 7 Documentation/release/evidence | Lessons and issue scope | Lessons capture the upstream JaVers commit-id rule. README, CI, Nightly, BOM, and changelog updates are not needed. The optional `author` blank question remains out of this numeric invariant fix because current JaVers commit metadata owns that value and the issue asks to consider, not require, a new author contract. | P0=0, P1=0, P2=0, P3=0 |
+| 1 Security | Event metadata construction | 변경은 invalid metadata value를 더 일찍 reject할 뿐이다. parsing, deserialization, new trust boundary를 추가하지 않는다. | P0=0, P1=0, P2=0, P3=0 |
+| 2 Ops/SRE | Replay/order metadata | future transport는 invalid commit component가 fail fast한다고 신뢰할 수 있다. runtime retry, timeout, lifecycle behavior 변경은 없다. | P0=0, P1=0, P2=0, P3=0 |
+| 3 Structural | Public factory boundary | 기존 private-constructor plus companion factory pattern을 보존한다. 새 public type 또는 dependency는 도입하지 않는다. | P0=0, P1=0, P2=0, P3=0 |
+| 4 Kotlin/API quality | Validation helper와 KDoc | Numeric guard는 bluetape4k-core `requirePositiveNumber`와 `requireZeroOrPositiveNumber`를 사용한다. KDoc은 이제 commit component invariant를 문서화한다. | P0=0, P1=0, P2=0, P3=0 |
+| 5 Tests/types/silent failure | Regression tests | 테스트는 public companion factory를 통해 `commitMajorId = 0`과 `commitMinorId = -1`을 reject한다. 기존 valid metadata tests도 계속 통과한다. | P0=0, P1=0, P2=0, P3=0 |
+| 6 Performance/stability | Runtime overhead | Validation은 constant-time construction work뿐이다. 기존 factory construction 외의 hot-path allocation은 없다. | P0=0, P1=0, P2=0, P3=0 |
+| 7 Documentation/release/evidence | Lesson 및 issue scope | Lesson은 upstream JaVers commit-id rule을 기록한다. README, CI, Nightly, BOM, changelog update는 필요하지 않다. optional `author` blank question은 이 numeric invariant fix의 scope 밖에 남는다. 현재 JaVers commit metadata가 해당 값을 소유하고, issue는 새 author contract를 요구하는 것이 아니라 검토를 요구하기 때문이다. | P0=0, P1=0, P2=0, P3=0 |
 
-Step 6-R lite verdict: PASS with P0=0 and P1=0.
+Step 6-R lite 판정: P0=0, P1=0으로 PASS.
 
-## Evidence
+## 증거
 
 - `CdoSnapshotEvent.kt`: `commitMajorId.requirePositiveNumber("commitMajorId")`.
 - `CdoSnapshotEvent.kt`: `commitMinorId.requireZeroOrPositiveNumber("commitMinorId")`.
 - `CdoSnapshotEventTest.kt`: public factory rejects zero major and negative minor inputs.
 
-## Validation Evidence
+## 검증 증거
 
 - `./gradlew :javers-core:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  - Result: PASS, 184 tests executed.
+  - 결과: PASS, 184 tests executed.
 - `git diff --check`
-  - Result: PASS, no whitespace errors.
+  - 결과: PASS, no whitespace errors.
 
-## Final Gate
+## Final Gate 판정
 
 P0=0. P1=0. PR creation is allowed.

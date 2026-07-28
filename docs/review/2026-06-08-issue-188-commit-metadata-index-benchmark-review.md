@@ -1,8 +1,8 @@
 # Issue #188 7-Tier review
 
-## Verdict
+## 판정
 
-Gate: PASS for PR creation.
+Gate: PR creation 기준 PASS.
 
 | Severity | Count |
 |---|---:|
@@ -11,30 +11,29 @@ Gate: PASS for PR creation.
 | P2 | 0 |
 | P3 | 0 |
 
-## T1 Correctness
+## T1 정확성
 
-PASS. The benchmark creates per-trial JaVers Exposed tables, applies optional
-candidate indexes only to those temporary tables, and drops them in teardown.
-Production `CommitTableMapping` remains unchanged.
+PASS. benchmark는 trial별 JaVers Exposed table을 만들고 optional candidate index를
+그 temporary table에만 적용한 뒤 teardown에서 drop한다. Production
+`CommitTableMapping`은 변경하지 않았다.
 
-## T2 API and Schema Compatibility
+## T2 API 및 Schema Compatibility
 
-PASS. No public JaVers Exposed API or default table schema changes were made.
-The benchmark module is registered under `benchmark/` and excluded from normal
-publication by the root example/benchmark predicate.
+PASS. public JaVers Exposed API 또는 default table schema 변경은 없다. benchmark
+module은 `benchmark/` 아래 등록되며 root example/benchmark predicate에 의해 normal
+publication에서 제외된다.
 
-## T3 Performance and Benchmark Validity
+## T3 Performance 및 Benchmark Validity
 
-PASS with bounded evidence. The benchmark uses `kotlinx-benchmark`/JMH, not a
-JUnit timing loop. It runs against PostgreSQL 18-alpine through Testcontainers
-and HikariCP, preloads a corpus, runs `ANALYZE`, and compares `baseline`,
-`author`, `commit_date`, and `both` variants.
+bounded evidence 기준 PASS. benchmark는 JUnit timing loop가 아니라
+`kotlinx-benchmark`/JMH를 사용한다. Testcontainers와 HikariCP를 통해 PostgreSQL
+18-alpine에 대해 실행하며, corpus를 preload하고 `ANALYZE`를 실행한 뒤 `baseline`,
+`author`, `commit_date`, `both` variant를 비교한다.
 
-The smoke result is not broad enough to prove a permanent DDL policy, so the
-implementation correctly documents the result and keeps production defaults
-unchanged.
+smoke result는 permanent DDL policy를 증명할 만큼 넓지 않다. 따라서 구현은 결과를
+올바르게 문서화하고 production default를 변경하지 않는다.
 
-## T4 Tests and Verification
+## T4 Tests 및 Verification
 
 PASS. Local verification:
 
@@ -43,31 +42,30 @@ PASS. Local verification:
 - `xmllint --noout docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.svg`
 - `rsvg-convert docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.svg -o docs/images/readme-charts/javers-exposed-commit-metadata-indexes-01.png`
 
-CodeGraph note: the worktree graph returned zero nodes, so it did not provide
-useful structural review evidence for this diff.
+CodeGraph note: worktree graph가 zero nodes를 반환했으므로 이 diff에 유용한
+structural review evidence를 제공하지 못했다.
 
-## T5 Docs and UX
+## T5 Docs 및 UX
 
-PASS. Root and example READMEs document the benchmark command, unit (`ops/s`),
-raw JSON artifact, chart, and the production-schema decision. English and
-Korean README variants are updated together.
+PASS. Root 및 example README는 benchmark command, unit(`ops/s`), raw JSON
+artifact, chart, production-schema decision을 문서화한다. English/Korean README
+variant를 함께 갱신했다.
 
 ## T6 Maintainability
 
-PASS. The benchmark reuses bluetape4k ecosystem helpers:
+PASS. benchmark는 bluetape4k ecosystem helper를 재사용한다.
 
 - `hikariDataSourceOf` and `withStatement` from `bluetape4k-jdbc`
 - `execCreateMissingTablesAndColumns` from `bluetape4k-exposed-jdbc`
 - `TestDB.POSTGRESQL` from `bluetape4k-exposed-jdbc-tests`
 
-## T7 Release and Workflow
+## T7 Release 및 Workflow
 
-PASS. The change is issue-backed, milestone-scoped, and does not introduce a
-published artifact or production DDL migration.
+PASS. 변경은 issue-backed 및 milestone-scoped이며, published artifact 또는
+production DDL migration을 도입하지 않는다.
 
-## Residual Risk
+## 잔여 위험
 
-The smoke benchmark is intentionally short and JMH scores can vary between
-runs. Treat the result as current bounded evidence, not a final capacity model.
-A larger benchmark should add repeated iterations and planner artifacts before
-changing the production schema.
+smoke benchmark는 의도적으로 짧고 JMH score는 run마다 달라질 수 있다. 결과는 final
+capacity model이 아니라 current bounded evidence로 다뤄야 한다. production schema를
+변경하기 전 더 큰 benchmark는 repeated iteration과 planner artifact를 추가해야 한다.
