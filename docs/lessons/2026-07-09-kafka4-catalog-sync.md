@@ -1,22 +1,22 @@
-# Kafka4 catalog sync
+# Kafka4 카탈로그 동기화
 
-## Context
+## 배경
 
-`bluetape4k-dependencies` moved the shared `kafka4` compatibility line from
-`4.3.1` to `4.2.1` because Spring Kafka 4.1 embedded test infrastructure
-requires the Kafka 4.2 test ABI.
+Spring Kafka 4.1의 내장 테스트 인프라가 Kafka 4.2 테스트 ABI를 요구하므로,
+`bluetape4k-dependencies`는 공유 `kafka4` 호환 버전을 `4.3.1`에서
+`4.2.1`로 변경했다.
 
-## Decision
+## 결정
 
-Keep the local managed catalog aligned with `bluetape4k-dependencies` and
-validate the Kafka-consuming JaVers modules against the compatibility line.
+로컬 관리 카탈로그를 `bluetape4k-dependencies`와 일치시키고, Kafka를 사용하는
+JaVers 모듈을 해당 호환 버전에 맞춰 검증한다.
 
-## Outcome
+## 결과
 
-`kafka4` now resolves to `4.2.1`; `spring-kafka4` remains `4.1.0`.
+이제 `kafka4`는 `4.2.1`로 해석되며, `spring-kafka4`는 `4.1.0`을 유지한다.
 
-## Future rule
+## 향후 규칙
 
-After changing a shared alias in `bluetape4k-dependencies`, run the downstream
-sync checker and update every managed library repo that still carries the old
-alias value before closing the propagation work.
+`bluetape4k-dependencies`의 공유 별칭을 변경한 뒤에는 하위 저장소 동기화
+검사기를 실행한다. 이전 별칭 값을 보유한 모든 관리 대상 라이브러리 저장소를
+갱신한 후에 전파 작업을 종료한다.

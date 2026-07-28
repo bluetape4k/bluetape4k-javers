@@ -1,28 +1,27 @@
-# Dark Diagram Restyles Must Preserve Card Shape
+# 다크 다이어그램의 색상만 변경할 때 카드 형태를 보존해야 한다
 
-## Context
+## 배경
 
-The Javers manual diagrams were asked to adopt the dark manual palette while
-retaining the established card style. The renderer instead added a thick accent
-rail to every card, so the change altered both color and shape.
+Javers 매뉴얼 다이어그램에 기존 카드 스타일은 유지하면서 다크 매뉴얼 색상표를
+적용해야 했다. 그러나 렌더러가 모든 카드에 굵은 강조선을 추가하여 색상뿐
+아니라 형태까지 변경되었다.
 
-## Root Cause
+## 근본 원인
 
-The shared `card()` helper emitted two visual edges: the normal colored card
-outline and a separate `8px` accent rectangle on the left. Because the helper
-was shared, the unintended decoration appeared 30 times across four diagrams.
+공유 `card()` 헬퍼는 일반적인 색상 카드 외곽선과 왼쪽의 별도 `8px` 강조
+사각형이라는 두 개의 시각적 가장자리를 출력했다. 헬퍼를 공유했기 때문에
+의도하지 않은 장식이 네 개의 다이어그램에 걸쳐 30번 나타났다.
 
-## Decision
+## 결정
 
-- Treat a color-only restyle as a palette substitution, not permission to add
-  borders, rails, dividers, shadows, or other geometry.
-- Keep cards as one rounded rectangle with one colored outline unless the user
-  explicitly approves a structural style change.
-- Validate every `card-group` has no extra rectangle decoration.
-- Scan and inspect the complete related diagram set whenever a shared visual
-  helper changes.
+- 색상만 변경하는 재스타일링은 색상표 교체로 취급하며, 테두리, 강조선, 구분선,
+  그림자 또는 기타 도형을 추가할 수 있는 권한으로 해석하지 않는다.
+- 사용자가 구조적 스타일 변경을 명시적으로 승인하지 않는 한, 카드는 색상
+  외곽선 하나를 가진 둥근 사각형 하나로 유지한다.
+- 모든 `card-group`에 추가 사각형 장식이 없는지 검증한다.
+- 공유 시각 헬퍼를 변경할 때마다 관련 다이어그램 전체를 검색하고 검사한다.
 
-## Verification
+## 검증
 
 ```bash
 ruby scripts/manual/validate_diagrams.rb
@@ -30,5 +29,5 @@ rg 'width="8"' docs/manual/assets -g '*.svg'
 git diff --check
 ```
 
-The four affected PNGs must also be opened at original size after the final
-render. Automated SVG checks do not replace that visual review.
+영향받은 PNG 네 개도 최종 렌더링 후 원본 크기로 열어 확인해야 한다. 자동화된
+SVG 검사는 이러한 시각적 검토를 대체하지 않는다.

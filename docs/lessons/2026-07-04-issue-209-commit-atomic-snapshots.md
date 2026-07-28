@@ -1,30 +1,31 @@
-# Issue #209 commit-atomic snapshot persistence
+# Issue #209 커밋 단위 원자적 스냅샷 영속화
 
-## Context
+## 배경
 
-`AbstractCdoSnapshotRepository.persist` wrote each snapshot first and updated
-commit sequence metadata after the loop. Backends with transactional primitives
-could not wrap a whole JaVers commit without duplicating the base persistence
-algorithm, so a mid-commit failure could leave partial snapshot data.
+`AbstractCdoSnapshotRepository.persist`는 각 스냅샷을 먼저 기록한 뒤 반복문이
+끝나면 커밋 시퀀스 메타데이터를 갱신했다. 트랜잭션 기본 기능을 제공하는
+백엔드도 기본 영속화 알고리즘을 중복 구현하지 않고서는 JaVers 커밋 전체를
+하나의 트랜잭션으로 묶을 수 없었다. 따라서 커밋 도중 실패하면 일부 스냅샷
+데이터가 남을 수 있었다.
 
-## Decision
+## 결정
 
-Add a protected `persistCommit` hook that receives the already reserved sequence
-for the JaVers commit. Exposed overrides it with a single database transaction,
-and Lettuce Redis overrides it with one serialized `MULTI`/`EXEC` boundary for
-all snapshot writes and the sequence update. Redisson remains explicitly
-documented as best-effort because the current Redisson structures do not provide
-an equivalent commit-level transaction.
+JaVers 커밋에 이미 예약된 시퀀스를 전달받는 protected `persistCommit` 훅을
+추가한다. Exposed는 단일 데이터베이스 트랜잭션으로 이 훅을 재정의하고,
+Lettuce Redis는 모든 스냅샷 기록과 시퀀스 갱신을 직렬화된 하나의
+`MULTI`/`EXEC` 경계 안에서 처리하도록 재정의한다. 현재 Redisson 자료 구조는
+동등한 커밋 수준 트랜잭션을 제공하지 않으므로, Redisson은 최선형
+(best-effort) 방식임을 명시적으로 문서화한다.
 
-## Outcome
+## 결과
 
-Exposed now rolls back multi-snapshot commit failures without advancing head or
-leaving commit metadata. Lettuce keeps snapshot rows and sequence metadata in
-one Redis transaction. The public repository API remains unchanged.
+이제 Exposed는 여러 스냅샷을 포함한 커밋이 실패하면 head를 전진시키거나 커밋
+메타데이터를 남기지 않고 롤백한다. Lettuce는 스냅샷 행과 시퀀스 메타데이터를
+하나의 Redis 트랜잭션에서 처리한다. 공개 저장소 API는 변경되지 않았다.
 
-## Future Guidance
+## 향후 지침
 
-When adding a durable snapshot repository, override `persistCommit` if the
-backend can provide commit-level atomicity. If the backend cannot, document the
-best-effort failure mode next to the repository contract instead of implying
-stronger consistency than the storage primitive can provide.
+내구성 있는 스냅샷 저장소를 추가할 때 백엔드가 커밋 수준 원자성을 제공할 수
+있다면 `persistCommit`을 재정의한다. 제공할 수 없다면 저장소 기본 기능이
+보장하는 수준보다 강한 일관성을 암시하지 말고, 저장소 계약 옆에 최선형 실패
+방식을 문서화한다.
