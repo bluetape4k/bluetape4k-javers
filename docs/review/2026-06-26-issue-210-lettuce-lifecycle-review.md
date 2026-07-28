@@ -3,21 +3,21 @@
 Date: 2026-06-26
 Scope: `LettuceCdoSnapshotRepository`, Redis persistence tests, Spring Boot auto-configuration tests.
 
-## Findings
+## 결과
 
-No P0/P1 findings remain.
+남은 P0/P1 finding은 없다.
 
-## Review Notes
+## Review Notes 요약
 
-- Ownership boundary is explicit: the caller keeps ownership of `RedisClient`;
-  the repository owns only connections it opens from that client.
-- The repository no longer closes shared `LettuceClients` cached connections,
-  avoiding cross-consumer shutdown side effects.
-- `close()` is idempotent and only closes initialized lazy connections.
-- Spring Boot cleanup relies on the bean's `AutoCloseable` contract and is
-  covered by an `ApplicationContextRunner` shutdown test.
+- Ownership boundary가 명시적이다. caller는 `RedisClient` ownership을 유지하고,
+  repository는 해당 client에서 자신이 연 connection만 소유한다.
+- Repository는 더 이상 shared `LettuceClients` cached connection을 닫지 않아
+  cross-consumer shutdown side effect를 피한다.
+- `close()`는 idempotent하며 initialized lazy connection만 닫는다.
+- Spring Boot cleanup은 bean의 `AutoCloseable` contract에 의존하며
+  `ApplicationContextRunner` shutdown test로 커버된다.
 
-## Validation Evidence
+## 검증 증거
 
 - CodeGraph `detect_changes_tool` on `HEAD` reported changed files:
   `LettuceCdoSnapshotRepository.kt`, `LettuceJaversCommitTest.kt`,
@@ -26,7 +26,7 @@ No P0/P1 findings remain.
 - `./gradlew :javers-persistence-redis:test --tests '*LettuceJaversCommitTest*' :javers-spring-boot4-autoconfigure:test --tests '*JaversAutoConfigurationTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain` - PASS.
 - `./gradlew :javers-persistence-redis:test :javers-spring-boot4-autoconfigure:test --no-configuration-cache --no-build-cache --no-parallel --console=plain` - PASS.
 
-## Residual Risk
+## 잔여 위험
 
-Gradle emitted the repository's existing generic Gradle 10 deprecation summary.
-No issue-specific warning was observed in the targeted tail output.
+Gradle은 repository의 기존 generic Gradle 10 deprecation summary를 emit했다.
+targeted tail output에서 issue-specific warning은 관찰되지 않았다.

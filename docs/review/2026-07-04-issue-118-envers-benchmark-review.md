@@ -1,38 +1,38 @@
 # Issue #118 Envers benchmark module review
 
-## Scope
+## 범위
 
-- Move the Envers comparison harness out of `examples/javers-exposed-ddd` test sources.
-- Run it from `benchmark/javers-exposed-benchmark` with the existing `kotlinx-benchmark` surface.
-- Keep example tests behavior-focused and keep README locale pairs aligned.
-- Extend CI and Nightly benchmark smoke jobs to cover the new Envers benchmark task.
+- Envers comparison harness를 `examples/javers-exposed-ddd` test source 밖으로 이동한다.
+- 기존 `kotlinx-benchmark` surface로 `benchmark/javers-exposed-benchmark`에서 실행한다.
+- example tests는 behavior-focused로 유지하고 README locale pair를 맞춘다.
+- CI 및 Nightly benchmark smoke job을 확장해 새 Envers benchmark task를 커버한다.
 
 ## 7-Tier Review
 
-| Tier | Verdict | Evidence |
+| Tier | 판정 | 증거 |
 |---|---|---|
-| 1. Correctness | PASS | `EnversComparisonBenchmark` now uses JMH state lifecycle and independent update targets per invocation, avoiding repeated paid-order transitions. |
-| 2. API and module boundaries | PASS | The benchmark module owns the harness and declares explicit dependencies on the example module, `javers-ddd`, `javers-exposed`, and `hibernate-envers`; the example module no longer carries Envers test dependency. |
-| 3. Data and transaction semantics | PASS | Benchmark trials create and drop temporary PostgreSQL-backed JaVers tables; production schema defaults are unchanged. |
-| 4. Tests and silent failure | PASS | `mainEnversComparisonSmokeBenchmark` executed successfully with all benchmark variants and no JMH exception after the update-target fix. |
-| 5. Build and CI registration | PASS | Gradle exposes `mainEnversComparisonSmokeBenchmark`; CI and Nightly benchmark jobs run both commit metadata and Envers smoke tasks. |
-| 6. Documentation and locale parity | PASS | Root, example, and benchmark README locale pairs point to the benchmark module command and preserve raw result links. |
-| 7. Release and maintainability | PASS | The ordinary example test suite no longer rewrites benchmark evidence; benchmark drift is now intentional through benchmark-module tasks. |
+| 1. Correctness | PASS | `EnversComparisonBenchmark`는 이제 JMH state lifecycle과 invocation별 independent update target을 사용해 repeated paid-order transition을 피한다. |
+| 2. API and module boundaries | PASS | benchmark module이 harness를 소유하고 example module, `javers-ddd`, `javers-exposed`, `hibernate-envers`에 대한 explicit dependency를 declare한다. example module은 더 이상 Envers test dependency를 갖지 않는다. |
+| 3. Data and transaction semantics | PASS | Benchmark trial은 temporary PostgreSQL-backed JaVers table을 만들고 drop한다. production schema default는 변경하지 않았다. |
+| 4. Tests and silent failure | PASS | update-target fix 이후 `mainEnversComparisonSmokeBenchmark`가 모든 benchmark variant에서 JMH exception 없이 성공했다. |
+| 5. Build and CI registration | PASS | Gradle은 `mainEnversComparisonSmokeBenchmark`를 노출한다. CI 및 Nightly benchmark job은 commit metadata와 Envers smoke task를 모두 실행한다. |
+| 6. Documentation and locale parity | PASS | Root, example, benchmark README locale pair는 benchmark module command를 가리키고 raw result link를 보존한다. |
+| 7. Release and maintainability | PASS | 일반 example test suite는 더 이상 benchmark evidence를 다시 쓰지 않는다. benchmark drift는 이제 benchmark-module task를 통한 의도적 동작이다. |
 
-## Validation
+## 검증
 
 - `./gradlew :benchmark-javers-exposed-benchmark:tasks --all --no-configuration-cache --console=plain`
-  - Result: PASS, `mainEnversComparisonSmokeBenchmark` is present.
+  - 결과: PASS, `mainEnversComparisonSmokeBenchmark` is present.
 - `./gradlew :benchmark-javers-exposed-benchmark:compileKotlin --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  - Result: PASS.
+  - 결과: PASS.
 - `./gradlew :examples-javers-exposed-ddd:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  - Result: PASS, 5 tests.
+  - 결과: PASS, 5 tests.
 - `./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  - Result: PASS, JMH summary emitted without `EXCEPTION`.
+  - 결과: PASS, JMH summary emitted without `EXCEPTION`.
 - `actionlint .github/workflows/ci.yml .github/workflows/nightly-tests.yml`
-  - Result: PASS, no output.
+  - 결과: PASS, no output.
 - `git diff --check`
-  - Result: PASS.
+  - 결과: PASS.
 
 ## P0/P1 Status
 

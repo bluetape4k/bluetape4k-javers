@@ -1,6 +1,6 @@
 # Kafka4 catalog sync review
 
-## Scope
+## 범위
 
 - `gradle/libs.versions.toml`
 - Kafka-consuming modules:
@@ -9,13 +9,13 @@
   - `:javers-ddd`
   - `:examples-javers-exposed-ddd`
 
-## Findings
+## 결과
 
 - P0/P1 findings: 0
-- The change matches the `bluetape4k-dependencies` source-of-truth value.
-- `dependencyInsight` resolves `org.apache.kafka:kafka-clients` to `4.2.1`.
+- 변경은 `bluetape4k-dependencies` source-of-truth value와 일치한다.
+- `dependencyInsight`는 `org.apache.kafka:kafka-clients`를 `4.2.1`로 resolve한다.
 
-## Verification
+## 검증
 
 - `sync-shared-versions.py --workspace /tmp/bt4k-kafka4-sync-workspace --check --summary`: `Shared versions are aligned.`
 - `./gradlew :javers-persistence-kafka:dependencyInsight --configuration testRuntimeClasspath --dependency org.apache.kafka:kafka-clients --no-daemon --no-configuration-cache --no-build-cache`: `BUILD SUCCESSFUL in 17s`
