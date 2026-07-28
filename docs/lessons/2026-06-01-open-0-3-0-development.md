@@ -1,27 +1,28 @@
-# 2026-06-01 Open 0.3.0 Development
+# 2026-06-01 0.3.0 개발선 시작
 
-## Context
+## 배경
 
-The `0.2.1` patch lane was prepared for release-train dependency alignment,
-but the stable tag and GitHub release were not published at that point.
+릴리스 트레인의 의존성 버전을 맞추기 위해 `0.2.1` 패치 작업을 준비했지만,
+당시 안정 버전 태그와 GitHub Release는 배포하지 않았다.
 
-## Decision
+## 결정
 
-Move the committed `baseVersion` to `0.3.0` while keeping `snapshotVersion=`
-empty so release workflows can inject snapshot qualifiers explicitly.
-Align the direct `bluetape4k-bom` catalog reference to
-`1.11.0-SNAPSHOT`.
+저장소에 반영된 `baseVersion`을 `0.3.0`으로 올리고 `snapshotVersion=`은 빈
+값으로 유지한다. 그러면 릴리스 처리 흐름이 스냅샷 한정자를 명시적으로 주입할 수
+있다. 직접 참조하는 `bluetape4k-bom` 카탈로그 버전도
+`1.11.0-SNAPSHOT`으로 맞춘다.
 
-## Outcome
+## 결과
 
-The repository is ready for the next minor development line, but the `0.2.1`
-patch release must still be tagged, published, and verified before a downstream
-stable dependencies train can consume it.
+저장소는 다음 마이너 개발선을 시작할 준비가 되었다. 다만 하위 안정 버전 의존성
+트레인이 `0.2.1` 패치 릴리스를 사용하려면 먼저 태그를 만들고 배포한 뒤 검증해야
+한다.
 
-## Verification
+## 검증
 
-- `gradle.properties` uses `baseVersion=0.3.0`.
-- `snapshotVersion=` remains empty.
-- `./gradlew help --no-daemon --console=plain` resolves the updated catalog.
-- Follow-up audit on 2026-06-26 found GitHub Release `0.2.0` only; `0.2.1`
-  was not yet tagged or published.
+- `gradle.properties`는 `baseVersion=0.3.0`을 사용한다.
+- `snapshotVersion=`은 빈 값으로 유지한다.
+- `./gradlew help --no-daemon --console=plain`에서 갱신한 카탈로그를 정상적으로
+  해석했다.
+- 2026-06-26 후속 점검에서는 GitHub Release `0.2.0`만 확인되었으며,
+  `0.2.1`은 아직 태그를 만들거나 배포하지 않은 상태였다.

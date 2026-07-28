@@ -1,31 +1,32 @@
-# Issue 140 Spring Boot 4 Example Lesson
+# 이슈 140 Spring Boot 4 예제 교훈
 
-## Context
+## 배경
 
-Issue #140 added a Spring Boot 4 example for the current JaVers + Exposed +
-DDD helper feature set.
+이슈 #140에서는 현재의 JaVers + Exposed + DDD 헬퍼 기능을 보여 주는
+Spring Boot 4 예제를 추가했다.
 
-## Decision
+## 결정
 
-- Use `:examples-javers-*` Gradle project names for example modules so future
-  publishing logic can exclude examples by project-name prefix.
-- Keep example file paths under `examples/` and preserve the existing
-  directory-based exclusion as a fallback.
-- Use explicit Spring Boot 4 wiring instead of adding auto-configuration.
-- Use Boot 4 MVC test support through
-  `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc`.
-- Use Jackson 3 `tools.jackson.module:jackson-module-kotlin`, not Jackson 2
-  `com.fasterxml.jackson.module:jackson-module-kotlin`.
+- 향후 게시 로직에서 프로젝트 이름 접두사로 예제를 제외할 수 있도록 예제 모듈의
+  Gradle 프로젝트 이름에 `:examples-javers-*` 패턴을 사용한다.
+- 예제 파일 경로는 `examples/` 아래에 두고, 기존의 디렉터리 기반 제외 방식을
+  예비 수단으로 유지한다.
+- 자동 구성 추가 대신 명시적인 Spring Boot 4 구성을 사용한다.
+- Boot 4 MVC 테스트 지원에는
+  `org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc`를
+  사용한다.
+- Jackson 2의 `com.fasterxml.jackson.module:jackson-module-kotlin`이 아니라
+  Jackson 3의 `tools.jackson.module:jackson-module-kotlin`을 사용한다.
 
-## Outcome
+## 결과
 
-- Added `examples/javers-spring-boot4`.
-- Renamed the existing example Gradle project to `:examples-javers-exposed-ddd`.
-- Added CI/Nightly jobs and coverage artifacts for the new Spring Boot 4 example.
-- Added 7-Tier spec, plan, and code-review artifacts with final `P0 = 0`,
-  `P1 = 0`.
+- `examples/javers-spring-boot4`를 추가했다.
+- 기존 예제 Gradle 프로젝트의 이름을 `:examples-javers-exposed-ddd`로 변경했다.
+- 새 Spring Boot 4 예제를 위한 CI/Nightly 작업과 커버리지 산출물을 추가했다.
+- 최종 `P0 = 0`, `P1 = 0`을 충족한 7단계 명세, 계획 및 코드 리뷰 산출물을
+  추가했다.
 
-## Verification
+## 검증
 
 - `./gradlew :examples-javers-spring-boot4:compileKotlin :examples-javers-spring-boot4:compileTestKotlin :examples-javers-spring-boot4:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
 - `./gradlew projects --no-configuration-cache --no-build-cache --console=plain`
@@ -35,11 +36,11 @@ DDD helper feature set.
 - `rg -n -F "\\'" .github/workflows`
 - `git diff --check`
 
-## Future Agents
+## 향후 작업 지침
 
-- For new example modules in this repo, use project names matching
-  `:examples-javers-*`.
-- When using Spring Boot 4 MVC tests, prefer the Boot 4 `webmvc.test`
-  auto-config package and add `spring-boot-starter-webmvc-test`.
-- Keep benchmark metric files stable unless the task explicitly re-baselines
-  benchmark numbers.
+- 이 저장소에 새 예제 모듈을 추가할 때는 `:examples-javers-*` 패턴과 일치하는
+  프로젝트 이름을 사용한다.
+- Spring Boot 4 MVC 테스트에서는 Boot 4 `webmvc.test` 자동 구성 패키지를
+  우선 사용하고 `spring-boot-starter-webmvc-test`를 추가한다.
+- 작업에서 벤치마크 수치의 기준선을 명시적으로 다시 설정하지 않는 한 벤치마크
+  지표 파일은 변경하지 않는다.

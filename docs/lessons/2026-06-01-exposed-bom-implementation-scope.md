@@ -1,28 +1,28 @@
-# Exposed BOM implementation scope
+# Exposed BOM 구현 범위
 
-## Context
+## 배경
 
-The `bluetape4k-dependencies 1.2.0` train promotes
-`bluetape4k-exposed-bom` to the `1.10.0` line. `javers-exposed` consumes
-bluetape4k Exposed integration artifacts, but the BOM platform itself should
-not be part of the public API surface.
+`bluetape4k-dependencies 1.2.0` 트레인은 `bluetape4k-exposed-bom`을
+`1.10.0` 개발선으로 올린다. `javers-exposed`는 bluetape4k Exposed 통합
+아티팩트를 사용하지만, BOM 플랫폼 자체가 공용 API에 노출되어서는 안 된다.
 
-## Decision
+## 결정
 
-Import `bluetape4k-exposed-bom` with `implementation(platform(...))` in
-`javers-exposed`.
+`javers-exposed`에서 `implementation(platform(...))`으로
+`bluetape4k-exposed-bom`을 가져온다.
 
-## Outcome
+## 결과
 
-The module remains aligned with the train catalog while avoiding an API-scoped
-BOM platform export.
+모듈은 트레인 카탈로그와 버전을 맞추면서도 API 범위에 BOM 플랫폼을 노출하지
+않는다.
 
-## Verification
+## 검증
 
-- Maven Central returned HTTP 200 for `bluetape4k-exposed-bom:1.10.0`.
-- `./gradlew :javers-exposed:build --no-daemon --console=plain` passed.
+- Maven Central에서 `bluetape4k-exposed-bom:1.10.0` 요청에 HTTP 200을
+  반환했다.
+- `./gradlew :javers-exposed:build --no-daemon --console=plain`이 통과했다.
 
-## Future Guidance
+## 향후 지침
 
-Keep concrete public Exposed artifacts on `api` only when their types are part
-of the public contract; keep the bluetape4k Exposed BOM platform internal.
+구체적인 공용 Exposed 아티팩트의 타입이 공용 계약에 포함될 때만 `api`에
+둔다. bluetape4k Exposed BOM 플랫폼은 내부 의존성으로 유지한다.
