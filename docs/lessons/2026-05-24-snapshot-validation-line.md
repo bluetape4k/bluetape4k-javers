@@ -1,21 +1,20 @@
-# Snapshot Validation Line
+# 스냅숏 검증 버전
 
-## Context
+## 배경
 
-After the previous release, snapshot validation needed the repository reopened
-on the next development line while consuming the matching upstream bluetape4k
-snapshot.
+이전 릴리스 이후 스냅숏 검증을 진행하려면, 일치하는 상위 bluetape4k
+스냅숏을 사용하면서 저장소를 다음 개발 버전으로 전환해야 했다.
 
-## Decision
+## 결정
 
-Set `baseVersion=0.1.3`, keep `snapshotVersion=` empty, and consume
-`bluetape4k-bom:1.9.2-SNAPSHOT`.
+`baseVersion=0.1.3`으로 설정하고 `snapshotVersion=`은 비워 둔 채
+`bluetape4k-bom:1.9.2-SNAPSHOT`을 사용한다.
 
-## Outcome
+## 결과
 
-The repository can publish `0.1.3-SNAPSHOT` through `publish-snapshot.yml`
-without checking a snapshot suffix into `gradle.properties`.
+`gradle.properties`에 스냅숏 접미사를 커밋하지 않아도 저장소에서
+`publish-snapshot.yml`로 `0.1.3-SNAPSHOT`을 게시할 수 있다.
 
-## Verification
+## 검증
 
-Pending in the snapshot validation train.
+스냅숏 검증 트레인에서 검증할 예정이다.

@@ -1,26 +1,28 @@
-# JaVers 0.1.1 Release Prep
+# JaVers 0.1.1 릴리스 준비
 
-## Context
+## 배경
 
-The 0.1.1 milestone has no open issues and the repository is still on the
-post-0.1.0 snapshot line. The catalog still referenced the older
-`bluetape4k-bom:1.8.0`.
+0.1.1 마일스톤에 열린 이슈가 없지만, 저장소는 여전히 0.1.0 이후의 스냅숏
+버전을 사용하고 있었다. 카탈로그도 이전 버전인 `bluetape4k-bom:1.8.0`을
+참조하고 있었다.
 
-## Decision
+## 결정
 
-Prepare `bluetape4k-javers` 0.1.1 as a release and align it with
-`bluetape4k-bom:1.9.0`.
+`bluetape4k-javers` 0.1.1 릴리스를 준비하고
+`bluetape4k-bom:1.9.0`에 맞춘다.
 
-## Outcome
+## 결과
 
-Release metadata, CHANGELOG, WIP, and catalog versions were updated for 0.1.1.
+릴리스 메타데이터, CHANGELOG, WIP 및 카탈로그 버전을 0.1.1에 맞게
+갱신했다.
 
-## Verification
+## 검증
 
-Pending release validation must include Gradle version checks, POM generation,
-POM scans for stale/snapshot artifacts, actionlint, and CI before tagging.
+태그를 생성하기 전에 완료할 릴리스 검증에는 Gradle 버전 검사, POM 생성,
+오래되었거나 스냅숏 버전인 아티팩트를 찾는 POM 검사, actionlint 및 CI가
+포함되어야 한다.
 
-## Future Notes
+## 향후 참고 사항
 
-Do not fold unmilestoned correctness work such as #62 into a patch release
-without explicitly moving it into the release milestone first.
+#62처럼 마일스톤에 포함되지 않은 정확성 개선 작업은 먼저 릴리스 마일스톤으로
+명시적으로 옮기지 않는 한 패치 릴리스에 포함하지 않는다.

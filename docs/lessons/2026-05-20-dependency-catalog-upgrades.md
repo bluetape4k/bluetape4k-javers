@@ -1,18 +1,18 @@
-# Dependency Catalog Upgrades
+# 의존성 카탈로그 업그레이드
 
-## Context
+## 배경
 
-`bluetape4k-dependencies` folded the Apache Fory Dependabot PRs into the
-central dependency upgrade batch.
+`bluetape4k-dependencies`에서 Apache Fory Dependabot PR을 중앙 의존성
+업그레이드 작업 묶음에 통합했다.
 
-## Decision
+## 결정
 
-Materialize the central Fory Kotlin catalog version in this repository.
+중앙에서 관리하는 Fory Kotlin 카탈로그 버전을 이 저장소에 반영한다.
 
-## Outcome
+## 결과
 
-`gradle/libs.versions.toml` now carries Fory Kotlin `0.17.0`.
+이제 `gradle/libs.versions.toml`에 Fory Kotlin `0.17.0`이 설정되어 있다.
 
-## Verification
+## 검증
 
 - `./gradlew build -x test --no-daemon`

@@ -1,27 +1,27 @@
-# bt4k Version Catalog Consumption
+# bt4k 버전 카탈로그 사용
 
-## Context
+## 배경
 
-`bluetape4k-javers` carried local pins for common dependencies that are already
-managed by the shared ecosystem catalog.
+`bluetape4k-javers`는 이미 생태계 공용 카탈로그에서 관리하는 공통 의존성
+버전을 로컬에서 별도로 고정하고 있었다.
 
-## Decision
+## 결정
 
-Import the `bluetape4k-dependencies` version catalog as `bt4k` and source shared
-leaf dependency versions from `bt4kVersion(alias)` inside dependency management.
+`bluetape4k-dependencies` 버전 카탈로그를 `bt4k`라는 이름으로 가져오고,
+의존성 관리에서 공용 하위 의존성 버전을 `bt4kVersion(alias)`로 조회한다.
 
-## Outcome
+## 결과
 
-Selected dependency aliases are versionless in the local catalog, with versions
-resolved from the shared catalog during Gradle dependency management.
+선택한 의존성 별칭은 로컬 카탈로그에 버전을 지정하지 않으며, Gradle 의존성
+관리 과정에서 공용 카탈로그의 버전을 사용한다.
 
-## Verification
+## 검증
 
 - `git diff --check`
 - `./gradlew help --no-daemon --no-configuration-cache`
 - `./gradlew compileKotlin --no-daemon --no-configuration-cache`
 
-## Future Guidance
+## 향후 지침
 
-Use `bt4k` for common serialization, cache, logging, and compression dependency
-versions before adding local version pins.
+직렬화, 캐시, 로깅 및 압축 관련 공통 의존성 버전을 로컬에서 고정하기 전에
+`bt4k`를 사용한다.
