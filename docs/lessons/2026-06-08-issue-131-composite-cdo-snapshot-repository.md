@@ -1,22 +1,31 @@
-# Issue 131 Composite CDO Snapshot Repository
+# Issue #131 복합 CDO 스냅샷 저장소
 
-## Context
+## 배경
 
-Issue #131 added a direct composite JaVers `CdoSnapshotRepository` for one read/query primary plus ordered secondary fanout. The important design correction was that `persist(commit)` must call `primary.persist(commit)` directly, not only fan out snapshots through `saveSnapshot()`, because the primary repository owns its native head and sequence semantics.
+Issue #131에서는 하나의 읽기/쿼리 주 저장소와 순서가 보장된 보조 저장소 팬아웃을
+결합하는 JaVers `CdoSnapshotRepository` 직접 구현을 추가했다. 핵심 설계 수정은
+`persist(commit)`이 `saveSnapshot()`으로 스냅샷만 팬아웃하지 않고
+`primary.persist(commit)`을 직접 호출해야 한다는 점이었다. 주 저장소가 자체
+헤드와 순서 의미 체계를 소유하기 때문이다.
 
-## Decision
+## 결정
 
-- Keep the composite additive under `javers-core`.
-- Delegate all reads to the primary repository.
-- Write primary first, then secondaries in order.
-- Do not promise atomicity across delegates. If a secondary fails after primary success, surface the failure without rolling back the primary.
-- Reject rollback/distributed transaction behavior because `CdoSnapshotRepository` does not expose a safe rollback contract.
+- 복합 저장소는 `javers-core` 아래에 기존 기능을 확장하는 형태로 둔다.
+- 모든 읽기는 주 저장소에 위임한다.
+- 주 저장소에 먼저 쓰고, 그다음 보조 저장소에 순서대로 쓴다.
+- 위임 대상 전체의 원자성을 보장하지 않는다. 주 저장소 쓰기가 성공한 뒤 보조
+  저장소에서 실패하면 주 저장소를 롤백하지 않고 실패를 그대로 드러낸다.
+- `CdoSnapshotRepository`가 안전한 롤백 계약을 제공하지 않으므로 롤백이나 분산
+  트랜잭션 동작은 도입하지 않는다.
 
-## Outcome
+## 결과
 
-The implementation introduced explicit failure policies, delegate failure metadata, aggregate exceptions, primary-first write behavior, README locale updates, and an English-label README diagram. Review also tightened `CompositeCdoSnapshotException` so it rejects empty failure lists before payload construction and stores a defensive copy.
+구현에는 명시적 실패 정책, 위임 대상의 실패 메타데이터, 집계 예외, 주 저장소 우선
+쓰기 동작, README 언어별 문서 갱신, 영문 레이블을 사용한 README 다이어그램이
+포함되었다. 리뷰 과정에서는 `CompositeCdoSnapshotException`이 페이로드를 만들기
+전에 빈 실패 목록을 거부하고 방어적 복사본을 저장하도록 계약을 강화했다.
 
-## Verification
+## 검증
 
 - `./gradlew :javers-core:test --no-configuration-cache --no-build-cache --console=plain`
   - `BUILD SUCCESSFUL`
@@ -24,9 +33,12 @@ The implementation introduced explicit failure policies, delegate failure metada
 - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
   - `BUILD SUCCESS`
   - `SUCCESS: Executed 39 tests in 12.8s`
-- Static forbidden-pattern scans returned no matches.
-- README diagram PNG was rendered and visually inspected.
+- 정적 금지 패턴 검사에서 일치 항목이 없었다.
+- README 다이어그램 PNG를 렌더링하고 육안으로 확인했다.
 
-## Future Guard
+## 향후 유의 사항
 
-For future composite repository work, review the JaVers repository head/sequence contract before choosing inheritance or direct delegation. If secondary writes can fail after primary success, document the non-atomic consistency semantics in KDoc, README, and tests instead of implying rollback behavior.
+향후 복합 저장소를 작업할 때는 상속과 직접 위임 중 하나를 선택하기 전에 JaVers
+저장소의 헤드/순서 계약을 검토한다. 주 저장소 쓰기가 성공한 뒤 보조 저장소
+쓰기가 실패할 수 있다면 롤백 동작을 암시하지 말고 비원자적 일관성 의미 체계를
+KDoc, README, 테스트에 명시한다.

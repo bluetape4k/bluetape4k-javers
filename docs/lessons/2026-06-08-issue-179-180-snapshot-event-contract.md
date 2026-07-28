@@ -1,37 +1,36 @@
-# Issue #179/#180 - Snapshot Event Contract Documentation
+# 이슈 #179/#180 - 스냅샷 이벤트 계약 문서화
 
-## Context
+## 배경
 
-Post-merge review of PR #175 found two documentation risks in the Kafka snapshot
-event pipeline:
+PR #175 병합 후 검토에서 Kafka 스냅샷 이벤트 파이프라인 문서의 위험 두 가지를
+발견했다.
 
-- The in-process `CdoSnapshotEvent` metadata contract could be mistaken for a
-  Kafka wire envelope or header contract.
-- Multi-snapshot commits can partially publish earlier snapshot events before a
-  later snapshot publish fails, so retry behavior is at-least-once and can
-  duplicate events.
+- 프로세스 내부의 `CdoSnapshotEvent` 메타데이터 계약을 Kafka 전송 엔벌로프나
+  헤더 계약으로 오해할 수 있다.
+- 다중 스냅샷 커밋은 후속 스냅샷 발행이 실패하기 전에 앞선 스냅샷 이벤트를
+  일부 발행할 수 있다. 따라서 재시도 동작은 최소 1회 전달 방식이며 이벤트가
+  중복될 수 있다.
 
-## Decision
+## 결정
 
-Document the current Kafka behavior exactly:
+현재 Kafka 동작을 다음과 같이 정확히 문서화한다.
 
-- Kafka record values remain encoded JaVers snapshot payloads.
-- Snapshot metadata is in-process adapter metadata unless a future adapter
-  defines headers or an envelope explicitly.
-- Kafka publishing is synchronous at-least-once.
-- Current Kafka consumers should treat duplicates as possible because the
-  idempotency key is not wire-visible today.
-- Projection/replay work or future wire contracts should expose and use the
-  opaque idempotency key, or define another transport-specific deduplication
-  policy.
+- Kafka 레코드 값은 인코딩된 JaVers 스냅샷 페이로드로 유지한다.
+- 향후 어댑터가 헤더나 엔벌로프를 명시적으로 정의하지 않는 한, 스냅샷
+  메타데이터는 프로세스 내부 어댑터 메타데이터다.
+- Kafka 발행은 동기식 최소 1회 전달 방식이다.
+- 현재 멱등성 키는 전송 데이터에 노출되지 않으므로 Kafka 소비자는 중복이
+  발생할 수 있다고 간주해야 한다.
+- 프로젝션/재생 작업이나 향후 전송 계약에서는 불투명 멱등성 키를 노출해
+  사용하거나 전송 방식별 중복 제거 정책을 따로 정의해야 한다.
 
-## Outcome
+## 결과
 
-The README locale pair now separates in-process event metadata from Kafka wire
-payloads and documents partial publish/retry behavior for #105 and #131.
+README 언어 쌍은 이제 프로세스 내부 이벤트 메타데이터와 Kafka 전송 페이로드를
+구분하며, #105와 #131의 부분 발행 및 재시도 동작을 설명한다.
 
-## Future Guard
+## 향후 준수 사항
 
-When adding NATS, SQS, projection, or composite repository work, do not imply
-metadata is wire-visible unless the adapter defines and tests headers or an
-envelope.
+NATS, SQS, 프로젝션 또는 복합 저장소 작업을 추가할 때는 어댑터가 헤더나
+엔벌로프를 정의하고 테스트하지 않는 한 메타데이터가 전송 데이터에 노출된다고
+암시하지 않는다.
