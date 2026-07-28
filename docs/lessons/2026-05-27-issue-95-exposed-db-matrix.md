@@ -1,35 +1,35 @@
-# Issue 95 Exposed DB Matrix
+# 이슈 95 Exposed DB 매트릭스
 
-## Context
+## 배경
 
-`javers-exposed` had a database smoke test with local PostgreSQL/MySQL
-Testcontainers wiring. The workspace already provides the shared
-`bluetape4k-exposed-jdbc-tests` matrix helpers.
+`javers-exposed`에는 로컬 PostgreSQL/MySQL Testcontainers 연결을 사용하는
+데이터베이스 스모크 테스트가 있었다. 워크스페이스에는 이미 공용
+`bluetape4k-exposed-jdbc-tests` 매트릭스 도우미가 있다.
 
-## Decision
+## 결정
 
-Reuse `bluetape4k-exposed-jdbc` and `bluetape4k-exposed-jdbc-tests` through the
-central `bt4k` catalog. Test through `AbstractExposedTest`,
-`@MethodSource(ENABLE_DIALECTS_METHOD)`, and `withTables` so the default matrix
-stays aligned with Exposed: H2, PostgreSQL, and MySQL_V8. Use JUnit
-`Assumptions` only when a scenario is genuinely unsupported by a dialect.
+중앙 `bt4k` 카탈로그를 통해 `bluetape4k-exposed-jdbc`와
+`bluetape4k-exposed-jdbc-tests`를 재사용한다. 기본 매트릭스가 Exposed의 H2,
+PostgreSQL, MySQL_V8과 일치하도록 `AbstractExposedTest`,
+`@MethodSource(ENABLE_DIALECTS_METHOD)`, `withTables`로 테스트한다. 특정
+다이얼렉트가 실제로 지원하지 않는 시나리오에만 JUnit `Assumptions`를 사용한다.
 
-## Outcome
+## 결과
 
-The smoke test now runs on the shared Exposed matrix. `saveSnapshot()` no longer
-depends on Exposed `insertIgnore`, which failed on standard H2; commit metadata
-is inserted with a dialect-neutral existence check.
+이제 스모크 테스트는 공용 Exposed 매트릭스에서 실행된다. `saveSnapshot()`은
+표준 H2에서 실패하던 Exposed `insertIgnore`에 더 이상 의존하지 않는다. 커밋
+메타데이터는 다이얼렉트 중립적인 존재 여부 검사 후 삽입된다.
 
-## Verification
+## 검증
 
 - `./gradlew :javers-exposed:test --tests '*ExposedCdoSnapshotRepositoryDatabaseSmokeTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  passed 3 tests: H2, PostgreSQL, MYSQL_V8.
+  실행 결과 H2, PostgreSQL, MYSQL_V8 테스트 3개가 통과했다.
 - `./gradlew :javers-exposed:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  passed 10 tests.
+  실행 결과 테스트 10개가 통과했다.
 
-## Future Guidance
+## 향후 지침
 
-When adding `javers-exposed` database coverage, prefer the Exposed shared test
-helpers over ad hoc containers. Keep mandatory baseline scenarios portable
-across H2/PostgreSQL/MySQL_V8; reserve `Assumptions` for explicitly unsupported
-database features.
+`javers-exposed` 데이터베이스 테스트 범위를 추가할 때는 임시 컨테이너보다
+Exposed 공용 테스트 도우미를 우선한다. 필수 기준 시나리오는
+H2/PostgreSQL/MySQL_V8에서 이식 가능하게 유지하고, 명시적으로 지원하지 않는
+데이터베이스 기능에만 `Assumptions`를 사용한다.

@@ -1,22 +1,29 @@
-# 2026-05-27 — issue 102 Kafka read-path warning noise
+# 2026-05-27 — 이슈 102 Kafka 읽기 경로 경고 노이즈
 
-## Context
+## 배경
 
-`KafkaCdoSnapshotRepository` is intentionally write-only. Its read-path methods returned empty/false/0 but logged a warning on every call, so normal JaVers read probes or misconfigured applications could flood logs.
+`KafkaCdoSnapshotRepository`는 의도적으로 쓰기 전용이다. 읽기 경로 메서드는
+빈 값/`false`/`0`을 반환하지만 호출할 때마다 경고를 기록했다. 따라서 일반적인
+JaVers 읽기 탐색이나 잘못 구성된 애플리케이션이 로그를 과도하게 발생시킬 수 있었다.
 
-## Decision
+## 결정
 
-Keep the write-only read contract unchanged and log the contract warning only once per repository instance. Repeated read-path contract messages move to debug level.
+쓰기 전용 읽기 계약은 변경하지 않고 계약 경고는 저장소 인스턴스마다 한 번만
+기록한다. 이후 반복되는 읽기 경로 계약 메시지는 디버그 수준으로 기록한다.
 
-## Outcome
+## 결과
 
-The repository now uses an AtomicFU flag for once-per-instance warning behavior. The Kafka module test suite verifies the empty/false/0 read results, one WARN event, and repeated DEBUG events.
+저장소는 이제 인스턴스당 한 번만 경고하도록 AtomicFU 플래그를 사용한다. Kafka
+모듈 테스트 스위트는 빈 값/`false`/`0` 읽기 결과, 한 번의 WARN 이벤트, 반복되는
+DEBUG 이벤트를 검증한다.
 
-## Verification
+## 검증
 
 - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --console=plain`
-  - Result: success, 5 tests executed.
+  - 결과: 성공, 테스트 5개 실행.
 
-## Future Guard
+## 향후 지침
 
-Do not widen protected read methods only for tests. If the read contract needs direct testing, keep reflection helpers in tests or add a purpose-built internal test fixture without changing public API.
+테스트만을 위해 protected 읽기 메서드의 가시성을 넓히지 않는다. 읽기 계약을 직접
+테스트해야 한다면 리플렉션 도우미를 테스트 코드에 유지하거나, 공개 API를 변경하지
+않고 목적에 맞는 내부 테스트 픽스처를 추가한다.

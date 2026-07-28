@@ -1,32 +1,31 @@
-# Issue 5 CQRS Parent Close Lesson
+# 이슈 5 CQRS 상위 이슈 종료 교훈
 
-## Context
+## 배경
 
-#5 began as a broad CQRS/Event Sourcing demo request covering command-side
-JaVers + Exposed persistence, Kafka-to-Redis projection, and Envers comparison
-results.
+#5는 명령 측 JaVers + Exposed 영속화, Kafka-to-Redis 프로젝션, Envers 비교 결과를
+아우르는 광범위한 CQRS/Event Sourcing 데모 요청으로 시작했다.
 
-## Decision
+## 결정
 
-Close the parent only after the reviewable split issues landed:
+검토 가능한 단위로 분리한 다음 이슈가 모두 반영된 후에만 상위 이슈를 종료한다.
 
-- #88 command-side example scaffold.
-- #89 Kafka-to-Redis projection and read-side API.
-- #90 Envers comparison benchmark documentation.
+- #88 명령 측 예제 스캐폴드.
+- #89 Kafka-to-Redis 프로젝션 및 읽기 측 API.
+- #90 Envers 비교 벤치마크 문서.
 
-## Outcome
+## 결과
 
-The `examples/javers-exposed-ddd` module now has command, projection, query, and
-benchmark documentation coverage. The parent issue can close as a tracking item
-without adding another implementation slice.
+이제 `examples/javers-exposed-ddd` 모듈에는 명령, 프로젝션, 조회, 벤치마크 문서가
+모두 마련되었다. 별도의 구현 범위를 추가하지 않고 추적 항목인 상위 이슈를 종료할
+수 있다.
 
-## Verification
+## 검증
 
-- GitHub issue list showed #5 as the only remaining open issue.
-- PR #91, #92, and #93 were merged into `develop`.
-- `WIP.md` was updated to show the lane complete.
+- GitHub 이슈 목록에서 #5가 유일하게 남은 열린 이슈임을 확인했다.
+- PR #91, #92, #93이 `develop`에 병합되었음을 확인했다.
+- 작업 흐름의 완료 상태를 나타내도록 `WIP.md`를 갱신했다.
 
-## Future Guidance
+## 향후 지침
 
-When a parent issue is split, close the parent with a short evidence trail
-instead of adding unrelated scope to satisfy stale broad checklist wording.
+상위 이슈를 분리한 경우 오래된 광범위 체크리스트 문구를 충족하려고 관련 없는
+범위를 추가하지 말고, 간결한 증거 기록과 함께 상위 이슈를 종료한다.
