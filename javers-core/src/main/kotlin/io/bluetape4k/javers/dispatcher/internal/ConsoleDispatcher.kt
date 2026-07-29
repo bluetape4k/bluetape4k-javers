@@ -3,7 +3,7 @@ package io.bluetape4k.javers.dispatcher.internal
 import io.bluetape4k.javers.dispatcher.JaversDispatcher
 
 /**
- * [JaversDispatcher] implementation that writes domain object change events to standard output.
+ * domain object change event를 standard output에 쓰는 [JaversDispatcher] 구현입니다.
  */
 class ConsoleDispatcher: JaversDispatcher {
 

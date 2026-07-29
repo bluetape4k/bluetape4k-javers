@@ -5,13 +5,12 @@ import io.bluetape4k.support.requireZeroOrPositiveNumber
 import java.io.Serializable
 
 /**
- * Describes one failed delegate operation in [CompositeCdoSnapshotRepository].
+ * [CompositeCdoSnapshotRepository]의 실패한 delegate operation 하나를 설명합니다.
  *
- * ## Behavior / Contract
- * - [delegateIndex] is zero-based within [delegateKind].
- * - [delegateClassName] and [operation] are safe diagnostic values and must not
- *   contain raw snapshot identifiers.
- * - [cause] is the original delegate failure.
+ * ## 동작 / 계약
+ * - [delegateIndex]는 [delegateKind] 안에서 zero-based입니다.
+ * - [delegateClassName]과 [operation]은 안전한 diagnostic value이며 raw snapshot identifier를 포함하면 안 됩니다.
+ * - [cause]는 원본 delegate failure입니다.
  */
 @ConsistentCopyVisibility
 data class CompositeCdoSnapshotWriteFailure private constructor(
@@ -26,7 +25,7 @@ data class CompositeCdoSnapshotWriteFailure private constructor(
         private const val serialVersionUID: Long = 4872384723984723984L
 
         /**
-         * Creates a validated delegate failure descriptor.
+         * validation된 delegate failure descriptor를 생성합니다.
          */
         operator fun invoke(
             delegateKind: CompositeCdoSnapshotDelegateKind,

@@ -12,7 +12,7 @@ import org.javers.core.diff.changetype.container.SetChange
 import org.javers.core.diff.changetype.map.MapChange
 
 /**
- * Filters [Changes] to entries of the requested change type.
+ * [Changes]에서 요청한 change type의 entry만 filtering합니다.
  *
  * ```kotlin
  * val valueChanges = changes.filterByType<ValueChange>()
@@ -22,26 +22,26 @@ import org.javers.core.diff.changetype.map.MapChange
 inline fun <reified T: Change> Changes.filterByType(): List<T> =
     this.getChangesByType(T::class.java)
 
-/** Whether this change is an array change. */
+/** 이 change가 array change인지 여부입니다. */
 val Change.isArrayChange: Boolean get() = this is ArrayChange
 
-/** Whether this change is a list change. */
+/** 이 change가 list change인지 여부입니다. */
 val Change.isListChange: Boolean get() = this is ListChange
 
-/** Whether this change is a map change. */
+/** 이 change가 map change인지 여부입니다. */
 val Change.isMapChange: Boolean get() = this is MapChange<*>
 
-/** Whether this change is a set change. */
+/** 이 change가 set change인지 여부입니다. */
 val Change.isSetChange: Boolean get() = this is SetChange
 
-/** Whether this change is a reference change. */
+/** 이 change가 reference change인지 여부입니다. */
 val Change.isReferenceChange: Boolean get() = this is ReferenceChange
 
-/** Whether this change is a value change. */
+/** 이 change가 value change인지 여부입니다. */
 val Change.isValueChange: Boolean get() = this is ValueChange
 
-/** Whether this change represents a new object. */
+/** 이 change가 새 object를 나타내는지 여부입니다. */
 val Change.isNewObject: Boolean get() = this is NewObject
 
-/** Whether this change represents an object removal. */
+/** 이 change가 object 삭제를 나타내는지 여부입니다. */
 val Change.isObjectRemoved: Boolean get() = this is ObjectRemoved

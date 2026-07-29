@@ -3,12 +3,12 @@ package io.bluetape4k.javers.base
 import java.io.Serializable
 
 /**
- * Envelope object used to carry entity state-change events.
+ * entity state-change event를 전달하는 envelope object입니다.
  *
- * ## Behavior / Contract
- * - The [entity]-based constructor defaults to a SAVED event.
- * - The [entityId] + [entityType] constructor sets the event to DELETED.
- * - Custom metadata is managed via [addHeader] / [getHeader].
+ * ## 동작 / 계약
+ * - [entity] 기반 constructor는 기본적으로 SAVED event를 설정합니다.
+ * - [entityId] + [entityType] constructor는 event를 DELETED로 설정합니다.
+ * - 사용자 정의 metadata는 [addHeader] / [getHeader]로 관리합니다.
  *
  * ```kotlin
  * val saved = EntityEnvelope(myEntity)
@@ -18,10 +18,10 @@ import java.io.Serializable
  * // deleted.isDeletedEntity == true
  * ```
  *
- * @property entity the entity whose state changed (set only for SAVED events)
- * @property entityId the ID of the deleted entity (set only for DELETED events)
- * @property entityType the Java class type of the entity
- * @property eventType the event type (default: [EntityEventType.SAVED])
+ * @property entity state가 변경된 entity입니다. SAVED event에서만 설정됩니다.
+ * @property entityId 삭제된 entity의 ID입니다. DELETED event에서만 설정됩니다.
+ * @property entityType entity의 Java class type입니다.
+ * @property eventType event type입니다. 기본값은 [EntityEventType.SAVED]입니다.
  */
 data class EntityEnvelope(
     val entity: Any? = null,
@@ -39,29 +39,29 @@ data class EntityEnvelope(
 
     private val _headers: MutableMap<String, String> = hashMapOf()
 
-    /** Read-only view of the custom headers attached to this envelope. */
+    /** 이 envelope에 붙은 사용자 정의 header의 read-only view입니다. */
     val headers: Map<String, String> get() = _headers
 
     /**
-     * Adds or replaces a custom header entry.
+     * 사용자 정의 header entry를 추가하거나 교체합니다.
      *
-     * @param key the header name
-     * @param value the header value
+     * @param key header 이름입니다.
+     * @param value header 값입니다.
      */
     fun addHeader(key: String, value: String) {
         _headers[key] = value
     }
 
     /**
-     * Returns the value of the header with the given key, or null if absent.
+     * 지정한 key의 header 값을 반환하며, 없으면 `null`을 반환합니다.
      *
-     * @param key the header name
+     * @param key 조회할 header 이름입니다.
      */
     fun getHeader(key: String): String? = _headers[key]
 
-    /** True when the event type is SAVED. */
+    /** event type이 SAVED이면 `true`입니다. */
     val isSavedEntity: Boolean get() = eventType == EntityEventType.SAVED
 
-    /** True when the event type is DELETED. */
+    /** event type이 DELETED이면 `true`입니다. */
     val isDeletedEntity: Boolean get() = eventType == EntityEventType.DELETED
 }

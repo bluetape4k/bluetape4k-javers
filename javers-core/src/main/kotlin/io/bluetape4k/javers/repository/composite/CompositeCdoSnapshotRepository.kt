@@ -13,20 +13,18 @@ import org.javers.repository.api.SnapshotIdentifier
 import java.util.*
 
 /**
- * Composite JaVers [CdoSnapshotRepository] with one durable primary repository
- * and ordered secondary fanout repositories.
+ * 하나의 durable primary repository와 순서가 있는 secondary fanout repository를 묶는
+ * composite JaVers [CdoSnapshotRepository]입니다.
  *
- * ## Behavior / Contract
- * - Public read operations delegate to [primary].
- * - [persist] writes [primary] first with its native repository semantics, then
- *   fans out to [secondaryRepositories] in order.
- * - [saveSnapshot] saves [primary] first and then ordered secondaries. It does
- *   not update repository head metadata by itself, matching the base
- *   [CdoSnapshotRepository.saveSnapshot] contract.
- * - Secondary failures are handled by [options]. The default is fail-fast.
- * - This repository is not transactional across delegates. If a secondary
- *   fails after the primary succeeds, the primary may already expose the
- *   persisted commit.
+ * ## 동작 / 계약
+ * - Public read operation은 [primary]에 위임합니다.
+ * - [persist]는 [primary]를 native repository semantics로 먼저 write한 뒤,
+ *   [secondaryRepositories]에 순서대로 fanout합니다.
+ * - [saveSnapshot]은 [primary]를 먼저 저장하고 이후 순서대로 secondary를 저장합니다.
+ *   기본 [CdoSnapshotRepository.saveSnapshot] 계약과 맞추기 위해 repository head metadata를 직접 갱신하지 않습니다.
+ * - Secondary failure는 [options]에 따라 처리합니다. 기본값은 fail-fast입니다.
+ * - 이 repository는 delegate 전체에 대해 transactional하지 않습니다. primary 성공 후 secondary가 실패하면
+ *   primary는 이미 persisted commit을 노출할 수 있습니다.
  *
  * ```kotlin
  * val composite = CompositeCdoSnapshotRepository(
@@ -38,9 +36,9 @@ import java.util.*
  *     .build()
  * ```
  *
- * @property primary durable read/write repository used as the source of truth
- * @property secondaryRepositories ordered fanout targets
- * @property options failure handling options
+ * @property primary source of truth로 사용하는 durable read/write repository입니다.
+ * @property secondaryRepositories 순서가 있는 fanout target repository 목록입니다.
+ * @property options failure handling option입니다.
  */
 class CompositeCdoSnapshotRepository private constructor(
     val primary: CdoSnapshotRepository,
@@ -51,7 +49,7 @@ class CompositeCdoSnapshotRepository private constructor(
     companion object {
 
         /**
-         * Creates a composite repository from a primary and a collection of secondaries.
+         * primary와 secondary collection으로 composite repository를 생성합니다.
          */
         operator fun invoke(
             primary: CdoSnapshotRepository,
@@ -69,7 +67,7 @@ class CompositeCdoSnapshotRepository private constructor(
         }
 
         /**
-         * Creates a composite repository from a primary and vararg secondaries.
+         * primary와 vararg secondary로 composite repository를 생성합니다.
          */
         operator fun invoke(
             primary: CdoSnapshotRepository,

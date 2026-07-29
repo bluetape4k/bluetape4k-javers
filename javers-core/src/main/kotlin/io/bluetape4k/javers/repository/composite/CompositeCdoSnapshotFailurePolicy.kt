@@ -1,17 +1,17 @@
 package io.bluetape4k.javers.repository.composite
 
 /**
- * Failure handling policy for secondary composite repository operations.
+ * secondary composite repository operation의 failure handling policy입니다.
  */
 enum class CompositeCdoSnapshotFailurePolicy {
 
     /**
-     * Stop at the first failed secondary delegate and propagate the failure.
+     * 실패한 첫 secondary delegate에서 중단하고 failure를 전파합니다.
      */
     FAIL_FAST,
 
     /**
-     * Attempt every secondary delegate and report all failures afterward.
+     * 모든 secondary delegate를 시도한 뒤 모든 failure를 보고합니다.
      */
     BEST_EFFORT,
 }

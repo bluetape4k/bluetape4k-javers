@@ -5,7 +5,7 @@ import org.javers.repository.jql.QueryBuilder
 import kotlin.reflect.KClass
 
 /**
- * Creates a [JqlQuery] targeting all domain objects.
+ * 모든 domain object를 대상으로 하는 [JqlQuery]를 생성합니다.
  *
  * ```kotlin
  * val query = queryAnyDomainObject { limit(10) }
@@ -19,7 +19,7 @@ inline fun queryAnyDomainObject(
 }
 
 /**
- * Creates a [JqlQuery] targeting entities of the specified type.
+ * 지정한 type의 entity를 대상으로 하는 [JqlQuery]를 생성합니다.
  *
  * ```kotlin
  * val query = query<Person> { limit(5) }
@@ -33,7 +33,7 @@ inline fun <reified T: Any> query(
 }
 
 /**
- * Creates a [JqlQuery] targeting a specific entity instance.
+ * 특정 entity instance를 대상으로 하는 [JqlQuery]를 생성합니다.
  *
  * ```kotlin
  * val query = queryByInstance(person) { limit(10) }
@@ -48,7 +48,7 @@ inline fun <reified T: Any> queryByInstance(
 }
 
 /**
- * Creates a [JqlQuery] from an entity local id.
+ * entity local id에서 [JqlQuery]를 생성합니다.
  *
  * ```kotlin
  * val query = queryByInstanceId<Person>("bob")
@@ -64,7 +64,7 @@ inline fun <reified T: Any> queryByInstanceId(
 }
 
 /**
- * Creates a [JqlQuery] for value objects of the specified type at [path].
+ * [path]에 있는 지정 type의 value object를 대상으로 하는 [JqlQuery]를 생성합니다.
  */
 inline fun <reified T: Any> queryByValueObject(
     path: String,
@@ -74,7 +74,7 @@ inline fun <reified T: Any> queryByValueObject(
 }
 
 /**
- * Creates a [JqlQuery] for a value object by owner local id and [path].
+ * owner local id와 [path]로 value object 대상 [JqlQuery]를 생성합니다.
  */
 inline fun <reified T: Any> queryByValueObjectId(
     ownerLocalId: Any,
@@ -85,7 +85,7 @@ inline fun <reified T: Any> queryByValueObjectId(
 }
 
 /**
- * Creates a [JqlQuery] targeting the specified class.
+ * 지정한 class를 대상으로 하는 [JqlQuery]를 생성합니다.
  *
  * ```kotlin
  * val query = queryByClass<Person> { withNewObjectChanges() }
@@ -99,7 +99,7 @@ inline fun <reified T: Any> queryByClass(
 }
 
 /**
- * Creates a [JqlQuery] targeting multiple Java classes from a [Collection].
+ * [Collection]의 여러 Java class를 대상으로 하는 [JqlQuery]를 생성합니다.
  */
 @JvmName("queryByClassesCollection")
 inline fun queryByClasses(
@@ -110,7 +110,7 @@ inline fun queryByClasses(
 }
 
 /**
- * Creates a [JqlQuery] targeting multiple Java classes from vararg input.
+ * vararg input의 여러 Java class를 대상으로 하는 [JqlQuery]를 생성합니다.
  */
 @JvmName("queryByClassesArray")
 inline fun queryByClasses(
@@ -121,7 +121,7 @@ inline fun queryByClasses(
 }
 
 /**
- * Creates a [JqlQuery] targeting multiple Kotlin classes from a [Collection].
+ * [Collection]의 여러 Kotlin class를 대상으로 하는 [JqlQuery]를 생성합니다.
  */
 inline fun queryByClasses(
     kclasses: Collection<KClass<*>>,
@@ -131,7 +131,7 @@ inline fun queryByClasses(
 }
 
 /**
- * Creates a [JqlQuery] targeting multiple Kotlin classes from vararg input.
+ * vararg input의 여러 Kotlin class를 대상으로 하는 [JqlQuery]를 생성합니다.
  */
 inline fun queryByClasses(
     vararg kclasses: KClass<*>,

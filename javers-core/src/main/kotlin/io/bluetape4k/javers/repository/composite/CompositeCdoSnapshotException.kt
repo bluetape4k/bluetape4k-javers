@@ -3,13 +3,13 @@ package io.bluetape4k.javers.repository.composite
 import io.bluetape4k.support.requireNotEmpty
 
 /**
- * Aggregate exception raised by [CompositeCdoSnapshotRepository].
+ * [CompositeCdoSnapshotRepository]에서 발생한 aggregate exception입니다.
  *
- * ## Behavior / Contract
- * - [failures] is never empty.
- * - The first failure is exposed as the exception cause.
- * - The message includes delegate kind, index, class name, and operation only.
- *   It intentionally avoids raw snapshot global-id values or payload content.
+ * ## 동작 / 계약
+ * - [failures]는 비어 있지 않습니다.
+ * - 첫 failure를 exception cause로 노출합니다.
+ * - message에는 delegate kind, index, class name, operation만 포함합니다.
+ *   raw snapshot global-id 값이나 payload content는 의도적으로 포함하지 않습니다.
  */
 class CompositeCdoSnapshotException private constructor(
     val failures: List<CompositeCdoSnapshotWriteFailure>,
@@ -18,7 +18,7 @@ class CompositeCdoSnapshotException private constructor(
 ): RuntimeException(message, cause) {
 
     /**
-     * Creates an aggregate exception from one or more delegate failures.
+     * 하나 이상의 delegate failure로 aggregate exception을 생성합니다.
      */
     constructor(failures: List<CompositeCdoSnapshotWriteFailure>): this(buildPayload(failures))
 

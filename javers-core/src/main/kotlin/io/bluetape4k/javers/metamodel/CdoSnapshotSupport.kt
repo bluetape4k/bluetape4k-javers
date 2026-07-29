@@ -7,55 +7,55 @@ import org.javers.core.metamodel.`object`.SnapshotType
 import org.javers.repository.api.QueryParams
 
 /**
- * Maps each property of this [CdoSnapshot] through [mapper] and returns the results as a list.
+ * 이 [CdoSnapshot]의 각 property를 [mapper]로 변환하고 결과를 list로 반환합니다.
  */
 fun <R> CdoSnapshot.mapProperties(mapper: (key: String, value: Any?) -> R): List<R> =
     this.state.mapProperties(mapper)
 
 /**
- * Iterates over each property of this [CdoSnapshot] and invokes [consumer] for each entry.
+ * 이 [CdoSnapshot]의 각 property를 순회하며 각 entry마다 [consumer]를 호출합니다.
  */
 fun <R> CdoSnapshot.forEachProperties(consumer: (key: String, value: Any?) -> Unit): Unit =
     this.state.forEachProperty(consumer)
 
 /**
- * Filters to snapshots whose commit ID is before or equal to [commitId].
+ * commit ID가 [commitId]보다 이전이거나 같은 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByToCommitId(commitId: CommitId): Sequence<CdoSnapshot> =
     filter { it.commitId.isBeforeOrEqual(commitId) }
 
 /**
- * Filters to snapshots whose commit ID is contained in [commitIds].
+ * commit ID가 [commitIds]에 포함된 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByCommitIds(commitIds: Collection<CommitId>): Sequence<CdoSnapshot> =
     filter { commitIds.contains(it.commitId) }
 
 /**
- * Filters to snapshots whose version matches [version].
+ * version이 [version]과 일치하는 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByVersion(version: Long): Sequence<CdoSnapshot> =
     filter { it.version == version }
 
 /**
- * Filters to snapshots committed by [author].
+ * [author]가 commit한 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByAuthor(author: String): Sequence<CdoSnapshot> =
     filter { it.commitMetadata.author == author }
 
 /**
- * Filters to snapshots whose commit date falls within the from–to range defined by [queryParams].
+ * commit date가 [queryParams]에 정의된 from-to 범위 안에 있는 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByCommitDate(queryParams: QueryParams): Sequence<CdoSnapshot> =
     filter { queryParams.isDateInRange(it.commitMetadata.commitDate) }
 
 /**
- * Filters to snapshots that have a change recorded at [propertyName].
+ * [propertyName]에 기록된 change가 있는 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByChangedPropertyName(propertyName: String): Sequence<CdoSnapshot> =
     filter { it.hasChangeAt(propertyName) }
 
 /**
- * Filters to snapshots that have a change in at least one of [propertyNames].
+ * [propertyNames] 중 하나 이상에 change가 있는 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByChangedPropertyNames(propertyNames: Set<String>): Sequence<CdoSnapshot> =
     filter { snapshot ->
@@ -65,13 +65,13 @@ fun Sequence<CdoSnapshot>.filterByChangedPropertyNames(propertyNames: Set<String
     }
 
 /**
- * Filters to snapshots whose type matches [snapshotType].
+ * type이 [snapshotType]과 일치하는 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByType(snapshotType: SnapshotType): Sequence<CdoSnapshot> =
     filter { it.type == snapshotType }
 
 /**
- * Filters to snapshots whose commit properties satisfy all conditions in [commitProperties].
+ * commit properties가 [commitProperties]의 모든 조건을 만족하는 snapshot만 남깁니다.
  */
 fun Sequence<CdoSnapshot>.filterByCommitProperties(
     commitProperties: Map<String, Collection<String>>,
@@ -84,7 +84,7 @@ fun Sequence<CdoSnapshot>.filterByCommitProperties(
     }
 
 /**
- * Skips [skip] elements and takes up to [limit] elements, returning them as a list.
+ * [skip]개 element를 건너뛰고 최대 [limit]개 element를 list로 반환합니다.
  */
 fun Sequence<CdoSnapshot>.trimToRequestedSlice(skip: Int, limit: Int): List<CdoSnapshot> =
     drop(skip).take(limit).toList()
