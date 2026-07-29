@@ -1,6 +1,6 @@
 # Issue #190 code-pattern refactor review
 
-## Scope
+## 범위
 
 - `examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderCommandHandlerTest.kt`
 - `examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderProjectionFlowTest.kt`
@@ -11,27 +11,27 @@
 - `javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryCodecContractTest.kt`
 - `javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt`
 
-## 7-Tier Findings
+## 7-Tier 검토 결과
 
-| Tier | Result | Evidence |
+| Tier | 결과 | 증거 |
 |---|---|---|
-| P0 correctness | PASS | Refactor changes only unique test names and nullable fixture/test access. Affected tests passed. |
-| P1 runtime safety | PASS | `!!` was removed from Kotlin sources; required nullable values are captured before reuse. |
-| P2 code-pattern compliance | PASS | String-only unique values now use `Base58.randomString(8)` instead of `UUID.randomUUID()`. |
-| P3 test quality | PASS | Existing assertions remain bluetape4k assertion based; no raw JUnit/kotlin assertions were added. |
-| P4 scope control | PASS | No production behavior or README/API surface changed. Generated benchmark JSON side effects were reverted. |
-| P5 build hygiene | PASS | `git diff --check` passed; residual `UUID.randomUUID()` / `!!` scan returned no Kotlin matches. |
-| P6 process | WATCH | CodeGraph returned zero nodes for touched test files, so structural evidence was unavailable. Native subagent review was not launched because the available tool surface does not expose the required `agent_type` field for OMX role selection. |
+| P0 correctness | PASS | refactor는 unique test name과 nullable fixture/test access만 변경한다. 영향받은 tests는 통과했다. |
+| P1 runtime safety | PASS | Kotlin source에서 `!!`를 제거했다. 필요한 nullable value는 재사용 전에 capture한다. |
+| P2 code-pattern compliance | PASS | String-only unique value는 이제 `UUID.randomUUID()` 대신 `Base58.randomString(8)`을 사용한다. |
+| P3 test quality | PASS | 기존 assertion은 bluetape4k assertion 기반으로 유지된다. raw JUnit/kotlin assertion은 추가하지 않았다. |
+| P4 scope control | PASS | production behavior 또는 README/API surface는 변경하지 않았다. Generated benchmark JSON side effect는 revert했다. |
+| P5 build hygiene | PASS | `git diff --check`가 통과했다. residual `UUID.randomUUID()` / `!!` scan은 Kotlin match를 반환하지 않았다. |
+| P6 process | WATCH | CodeGraph가 touched test file에 대해 zero nodes를 반환해 structural evidence를 사용할 수 없었다. 사용 가능한 tool surface가 OMX role selection에 필요한 `agent_type` field를 노출하지 않아 native subagent review는 실행하지 않았다. |
 
-## Verdict
+## 판정
 
 - P0: 0
 - P1: 0
 - P2: 0
 - P3: 0
-- Recommendation: proceed to PR after preserving validation evidence.
+- 권고: validation evidence를 보존한 뒤 PR로 진행한다.
 
-## Verification
+## 검증
 
 - `./gradlew :javers-core:compileTestKotlin :javers-ddd:compileTestKotlin :javers-exposed:compileTestKotlin :examples-javers-exposed-ddd:compileTestKotlin :examples-javers-spring-boot4:compileTestKotlin --no-configuration-cache --no-build-cache --no-parallel --console=plain`
 - `./gradlew :javers-core:test :javers-ddd:test :javers-exposed:test :examples-javers-exposed-ddd:test :examples-javers-spring-boot4:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`

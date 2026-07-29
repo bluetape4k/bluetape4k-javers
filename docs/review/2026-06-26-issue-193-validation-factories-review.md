@@ -1,8 +1,8 @@
 # Issue 193 Review Notes
 
-## Scope
+## 범위
 
-Reviewed the issue-listed validation factory alignment targets:
+Issue에 나열된 validation factory alignment target을 검토했다.
 
 - `javers-exposed/.../JaversExposedTables.kt`
 - `javers-core/.../CdoSnapshotEvent.kt`
@@ -10,23 +10,23 @@ Reviewed the issue-listed validation factory alignment targets:
 - `examples/javers-spring-boot4/.../domain/Order.kt`
 - `examples/javers-ktor/.../domain/Order.kt`
 
-## Findings
+## 결과
 
-No P0/P1 findings in the final diff.
+Final diff에는 P0/P1 finding이 없다.
 
-## Evidence
+## 증거
 
-- The affected table-name and order aggregate data classes now use private
-  constructors plus companion factories.
-- The example order factories reject empty items, non-positive quantities, and
-  non-positive unit prices in direct regression tests.
-- `CdoSnapshotEventMetadata` numeric validation now uses bluetape4k validation
-  helpers for `snapshotVersion` and `repositorySequence`.
-- Targeted rerun passed:
+- 영향받은 table-name 및 order aggregate data class는 이제 private constructor와
+  companion factory를 사용한다.
+- example order factory는 direct regression test에서 empty items, non-positive
+  quantities, non-positive unit prices를 reject한다.
+- `CdoSnapshotEventMetadata` numeric validation은 이제 `snapshotVersion`과
+  `repositorySequence`에 bluetape4k validation helper를 사용한다.
+- Targeted rerun이 통과했다.
   `./gradlew :javers-core:test :javers-exposed:test :examples-javers-exposed-ddd:test :examples-javers-ktor:test :examples-javers-spring-boot4:test --rerun-tasks --no-configuration-cache --no-build-cache --no-parallel --console=plain`
 
-## Residual Risk
+## 잔여 위험
 
-The Kotlin visibility contract is compile-time enforced. The regression tests
-cover the public factory behavior, while attempted external `copy()` calls are
-not represented because they would be compile failures.
+Kotlin visibility contract는 compile-time에 enforce된다. Regression tests는 public
+factory behavior를 커버하지만, attempted external `copy()` call은 compile failure가
+되므로 표현하지 않는다.

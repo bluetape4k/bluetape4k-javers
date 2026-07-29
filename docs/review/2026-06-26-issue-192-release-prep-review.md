@@ -1,41 +1,41 @@
 # Issue 192 Release-Prep 7-Tier Review
 
 Snapshot: 2026-06-26 KST
-Scope: repository-wide review of `develop` for the `0.3.0` release-prep line.
+Scope: `0.3.0` release-prep line을 위한 `develop` repository-wide review.
 
-## Verdict
+## 판정
 
-P0 gate: PASS. No critical correctness, data-loss, credential, or publication
-stopper was found.
+P0 gate: PASS. critical correctness, data-loss, credential, publication stopper는
+발견하지 않았다.
 
-P1 gate: FAIL. Five release-prep blockers were confirmed and tracked as
-follow-up issues:
+P1 gate: FAIL. 다섯 개 release-prep blocker를 확인했고 follow-up issue로 추적한다.
 
-| Severity | Issue | Finding |
+| Severity | Issue | 결과 |
 |---|---|---|
-| P1 | [#208](https://github.com/bluetape4k/bluetape4k-javers/issues/208) | DDD aggregate save persists source data, then commits JaVers, then publishes events without one consistency boundary. |
-| P1 | [#209](https://github.com/bluetape4k/bluetape4k-javers/issues/209) | Durable snapshot repositories can expose partial multi-snapshot commits because `persist()` writes snapshots one by one. |
-| P1 | [#211](https://github.com/bluetape4k/bluetape4k-javers/issues/211) | Kafka projection replay writes snapshots directly and bypasses repository head/sequence restoration. |
-| P1 | [#212](https://github.com/bluetape4k/bluetape4k-javers/issues/212) | The published BOM can constrain non-published example and benchmark modules. |
-| P1 | [#213](https://github.com/bluetape4k/bluetape4k-javers/issues/213) | Published POM license metadata says Apache-2.0 while the repository license is MIT. |
+| P1 | [#208](https://github.com/bluetape4k/bluetape4k-javers/issues/208) | DDD aggregate save는 하나의 consistency boundary 없이 source data를 persist한 뒤 JaVers commit을 수행하고 event를 publish한다. |
+| P1 | [#209](https://github.com/bluetape4k/bluetape4k-javers/issues/209) | Durable snapshot repository는 `persist()`가 snapshot을 하나씩 쓰기 때문에 partial multi-snapshot commit을 노출할 수 있다. |
+| P1 | [#211](https://github.com/bluetape4k/bluetape4k-javers/issues/211) | Kafka projection replay는 snapshot을 직접 쓰며 repository head/sequence restoration을 우회한다. |
+| P1 | [#212](https://github.com/bluetape4k/bluetape4k-javers/issues/212) | Published BOM이 non-published example 및 benchmark module을 constrain할 수 있다. |
+| P1 | [#213](https://github.com/bluetape4k/bluetape4k-javers/issues/213) | repository license는 MIT인데 published POM license metadata는 Apache-2.0이라고 말한다. |
 
-Release recommendation: do not tag `0.3.0` until #208, #209, #211, #212, and
-#213 are resolved or explicitly accepted with documented semantics. The fastest
-safe first lane is #213, then #212, because both are low-effort release metadata
-blockers.
+Release recommendation: #208, #209, #211, #212, #213이 해결되거나 documented
+semantics와 함께 명시적으로 accept되기 전에는 `0.3.0` tag를 만들지 않는다. 가장 빠른
+safe first lane은 #213, 그다음 #212다. 둘 다 low-effort release metadata blocker이기
+때문이다.
 
 ## Review Evidence
 
-Review sources:
+Review source:
 
-- Local source inspection of core, DDD, Exposed, Redis, Kafka, Spring Boot
-  autoconfigure, examples, benchmark, workflows, and publication metadata.
-- Independent code-review pass reported no P0 findings, two P1 data-integrity
-  findings, one P2 lifecycle finding, and one P3 diagnostic-output finding.
-- Independent architecture pass reported `WATCH` / `REQUEST CHANGES`, adding
-  Kafka replay, BOM, and license metadata P1 findings.
-- `git diff --check` passed on the reviewed tree.
-- Independent reviewer verification: `./gradlew compileTestKotlin --warning-mode all --continue --no-configuration-cache --rerun-tasks`
+- core, DDD, Exposed, Redis, Kafka, Spring Boot autoconfigure, examples,
+  benchmark, workflows, publication metadata의 local source inspection.
+- Independent code-review pass는 P0 finding 없음, P1 data-integrity finding 2개,
+  P2 lifecycle finding 1개, P3 diagnostic-output finding 1개를 보고했다.
+- Independent architecture pass는 `WATCH` / `REQUEST CHANGES`를 보고하면서 Kafka
+  replay, BOM, license metadata P1 finding을 추가했다.
+- reviewed tree에서 `git diff --check`가 통과했다.
+- Independent reviewer verification:
+  `./gradlew compileTestKotlin --warning-mode all --continue --no-configuration-cache --rerun-tasks`
   passed (`37 actionable tasks: 37 executed`).
 
 ## P1 Findings
@@ -46,30 +46,30 @@ Review sources:
 `persist(aggregate)`, `javers.commit(...)`, and `eventPublisher.publishAll(...)`
 in `javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt:46-50`.
 
-The Exposed example repositories commit source-of-truth rows inside their own
-transactions before the JaVers commit/event publication runs:
+Exposed example repository는 JaVers commit/event publication이 실행되기 전에 자체
+transaction 안에서 source-of-truth row를 commit한다.
 
 - `examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/persistence/OrderRepository.kt:36-64`
 - `examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/persistence/OrderRepository.kt:36-64`
 - `examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/persistence/OrderRepository.kt:36-64`
 
-Risk: if JaVers commit or event publication fails after source persistence,
-source state can diverge from audit/event state.
+Risk: source persistence 이후 JaVers commit 또는 event publication이 실패하면 source
+state가 audit/event state와 diverge할 수 있다.
 
 ### #209 Durable Commit Atomicity
 
-`AbstractCdoSnapshotRepository.persist(...)` writes each snapshot and advances
-head/sequence only after the loop
+`AbstractCdoSnapshotRepository.persist(...)`는 snapshot을 각각 쓰고 loop 이후에만
+head/sequence를 advance한다
 (`javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt:204-218`).
 
-Durable repositories save one snapshot per backend boundary:
+Durable repository는 backend boundary마다 snapshot 하나를 저장한다.
 
 - Exposed: `javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt:178-193`
 - Lettuce: `javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt:125-140`
 - Redisson: `javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt:107-112`
 
-Risk: a multi-snapshot commit can leave earlier snapshots visible if a later
-snapshot write fails before head/sequence metadata is advanced.
+Risk: head/sequence metadata가 advance되기 전에 later snapshot write가 실패하면
+multi-snapshot commit이 earlier snapshot을 visible 상태로 남길 수 있다.
 
 ### #211 Kafka Projection Replay Semantics
 
@@ -77,77 +77,75 @@ snapshot write fails before head/sequence metadata is advanced.
 `projectionRepository.saveSnapshot(snapshot)` directly
 (`javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector.kt:130-158`).
 
-That bypasses the base `persist()` path that updates `head` and commit sequence
-metadata. Exposed and Redis repositories restore head from sequence metadata in
-separate paths:
+이 방식은 `head`와 commit sequence metadata를 update하는 base `persist()` path를
+우회한다. Exposed와 Redis repository는 별도 path에서 sequence metadata로 head를
+restore한다.
 
 - `javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt:204-231`
 - `javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt:151-168`
 - `javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt:93-117`
 
-Risk: replay can rebuild snapshot rows while `getHeadId()` / ordering semantics
-remain incomplete or stale.
+Risk: replay가 snapshot row를 rebuild하는 동안 `getHeadId()` / ordering semantics가
+incomplete 또는 stale 상태로 남을 수 있다.
 
 ### #212 BOM Publishable Surface
 
-The root build excludes examples and benchmarks from NMCP aggregation through
-`isExampleProject()`:
+Root build는 `isExampleProject()`를 통해 example과 benchmark를 NMCP aggregation에서
+제외한다.
 
 - `build.gradle.kts:40-46`
 - `build.gradle.kts:341-345`
 
-`settings.gradle.kts:63-76` still registers examples and the benchmark module as
-normal subprojects, and `bom/build.gradle.kts:7-15` constrains every subproject
-except the BOM itself.
+`settings.gradle.kts:63-76`은 여전히 example과 benchmark module을 normal subproject로
+등록하고, `bom/build.gradle.kts:7-15`는 BOM 자체를 제외한 모든 subproject를 constrain한다.
 
-Risk: the released BOM can advertise non-published example/benchmark modules to
-consumers.
+Risk: released BOM이 non-published example/benchmark module을 consumer에게 advertise할 수 있다.
 
 ### #213 POM License Metadata
 
-The repository license is MIT:
+Repository license는 MIT다.
 
 - `LICENSE:1`
 - `README.md:6`
 
-The published module and BOM POM metadata declare Apache-2.0:
+Published module과 BOM POM metadata는 Apache-2.0을 declare한다.
 
 - `build.gradle.kts:294-303`
 - `bom/build.gradle.kts:22-31`
 
-Risk: Maven Central artifacts would ship license metadata that conflicts with
-the repository license.
+Risk: Maven Central artifact가 repository license와 충돌하는 license metadata를 ship할 수 있다.
 
 ## P2 / P3 Follow-Ups
 
-| Severity | Issue | Finding |
+| Severity | Issue | 결과 |
 |---|---|---|
-| P2 | [#210](https://github.com/bluetape4k/bluetape4k-javers/issues/210) | Lettuce repository creates lazy command handles but has no explicit lifecycle/close contract. |
-| P2 | [#118](https://github.com/bluetape4k/bluetape4k-javers/issues/118) | Envers comparison benchmark still needs to move out of example tests into a benchmark module. |
-| P2 | [#195](https://github.com/bluetape4k/bluetape4k-javers/issues/195) | Benchmark module needs README and intentional smoke coverage. |
-| P3 | [#193](https://github.com/bluetape4k/bluetape4k-javers/issues/193) | Remaining data-class validation factories should align with current code-pattern guidance. |
-| P3 | [#194](https://github.com/bluetape4k/bluetape4k-javers/issues/194) | Spring example schema initialization should be cleaned up, although current source already uses `SchemaUtils.create(...)`. |
+| P2 | [#210](https://github.com/bluetape4k/bluetape4k-javers/issues/210) | Lettuce repository는 lazy command handle을 만들지만 explicit lifecycle/close contract가 없다. |
+| P2 | [#118](https://github.com/bluetape4k/bluetape4k-javers/issues/118) | Envers comparison benchmark는 아직 example test에서 benchmark module로 이동해야 한다. |
+| P2 | [#195](https://github.com/bluetape4k/bluetape4k-javers/issues/195) | Benchmark module에는 README와 intentional smoke coverage가 필요하다. |
+| P3 | [#193](https://github.com/bluetape4k/bluetape4k-javers/issues/193) | 남은 data-class validation factory는 current code-pattern guidance와 맞춰야 한다. |
+| P3 | [#194](https://github.com/bluetape4k/bluetape4k-javers/issues/194) | current source가 이미 `SchemaUtils.create(...)`를 사용하지만 Spring example schema initialization은 정리해야 한다. |
 
-Additional watch item: `ConsoleDispatcher` prints full domain objects to stdout
-in `javers-core/src/main/kotlin/io/bluetape4k/javers/dispatcher/internal/ConsoleDispatcher.kt:10`.
-This is low priority but should not be represented as production-safe logging.
+Additional watch item: `ConsoleDispatcher`는
+`javers-core/src/main/kotlin/io/bluetape4k/javers/dispatcher/internal/ConsoleDispatcher.kt:10`에서
+full domain object를 stdout에 출력한다. priority는 낮지만 production-safe logging으로
+표현하면 안 된다.
 
-## Positive Findings
+## 긍정적 결과
 
-- Spring Boot auto-configuration is structurally clean: backend phase classes are
-  directly listed in `AutoConfiguration.imports`, guarded by class/bean/property
-  conditions, and the default `Javers` bean requires a repository bean.
-- Exposed schema creation already avoids the deprecated
-  `createMissingTablesAndColumns(...)` production path; the repository uses
-  `SchemaUtils.create(*schema.tables)` in `ExposedCdoSnapshotRepository.kt:117-124`.
-- Kafka/Spring publisher paths restore thread interrupt status before
-  propagation in `KafkaSnapshotEventPublisher.kt:77-83` and
-  `VanillaKafkaSnapshotEventPublisher.kt:39-48`.
-- In-memory Caffeine and JCache repositories guard mutable snapshot lists with
-  explicit `ReentrantLock` usage.
+- Spring Boot auto-configuration은 structural하게 clean하다. backend phase class는
+  `AutoConfiguration.imports`에 직접 나열되고 class/bean/property condition으로
+  guard되며, default `Javers` bean은 repository bean을 요구한다.
+- Exposed schema creation은 이미 deprecated
+  `createMissingTablesAndColumns(...)` production path를 피한다. repository는
+  `ExposedCdoSnapshotRepository.kt:117-124`에서 `SchemaUtils.create(*schema.tables)`를 사용한다.
+- Kafka/Spring publisher path는 `KafkaSnapshotEventPublisher.kt:77-83` 및
+  `VanillaKafkaSnapshotEventPublisher.kt:39-48`에서 propagation 전에 thread interrupt
+  status를 restore한다.
+- In-memory Caffeine 및 JCache repository는 explicit `ReentrantLock` 사용으로
+  mutable snapshot list를 guard한다.
 
 ## Closure Criteria
 
-Close #192 after this review artifact is merged and the follow-up issue set is
-accepted as the release-prep queue. Close the `0.3.0` release gate only after the
-P1 follow-ups are fixed or explicitly accepted with documented release semantics.
+이 review artifact가 merge되고 follow-up issue set이 release-prep queue로 accept된 뒤
+#192를 닫는다. P1 follow-up이 수정되거나 documented release semantics와 함께 명시적으로
+accept된 뒤에만 `0.3.0` release gate를 닫는다.
