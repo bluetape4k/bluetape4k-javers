@@ -1,38 +1,24 @@
-# Issue #131 - Composite CDO Snapshot Repository Design
+# Issue #131 - Composite CDO Snapshot Repository 설계
 
-## Goal
+## 목표
 
-Add a first-class composite `CdoSnapshotRepository` so applications can keep a
-durable read/query store and fan out the same JaVers snapshots to optional
-secondary repositories such as Kafka or Redis.
+Application이 durable read/query store를 유지하면서 같은 JaVers snapshot을 Kafka 또는 Redis 같은 optional secondary repository로 fan out할 수 있도록 first-class composite `CdoSnapshotRepository`를 추가한다.
 
-The first implementation must stay provider-neutral and live in `javers-core`.
-It should compose existing `CdoSnapshotRepository` implementations instead of
-adding a JaVers-only cache abstraction or introducing dependencies on
-`javers-exposed`, `javers-persistence-redis`, or `javers-persistence-kafka`.
+첫 구현은 provider-neutral이어야 하며 `javers-core`에 위치해야 한다. JaVers-only cache abstraction을 추가하거나 `javers-exposed`, `javers-persistence-redis`, `javers-persistence-kafka` dependency를 도입하지 않고 기존 `CdoSnapshotRepository` implementation을 compose해야 한다.
 
-## Evidence
+## 근거
 
-- GitHub issue #131 requires a durable history plus event stream composition.
-- `develop` is at `e54336d docs: add Kafka projection diagram`.
-- `CdoSnapshotRepository` is already the common storage contract for core,
-  Exposed, Redis, and Kafka modules.
-- `AbstractCdoSnapshotRepository.persist()` calls `saveSnapshot(snapshot)` for
-  every snapshot and advances the repository head only after every snapshot save
-  succeeds.
-- Kafka repositories remain intentionally write-only. #105 / PR #185 added
-  `KafkaCdoSnapshotProjector` for explicit read-side replay into a supplied
-  read-capable `CdoSnapshotRepository`.
-- #133 documents that canonical JaVers audit snapshot/head state is unsafe for
-  generic cache write-behind. Cache/near-cache behavior should use existing
-  `bluetape4k-exposed` cache contracts for application read models or
-  projections, not a new JaVers cache layer.
-- `javers-core` already has `CompositeDispatcher`, but it is best-effort and
-  domain-event oriented. Snapshot persistence needs an explicit failure policy.
+- GitHub issue #131은 durable history plus event stream composition을 요구한다.
+- `develop`은 `e54336d docs: add Kafka projection diagram`에 있다.
+- `CdoSnapshotRepository`는 이미 core, Exposed, Redis, Kafka module의 common storage contract다.
+- `AbstractCdoSnapshotRepository.persist()`는 모든 snapshot에 대해 `saveSnapshot(snapshot)`을 호출하고 모든 snapshot save가 성공한 뒤에만 repository head를 advance한다.
+- Kafka repository는 의도적으로 write-only로 남는다. #105 / PR #185는 supplied read-capable `CdoSnapshotRepository`로 explicit read-side replay를 수행하는 `KafkaCdoSnapshotProjector`를 추가했다.
+- #133은 canonical JaVers audit snapshot/head state가 generic cache write-behind에 unsafe하다고 문서화한다. Cache/near-cache behavior는 새 JaVers cache layer가 아니라 application read model 또는 projection용 기존 `bluetape4k-exposed` cache contract를 사용해야 한다.
+- `javers-core`에는 이미 `CompositeDispatcher`가 있지만 best-effort이고 domain-event oriented다. Snapshot persistence에는 explicit failure policy가 필요하다.
 
 ## Public API
 
-Add these public types under `io.bluetape4k.javers.repository.composite`:
+`io.bluetape4k.javers.repository.composite` 아래 다음 public type을 추가한다.
 
 - `CompositeCdoSnapshotRepository`
 - `CompositeCdoSnapshotRepositoryOptions`
@@ -43,57 +29,42 @@ Add these public types under `io.bluetape4k.javers.repository.composite`:
 
 ### `CompositeCdoSnapshotRepository`
 
-Constructor contract:
+Constructor 계약:
 
-- Requires one primary `CdoSnapshotRepository`.
-- Accepts zero or more secondary `CdoSnapshotRepository` instances.
-- Reads delegate only to the primary repository.
-- Writes save to the primary first, then fan out to secondaries in the supplied
-  order.
-- `persist(commit)` calls `primary.persist(commit)` first so the durable
-  repository keeps its native head/sequence behavior, then calls
-  `persist(commit)` on each secondary according to the failure policy.
-- `setJsonConverter()` is propagated to the primary and all secondaries.
-- `ensureSchema()` is propagated to the primary and all secondaries using the
-  same failure policy as writes.
-- `getHeadId()` delegates to the primary.
-- `AutoCloseable.close()` closes delegates that implement `AutoCloseable`.
-  Close is best-effort and must try every closeable delegate, then throw a
-  combined exception when any close fails.
+- 하나의 primary `CdoSnapshotRepository`를 요구한다.
+- Zero or more secondary `CdoSnapshotRepository` instance를 받는다.
+- Read는 primary repository에만 delegate한다.
+- Write는 primary에 먼저 save한 뒤 supplied order대로 secondary에 fan out한다.
+- `persist(commit)`은 durable repository가 native head/sequence behavior를 유지하도록 먼저 `primary.persist(commit)`을 호출한 뒤, failure policy에 따라 각 secondary의 `persist(commit)`을 호출한다.
+- `setJsonConverter()`는 primary와 모든 secondary에 propagate된다.
+- `ensureSchema()`는 write와 동일한 failure policy를 사용해 primary와 모든 secondary에 propagate된다.
+- `getHeadId()`는 primary에 delegate한다.
+- `AutoCloseable.close()`는 `AutoCloseable`을 구현한 delegate를 close한다. Close는 best-effort이며 모든 closeable delegate를 시도한 뒤 close failure가 있으면 combined exception을 throw해야 한다.
 
-The repository must not extend `AbstractCdoSnapshotRepository` because it does
-not own a codec, head sequence, or snapshot serialization. It should implement
-`CdoSnapshotRepository` directly and delegate query behavior to the primary.
+이 repository는 codec, head sequence, snapshot serialization을 소유하지 않으므로 `AbstractCdoSnapshotRepository`를 확장하면 안 된다. `CdoSnapshotRepository`를 직접 구현하고 query behavior를 primary에 delegate해야 한다.
 
 ### `CompositeCdoSnapshotRepositoryOptions`
 
-Options:
+Option:
 
 - `writeFailurePolicy`: default `FAIL_FAST`.
 - `ensureSchemaFailurePolicy`: default `FAIL_FAST`.
 - `closeFailurePolicy`: default `BEST_EFFORT`.
 
-Use a private constructor plus companion `operator fun invoke(...)` when
-validation is required. Keep options serializable.
+Validation이 필요하면 private constructor와 companion `operator fun invoke(...)`를 사용한다. Option은 serializable하게 유지한다.
 
 ### Failure policy
 
 `CompositeCdoSnapshotFailurePolicy`:
 
-- `FAIL_FAST`: propagate the first delegate failure and stop remaining
-  secondary writes. This is the default because it preserves the JaVers
-  native `persist()` contract for the primary repository.
-- `BEST_EFFORT`: try all secondary writes and throw an aggregate exception only
-  after all delegates have been attempted. This policy is allowed for event
-  streams or rebuildable projections when callers accept partial secondary
-  failure. The primary write still happens first and still fails fast.
+- `FAIL_FAST`: 첫 delegate failure를 propagate하고 남은 secondary write를 중단한다. Primary repository에 대한 JaVers native `persist()` contract를 보존하므로 default다.
+- `BEST_EFFORT`: 모든 secondary write를 시도하고 모든 delegate 시도 후에만 aggregate exception을 throw한다. Caller가 partial secondary failure를 수용하는 event stream 또는 rebuildable projection에 허용된다. Primary write는 여전히 먼저 발생하며 fail fast한다.
 
-The primary write always fails fast regardless of policy. If primary storage is
-unavailable, no secondary repository should receive the snapshot.
+Primary write는 policy와 관계없이 항상 fail fast한다. Primary storage를 사용할 수 없으면 어떤 secondary repository도 snapshot을 받으면 안 된다.
 
 ### Failure model
 
-`CompositeCdoSnapshotWriteFailure` records:
+`CompositeCdoSnapshotWriteFailure`는 다음을 기록한다.
 
 - delegate kind: `PRIMARY` or `SECONDARY`
 - delegate index
@@ -101,79 +72,62 @@ unavailable, no secondary repository should receive the snapshot.
 - operation name
 - cause
 
-`CompositeCdoSnapshotException` records all failures and exposes the first
-failure as its cause. Messages must include delegate kind/index/class name and
-operation, but must not include raw snapshot global-id values.
+`CompositeCdoSnapshotException`은 모든 failure를 기록하고 첫 failure를 cause로 노출한다. Message는 delegate kind/index/class name 및 operation을 포함해야 하지만 raw snapshot global-id value는 포함하면 안 된다.
 
-## Behavior Contract
+## Behavior 계약
 
-- Public read methods (`getLatest`, `getStateHistory`, `getValueObjectStateHistory`,
-  `getSnapshots`, `loadSnapshots`, and `getHeadId`) delegate to primary storage.
-- `saveSnapshot(snapshot)` writes primary first and then secondaries in order.
-- `persist(commit)` writes primary first using the primary repository's native
-  `persist()` implementation, then secondaries in order.
-- The composite must not claim atomicity across primary and secondaries.
-  Distributed transaction, outbox, retry, and compensation are non-goals for
-  this issue.
-- If a secondary fails after the primary succeeds, the primary may already
-  contain the commit and expose its head. The composite surfaces the secondary
-  failure but does not roll back primary storage.
-- Duplicate secondary entries are caller responsibility unless the secondary
-  repository itself is idempotent.
-- Redis/cache integration is represented by passing an existing Redis-backed or
-  projection-backed `CdoSnapshotRepository` as primary or secondary. New generic
-  cache modes are not added in this issue.
-- Kafka integration is represented by passing
-  `KafkaCdoSnapshotRepository` or `VanillaKafkaCdoSnapshotRepository` as a
-  secondary write repository. Kafka read methods remain write-only.
+- Public read method(`getLatest`, `getStateHistory`, `getValueObjectStateHistory`, `getSnapshots`, `loadSnapshots`, `getHeadId`)는 primary storage에 delegate한다.
+- `saveSnapshot(snapshot)`은 primary를 먼저 write한 뒤 secondary를 순서대로 write한다.
+- `persist(commit)`은 primary repository의 native `persist()` implementation을 사용해 primary를 먼저 write한 뒤 secondary를 순서대로 write한다.
+- Composite는 primary와 secondary 사이의 atomicity를 주장하면 안 된다. Distributed transaction, outbox, retry, compensation은 이 issue의 non-goal이다.
+- Primary가 성공한 뒤 secondary가 실패하면 primary는 이미 commit을 포함하고 head를 expose할 수 있다. Composite는 secondary failure를 surface하지만 primary storage를 roll back하지 않는다.
+- Secondary repository 자체가 idempotent하지 않으면 duplicate secondary entry는 caller responsibility다.
+- Redis/cache integration은 기존 Redis-backed 또는 projection-backed `CdoSnapshotRepository`를 primary 또는 secondary로 전달하는 방식으로 표현한다. 이 issue에서는 새 generic cache mode를 추가하지 않는다.
+- Kafka integration은 `KafkaCdoSnapshotRepository` 또는 `VanillaKafkaCdoSnapshotRepository`를 secondary write repository로 전달하는 방식으로 표현한다. Kafka read method는 write-only로 남는다.
 
-## Recommended Compositions
+## 권장 composition
 
-| Shape | Primary | Secondary repositories | Notes |
+| 형태 | Primary | Secondary repository | 비고 |
 |---|---|---|---|
-| Durable + events | Exposed | Kafka | SQL remains query source; Kafka gets audit events. |
-| Durable + Redis projection + events | Exposed | Redis, Kafka | Redis is explicit projection/cache store, not hidden write-behind. |
-| Redis-first cache store + events | Redis | Kafka | Useful when Redis is accepted as the direct JaVers snapshot repository. |
-| In-memory tests + events | Caffeine | Mock/Kafka test repository | Fast unit-test shape. |
+| Durable + events | Exposed | Kafka | SQL이 query source로 남고 Kafka가 audit event를 받는다. |
+| Durable + Redis projection + events | Exposed | Redis, Kafka | Redis는 hidden write-behind가 아니라 explicit projection/cache store다. |
+| Redis-first cache store + events | Redis | Kafka | Redis가 direct JaVers snapshot repository로 허용될 때 유용하다. |
+| In-memory tests + events | Caffeine | Mock/Kafka test repository | 빠른 unit-test 형태. |
 
-## Documentation Requirements
+## 문서 요구사항
 
-- Update `javers-core/README.md` and `javers-core/README.ko.md` with:
+- `javers-core/README.md`와 `javers-core/README.ko.md`를 다음 내용으로 갱신한다.
   - composite repository overview
   - Exposed + Kafka example
   - Exposed + Redis + Kafka guidance
   - failure policy explanation
   - explicit non-atomicity and Kafka write-only notes
-- Update root `README.md` / `README.ko.md` only if the module capability list
-  needs a short cross-reference.
-- Public KDoc must be English and include a Kotlin usage example.
+- Module capability list에 짧은 cross-reference가 필요할 때만 root `README.md` / `README.ko.md`를 갱신한다.
+- Public KDoc은 English여야 하며 Kotlin usage example을 포함해야 한다.
 
-## Test Requirements
+## 테스트 요구사항
 
-Unit tests in `javers-core`:
+`javers-core`의 unit test:
 
-- Options validation and defaults.
-- Primary read delegation for representative read methods.
-- `setJsonConverter()` and `ensureSchema()` propagation.
-- Primary save happens before secondary saves.
-- Primary failure prevents secondary writes.
-- `FAIL_FAST` secondary failure stops later secondaries and throws.
-- `BEST_EFFORT` secondary failure attempts all secondaries and throws aggregate
-  failures afterward.
-- `close()` attempts all closeable delegates and reports aggregate failures.
-- JaVers commit path with Caffeine primary plus recording secondaries verifies
-  snapshots are saved and latest reads come from primary.
+- Option validation 및 default.
+- Representative read method에 대한 primary read delegation.
+- `setJsonConverter()` 및 `ensureSchema()` propagation.
+- Primary save가 secondary save보다 먼저 발생한다.
+- Primary failure가 secondary write를 방지한다.
+- `FAIL_FAST` secondary failure가 이후 secondary를 중단하고 throw한다.
+- `BEST_EFFORT` secondary failure가 모든 secondary를 시도한 뒤 aggregate failure를 throw한다.
+- `close()`가 모든 closeable delegate를 시도하고 aggregate failure를 보고한다.
+- Caffeine primary와 recording secondary를 사용한 JaVers commit path가 snapshot이 저장되고 latest read가 primary에서 오는지 검증한다.
 
-Cross-module preservation tests:
+Cross-module preservation test:
 
-- Keep existing Kafka write-only tests unchanged.
-- Run `:javers-persistence-kafka:test` if the docs or tests instantiate Kafka
-  repositories with the composite.
-- Run Redis/Exposed tests only when their source or test fixtures are touched.
+- 기존 Kafka write-only test는 변경하지 않고 유지한다.
+- Docs 또는 test가 composite와 함께 Kafka repository를 instantiate하면 `:javers-persistence-kafka:test`를 실행한다.
+- Redis/Exposed test는 해당 source 또는 test fixture가 touched될 때만 실행한다.
 
-## Validation Commands
+## Validation Command
 
-Run serially:
+Serial로 실행한다.
 
 ```bash
 ./gradlew :javers-core:test --no-configuration-cache --no-build-cache --console=plain
@@ -181,29 +135,25 @@ Run serially:
 git diff --check
 ```
 
-If only `javers-core` source and docs change and Kafka module source is
-untouched, `:javers-persistence-kafka:test` is still useful as a contract guard
-because Kafka write-only repositories are the main secondary use case.
+`javers-core` source와 docs만 변경되고 Kafka module source가 untouched라도 `:javers-persistence-kafka:test`는 contract guard로 여전히 유용하다. Kafka write-only repository가 주요 secondary use case이기 때문이다.
 
-## Non-goals
+## Non-goal
 
 - New module.
 - New dependency.
 - New cache abstraction in `bluetape4k-javers`.
-- Automatic outbox, retry queue, compensation, transaction manager, or exactly
-  once semantics.
+- Automatic outbox, retry queue, compensation, transaction manager, exactly once semantics.
 - Making Kafka repositories read-capable.
-- Spring Boot auto-configuration; #104 owns that.
-- Ktor example changes. Future Ktor work should reuse `bluetape4k-projects`
-  Ktor modules when needed.
+- Spring Boot auto-configuration. #104가 소유한다.
+- Ktor example change. Future Ktor work는 필요할 때 `bluetape4k-projects` Ktor module을 재사용해야 한다.
 
-## Risks and Mitigations
+## Risk 및 Mitigation
 
 | Risk | Mitigation |
 |---|---|
-| Users assume atomic multi-store writes | KDoc/README state non-atomic fanout and failure policies. |
-| Secondary event stream receives writes when durable store fails | Primary is always written first and always fails fast. |
-| Hidden cache semantics duplicate `bluetape4k-exposed` | Composite only accepts existing repositories; no new cache API. |
-| Best-effort hides failures | Best-effort throws aggregate failures after attempts; it never silently swallows failures. |
-| Sensitive snapshot identifiers leak in errors | Failure messages use delegate kind/index/class name, not raw snapshot keys. |
-| Close failure prevents later delegates from closing | Close uses best-effort attempt-all behavior. |
+| User가 atomic multi-store write를 가정한다 | KDoc/README가 non-atomic fanout 및 failure policy를 명시한다. |
+| Durable store가 실패했는데 secondary event stream이 write를 받는다 | Primary는 항상 먼저 write되고 항상 fail fast한다. |
+| Hidden cache semantics가 `bluetape4k-exposed`를 중복한다 | Composite는 기존 repository만 받고 새 cache API를 추가하지 않는다. |
+| Best-effort가 failure를 숨긴다 | Best-effort는 시도 후 aggregate failure를 throw하며 failure를 조용히 삼키지 않는다. |
+| Sensitive snapshot identifier가 error에 leak된다 | Failure message는 raw snapshot key가 아니라 delegate kind/index/class name을 사용한다. |
+| Close failure가 이후 delegate close를 막는다 | Close는 best-effort attempt-all behavior를 사용한다. |

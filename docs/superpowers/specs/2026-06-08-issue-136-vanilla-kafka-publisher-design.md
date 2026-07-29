@@ -1,110 +1,83 @@
-# Issue #136 - Vanilla Kafka Snapshot Publisher Design
+# Issue #136 - Vanilla Kafka Snapshot Publisher 설계
 
-## Goal
+## 목표
 
-Add a Spring-free Kafka publish path for JaVers CDO snapshots so non-Spring
-applications can publish audit events with the Apache Kafka client API.
+Non-Spring application이 Apache Kafka client API로 audit event를 publish할 수 있도록 JaVers CDO snapshot용 Spring-free Kafka publish path를 추가한다.
 
-## Evidence
+## 근거
 
 - GitHub issue #136: vanilla Kafka snapshot publisher using bluetape4k-kafka.
-- Current base: `develop` at `4e49fa7 docs: clarify Redis Exposed latency strategy`.
-- Current `KafkaCdoSnapshotRepository` accepts `KafkaTemplate<String, String>`
-  and publishes via `sendDefault(...).get(publishTimeout)`.
-- `javers-persistence-kafka/build.gradle.kts` exposes `kafka-clients` as `api`
-  and keeps `spring-kafka` as `compileOnly`.
-- `gradle/libs.versions.toml` contains `bluetape4k-kafka`.
-- Sibling `bluetape4k-projects/infra/kafka` provides vanilla `producerOf(...)`
-  and `Producer.suspendSend(...)` helpers, but the published Kafka utility
-  artifact also contains Spring Kafka support. Therefore `javers-persistence-kafka`
-  must not add `bluetape4k-kafka` as a mandatory runtime dependency merely to
-  expose a Spring-free repository.
-- Prior #40 / `docs/lessons/2026-05-17-javers-0.1.0-prerelease-fixes.md`
-  records a P0 class of bug: Kafka publish failures must propagate and
-  write-only read behavior must stay explicit.
+- 현재 base: `develop`의 `4e49fa7 docs: clarify Redis Exposed latency strategy`.
+- 현재 `KafkaCdoSnapshotRepository`는 `KafkaTemplate<String, String>`을 받고 `sendDefault(...).get(publishTimeout)`으로 publish한다.
+- `javers-persistence-kafka/build.gradle.kts`는 `kafka-clients`를 `api`로 노출하고 `spring-kafka`를 `compileOnly`로 유지한다.
+- `gradle/libs.versions.toml`은 `bluetape4k-kafka`를 포함한다.
+- Sibling `bluetape4k-projects/infra/kafka`는 vanilla `producerOf(...)`와 `Producer.suspendSend(...)` helper를 제공하지만, published Kafka utility artifact도 Spring Kafka support를 포함한다. 따라서 `javers-persistence-kafka`는 Spring-free repository를 노출한다는 이유만으로 `bluetape4k-kafka`를 mandatory runtime dependency로 추가하면 안 된다.
+- Prior #40 / `docs/lessons/2026-05-17-javers-0.1.0-prerelease-fixes.md`는 P0 class bug를 기록한다. Kafka publish failure는 propagate되어야 하고 write-only read behavior는 명시적으로 유지되어야 한다.
 
-## Scope
+## 범위
 
 ### Public API
 
-- Add `VanillaKafkaCdoSnapshotRepository`.
-  - Constructor accepts an Apache Kafka `Producer<String, String>`.
-  - Constructor accepts an options object with topic, publish timeout,
-    flush-after-send flag, and close-producer-on-close flag.
-  - Constructor accepts an optional key mapper with default `snapshot.globalId.value()`.
-  - Class implements `AutoCloseable` so opt-in producer ownership is explicit.
-- Add `VanillaKafkaCdoSnapshotRepositoryOptions`.
-  - `topic` must be non-blank.
-  - `publishTimeout` must be positive.
-  - `flushAfterSend` defaults to `false`; `send(...).get(...)` already waits
-    for acknowledgement.
-  - `closeProducerOnClose` defaults to `false` because the caller usually owns
-    the Apache Kafka producer lifecycle.
+- `VanillaKafkaCdoSnapshotRepository`를 추가한다.
+  - Constructor는 Apache Kafka `Producer<String, String>`을 받는다.
+  - Constructor는 topic, publish timeout, flush-after-send flag, close-producer-on-close flag를 가진 options object를 받는다.
+  - Constructor는 default `snapshot.globalId.value()`를 사용하는 optional key mapper를 받는다.
+  - Class는 opt-in producer ownership을 명확히 하기 위해 `AutoCloseable`을 구현한다.
+- `VanillaKafkaCdoSnapshotRepositoryOptions`를 추가한다.
+  - `topic`은 non-blank여야 한다.
+  - `publishTimeout`은 positive여야 한다.
+  - `flushAfterSend` default는 `false`다. `send(...).get(...)`이 이미 acknowledgement를 기다린다.
+  - `closeProducerOnClose` default는 `false`다. Caller가 보통 Apache Kafka producer lifecycle을 소유하기 때문이다.
 
-### Behavior Contract
+### Behavior 계약
 
-- Publish a `ProducerRecord(topic, key, encodedSnapshot)` for every JaVers
-  snapshot persisted.
-- Wait up to `publishTimeout` for the Kafka send result.
-- Propagate publish failures as `RuntimeException` so
-  `AbstractCdoSnapshotRepository.persist()` does not advance the head commit.
-- Preserve interrupt status when interrupted.
-- Keep the repository write-only, matching the existing Kafka repository:
-  read methods return empty/false/0 and log the write-only contract once at warn
-  level, then debug.
-- Do not make Kafka read-capable in this issue; #105 owns read projection and
-  #131 owns composite durable history plus event stream behavior.
-- Do not add a mandatory Spring Kafka runtime dependency for the vanilla path.
+- Persisted JaVers snapshot마다 `ProducerRecord(topic, key, encodedSnapshot)`를 publish한다.
+- Kafka send result를 `publishTimeout`까지 기다린다.
+- `AbstractCdoSnapshotRepository.persist()`가 head commit을 advance하지 않도록 publish failure를 `RuntimeException`으로 propagate한다.
+- Interrupted되면 interrupt status를 보존한다.
+- 기존 Kafka repository와 맞춰 repository를 write-only로 유지한다. Read method는 empty/false/0을 반환하고 write-only contract를 warn level로 한 번 log한 뒤 debug로 log한다.
+- 이 issue에서 Kafka를 read-capable하게 만들지 않는다. #105가 read projection을 소유하고 #131이 composite durable history plus event stream behavior를 소유한다.
+- Vanilla path용 mandatory Spring Kafka runtime dependency를 추가하지 않는다.
 
-### Documentation
+### 문서
 
-- Update `javers-persistence-kafka/README.md` and `README.ko.md`.
-- Show Spring Kafka and vanilla Kafka adapter choices.
-- Show optional `bluetape4k-kafka` usage for producer creation without making it
-  a mandatory dependency of `javers-persistence-kafka`.
-- Keep the write-only warning visible.
+- `javers-persistence-kafka/README.md`와 `README.ko.md`를 갱신한다.
+- Spring Kafka 및 vanilla Kafka adapter choice를 보여준다.
+- Producer creation을 위한 optional `bluetape4k-kafka` usage를 보여주되 이를 `javers-persistence-kafka`의 mandatory dependency로 만들지 않는다.
+- Write-only warning을 계속 보이게 둔다.
 
-## Test Requirements
+## 테스트 요구사항
 
-- Unit tests:
-  - Captures topic, key, and encoded payload for the vanilla repository.
-  - Proves publish failure propagation.
-  - Proves timeout propagation.
-  - Proves interrupted publish restores interrupt status.
-  - Proves `flushAfterSend` calls `Producer.flush()` only after successful ack.
-  - Proves `closeProducerOnClose=false` does not close the producer.
-  - Proves `closeProducerOnClose=true` closes the producer when `close()` is called.
-  - Proves blank topic and non-positive timeout validation.
-  - Proves write-only read contract warning parity.
-- Existing Spring Kafka repository tests must continue to pass.
+- Unit test:
+  - Vanilla repository의 topic, key, encoded payload를 capture한다.
+  - Publish failure propagation을 증명한다.
+  - Timeout propagation을 증명한다.
+  - Interrupted publish가 interrupt status를 restore함을 증명한다.
+  - `flushAfterSend`가 successful ack 이후에만 `Producer.flush()`를 호출함을 증명한다.
+  - `closeProducerOnClose=false`가 producer를 close하지 않음을 증명한다.
+  - `closeProducerOnClose=true`가 `close()` 호출 시 producer를 close함을 증명한다.
+  - Blank topic과 non-positive timeout validation을 증명한다.
+  - Write-only read contract warning parity를 증명한다.
+- 기존 Spring Kafka repository test는 계속 통과해야 한다.
 - Targeted Gradle verification:
   - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
 - Dependency evidence:
   - `./gradlew :javers-persistence-kafka:dependencies --configuration runtimeClasspath --no-configuration-cache --no-build-cache --console=plain`
-  - The production runtime classpath must not contain `spring-kafka`.
+  - Production runtime classpath는 `spring-kafka`를 포함하면 안 된다.
 - `git diff --check`.
 
-## Non-goals
+## Non-goal
 
 - Kafka read projection.
 - Composite durable history plus event stream repository.
 - New module.
 - Spring Boot auto-configuration.
 - Coroutine repository API.
-- Kafka transactions or idempotence defaults beyond documenting that callers
-  configure those producer settings.
+- Caller가 해당 producer setting을 configure한다는 문서화를 넘어선 Kafka transaction 또는 idempotence default.
 
-## Risks and Mitigations
+## Risk 및 Mitigation
 
-- Risk: Adding `bluetape4k-kafka` as a runtime dependency could reintroduce
-  Spring Kafka transitively. Mitigation: accept Apache `Producer` directly and
-  document `bluetape4k-kafka` as an optional producer factory/helper.
-- Risk: A write-only repository can look read-capable because it implements the
-  JaVers repository contract. Mitigation: keep the existing warning behavior
-  and README warning.
-- Risk: Producer lifecycle ownership is ambiguous. Mitigation:
-  `closeProducerOnClose=false` by default and explicit `AutoCloseable` behavior
-  when users opt in.
-- Risk: Blocking `Future.get()` can hang without a timeout. Mitigation: validate
-  positive `publishTimeout` and use it for every send wait.
-
+- Risk: `bluetape4k-kafka`를 runtime dependency로 추가하면 Spring Kafka가 transitively 다시 들어올 수 있다. Mitigation: Apache `Producer`를 직접 받고 `bluetape4k-kafka`는 optional producer factory/helper로 문서화한다.
+- Risk: Write-only repository가 JaVers repository contract를 구현하므로 read-capable하게 보일 수 있다. Mitigation: 기존 warning behavior와 README warning을 유지한다.
+- Risk: Producer lifecycle ownership이 모호하다. Mitigation: default를 `closeProducerOnClose=false`로 두고 사용자가 opt in할 때 명시적 `AutoCloseable` behavior를 제공한다.
+- Risk: Blocking `Future.get()`은 timeout 없이는 hang될 수 있다. Mitigation: positive `publishTimeout`을 validate하고 모든 send wait에 사용한다.

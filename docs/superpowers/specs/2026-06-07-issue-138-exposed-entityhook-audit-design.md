@@ -1,4 +1,4 @@
-# Issue #138 — Exposed EntityHook JaVers Audit Design
+# Issue #138 — Exposed EntityHook JaVers Audit 설계
 
 ## 목표
 
@@ -66,12 +66,12 @@ transaction 안에서 JaVers snapshot을 저장한다.
 ## 테스트 요구
 
 - H2 DAO integration:
-  - create event creates initial snapshot.
-  - update event creates next snapshot with final state.
-  - delete event creates terminal snapshot by id.
-  - multiple changes in one transaction create one final snapshot.
-  - rollback leaves no JaVers snapshot rows.
-  - `close()` unsubscribes the global hook.
+  - create event가 initial snapshot을 생성한다.
+  - update event가 final state를 가진 next snapshot을 생성한다.
+  - delete event가 id 기준 terminal snapshot을 생성한다.
+  - 하나의 transaction 안에서 여러 change가 하나의 final snapshot을 생성한다.
+  - rollback은 JaVers snapshot row를 남기지 않는다.
+  - `close()`가 global hook을 unsubscribe한다.
 - Module verification:
   - `./gradlew :javers-exposed:compileKotlin :javers-exposed:compileTestKotlin --no-configuration-cache --no-build-cache --no-parallel --console=plain`
   - `./gradlew :javers-exposed:test :javers-ddd:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`

@@ -1,56 +1,49 @@
-# Issue 90 Envers Comparison Benchmark Design
+# Issue 90 Envers Comparison Benchmark 설계
 
-## Context
+## 맥락
 
-Parent #5 has two merged implementation slices:
+Parent #5에는 merge된 implementation slice 두 개가 있다.
 
 - #88: command-side JaVers + Exposed DDD example.
 - #89: Kafka to Redis projection and read-side API.
 
-#90 adds measured benchmark documentation comparing JPA Envers with JaVers +
-Exposed for insert, update, and audit-query scenarios.
+#90은 insert, update, audit-query scenario에서 JPA Envers와 JaVers + Exposed를 비교하는 measured benchmark documentation을 추가한다.
 
-Context7 was unavailable because the configured monthly quota was exceeded.
-Official Hibernate references were checked from hibernate.org: Envers uses
-`@Audited`, creates audit tables for audited entities, and exposes audit reads
-through `AuditReader` / `AuditReaderFactory`.
+Context7은 configured monthly quota 초과로 사용할 수 없었다. Official Hibernate reference는 hibernate.org에서 확인했다. Envers는 `@Audited`를 사용하고 audited entity용 audit table을 만들며 `AuditReader` / `AuditReaderFactory`를 통해 audit read를 노출한다.
 
-## Goals
+## 목표
 
-- Add a reproducible benchmark surface for the example module.
-- Measure insert, update, and audit-query paths for:
+- Example module용 reproducible benchmark surface를 추가한다.
+- 다음의 insert, update, audit-query path를 측정한다.
   - Hibernate Envers on H2.
   - JaVers + Exposed on H2.
-- Store raw benchmark output under `docs/benchmark/`.
-- Update README.md and README.ko.md with command, environment, metric direction,
-  and measured result table.
+- Raw benchmark output을 `docs/benchmark/` 아래 저장한다.
+- README.md와 README.ko.md에 command, environment, metric direction, measured result table을 추가한다.
 
-## Non-Goals
+## Non-goal
 
-- Production performance claims.
-- API or persistence optimization work.
-- JMH adoption for this narrow documentation slice.
+- Production performance claim.
+- API 또는 persistence optimization work.
+- 이 좁은 documentation slice를 위한 JMH adoption.
 
-## Approach
+## 접근
 
-Add a JUnit benchmark test under `examples/javers-exposed-ddd` that:
+`examples/javers-exposed-ddd` 아래 다음을 수행하는 JUnit benchmark test를 추가한다.
 
-1. Performs a small warmup for both implementations.
-2. Runs a fixed number of insert, update, and audit-query operations.
-3. Uses `System.nanoTime()` around operation loops.
-4. Writes deterministic JSON output to
+1. 두 implementation에 작은 warmup을 수행한다.
+2. 고정된 수의 insert, update, audit-query operation을 실행한다.
+3. Operation loop 주변에서 `System.nanoTime()`을 사용한다.
+4. Deterministic JSON output을 다음 경로에 쓴다.
    `docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json`.
-5. Asserts that all scenario measurements are positive.
+5. 모든 scenario measurement가 positive인지 assert한다.
 
-The benchmark is intentionally a documentation benchmark, not a microbenchmark.
-It is fast enough for local reproduction and CI-compatible module testing.
+이 benchmark는 microbenchmark가 아니라 의도적으로 documentation benchmark다. Local reproduction과 CI-compatible module testing에 충분히 빠르다.
 
-## Acceptance Criteria
+## 인수 기준
 
-- Benchmark command completes within the requested 300 second timeout.
-- Raw JSON benchmark output is committed.
-- README.md and README.ko.md include measured data and caveats.
+- Benchmark command가 요청된 300초 timeout 안에 완료된다.
+- Raw JSON benchmark output이 commit된다.
+- README.md와 README.ko.md가 measured data 및 caveat를 포함한다.
 - `./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  passes.
-- `git diff --check` passes.
-
+  가 통과한다.
+- `git diff --check`가 통과한다.
