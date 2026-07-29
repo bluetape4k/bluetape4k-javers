@@ -46,10 +46,10 @@ import java.util.concurrent.atomic.AtomicInteger
 import javax.sql.DataSource
 
 /**
- * Compares bounded audit workflow costs across Hibernate Envers and JaVers paths.
+ * Hibernate Envers와 JaVers 경로의 제한된 audit workflow 비용을 비교합니다.
  *
- * This benchmark intentionally lives in the benchmark module so ordinary example tests
- * stay behavior-focused and do not rewrite benchmark evidence as a side effect.
+ * 이 benchmark는 일반 예제 test가 동작 검증에 집중하고 부수 효과로 benchmark 증거를
+ * 다시 쓰지 않도록 benchmark module 안에만 둡니다.
  */
 @State(Scope.Benchmark)
 open class EnversComparisonBenchmark {

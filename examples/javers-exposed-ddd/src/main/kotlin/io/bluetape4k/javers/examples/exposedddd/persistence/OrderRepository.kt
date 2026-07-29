@@ -19,11 +19,11 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 
 /**
- * Exposed-backed source-of-truth repository for the order command side.
+ * 주문 command side의 source-of-truth를 담당하는 Exposed 기반 repository입니다.
  *
- * ## Contract
- * This repository persists order state in [OrdersTable], then delegates JaVers
- * commits and event publication to [AggregateRepository].
+ * ## 계약
+ * 이 repository는 주문 상태를 [OrdersTable]에 저장한 뒤, JaVers commit과 event
+ * 발행을 [AggregateRepository]에 위임합니다.
  */
 class OrderRepository(
     private val database: Database,

@@ -30,7 +30,7 @@ import java.math.BigDecimal
 import java.time.Instant
 
 /**
- * REST endpoints for the Spring Boot 4 JaVers order example.
+ * Spring Boot 4 JaVers 주문 예제의 REST endpoint입니다.
  */
 @Validated
 @RestController
@@ -137,7 +137,7 @@ class OrderController(
 }
 
 /**
- * Request body for placing a new order.
+ * 새 주문 생성 요청 body입니다.
  */
 data class PlaceOrderRequest(
     @field:NotBlank
@@ -156,7 +156,7 @@ data class PlaceOrderRequest(
 }
 
 /**
- * Request body item for placing an order.
+ * 주문 생성 요청에 포함되는 item body입니다.
  */
 data class OrderItemRequest(
     @field:NotBlank
@@ -172,7 +172,7 @@ data class OrderItemRequest(
 }
 
 /**
- * Request body for marking an order as paid.
+ * 주문을 결제 완료로 표시하는 요청 body입니다.
  */
 data class MarkOrderPaidRequest(
     @field:NotBlank
@@ -184,7 +184,7 @@ data class MarkOrderPaidRequest(
 }
 
 /**
- * REST representation of the current command-side order state.
+ * 현재 command-side 주문 상태의 REST 표현입니다.
  */
 data class OrderResponse(
     val orderId: String,
@@ -201,7 +201,7 @@ data class OrderResponse(
 }
 
 /**
- * REST representation of one order line.
+ * 주문 line 하나의 REST 표현입니다.
  */
 data class OrderItemResponse(
     val sku: String,
@@ -215,7 +215,7 @@ data class OrderItemResponse(
 }
 
 /**
- * REST response containing bounded JaVers snapshot history for an order.
+ * 주문의 제한된 JaVers snapshot 이력을 담는 REST 응답입니다.
  */
 data class OrderHistoryResponse(
     val orderId: String,
@@ -228,7 +228,7 @@ data class OrderHistoryResponse(
 }
 
 /**
- * REST representation of one JaVers snapshot.
+ * JaVers snapshot 하나의 REST 표현입니다.
  */
 data class OrderSnapshotResponse(
     val version: Long,

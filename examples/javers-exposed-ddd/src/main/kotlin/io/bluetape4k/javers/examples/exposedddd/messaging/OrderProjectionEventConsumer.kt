@@ -6,12 +6,12 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import java.time.Duration
 
 /**
- * Consumes Kafka order events and applies them to the Redis read model.
+ * Kafka 주문 event를 소비해 Redis read model에 반영합니다.
  *
- * ## Contract
- * Records are applied in poll order. Kafka ordering is expected per order key,
- * so `OrderPlaced` should arrive before later status-change events for the same
- * aggregate.
+ * ## 계약
+ * record는 poll 순서대로 적용됩니다. Kafka ordering은 주문 key별로 유지된다고
+ * 가정하므로, 같은 aggregate의 후속 상태 변경 event보다 `OrderPlaced`가 먼저
+ * 도착해야 합니다.
  */
 class OrderProjectionEventConsumer(
     private val consumer: KafkaConsumer<String, String>,

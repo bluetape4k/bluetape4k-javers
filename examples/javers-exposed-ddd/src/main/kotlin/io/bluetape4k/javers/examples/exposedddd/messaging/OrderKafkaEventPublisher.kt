@@ -8,11 +8,11 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import java.util.concurrent.TimeUnit
 
 /**
- * Publishes order domain events to Kafka for the query-side projection.
+ * query-side projection을 위해 주문 domain event를 Kafka로 발행합니다.
  *
- * ## Contract
- * This example publisher is synchronous and fail-fast. A failed Kafka send
- * fails the command handler through [DomainEventPublisher].
+ * ## 계약
+ * 이 예제 publisher는 동기 방식이며 fail-fast로 동작합니다. Kafka 전송 실패는
+ * [DomainEventPublisher]를 통해 command handler 실패로 전파됩니다.
  */
 class OrderKafkaEventPublisher(
     private val producer: Producer<String, String>,

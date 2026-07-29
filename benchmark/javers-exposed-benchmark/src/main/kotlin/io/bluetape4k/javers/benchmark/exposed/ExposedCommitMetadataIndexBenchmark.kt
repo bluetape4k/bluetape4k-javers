@@ -34,10 +34,10 @@ import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * Measures benchmark-only commit metadata index variants for the JaVers Exposed repository.
+ * JaVers Exposed repository의 benchmark 전용 commit metadata index 변형을 측정합니다.
  *
- * The production schema is intentionally not changed by this benchmark; candidate indexes are
- * created only against per-trial temporary PostgreSQL tables.
+ * 이 benchmark는 production schema를 의도적으로 변경하지 않습니다. 후보 index는
+ * trial별 임시 PostgreSQL table에만 생성됩니다.
  */
 @State(Scope.Benchmark)
 open class ExposedCommitMetadataIndexBenchmark {
@@ -226,7 +226,7 @@ open class ExposedCommitMetadataIndexBenchmark {
 }
 
 /**
- * Minimal JaVers entity used by the commit metadata benchmark corpus.
+ * commit metadata benchmark corpus에서 사용하는 최소 JaVers entity입니다.
  */
 @TypeName("BenchmarkEntity")
 data class BenchmarkEntity(

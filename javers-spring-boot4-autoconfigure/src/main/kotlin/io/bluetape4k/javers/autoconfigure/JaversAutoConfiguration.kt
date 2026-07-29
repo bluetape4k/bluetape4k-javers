@@ -13,12 +13,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 
 /**
- * Base Spring Boot auto-configuration that builds a default [Javers] bean.
+ * 기본 [Javers] bean을 구성하는 Spring Boot auto-configuration 기반 단계입니다.
  *
- * ## Contract
- * This phase runs after repository phases. It backs off when the application
- * provides its own [Javers] bean and customizes the default builder through
- * ordered [JaversBuilderCustomizer] beans.
+ * ## 계약
+ * 이 단계는 repository auto-configuration 단계 이후에 실행됩니다. application이
+ * 자체 [Javers] bean을 제공하면 물러나며, 정렬된 [JaversBuilderCustomizer] bean으로
+ * 기본 builder를 확장할 수 있게 합니다.
  */
 @AutoConfiguration(
     after = [
@@ -48,7 +48,7 @@ import org.springframework.context.annotation.Bean
 class JaversAutoConfiguration {
 
     /**
-     * Creates the default JaVers instance backed by the selected repository.
+     * 선택된 repository가 backing하는 기본 JaVers instance를 생성합니다.
      */
     @Bean
     fun javers(
@@ -64,12 +64,12 @@ class JaversAutoConfiguration {
 }
 
 /**
- * Callback for applications that need to customize the auto-configured [JaversBuilder].
+ * auto-configured [JaversBuilder]를 application에서 조정할 때 사용하는 callback입니다.
  */
 fun interface JaversBuilderCustomizer {
 
     /**
-     * Applies application-specific registrations to [builder].
+     * application별 registration을 [builder]에 적용합니다.
      */
     fun customize(builder: JaversBuilder)
 }

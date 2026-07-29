@@ -10,12 +10,11 @@ import io.bluetape4k.javers.examples.exposedddd.domain.OrderPlaced
 import java.time.Instant
 
 /**
- * Example-scoped JSON codec for order domain events carried by Kafka.
+ * Kafka로 전달되는 주문 domain event를 위한 예제 범위 JSON codec입니다.
  *
- * ## Contract
- * The JSON shape is intentionally local to `javers-exposed-ddd`. It supports
- * only the order event types required by the example and fails fast for
- * unsupported events.
+ * ## 계약
+ * JSON 구조는 의도적으로 `javers-exposed-ddd` 내부에 한정됩니다. 예제에 필요한
+ * 주문 event 유형만 지원하며, 지원하지 않는 event는 fail-fast로 처리합니다.
  */
 class OrderDomainEventJsonCodec {
 

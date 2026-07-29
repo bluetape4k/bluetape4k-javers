@@ -4,7 +4,7 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.javatime.timestamp
 
 /**
- * Command-side order table for the Ktor JaVers example.
+ * Ktor JaVers 예제의 command-side 주문 table입니다.
  */
 object OrdersTable: Table("example_order") {
     val id = varchar("id", 64)

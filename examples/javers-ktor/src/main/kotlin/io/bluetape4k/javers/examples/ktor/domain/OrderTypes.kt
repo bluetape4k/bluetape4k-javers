@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 /**
- * Stable identifier for an order aggregate.
+ * 주문 aggregate의 안정적인 식별자입니다.
  */
 data class OrderId(
     val value: String,
@@ -15,7 +15,7 @@ data class OrderId(
 }
 
 /**
- * Stable identifier for a customer in the example domain.
+ * 예제 domain에서 고객을 식별하는 안정적인 식별자입니다.
  */
 data class CustomerId(
     val value: String,
@@ -26,7 +26,7 @@ data class CustomerId(
 }
 
 /**
- * Single order line persisted inside the command-side order aggregate.
+ * command-side 주문 aggregate 안에 저장되는 단일 주문 line입니다.
  */
 data class OrderItem(
     val sku: String,
@@ -43,7 +43,7 @@ data class OrderItem(
 }
 
 /**
- * Lifecycle state of the command-side order aggregate.
+ * command-side 주문 aggregate의 생명주기 상태입니다.
  */
 enum class OrderStatus {
     PLACED,

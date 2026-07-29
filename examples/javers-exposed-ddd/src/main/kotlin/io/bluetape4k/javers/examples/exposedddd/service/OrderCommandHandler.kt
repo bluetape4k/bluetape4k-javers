@@ -9,12 +9,12 @@ import io.bluetape4k.javers.examples.exposedddd.persistence.OrderRepository
 import java.time.Clock
 
 /**
- * Command handler for the order command-side example.
+ * 주문 command-side 예제의 command handler입니다.
  *
- * ## Contract
- * Each handler method performs one aggregate state transition, persists the
- * aggregate through [OrderRepository], commits the state to JaVers, and
- * publishes the matching domain event.
+ * ## 계약
+ * 각 handler method는 aggregate 상태 전이를 하나 수행하고, [OrderRepository]를
+ * 통해 aggregate를 저장한 뒤, 상태를 JaVers에 commit하고 대응하는 domain event를
+ * 발행합니다.
  */
 class OrderCommandHandler(
     private val repository: OrderRepository,

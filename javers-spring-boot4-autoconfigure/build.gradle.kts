@@ -46,7 +46,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-autoconfigure")
     testImplementation("org.springframework.boot:spring-boot-kafka")
     testImplementation("org.springframework:spring-context")
-    // Required by ApplicationContextRunner's assertable context API; assertions stay bluetape4k-only.
+    // ApplicationContextRunner의 assertable context API에 필요하며 assertion은 bluetape4k 범위에서만 사용합니다.
     testImplementation("org.assertj:assertj-core")
     testRuntimeOnly(libs.h2)
 }

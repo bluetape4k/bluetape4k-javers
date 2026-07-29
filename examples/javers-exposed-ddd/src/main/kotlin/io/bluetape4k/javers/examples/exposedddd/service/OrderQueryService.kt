@@ -5,11 +5,11 @@ import io.bluetape4k.javers.examples.exposedddd.projection.OrderSummary
 import io.bluetape4k.javers.examples.exposedddd.projection.RedisOrderSummaryProjection
 
 /**
- * Read-side API for querying order summaries from the Redis projection.
+ * Redis projection에서 주문 summary를 조회하는 read-side API입니다.
  *
- * ## Contract
- * This service does not hit the command-side Exposed tables or JaVers audit
- * snapshots. It reads only the Redis projection maintained by Kafka events.
+ * ## 계약
+ * 이 service는 command-side Exposed table이나 JaVers audit snapshot을 조회하지
+ * 않습니다. Kafka event로 유지되는 Redis projection만 읽습니다.
  */
 class OrderQueryService(
     private val projection: RedisOrderSummaryProjection,

@@ -4,7 +4,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.plugins.signing.SigningExtension
 
 /**
- * Project property 또는 환경 변수에서 값을 조회합니다.
+ * 프로젝트 속성 또는 환경 변수에서 값을 조회합니다.
  */
 fun Project.getEnvOrProperty(propertyKey: String, envKey: String): String =
     findProperty(propertyKey) as? String ?: System.getenv(envKey).orEmpty()
@@ -15,10 +15,10 @@ data class CentralPublishingConfig(
 )
 
 /**
- * Central Portal 자격증명을 project property / 환경 변수에서 로딩합니다.
+ * Central Portal 자격증명을 프로젝트 속성 또는 환경 변수에서 로딩합니다.
  *
- * Property keys: `central.user`, `central.password`
- * Env var keys:  `CENTRAL_USERNAME`, `CENTRAL_PASSWORD`
+ * 프로젝트 속성 key: `central.user`, `central.password`
+ * 환경 변수 key: `CENTRAL_USERNAME`, `CENTRAL_PASSWORD`
  */
 fun Project.resolveCentralPublishingConfig(): CentralPublishingConfig = CentralPublishingConfig(
     username = getEnvOrProperty("central.user", "CENTRAL_USERNAME")
@@ -37,9 +37,9 @@ data class SigningConfig(
 )
 
 /**
- * Signing 설정을 project property / 환경 변수에서 로딩합니다.
+ * Signing 설정을 프로젝트 속성 또는 환경 변수에서 로딩합니다.
  *
- * Env var keys: `SIGNING_KEY_ID`, `SIGNING_KEY`, `SIGNING_PASSWORD`
+ * 환경 변수 key: `SIGNING_KEY_ID`, `SIGNING_KEY`, `SIGNING_PASSWORD`
  */
 fun Project.resolveSigningConfig(): SigningConfig {
     val keyId = getEnvOrProperty("signingKeyId", "SIGNING_KEY_ID")
