@@ -155,7 +155,7 @@ SQS adapter 형태:
   - SQS planned adapter semantics
   - why #105 and #131 remain separate
 
-## Validation 요구사항
+## 검증 요구사항
 
 - Metadata extraction 및 default idempotency key용 unit test.
 - 두 Kafka repository path의 publisher contract delegation용 unit test.

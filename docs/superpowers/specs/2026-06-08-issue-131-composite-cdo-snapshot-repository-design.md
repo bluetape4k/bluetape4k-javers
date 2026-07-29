@@ -125,7 +125,7 @@ Cross-module preservation test:
 - Docs 또는 test가 composite와 함께 Kafka repository를 instantiate하면 `:javers-persistence-kafka:test`를 실행한다.
 - Redis/Exposed test는 해당 source 또는 test fixture가 touched될 때만 실행한다.
 
-## Validation Command
+## 검증 Command
 
 Serial로 실행한다.
 
