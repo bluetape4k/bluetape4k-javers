@@ -1,4 +1,4 @@
-# Issue #177 - Snapshot Event Metadata Invariants Review
+# Issue #177 - Snapshot Event Metadata Invariants 검토
 
 ## 범위
 
@@ -11,7 +11,7 @@ invariant를 강화한다.
 - `javers-core/src/test/kotlin/io/bluetape4k/javers/repository/event/CdoSnapshotEventTest.kt`
 - `docs/lessons/2026-06-08-issue-177-snapshot-event-metadata-invariants.md`
 
-## Upstream Domain Evidence
+## Upstream domain 증거
 
 local Gradle source jar에서 JaVers 7.11.0 source를 inspected했다.
 
@@ -20,16 +20,16 @@ local Gradle source jar에서 JaVers 7.11.0 source를 inspected했다.
 - Repeated synchronized sequence commit은 마지막 반환값에서 `minorId`를 증가시킨다.
 - `DistributedCommitSeqGenerator.nextId()`는 `minorId = 0`인 non-negative random major id를 만든다.
 
-## Step 6-R Lite Review
+## Step 6-R Lite 검토
 
 | Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
 | 1 Security | Event metadata construction | 변경은 invalid metadata value를 더 일찍 reject할 뿐이다. parsing, deserialization, new trust boundary를 추가하지 않는다. | P0=0, P1=0, P2=0, P3=0 |
 | 2 Ops/SRE | Replay/order metadata | future transport는 invalid commit component가 fail fast한다고 신뢰할 수 있다. runtime retry, timeout, lifecycle behavior 변경은 없다. | P0=0, P1=0, P2=0, P3=0 |
 | 3 Structural | Public factory boundary | 기존 private-constructor plus companion factory pattern을 보존한다. 새 public type 또는 dependency는 도입하지 않는다. | P0=0, P1=0, P2=0, P3=0 |
-| 4 Kotlin/API quality | Validation helper와 KDoc | Numeric guard는 bluetape4k-core `requirePositiveNumber`와 `requireZeroOrPositiveNumber`를 사용한다. KDoc은 이제 commit component invariant를 문서화한다. | P0=0, P1=0, P2=0, P3=0 |
+| 4 Kotlin/API 품질 | 검증 helper와 KDoc | Numeric guard는 bluetape4k-core `requirePositiveNumber`와 `requireZeroOrPositiveNumber`를 사용한다. KDoc은 이제 commit component invariant를 문서화한다. | P0=0, P1=0, P2=0, P3=0 |
 | 5 Tests/types/silent failure | Regression tests | 테스트는 public companion factory를 통해 `commitMajorId = 0`과 `commitMinorId = -1`을 reject한다. 기존 valid metadata tests도 계속 통과한다. | P0=0, P1=0, P2=0, P3=0 |
-| 6 Performance/stability | Runtime overhead | Validation은 constant-time construction work뿐이다. 기존 factory construction 외의 hot-path allocation은 없다. | P0=0, P1=0, P2=0, P3=0 |
+| 6 성능/안정성 | Runtime overhead | 검증은 constant-time construction work뿐이다. 기존 factory construction 외의 hot-path allocation은 없다. | P0=0, P1=0, P2=0, P3=0 |
 | 7 Documentation/release/evidence | Lesson 및 issue scope | Lesson은 upstream JaVers commit-id rule을 기록한다. README, CI, Nightly, BOM, changelog update는 필요하지 않다. optional `author` blank question은 이 numeric invariant fix의 scope 밖에 남는다. 현재 JaVers commit metadata가 해당 값을 소유하고, issue는 새 author contract를 요구하는 것이 아니라 검토를 요구하기 때문이다. | P0=0, P1=0, P2=0, P3=0 |
 
 Step 6-R lite 판정: P0=0, P1=0으로 PASS.
@@ -47,6 +47,6 @@ Step 6-R lite 판정: P0=0, P1=0으로 PASS.
 - `git diff --check`
   - 결과: PASS, no whitespace errors.
 
-## Final Gate 판정
+## 최종 gate 판정
 
-P0=0. P1=0. PR creation is allowed.
+P0=0. P1=0. PR 생성을 허용한다.

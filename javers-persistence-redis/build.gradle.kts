@@ -13,7 +13,7 @@ dependencies {
     testImplementation(bt4k.bluetape4k.junit5)
     testImplementation(bt4k.bluetape4k.testcontainers)
 
-    // Javers
+    // JaVers
     api(libs.javers.core)
     api(project(":javers-core"))
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
@@ -24,11 +24,11 @@ dependencies {
     compileOnly(libs.lettuce.core)
     compileOnly(bt4k.redisson)
 
-    // Codec
+    // Codec 연동
     compileOnly(bt4k.fory.kotlin)
     compileOnly(libs.kryo5)
 
-    // Compression
+    // 압축
     compileOnly(libs.lz4.java)
     compileOnly(libs.snappy.java)
     compileOnly(bt4k.zstd.jni)

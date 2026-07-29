@@ -27,7 +27,7 @@
 
 ## 범위
 
-### Strategy Contract
+### Strategy 계약
 
 - `javers-exposed`는 durable history가 필요한 Exposed application의 canonical SQL-backed JaVers audit store로 남는다.
 - `javers-persistence-redis`는 direct Redis-backed JaVers snapshot repository로 남는다. Exposed-backed cache layer가 아니다.
@@ -65,7 +65,7 @@
 - Redis repository user가 direct Redis audit storage와 Exposed-backed near-cache strategy를 혼동하지 않도록 `javers-persistence-redis/README.md` 및 `README.ko.md`에 cross-reference를 추가한다.
 - 이 issue가 새 production repository 또는 provider-neutral JaVers cache API를 추가하지 않음을 public docs에서 명확히 한다.
 
-## Test 및 Validation 요구사항
+## 테스트 및 검증 요구사항
 
 - 영향을 받는 두 persistence module에 기존 targeted test를 실행한다.
   - `./gradlew :javers-persistence-redis:test :javers-exposed:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
@@ -73,7 +73,7 @@
 - 새 JaVers-specific mapping code가 도입되지 않는 한 이 repository에서 generic cache behavior test를 중복하지 않는다.
 - `git diff --check`를 실행한다.
 
-## Non-goal
+## 제외 목표
 
 - New production repository classes.
 - New Gradle dependencies.
@@ -81,7 +81,7 @@
 - Composite durable history plus event stream repository. 이는 issue #131에 남긴다.
 - Kafka snapshot event pipeline work. 이는 issue #135 및 #136에 남긴다.
 
-## Risk 및 Mitigation
+## 위험 및 완화
 
 - Risk: Cache misuse가 audit ordering bug를 숨길 수 있다. Mitigation: canonical snapshot 및 head metadata를 unsafe cache target으로 표시한다.
 - Risk: Write-behind가 durable state가 존재하기 전에 audit write를 acknowledge할 수 있다. Mitigation: 이 issue에서 JaVers audit write용 write-behind를 reject한다.

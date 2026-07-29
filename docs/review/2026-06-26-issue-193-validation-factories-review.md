@@ -1,4 +1,4 @@
-# Issue 193 Review Notes
+# Issue 193 검토 기록
 
 ## 범위
 
@@ -12,7 +12,7 @@ Issue에 나열된 validation factory alignment target을 검토했다.
 
 ## 결과
 
-Final diff에는 P0/P1 finding이 없다.
+최종 diff에는 P0/P1 finding이 없다.
 
 ## 증거
 
@@ -27,6 +27,6 @@ Final diff에는 P0/P1 finding이 없다.
 
 ## 잔여 위험
 
-Kotlin visibility contract는 compile-time에 enforce된다. Regression tests는 public
-factory behavior를 커버하지만, attempted external `copy()` call은 compile failure가
+Kotlin visibility contract는 compile-time에 enforce된다. Regression test는 public
+factory behavior를 커버하지만, 외부 `copy()` 호출 시도는 compile failure가
 되므로 표현하지 않는다.

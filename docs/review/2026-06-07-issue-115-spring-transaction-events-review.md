@@ -1,6 +1,6 @@
-# Issue 115 Spring Transaction Events Review
+# Issue 115 Spring Transaction Events 검토
 
-- Date: 2026-06-07 KST
+- 일자: 2026-06-07 KST
 - 범위:
   - `javers-ddd/src/test/kotlin/io/bluetape4k/javers/ddd/spring/SpringApplicationEventDomainEventPublisherTest.kt`
 
@@ -14,7 +14,7 @@ synchronization boundary 전반에서 커버된다.
 - transaction commit 후에는 event가 publish된다.
 - rollback은 publication을 막는다.
 
-## 7-Tier Local Review
+## 7-Tier 로컬 검토
 
 | Tier | 결과 | 증거 |
 |---|---:|---|
@@ -33,7 +33,7 @@ synchronization boundary 전반에서 커버된다.
 - P2: 0
 - P3: 0
 
-## Tooling Notes
+## 도구 비고
 
 - 이 세션에서 CodeGraph structural evidence를 사용할 수 없어 direct source inspection과 Gradle verification을 사용했다.
 - 이 세션에서 IntelliJ diagnostics MCP를 사용할 수 없어 Gradle compile/tests를 fallback evidence로 사용했다.

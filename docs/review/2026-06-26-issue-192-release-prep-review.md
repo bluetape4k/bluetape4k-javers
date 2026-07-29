@@ -1,7 +1,7 @@
-# Issue 192 Release-Prep 7-Tier Review
+# Issue 192 Release-Prep 7-Tier 검토
 
 Snapshot: 2026-06-26 KST
-Scope: `0.3.0` release-prep line을 위한 `develop` repository-wide review.
+범위: `0.3.0` release-prep line을 위한 `develop` repository-wide review.
 
 ## 판정
 
@@ -18,14 +18,14 @@ P1 gate: FAIL. 다섯 개 release-prep blocker를 확인했고 follow-up issue�
 | P1 | [#212](https://github.com/bluetape4k/bluetape4k-javers/issues/212) | Published BOM이 non-published example 및 benchmark module을 constrain할 수 있다. |
 | P1 | [#213](https://github.com/bluetape4k/bluetape4k-javers/issues/213) | repository license는 MIT인데 published POM license metadata는 Apache-2.0이라고 말한다. |
 
-Release recommendation: #208, #209, #211, #212, #213이 해결되거나 documented
+Release 권고: #208, #209, #211, #212, #213이 해결되거나 documented
 semantics와 함께 명시적으로 accept되기 전에는 `0.3.0` tag를 만들지 않는다. 가장 빠른
 safe first lane은 #213, 그다음 #212다. 둘 다 low-effort release metadata blocker이기
 때문이다.
 
-## Review Evidence
+## 검토 증거
 
-Review source:
+검토 source:
 
 - core, DDD, Exposed, Redis, Kafka, Spring Boot autoconfigure, examples,
   benchmark, workflows, publication metadata의 local source inspection.
@@ -38,9 +38,9 @@ Review source:
   `./gradlew compileTestKotlin --warning-mode all --continue --no-configuration-cache --rerun-tasks`
   passed (`37 actionable tasks: 37 executed`).
 
-## P1 Findings
+## P1 finding
 
-### #208 DDD Aggregate Save Consistency
+### #208 DDD Aggregate Save 일관성
 
 `AggregateRepository.save(...)` has three sequential effects:
 `persist(aggregate)`, `javers.commit(...)`, and `eventPublisher.publishAll(...)`
@@ -53,10 +53,10 @@ transaction 안에서 source-of-truth row를 commit한다.
 - `examples/javers-spring-boot4/src/main/kotlin/io/bluetape4k/javers/examples/springboot4/persistence/OrderRepository.kt:36-64`
 - `examples/javers-ktor/src/main/kotlin/io/bluetape4k/javers/examples/ktor/persistence/OrderRepository.kt:36-64`
 
-Risk: source persistence 이후 JaVers commit 또는 event publication이 실패하면 source
+위험: source persistence 이후 JaVers commit 또는 event publication이 실패하면 source
 state가 audit/event state와 diverge할 수 있다.
 
-### #209 Durable Commit Atomicity
+### #209 Durable Commit 원자성
 
 `AbstractCdoSnapshotRepository.persist(...)`는 snapshot을 각각 쓰고 loop 이후에만
 head/sequence를 advance한다
@@ -68,10 +68,10 @@ Durable repository는 backend boundary마다 snapshot 하나를 저장한다.
 - Lettuce: `javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt:125-140`
 - Redisson: `javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt:107-112`
 
-Risk: head/sequence metadata가 advance되기 전에 later snapshot write가 실패하면
+위험: head/sequence metadata가 advance되기 전에 later snapshot write가 실패하면
 multi-snapshot commit이 earlier snapshot을 visible 상태로 남길 수 있다.
 
-### #211 Kafka Projection Replay Semantics
+### #211 Kafka Projection Replay 의미
 
 `KafkaCdoSnapshotProjector.projectOnce()` decodes records and calls
 `projectionRepository.saveSnapshot(snapshot)` directly

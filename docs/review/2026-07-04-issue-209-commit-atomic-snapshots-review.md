@@ -8,7 +8,7 @@
 - 현재 data structure가 같은 commit-level atomicity를 제공하지 않으므로 Redisson의 best-effort boundary를 문서화한다.
 - multi-snapshot Exposed commit에 대한 failure-injection coverage를 추가한다.
 
-## 7-Tier Review
+## 7-Tier 검토
 
 | Tier | 판정 | 증거 |
 |---|---|---|

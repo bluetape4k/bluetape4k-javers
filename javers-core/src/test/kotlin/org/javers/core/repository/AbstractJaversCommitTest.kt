@@ -28,14 +28,14 @@ abstract class AbstractJaversCommitTest {
             shallowPhonesMap = mutableMapOf("key" to reference)
         }
 
-        // WHEN
+        // 실행
         var commit = javers.commit("", entity)
 
-        // THEN: initial commit captures the entity snapshot
+        // 검증: initial commit이 entity snapshot을 캡처한다.
         commit.snapshots.forEach { log.debug { it } }
         commit.snapshots shouldHaveSize 1
 
-        // Changing a shallow reference should not produce a new snapshot
+        // shallow reference 변경은 새 snapshot을 만들면 안 된다.
         reference.number = "other"
 
         commit = javers.commit("", entity)
@@ -53,11 +53,11 @@ abstract class AbstractJaversCommitTest {
 
         var commit = javers.commit("", entity)
 
-        // THEN: initial commit captures the entity snapshot
+        // 검증: initial commit이 entity snapshot을 캡처한다.
         commit.snapshots.forEach { log.debug { it } }
         commit.snapshots shouldHaveSize 1
 
-        // Changing a @ShallowReference property should not produce a new snapshot
+        // @ShallowReference property 변경은 새 snapshot을 만들면 안 된다.
         entity.shallowCategory?.name = "new shallow"
 
         commit = javers.commit("", entity)

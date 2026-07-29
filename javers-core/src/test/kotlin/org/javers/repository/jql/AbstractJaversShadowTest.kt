@@ -25,17 +25,17 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
     @Test
     fun `shadow를 조회하여 stream으로 받을 수 있다`() {
-        // GIVEN
+        // 준비
         val entity = SnapshotEntity(1).apply { intProperty = 1 }
         javers.commit("a", entity)
         entity.intProperty = 2
         javers.commit("a", entity)
 
-        // WHEN
+        // 실행
         val query = queryByInstanceId<SnapshotEntity>(1)
         val shadows = javers.findShadowsAndStream<SnapshotEntity>(query).map { it.get() }.toList()
 
-        // THEN
+        // 검증
         shadows shouldHaveSize 2
         with(shadows[0] as SnapshotEntity) {
             id shouldBeEqualTo 1
@@ -49,20 +49,20 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
     @Test
     fun `shadow 쿼리 시 지연된 결과 반환을 수행`() {
-        // GIVEN
+        // 준비
         val entity = SnapshotEntity(1).apply { intProperty = 1 }
         repeat(20) {
             entity.intProperty = it
             javers.commit("a", entity)
         }
 
-        // WHEN
+        // 실행
         val query = queryByInstanceId<SnapshotEntity>(1) { limit(5) }
         val shadows = javers.findShadowsAndStream<SnapshotEntity>(query)
             .limit(12)
             .toList()
 
-        // THEN
+        // 검증
         shadows shouldHaveSize 5
         repeat(5) {
             commitSeq(shadows[it].commitMetadata) shouldBeEqualTo 20 - it
@@ -90,7 +90,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
     @Test
     fun `Stream 조회한 entity를 재사용하기`() {
-        // GIVEN
+        // 준비
         val ref = SnapshotEntity(id = 2)
         javers.commit("a", ref)
 
@@ -100,14 +100,14 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
             javers.commit("a", e)
         }
 
-        // WHEN
+        // 실행
         val query = queryByInstanceId<SnapshotEntity>(1) {
             limit(5)
             withScopeDeepPlus(1)
         }
         val shadows = javers.findShadowsAndStream<SnapshotEntity>(query).map { it.get() }.toList()
 
-        // THEN
+        // 검증
         shadows shouldHaveSize 5
         shadows.first().intProperty shouldBeEqualTo 14
         shadows.last().intProperty shouldBeEqualTo 10
@@ -120,7 +120,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
     @Test
     fun `존재하지 않는 commitId를 조회하면 아무것도 반환하지 않습니다`() {
-        // GIVEN
+        // 준비
         val ref1 = SnapshotEntity(id = 2)
         val ref2 = SnapshotEntity(id = 3)
         javers.commit("a", ref1)
@@ -129,7 +129,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         val entity = SnapshotEntity(id = 1).apply { listOfEntities.addAll(listOf(ref1, ref2)) }
         javers.commit("a", entity)
 
-        // WHEN
+        // 실행
         val query = queryByInstanceId<SnapshotEntity>(1) {
             withScopeDeepPlus(1)
             withCommitId(CommitId.valueOf("543434.0")) // non-existing commitId
@@ -158,7 +158,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         javers.commit("a", eRef)
         javers.commit("a", e)
 
-        // WHEN
+        // 실행
         assertFailsWith<JaversException> {
             val query = queryByInstance(e) {
                 withScopeDeepPlus()
@@ -177,7 +177,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
     @Test
     fun `DEEP_PLUS scope에서는 refs 를 prefetch 합니다`() {
-        // GIVEN
+        // 준비
         val ref = SnapshotEntity(id = 2)
         val entity = SnapshotEntity(id = 1, entityRef = ref)
 
@@ -188,11 +188,11 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
             javers.commit("a", entity)
         }
 
-        // WHEN
+        // 실행
         val query = queryByInstanceId<SnapshotEntity>(1) { withScopeDeepPlus() }
         val shadows = javers.findShadows<SnapshotEntity>(query).map { it.get() }
 
-        // THEN
+        // 검증
         with(query.streamStats().get()) {
             dbQueriesCount shouldBeEqualTo 2
             allSnapshotsCount shouldBeEqualTo 8
@@ -209,7 +209,7 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
 
     @Test
     fun `ShallowReferenceType 엔티티의 thin shadows 를 로드합니다`() {
-        // GIVEN
+        // 준비
         // ShallowPhone 은 `@ShallowReference` 가 적용되어 로드하지 않는다
         val reference = ShallowPhone(id = 2L, number = "123", category = CategoryC(2, "some"))
         val entity = SnapshotEntity(1).apply {
@@ -222,11 +222,11 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         // entity만 commit 하고, reference는 commit하지 않는다
         javers.commit("a", entity)
 
-        // WHEN
+        // 실행
         val query = queryByInstanceId<SnapshotEntity>(1) { withScopeDeepPlus() }
         val shadows = javers.findShadows<SnapshotEntity>(query).map { it.get() }
 
-        // THEN
+        // 검증
         log.debug { "shadow=${shadows.firstOrNull()}" }
         shadows shouldHaveSize 1
 
@@ -235,14 +235,14 @@ abstract class AbstractJaversShadowTest: AbstractJaversRepositoryTest() {
         assertThinShadowOfPhone(shadows.first().shallowPhonesList.first())
         assertThinShadowOfPhone(shadows.first().shallowPhonesMap["key"])
 
-        // WHEN
+        // 실행
         javers.commit("a", reference)
         javers.commit("a", entity)
 
         val shadows2 = javers.findShadows<SnapshotEntity>(query).map { it.get() }
         shadows2 shouldHaveSize 1
 
-        // THEN
+        // 검증
         log.debug { "shadow2 = ${shadows2.first()}" }
         assertThinShadowOfPhone(shadows2.first().shallowPhone)
         assertThinShadowOfPhone(shadows2.first().shallowPhones.first())

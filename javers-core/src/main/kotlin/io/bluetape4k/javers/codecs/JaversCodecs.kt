@@ -31,7 +31,7 @@ object JaversCodecs {
     /** 기본 codec입니다([String]). */
     val Default by lazy { String }
 
-    // String codec
+    // String codec 계열
 
     /** 압축하지 않는 plain JSON string codec입니다. */
     val String by lazy { StringJaversCodec() }
@@ -51,7 +51,7 @@ object JaversCodecs {
     /** Zstd로 압축하는 string codec입니다. */
     val ZstdString by lazy { CompressibleStringJaversCodec(String, Compressors.Zstd) }
 
-    // Binary codec - JDK serialization
+    // Binary codec - JDK 직렬화 계열
 
     /**
      * JDK serialization 기반 binary codec입니다.
@@ -107,7 +107,7 @@ object JaversCodecs {
     )
     val ZstdJdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.Zstd) }
 
-    // Binary codec - Kryo serialization
+    // Binary codec - Kryo 직렬화 계열
 
     /** Kryo serialization 기반 binary codec입니다. */
     val Kryo by lazy { BinaryJaversCodec(BinarySerializers.Kryo) }
@@ -118,7 +118,7 @@ object JaversCodecs {
     val SnappyKryo by lazy { CompressibleBinaryJaversCodec(Kryo, Compressors.Snappy) }
     val ZstdKryo by lazy { CompressibleBinaryJaversCodec(Kryo, Compressors.Zstd) }
 
-    // Binary codec - Fory serialization
+    // Binary codec - Fory 직렬화 계열
 
     /** Fory serialization 기반 binary codec입니다. */
     val Fory by lazy { BinaryJaversCodec(BinarySerializers.Fory) }
@@ -129,7 +129,7 @@ object JaversCodecs {
     val SnappyFory by lazy { CompressibleBinaryJaversCodec(Fory, Compressors.Snappy) }
     val ZstdFory by lazy { CompressibleBinaryJaversCodec(Fory, Compressors.Zstd) }
 
-    // Map codec
+    // Map codec 계열
 
     /** [JsonObject]와 `Map<String, Any?>` 사이를 변환하는 codec입니다. */
     val Map by lazy { MapJaversCodec() }

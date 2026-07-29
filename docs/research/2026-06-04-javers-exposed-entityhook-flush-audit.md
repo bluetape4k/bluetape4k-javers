@@ -84,7 +84,7 @@ Generic CDC layer가 아니라 Exposed DAO audit adapter를 만든다.
 
 선호 runtime은 Java virtual thread 아래의 JDBC-backed Exposed다. Code가 blocking JDBC이므로 current JaVers Exposed repository 방향과 호환되며, virtual thread는 request/thread contention을 줄인다.
 
-Implementation 제약:
+구현 제약:
 
 - `synchronized`와 `@Synchronized`를 피한다.
 - Global mutable state보다 transaction-local state를 선호한다.

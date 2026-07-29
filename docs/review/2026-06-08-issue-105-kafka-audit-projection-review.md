@@ -1,11 +1,11 @@
-# Issue #105 - Kafka Audit Projection 7-Tier Review
+# Issue #105 - Kafka Audit Projection 7-Tier 검토
 
 ## 범위
 
-Review target은 explicit Kafka snapshot projection API, tests, README updates,
+검토 target은 explicit Kafka snapshot projection API, tests, README updates,
 issue #105 design artifact다.
 
-## Tier 1 - Contract
+## Tier 1 - 계약 검토
 
 - P0: 0
 - P1: 0
@@ -22,7 +22,7 @@ issue #105 design artifact다.
 - Idempotent replay는 GlobalId, commit id, version 기준으로 이미 존재하는
   snapshot을 건너뛴다.
 
-## Tier 3 - Ordering And Recovery
+## Tier 3 - Ordering 및 Recovery
 
 - P0: 0
 - P1: 0
@@ -30,7 +30,7 @@ issue #105 design artifact다.
 - README는 total audit order가 topic topology에 의존함을 문서화한다.
 - `replayUntilIdle`은 hidden background state 없이 bounded rebuild loop를 지원한다.
 
-## Tier 4 - Ecosystem Reuse
+## Tier 4 - Ecosystem 재사용
 
 - P0: 0
 - P1: 0
@@ -42,7 +42,7 @@ issue #105 design artifact다.
   재사용한다.
 - Production `runtimeClasspath`에는 Redis projection test dependency가 포함되지 않는다.
 
-## Tier 5 - API And Documentation
+## Tier 5 - API 및 Documentation
 
 - P0: 0
 - P1: 0
@@ -52,7 +52,7 @@ issue #105 design artifact다.
 - `javers-kafka-projection-01.png`는 두 README 파일에 모두 embedded되어 있다.
 - 매칭되는 SVG, DOT, plain, sketch, Graphviz evidence file이 존재한다.
 
-## Tier 6 - Tests
+## Tier 6 - Test
 
 - P0: 0
 - P1: 0
@@ -79,4 +79,4 @@ issue #105 design artifact다.
 
 ## Gate
 
-PASS. P0=0 and P1=0.
+PASS. P0=0 및 P1=0.

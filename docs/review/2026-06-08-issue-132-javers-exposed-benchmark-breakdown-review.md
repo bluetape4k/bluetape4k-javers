@@ -1,4 +1,4 @@
-# Issue #132 - JaVers Exposed Benchmark Breakdown Review
+# Issue #132 - JaVers Exposed Benchmark Breakdown 검토
 
 ## 범위
 
@@ -15,7 +15,7 @@
 - `README.md`
 - `README.ko.md`
 
-## Subagent Review 후속 조치
+## Subagent review 후속 조치
 
 Initial read-only reviewer pass는 final edit 전 P0=0, P1=3, P2=3을 발견했다.
 
@@ -36,7 +36,7 @@ Natural-key follow-up reviewer pass는 P0=0, P1=1, P2=1을 발견했다.
 
 Natural-key 판정: P0=0, P1=0. 잔여 P2는 correctness blocker가 아니라 #188에서 추적한다.
 
-## 7-Tier Final Review
+## 7-Tier 최종 검토
 
 | Tier | 범위 | 결과 | Counts |
 |---|---|---|---|

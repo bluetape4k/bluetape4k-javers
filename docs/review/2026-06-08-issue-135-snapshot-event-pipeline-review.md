@@ -1,13 +1,13 @@
-# Issue #135 - Snapshot Event Pipeline Review
+# Issue #135 - Snapshot Event Pipeline 검토
 
 ## 범위
 
 - `docs/superpowers/specs/2026-06-08-issue-135-snapshot-event-pipeline-design.md`
 - `docs/superpowers/plans/2026-06-08-issue-135-snapshot-event-pipeline-plan.md`
-- Planned `javers-core` event contract
-- Planned `javers-persistence-kafka` publisher adapters and README locale pair
+- 계획된 `javers-core` event contract
+- 계획된 `javers-persistence-kafka` publisher adapter 및 README locale pair
 
-## Step 2-R Spec Review
+## Step 2-R Spec 검토
 
 | Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
@@ -21,7 +21,7 @@
 
 Step 2-R 판정: P0=0, P1=0으로 PASS.
 
-## Step 3-R Plan Review
+## Step 3-R Plan 검토
 
 | 관점 | 결과 | 필요한 수정 | Counts |
 |---|---|---|---|
@@ -32,7 +32,7 @@ Step 2-R 판정: P0=0, P1=0으로 PASS.
 
 Step 3-R 판정: P0=0, P1=0으로 PASS.
 
-## Step 6-R Final Review
+## Step 6-R 최종 검토
 
 | Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
@@ -46,7 +46,7 @@ Step 3-R 판정: P0=0, P1=0으로 PASS.
 
 Final 판정: P0=0, P1=0으로 PASS.
 
-## Strict Re-Review 후속 조치
+## 엄격 재검토 후속 조치
 
 Initial review는 implementation 중심으로 치우쳐 있었다. 더 엄격한 pass에서 다음을 발견하고 수정했다.
 

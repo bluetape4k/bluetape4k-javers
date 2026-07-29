@@ -19,7 +19,7 @@ local reviews, PR을 추가한다.
    - Step 3-R local plan review를 실행한다.
    - 구현 전 P0=0 및 P1=0이 필요하다.
 
-3. Step 4 - Implementation
+3. Step 4 - 구현
    - `VanillaKafkaCdoSnapshotRepositoryOptions`를 추가한다.
    - `VanillaKafkaCdoSnapshotRepository`를 추가한다.
    - `JaversCodecs.String`과 `KafkaCdoSnapshotRepository`의 기존 write-only read contract pattern을 재사용한다.

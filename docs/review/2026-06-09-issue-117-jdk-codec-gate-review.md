@@ -1,4 +1,4 @@
-# Issue #117 - JDK Codec Gate Review
+# Issue #117 - JDK Codec Gate 검토
 
 ## 범위
 

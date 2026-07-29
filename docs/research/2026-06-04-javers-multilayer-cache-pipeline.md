@@ -48,14 +48,14 @@ Redisson은 true repository-level cache layer에 더 강한 feature set을 제�
 
 Lettuce는 synchronous, asynchronous, reactive access용 좋은 low-level Redis client다. JaVers Redis repository에 이미 있으므로 새 작업은 duplicate repository를 만드는 대신 parity test, selection guidance, transactional connection misuse 방지에 집중해야 한다.
 
-Implementation planning에서 JaVers 작업은 fresh cache/exposed abstraction을 처음부터 만들면 안 된다. 필요한 path는 기존 bluetape4k cache 및 Exposed cache surface를 재사용하고 adapt하는 것이다.
+구현 planning에서 JaVers 작업은 fresh cache/exposed abstraction을 처음부터 만들면 안 된다. 필요한 path는 기존 bluetape4k cache 및 Exposed cache surface를 재사용하고 adapt하는 것이다.
 
 - Provider-neutral near-cache behavior, statistics, resilience, test expectation에는 `bluetape4k-projects/cache/cache-core` contract를 사용한다.
 - JaVers-specific near-cache wrapper를 추가하기 전에 `bluetape4k-projects/cache/cache-lettuce` 및 `cache/cache-redisson` provider implementation을 사용한다.
 - Read-through, write-through, write-behind, `CacheMode`, `CacheWriteMode` semantics에는 `bluetape4k-exposed/exposed/exposed-cache` contract와 test fixture를 사용한다.
 - Exposed + Redis + DB behavior의 baseline으로 `bluetape4k-exposed/exposed/exposed-jdbc-lettuce` 및 `exposed/exposed-jdbc-redisson` repository implementation을 사용한다. 특히 `MapLoader` / `MapWriter`, sync/suspend repository shape, near-cache/write-behind behavior를 기준으로 삼는다.
 - JaVers-specific code는 JaVers `CdoSnapshot` / commit metadata를 기존 contract에 mapping하거나 기존 cache/exposed module로 표현할 수 없는 behavior에 대해서만 추가한다.
-- JDBC + virtual thread를 first-class performance mode로 취급한다. Implementation이 lock 또는 blocking coordination을 도입하면 `synchronized` / `@Synchronized`보다 explicit lock primitive와 bounded queue를 선호하고 virtual-thread execution에서 JDBC path를 validate한다.
+- JDBC + virtual thread를 first-class performance mode로 취급한다. 구현이 lock 또는 blocking coordination을 도입하면 `synchronized` / `@Synchronized`보다 explicit lock primitive와 bounded queue를 선호하고 virtual-thread execution에서 JDBC path를 validate한다.
 
 Kafka에는 이 repo에 유용한 API surface가 두 개 있다. Spring Kafka `KafkaTemplate`은 producer operation을 wrap하고 `CompletableFuture` send result를 반환한다. Vanilla Kafka `KafkaProducer`는 thread-safe 및 asynchronous이고 batching, idempotence, transaction을 지원하므로 Spring-free adapter를 지원해야 한다. 이 project가 다른 곳에서 이미 `bluetape4k-kafka` pattern에 의존하므로 vanilla adapter는 practical한 범위에서 해당 helper를 재사용해야 한다.
 

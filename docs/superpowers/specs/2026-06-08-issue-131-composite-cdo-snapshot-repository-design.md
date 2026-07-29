@@ -51,7 +51,7 @@ Option:
 - `ensureSchemaFailurePolicy`: default `FAIL_FAST`.
 - `closeFailurePolicy`: default `BEST_EFFORT`.
 
-Validation이 필요하면 private constructor와 companion `operator fun invoke(...)`를 사용한다. Option은 serializable하게 유지한다.
+검증이 필요하면 private constructor와 companion `operator fun invoke(...)`를 사용한다. Option은 serializable하게 유지한다.
 
 ### Failure policy
 

@@ -67,10 +67,10 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
 
     @Test
     fun `다양한 Primitive 수형 변화를 Commit한다`() {
-        // GIVEN
+        // 준비
         val s = PrimitiveEntity("1")
 
-        // WHEN
+        // 실행
         javers.commit("author", s)
 
         s.intField = 10
@@ -98,9 +98,9 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
         snapshot.state.getPropertyValue("LongField") shouldBeEqualTo 10L
     }
 
-    // Kafka is write-only: loadSnapshots() always returns empty, so Javers always sees
-    // no previous state and creates a full initial snapshot on every commit.
-    // These tests from AbstractJaversCommitTest assume read capability and cannot pass here.
+    // Kafka는 write-only라 loadSnapshots()가 항상 비어 있다.
+    // 그래서 JaVers는 이전 state가 없다고 보고 commit마다 full initial snapshot을 만든다.
+    // AbstractJaversCommitTest의 이 tests는 read capability를 가정하므로 여기서는 통과할 수 없다.
     @Disabled("Kafka is write-only — second commit always produces a snapshot because loadSnapshots() returns empty")
     override fun `ShallowReferenceType entity snapshot is not committed`() {}
 
@@ -171,9 +171,9 @@ class KafkaCdoSnapshotRepositoryTest: AbstractJaversCommitTest() {
 
     @Test
     fun `saveSnapshot propagates RuntimeException when Kafka publish fails`() {
-        // Build a KafkaTemplate whose sendDefault always returns a failed future.
-        // KafkaTemplate requires a ProducerFactory; supply the real one but override sendDefault
-        // so that no actual broker call is made.
+        // sendDefault가 항상 failed future를 반환하는 KafkaTemplate을 만든다.
+        // KafkaTemplate은 ProducerFactory를 요구하므로 실제 factory를 제공하되 sendDefault를 override한다.
+        // 따라서 실제 broker call은 발생하지 않는다.
         val failingTemplate = object : KafkaTemplate<String, String>(KafkaProvider.producerFactory) {
             override fun sendDefault(key: String, data: String?): CompletableFuture<SendResult<String, String>> =
                 CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))

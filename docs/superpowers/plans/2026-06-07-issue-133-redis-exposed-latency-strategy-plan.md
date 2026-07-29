@@ -29,7 +29,7 @@ evidence는 새 production repository를 정당화하지 않는다.
 4. 검토 및 lesson
    - `docs/review/2026-06-07-issue-133-redis-exposed-latency-strategy-review.md`를 추가한다.
    - `docs/lessons/2026-06-07-issue-133-redis-exposed-latency-strategy.md`를 추가한다.
-   - Review는 P0/P1/P2/P3 count와 명시적 P0=0/P1=0 verdict를 포함해야 한다.
+   - 검토는 P0/P1/P2/P3 count와 명시적 P0=0/P1=0 verdict를 포함해야 한다.
 
 5. PR
    - Lore trailer로 commit한다.

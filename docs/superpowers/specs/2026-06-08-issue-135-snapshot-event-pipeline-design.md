@@ -91,7 +91,7 @@ fun interface CdoSnapshotEventPublisher<T: Any> {
 - Caller는 transport-specific checked, timeout, interrupted error를 `RuntimeException`으로 wrap할 수 있지만 `InterruptedException` interrupt status는 보존해야 한다.
 - Interface는 resource lifecycle을 소유하지 않는다. Adapter class는 explicit close ownership option으로 caller-owned client를 wrap할 때 `AutoCloseable`을 구현할 수 있다.
 
-## Kafka Adapter Contract
+## Kafka adapter 계약
 
 Spring Kafka adapter:
 
@@ -112,23 +112,23 @@ Vanilla Kafka adapter:
 - Successful acknowledgement 후 optional하게 flush한다.
 - `closeProducerOnClose = true`일 때만 producer를 close한다.
 
-## NATS JetStream Design Artifact
+## NATS JetStream 설계 산출물
 
 NATS JetStream adapter 형태:
 
 - Client surface: governed `bluetape4k-nats` dependency line의 caller-provided JetStream publishing client.
 - Subject mapper: configuration의 default subject plus optional mapper.
 - Payload: `event.payload`.
-- Headers / metadata: global id, commit id, snapshot version, snapshot type,
-  codec id, and idempotency key.
+- Header / metadata: global id, commit id, snapshot version, snapshot type,
+  codec id, idempotency key.
 - Acknowledgement: `publish()` 반환 전에 publish acknowledgement를 받아야 한다.
-- Failure behavior: publish timeout 또는 negative acknowledgement를 propagate한다.
+- 실패 동작: publish timeout 또는 negative acknowledgement를 propagate한다.
 - Ordering: Kafka partition ordering과 equivalent하지 않고 subject/stream-dependent로 문서화한다.
-- Lifecycle: explicit ownership option이 나중에 추가되지 않는 한 caller가 NATS connection을 소유한다.
+- Lifecycle: 명시적 ownership option이 나중에 추가되지 않는 한 caller가 NATS connection을 소유한다.
 
 이 issue는 NATS implementation을 추가하지 않고 adapter contract를 기록한다.
 
-## SQS Design Artifact
+## SQS 설계 산출물
 
 SQS adapter 형태:
 
@@ -139,7 +139,7 @@ SQS adapter 형태:
   codec id, idempotency key.
 - FIFO support: message group id와 deduplication id는 FIFO queue에서만 required이며 standard queue용 mandatory field로 노출하면 안 된다.
 - Acknowledgement: `sendMessage` / `sendMessageBatch` success가 publish acknowledgement다.
-- Failure behavior: client error, timeout, partial batch failure를 propagate한다.
+- 실패 동작: client error, timeout, partial batch failure를 propagate한다.
 - Ordering 및 retry semantics는 Kafka equivalent가 아니라 queue-type-specific으로 문서화한다.
 
 이 issue는 SQS implementation을 추가하지 않고 adapter contract를 기록한다.

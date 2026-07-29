@@ -22,13 +22,13 @@
 
 | Tier | 영역 | P0 | P1 | P2 | P3 | 증거 |
 |---|---|---:|---:|---:|---:|---|
-| 1 | Security | 0 | 0 | 0 | 0 | Request DTO는 typed Kotlin serialization DTO다. invalid payload는 `400`으로 mapping된다. H2 database name은 JDBC URL interpolation 전에 safe character로 제한된다. |
-| 2 | Ops/SRE Reliability | 0 | 0 | 0 | 0 | Example은 bounded in-memory H2, deterministic schema creation, tests로 검증한 `installBluetape4kKtorCore()` health/readiness route를 사용한다. |
-| 3 | Structural Impact | 0 | 0 | 0 | 0 | Production module API는 변경되지 않았다. example project는 required `:examples-javers-*` prefix를 사용하고 settings/workflows/docs에 등록된다. |
-| 4 | Kotlin/Code Quality | 0 | 0 | 0 | 0 | Public DTO는 `Serializable`을 구현하고 `serialVersionUID`를 정의한다. public API KDoc은 English다. touched code에는 `!!`, `runBlocking`, `synchronized`, deprecated Exposed import가 없다. |
-| 5 | Tests/Types/Silent Failure | 0 | 0 | 0 | 0 | Tests는 create, paid transition, lookup, history snapshots, 404, invalid payload, history cap, health/readiness를 커버한다. |
-| 6 | Performance/Stability | 0 | 0 | 0 | 1 | History read는 100 snapshots로 capped된다. P3: Ktor example은 synchronous JDBC/Exposed를 사용한다. README는 production Ktor deployment에서 JDBC blocking을 worker 또는 virtual-thread execution으로 격리하거나 R2DBC로 이동해야 한다고 문서화한다. |
-| 7 | Docs/Release/Evidence | 0 | 0 | 0 | 0 | README locale set, AGENTS, CI/Nightly, Kover artifact, spec, plan, research, code review, lesson artifact가 커버된다. |
+| 1 | 보안 | 0 | 0 | 0 | 0 | Request DTO는 typed Kotlin serialization DTO다. invalid payload는 `400`으로 mapping된다. H2 database name은 JDBC URL interpolation 전에 safe character로 제한된다. |
+| 2 | 운영/SRE 신뢰성 | 0 | 0 | 0 | 0 | Example은 bounded in-memory H2, deterministic schema creation, tests로 검증한 `installBluetape4kKtorCore()` health/readiness route를 사용한다. |
+| 3 | 구조 영향 | 0 | 0 | 0 | 0 | Production module API는 변경되지 않았다. example project는 required `:examples-javers-*` prefix를 사용하고 settings/workflows/docs에 등록된다. |
+| 4 | Kotlin/코드 품질 | 0 | 0 | 0 | 0 | Public DTO는 `Serializable`을 구현하고 `serialVersionUID`를 정의한다. public API KDoc은 English다. touched code에는 `!!`, `runBlocking`, `synchronized`, deprecated Exposed import가 없다. |
+| 5 | 테스트/타입/무음 실패 | 0 | 0 | 0 | 0 | Tests는 create, paid transition, lookup, history snapshots, 404, invalid payload, history cap, health/readiness를 커버한다. |
+| 6 | 성능/안정성 | 0 | 0 | 0 | 1 | History read는 100 snapshots로 capped된다. P3: Ktor example은 synchronous JDBC/Exposed를 사용한다. README는 production Ktor deployment에서 JDBC blocking을 worker 또는 virtual-thread execution으로 격리하거나 R2DBC로 이동해야 한다고 문서화한다. |
+| 7 | 문서/릴리스/증거 | 0 | 0 | 0 | 0 | README locale set, AGENTS, CI/Nightly, Kover artifact, spec, plan, research, code review, lesson artifact가 커버된다. |
 
 ## 해결된 Findings
 
@@ -38,7 +38,7 @@
 | P2 | 4 | initial schema initialization이 deprecated `SchemaUtils.createMissingTablesAndColumns`를 사용했다. | known example-local table에 대해 Ktor example을 `SchemaUtils.create(...)`로 전환했다. |
 | P2 | 5 | test plan에 direct health/readiness coverage가 없었다. | bluetape4k Ktor core의 `/healthz`와 `/readyz`에 대한 integration coverage를 추가했다. |
 
-## Final Gate
+## 최종 Gate
 
 - P0 = 0
 - P1 = 0
