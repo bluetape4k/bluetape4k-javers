@@ -1,40 +1,36 @@
 # JaVers release-aligned shared diagrams
 
-## Goal
+## 목표
 
-Reuse README diagrams in the versioned manual without allowing the current
-Snapshot model to leak into an older stable manual.
+current Snapshot model이 더 오래된 stable manual로 새어 들어가지 않도록 막으면서,
+versioned manual에서 README diagram을 재사용한다.
 
 ## Version rule
 
-The manual manifest is the authority for both prose and shared diagrams. The
-sync contract reads `releaseRef` and `releaseCommit` from
-`docs/manual/manifest.yaml`, verifies that the ref resolves to the pinned
-commit, and copies selected assets from that Git object rather than from the
-working tree.
+manual manifest는 prose와 shared diagram 모두의 authority다. sync contract는
+`docs/manual/manifest.yaml`에서 `releaseRef`와 `releaseCommit`을 읽고, ref가 pinned
+commit으로 resolve되는지 검증한 뒤 working tree가 아니라 해당 Git object에서 선택된
+asset을 복사한다.
 
-For manual 0.2, release `0.2.1` contains three reusable README diagram pairs:
+manual 0.2에서 release `0.2.1`은 세 개의 reusable README diagram pair를 포함한다.
 
 - `root-readme-overview-01`
 - `bluetape4k-javers-architecture-01`
 - `bom-architecture-01`
 
-The other 22 canonical README pairs describe the `0.3-SNAPSHOT` line or were
-added after `0.2.1`. They remain `deferred` until a stable release contains
-them and the manual manifest advances to that release.
+다른 22개 canonical README pair는 `0.3-SNAPSHOT` line을 설명하거나 `0.2.1` 이후에
+추가됐다. stable release가 이를 포함하고 manual manifest가 해당 release로 advance될
+때까지 `deferred`로 남긴다.
 
-## Current delivery
+## 현재 delivery
 
-1. Leave the Snapshot README diagrams unchanged.
-2. Copy the three selected SVG/PNG pairs from tag `0.2.1` into
-   `docs/manual/assets/readme-diagrams`.
-3. Embed those release assets in the English and Korean manual pages.
-4. Verify release-ref/commit provenance, release-to-mirror digests, bilingual
-   references, manual contracts, and links.
+1. Snapshot README diagram은 변경하지 않는다.
+2. tag `0.2.1`에서 선택된 세 SVG/PNG pair를 `docs/manual/assets/readme-diagrams`로 복사한다.
+3. 해당 release asset을 English 및 Korean manual page에 embed한다.
+4. release-ref/commit provenance, release-to-mirror digest, bilingual reference, manual contract, link를 검증한다.
 
-## Future dark-theme transition
+## 향후 dark-theme transition
 
-Dark styling starts in the Snapshot README assets. After the next stable
-release captures those assets, update the manual manifest and selection list,
-then regenerate manual mirrors from the new release ref. Do not recolor an
-older manual independently.
+Dark styling은 Snapshot README asset에서 시작된다. 다음 stable release가 해당 asset을
+capture한 뒤 manual manifest와 selection list를 갱신하고 새 release ref에서 manual
+mirror를 다시 생성한다. older manual을 독립적으로 recolor하지 않는다.

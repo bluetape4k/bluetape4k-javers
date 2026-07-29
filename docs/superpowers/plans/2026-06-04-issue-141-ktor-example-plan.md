@@ -1,77 +1,67 @@
 # Issue 141 Ktor JaVers Example Plan
 
-Reference spec:
+참조 spec:
 `docs/superpowers/specs/2026-06-04-issue-141-ktor-example-design.md`
 
-## Complexity
+## 복잡도
 
-Type A full feature. The work adds a new Ktor example module, explicit Exposed
-and JaVers wiring, Ktor tests, README locale content, and CI/Nightly
-registration.
+Type A full feature. 이 작업은 새 Ktor example module, explicit Exposed and JaVers
+wiring, Ktor tests, README locale content, CI/Nightly registration을 추가한다.
 
-## Work Steps
+## 작업 단계
 
-1. Register the new module.
-   - Add `:examples-javers-ktor` in `settings.gradle.kts`.
-   - Map project directory to `examples/javers-ktor`.
-   - Keep the `examples-javers-*` project-name prefix.
-   - Ensure existing `isExampleProject()` excludes it from publishing.
+1. 새 module을 등록한다.
+   - `settings.gradle.kts`에 `:examples-javers-ktor`를 추가한다.
+   - project directory를 `examples/javers-ktor`에 매핑한다.
+   - `examples-javers-*` project-name prefix를 유지한다.
+   - 기존 `isExampleProject()`가 publishing에서 이를 제외하는지 확인한다.
 
-2. Add Gradle dependencies.
-   - Apply `application` and Kotlin serialization plugin.
-   - Use current repository modules: `:javers-ddd`, `:javers-exposed`.
-   - Use central `bt4k` catalog for `ktor-bom`, `bluetape4k-ktor-core`, and
-     `bluetape4k-ktor-testing` when accessors compile.
-   - Add Ktor artifact coordinates without local version duplication:
+2. Gradle dependency를 추가한다.
+   - `application` 및 Kotlin serialization plugin을 적용한다.
+   - 현재 repository module `:javers-ddd`, `:javers-exposed`를 사용한다.
+   - accessor가 compile되면 `ktor-bom`, `bluetape4k-ktor-core`, `bluetape4k-ktor-testing`에 central `bt4k` catalog를 사용한다.
+   - local version duplication 없이 Ktor artifact coordinate를 추가한다.
      `ktor-server-core`, `ktor-server-cio`, `ktor-server-test-host`,
      `ktor-server-content-negotiation`, and `ktor-serialization-kotlinx-json`.
-   - Keep H2 as runtime/test database.
+   - H2를 runtime/test database로 유지한다.
 
-3. Add example domain and persistence.
-   - Copy/adapt the order domain from `:examples-javers-spring-boot4`.
-   - Copy/adapt `OrdersTable` and `OrderRepository`.
-   - Preserve top-level Exposed operators such as `eq`.
-   - Keep persistence blocking and transaction-scoped; no suspend repository API
-     is added.
+3. example domain과 persistence를 추가한다.
+   - `:examples-javers-spring-boot4`의 order domain을 copy/adapt한다.
+   - `OrdersTable`과 `OrderRepository`를 copy/adapt한다.
+   - `eq` 같은 top-level Exposed operator를 보존한다.
+   - persistence는 blocking 및 transaction-scoped로 유지한다. suspend repository API는 추가하지 않는다.
 
-4. Add Ktor application wiring.
-   - Add `javersKtorModule()` and `main()`.
-   - Install `installBluetape4kKtorCore()`.
-   - Initialize H2/Exposed schema for `CommitTable`, `CdoSnapshotTable`, and
-     `OrdersTable`.
-   - Create `ExposedCdoSnapshotRepository`, `Javers`, `OrderRepository`, and
-     `OrderCommandHandler` explicitly.
-   - Avoid introducing DI framework or production auto-configuration.
+4. Ktor application wiring을 추가한다.
+   - `javersKtorModule()`과 `main()`을 추가한다.
+   - `installBluetape4kKtorCore()`를 install한다.
+   - `CommitTable`, `CdoSnapshotTable`, `OrdersTable`용 H2/Exposed schema를 initialize한다.
+   - `ExposedCdoSnapshotRepository`, `Javers`, `OrderRepository`, `OrderCommandHandler`를 명시적으로 만든다.
+   - DI framework 또는 production auto-configuration은 도입하지 않는다.
 
-5. Add Ktor routes and DTOs.
-   - Add DTOs with `kotlinx.serialization.Serializable`.
-   - Add endpoints:
+5. Ktor route와 DTO를 추가한다.
+   - `kotlinx.serialization.Serializable`을 사용하는 DTO를 추가한다.
+   - endpoint를 추가한다.
      - `POST /orders`
      - `POST /orders/{orderId}/paid`
      - `GET /orders/{orderId}`
      - `GET /orders/{orderId}/history`
-   - Use route-level validation for non-blank IDs/author/SKU, positive quantity,
-     positive unit price, and history limit.
-   - Convert unknown order to `404` and invalid requests/state transitions to
-     `400`.
+   - non-blank IDs/author/SKU, positive quantity, positive unit price, history limit에는 route-level validation을 사용한다.
+   - unknown order는 `404`로, invalid request/state transition은 `400`으로 변환한다.
 
-6. Add tests.
-   - Use Ktor `testApplication`.
-   - Use `bluetape4kJsonClient()`, `decodeJsonBody()`, and `shouldHaveStatus()`
-     where they fit.
-   - Cover create, pay, lookup, history metadata, unknown lookup, invalid
-     payload, history cap, `/healthz`, and `/readyz`.
-   - Add `junit-platform.properties` and `logback-test.xml`.
+6. tests를 추가한다.
+   - Ktor `testApplication`을 사용한다.
+   - 맞는 곳에는 `bluetape4kJsonClient()`, `decodeJsonBody()`, `shouldHaveStatus()`를 사용한다.
+   - create, pay, lookup, history metadata, unknown lookup, invalid payload, history cap, `/healthz`, `/readyz`를 커버한다.
+   - `junit-platform.properties`와 `logback-test.xml`을 추가한다.
 
-7. Update docs and repo registration.
-   - Add module `README.md` and `README.ko.md`.
-   - Update root `README.md` and `README.ko.md`.
-   - Update repo-local `AGENTS.md`.
-   - Add CI path filter, test job, status dependency, and artifact.
-   - Add Nightly test job, Kover XML command, coverage artifact, coverage
-     aggregation `needs`, and nightly status `needs`.
+7. docs와 repo registration을 갱신한다.
+   - module `README.md`와 `README.ko.md`를 추가한다.
+   - root `README.md`와 `README.ko.md`를 갱신한다.
+   - repo-local `AGENTS.md`를 갱신한다.
+   - CI path filter, test job, status dependency, artifact를 추가한다.
+   - Nightly test job, Kover XML command, coverage artifact, coverage aggregation `needs`, nightly status `needs`를 추가한다.
 
-8. Verify locally.
+8. local에서 검증한다.
    - `./gradlew :examples-javers-ktor:compileKotlin :examples-javers-ktor:compileTestKotlin --no-configuration-cache --no-build-cache --no-parallel --console=plain`
    - `./gradlew :examples-javers-ktor:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
    - `./gradlew projects --no-configuration-cache --no-build-cache --console=plain`
@@ -80,36 +70,35 @@ registration.
    - `rg -n -F "\\'" .github/workflows`
    - `git diff --check`
 
-9. Run Step 6-R 7-Tier code review.
-   - Review the new Ktor example module slice.
-   - Review root registration/docs/workflow slice.
-   - Check Ktor/JDBC blocking boundary docs.
-   - Check assertion style, Exposed import style, serializer risk, workflow YAML,
-     and CI/Nightly coverage registration.
-   - Fix all P0/P1 findings and rerun affected checks.
+9. Step 6-R 7-Tier code review를 실행한다.
+   - 새 Ktor example module slice를 review한다.
+   - root registration/docs/workflow slice를 review한다.
+   - Ktor/JDBC blocking boundary docs를 확인한다.
+   - assertion style, Exposed import style, serializer risk, workflow YAML, CI/Nightly coverage registration을 확인한다.
+   - 모든 P0/P1 finding을 수정하고 영향받은 check를 재실행한다.
 
-10. Finish delivery.
-    - Add `docs/lessons/2026-06-04-issue-141-ktor-example.md`.
-    - Commit with Lore trailers.
-    - Push branch.
-    - Create PR assigned to `debop` and milestone `0.3.0`.
-    - Update PR body after PR review and CI with Step DoD status.
-    - Do not merge without explicit user approval.
+10. delivery를 마무리한다.
+    - `docs/lessons/2026-06-04-issue-141-ktor-example.md`를 추가한다.
+    - Lore trailer로 commit한다.
+    - branch를 push한다.
+    - assignee `debop`, milestone `0.3.0`으로 PR을 만든다.
+    - PR review와 CI 이후 Step DoD status로 PR body를 갱신한다.
+    - explicit user approval 없이 merge하지 않는다.
 
 ## Risk Controls
 
-| Risk | Control |
+| 위험 | 제어 |
 |---|---|
-| Ktor accessor mismatch | Compile immediately after dependency edit and adjust central catalog accessors only. |
-| Blocking JDBC in Ktor | Keep repository synchronous, document the boundary, and avoid pretending this is high-concurrency production guidance. |
-| Serialization failure for rich value types | Prefer simple serializable response DTO fields and verify through Ktor JSON tests. |
-| Hidden production API change | Keep all code inside the new example package and avoid modifying production modules. |
-| Workflow syntax regression | Run `actionlint` and escaped single quote scan. |
-| Assertion style drift | Use bluetape4k assertion/test helpers only. |
+| Ktor accessor mismatch | dependency edit 직후 compile하고 central catalog accessor만 조정한다. |
+| Blocking JDBC in Ktor | repository를 synchronous로 유지하고 boundary를 문서화하며, 이를 high-concurrency production guidance처럼 보이게 하지 않는다. |
+| rich value type의 serialization failure | 단순 serializable response DTO field를 선호하고 Ktor JSON tests로 검증한다. |
+| Hidden production API change | 모든 code를 새 example package 안에 유지하고 production module 수정을 피한다. |
+| Workflow syntax regression | `actionlint`와 escaped single quote scan을 실행한다. |
+| Assertion style drift | bluetape4k assertion/test helper만 사용한다. |
 
-## Step 3-R 7-Tier Plan Review
+## Step 3-R 7-Tier 계획 검토
 
-Reviewed scope:
+검토 범위:
 
 - Plan tasks above
 - Spec acceptance criteria
@@ -117,22 +106,22 @@ Reviewed scope:
 - repo-local module registration rules
 - Issue #140 lesson on `examples-javers-*` naming
 
-| Tier | Area | P0 | P1 | P2 | P3 | Evidence |
+| Tier | 영역 | P0 | P1 | P2 | P3 | 증거 |
 |---|---|---:|---:|---:|---:|---|
-| 1 | Security | 0 | 0 | 0 | 0 | Validation, 400, and 404 tasks are assigned; no auth/secrets surface is introduced. |
-| 2 | Ops/SRE Reliability | 0 | 0 | 0 | 0 | Schema initialization, health/readiness, and no background client lifecycle are explicit tasks. |
-| 3 | Structural Impact | 0 | 0 | 0 | 0 | Production APIs are unchanged; module registration comes before implementation. |
-| 4 | Kotlin/API Quality | 0 | 0 | 0 | 0 | Ktor helper reuse, serialization DTOs, and Exposed import rules are explicit. |
-| 5 | Tests/Types/Silent Failure | 0 | 0 | 0 | 0 | Each route behavior, error path, health route, and history cap has a named test task. |
-| 6 | Performance/Stability | 0 | 0 | 0 | 0 | JDBC blocking boundary is a documentation and review task; no suspend API is added. |
-| 7 | Docs/Release/Evidence | 0 | 0 | 0 | 0 | README locales, AGENTS, settings, CI, Nightly, Kover, lesson, PR, CI, and DoD are assigned. |
+| 1 | Security | 0 | 0 | 0 | 0 | validation, 400, 404 task가 assigned됐다. auth/secrets surface는 도입하지 않는다. |
+| 2 | Ops/SRE Reliability | 0 | 0 | 0 | 0 | schema initialization, health/readiness, no background client lifecycle이 explicit task다. |
+| 3 | Structural Impact | 0 | 0 | 0 | 0 | production API는 변경하지 않는다. module registration은 implementation보다 먼저 수행된다. |
+| 4 | Kotlin/API Quality | 0 | 0 | 0 | 0 | Ktor helper reuse, serialization DTO, Exposed import rule이 명시적이다. |
+| 5 | Tests/Types/Silent Failure | 0 | 0 | 0 | 0 | 각 route behavior, error path, health route, history cap에 named test task가 있다. |
+| 6 | Performance/Stability | 0 | 0 | 0 | 0 | JDBC blocking boundary는 documentation 및 review task다. suspend API는 추가하지 않는다. |
+| 7 | Docs/Release/Evidence | 0 | 0 | 0 | 0 | README locales, AGENTS, settings, CI, Nightly, Kover, lesson, PR, CI, DoD가 assigned됐다. |
 
 ### Iteration Log
 
-- Iteration 1 identified two blocking plan gaps:
-  - P1/Tier 5: health/readiness tests were not assigned.
-  - P1/Tier 7: Nightly coverage aggregation `needs` was not explicitly assigned.
-- Plan edits applied:
-  - Added `/healthz` and `/readyz` tests.
-  - Added Nightly coverage/status `needs` updates.
+- Iteration 1에서 두 개의 blocking plan gap을 식별했다.
+  - P1/Tier 5: health/readiness tests가 assigned되지 않았다.
+  - P1/Tier 7: Nightly coverage aggregation `needs`가 명시적으로 assigned되지 않았다.
+- plan edit를 적용했다.
+  - `/healthz`와 `/readyz` tests를 추가했다.
+  - Nightly coverage/status `needs` update를 추가했다.
 - Final gate: `P0 = 0`, `P1 = 0`.
