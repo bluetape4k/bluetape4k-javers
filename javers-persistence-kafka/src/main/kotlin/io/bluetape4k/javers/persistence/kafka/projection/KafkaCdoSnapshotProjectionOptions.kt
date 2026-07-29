@@ -6,15 +6,15 @@ import java.io.Serializable
 import java.time.Duration
 
 /**
- * Options for [KafkaCdoSnapshotProjector].
+ * [KafkaCdoSnapshotProjector] option입니다.
  *
- * ## Behavior / Contract
- * - [topic] is the Kafka topic that contains encoded JaVers snapshot payloads.
- * - [pollTimeout] bounds each Kafka consumer poll and must be positive.
- * - [subscribeOnStart] subscribes the consumer to [topic] when the projector is created.
- * - [commitOffsetsAfterProjection] commits offsets only after a polled batch is projected successfully.
- * - [skipExistingSnapshots] skips snapshots already present in the target repository.
- * - [closeConsumerOnClose] controls whether [KafkaCdoSnapshotProjector.close] closes the consumer.
+ * ## 동작 / 계약
+ * - [topic]은 encode된 JaVers snapshot payload를 담은 Kafka topic입니다.
+ * - [pollTimeout]은 각 Kafka consumer poll 시간을 제한하며 positive여야 합니다.
+ * - [subscribeOnStart]는 projector 생성 시 consumer를 [topic]에 subscribe합니다.
+ * - [commitOffsetsAfterProjection]은 poll된 batch가 성공적으로 project된 뒤에만 offset을 commit합니다.
+ * - [skipExistingSnapshots]는 target repository에 이미 존재하는 snapshot을 건너뜁니다.
+ * - [closeConsumerOnClose]는 [KafkaCdoSnapshotProjector.close]가 consumer를 close할지 제어합니다.
  */
 @ConsistentCopyVisibility
 data class KafkaCdoSnapshotProjectionOptions private constructor(
@@ -30,7 +30,7 @@ data class KafkaCdoSnapshotProjectionOptions private constructor(
         private const val serialVersionUID: Long = -7230065706952377972L
 
         /**
-         * Creates validated options for [KafkaCdoSnapshotProjector].
+         * validation된 [KafkaCdoSnapshotProjector] option을 생성합니다.
          */
         operator fun invoke(
             topic: String,

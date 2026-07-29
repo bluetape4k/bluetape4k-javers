@@ -16,21 +16,21 @@ import org.springframework.kafka.core.KafkaTemplate
 import java.time.Duration
 
 /**
- * Write-only JaVers repository that publishes [CdoSnapshot] to a Kafka topic.
+ * [CdoSnapshot]을 Kafka topic에 publish하는 write-only JaVers repository입니다.
  *
- * ## Behavior / Contract
- * - [saveSnapshot] publishes to [topic] when it is set, otherwise to the
- *   [KafkaTemplate] default topic, using the GlobalId as the key and the encoded
- *   snapshot as the value.
- * - The publish blocks up to [publishTimeout] (default 30 s). A [java.util.concurrent.TimeoutException]
- *   is wrapped in [RuntimeException] and propagated so that [persist] does not advance the head.
- * - Publish failures are propagated as [RuntimeException] so that [persist] sees the failure
- *   and does not advance the audit-log head on error.
- * - **This repository is write-only.** All read methods ([getKeys], [contains], [getSeq],
- *   [getSnapshotSize], [loadSnapshots]) return empty/false/0. The first read-path call logs
- *   a warning to make the contract visible; repeated read-path calls log at debug level.
- *   Use a separate read-side repository (e.g. Redis, RDBMS) for query operations.
- * - The codec is [JaversCodecs.String] (uncompressed JSON string).
+ * ## 동작 / 계약
+ * - [saveSnapshot]은 [topic]이 설정되어 있으면 해당 topic으로 publish하고,
+ *   그렇지 않으면 [KafkaTemplate] default topic으로 publish합니다.
+ *   GlobalId를 key로, encode된 snapshot을 value로 사용합니다.
+ * - publish는 [publishTimeout]까지 block합니다(기본 30초). [java.util.concurrent.TimeoutException]은
+ *   [RuntimeException]으로 wrap되어 전파되므로 [persist]가 head를 advance하지 않습니다.
+ * - publish failure는 [RuntimeException]으로 전파되어 [persist]가 failure를 보고
+ *   error 시 audit-log head를 advance하지 않습니다.
+ * - **이 repository는 write-only입니다.** 모든 read method([getKeys], [contains], [getSeq],
+ *   [getSnapshotSize], [loadSnapshots])는 empty/false/0을 반환합니다.
+ *   첫 read-path 호출은 contract를 드러내기 위해 warning을 기록하고, 반복 호출은 debug level로 기록합니다.
+ *   query operation에는 별도 read-side repository(예: Redis, RDBMS)를 사용하세요.
+ * - codec은 [JaversCodecs.String](압축하지 않는 JSON string)입니다.
  *
  * ```kotlin
  * val repo = KafkaCdoSnapshotRepository(kafkaTemplate)
@@ -40,8 +40,8 @@ import java.time.Duration
  * // javers.commit("author", entity) → publishes snapshot to Kafka topic
  * ```
  *
- * @property kafkaOperations the [KafkaTemplate] instance used for publishing
- * @property publishTimeout maximum time to wait for a Kafka publish acknowledgement (default 30 s)
+ * @property kafkaOperations publish에 사용하는 [KafkaTemplate] instance입니다.
+ * @property publishTimeout Kafka publish acknowledgement를 기다리는 최대 시간입니다(기본 30초).
  */
 class KafkaCdoSnapshotRepository(
     private val kafkaOperations: KafkaTemplate<String, String>,
@@ -49,7 +49,7 @@ class KafkaCdoSnapshotRepository(
 ): AbstractCdoSnapshotRepository<String>(JaversCodecs.String) {
 
     /**
-     * Creates a write-only repository that publishes to [topic].
+     * [topic]으로 publish하는 write-only repository를 생성합니다.
      */
     constructor(
         kafkaOperations: KafkaTemplate<String, String>,
@@ -84,7 +84,7 @@ class KafkaCdoSnapshotRepository(
     }
 
     override fun updateCommitId(commitId: CommitId, sequence: Long) {
-        // Nothing to do — write-only repository does not track commit sequences.
+        // 수행할 작업이 없습니다. write-only repository는 commit sequence를 추적하지 않습니다.
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int {

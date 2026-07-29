@@ -4,7 +4,7 @@ import io.bluetape4k.support.requireGe
 import java.io.Serializable
 
 /**
- * Result counters returned by [KafkaCdoSnapshotProjector].
+ * [KafkaCdoSnapshotProjector]가 반환하는 result counter입니다.
  */
 @ConsistentCopyVisibility
 data class KafkaCdoSnapshotProjectionResult private constructor(
@@ -17,7 +17,7 @@ data class KafkaCdoSnapshotProjectionResult private constructor(
         private const val serialVersionUID: Long = 7452692371867985878L
 
         /**
-         * Creates validated projection counters.
+         * validation된 projection counter를 생성합니다.
          */
         operator fun invoke(
             polledRecords: Int = 0,

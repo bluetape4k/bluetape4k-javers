@@ -16,18 +16,17 @@ import org.javers.core.metamodel.`object`.CdoSnapshot
 import java.util.Properties
 
 /**
- * Projects Kafka snapshot records into a read-capable [CdoSnapshotRepository].
+ * Kafka snapshot record를 read-capable [CdoSnapshotRepository]로 project합니다.
  *
- * ## Behavior / Contract
- * - Consumes Kafka records whose value is the encoded JaVers snapshot payload
- *   produced by `KafkaCdoSnapshotRepository` or `VanillaKafkaCdoSnapshotRepository`.
- * - Decodes each payload with [JaversCodecs.String] and [jsonConverter].
- * - Projects decoded snapshots into [projectionRepository] so repositories
- *   that track commit metadata can restore head and sequence state.
- * - Skips already projected snapshots when
- *   [KafkaCdoSnapshotProjectionOptions.skipExistingSnapshots] is `true`.
- * - Commits Kafka offsets only after the complete polled batch is projected
- *   when [KafkaCdoSnapshotProjectionOptions.commitOffsetsAfterProjection] is `true`.
+ * ## 동작 / 계약
+ * - `KafkaCdoSnapshotRepository` 또는 `VanillaKafkaCdoSnapshotRepository`가 생성한
+ *   encode된 JaVers snapshot payload를 value로 가진 Kafka record를 consume합니다.
+ * - 각 payload를 [JaversCodecs.String]과 [jsonConverter]로 decode합니다.
+ * - commit metadata를 추적하는 repository가 head 및 sequence state를 복원할 수 있도록
+ *   decode된 snapshot을 [projectionRepository]로 project합니다.
+ * - [KafkaCdoSnapshotProjectionOptions.skipExistingSnapshots]가 `true`이면 이미 project된 snapshot을 건너뜁니다.
+ * - [KafkaCdoSnapshotProjectionOptions.commitOffsetsAfterProjection]이 `true`이면
+ *   poll된 전체 batch가 project된 뒤에만 Kafka offset을 commit합니다.
  *
  * ```kotlin
  * val readRepository = CaffeineCdoSnapshotRepository()
@@ -53,7 +52,7 @@ class KafkaCdoSnapshotProjector private constructor(
 
     companion object: KLogging() {
         /**
-         * Creates a projector with a caller-owned Kafka [Consumer].
+         * caller-owned Kafka [Consumer]로 projector를 생성합니다.
          */
         operator fun invoke(
             consumer: Consumer<String, String>,
@@ -69,7 +68,7 @@ class KafkaCdoSnapshotProjector private constructor(
             )
 
         /**
-         * Creates a projector and repository-owned consumer with bluetape4k-kafka [consumerOf].
+         * bluetape4k-kafka [consumerOf]로 projector와 repository-owned consumer를 생성합니다.
          */
         operator fun invoke(
             consumerConfigs: Map<String, Any?>,
@@ -89,7 +88,7 @@ class KafkaCdoSnapshotProjector private constructor(
             )
 
         /**
-         * Creates a projector and repository-owned consumer with bluetape4k-kafka [consumerOf].
+         * bluetape4k-kafka [consumerOf]로 projector와 repository-owned consumer를 생성합니다.
          */
         operator fun invoke(
             consumerProperties: Properties,
@@ -126,7 +125,7 @@ class KafkaCdoSnapshotProjector private constructor(
     }
 
     /**
-     * Polls Kafka once and projects every returned snapshot record.
+     * Kafka를 한 번 poll하고 반환된 모든 snapshot record를 project합니다.
      */
     fun projectOnce(): KafkaCdoSnapshotProjectionResult {
         val records = consumer.poll(options.pollTimeout)
@@ -160,7 +159,7 @@ class KafkaCdoSnapshotProjector private constructor(
     }
 
     /**
-     * Replays records until [maxIdlePolls] consecutive polls return no records.
+     * [maxIdlePolls]번 연속 poll에서 record가 반환되지 않을 때까지 record를 반복 처리합니다.
      */
     fun replayUntilIdle(maxIdlePolls: Int = 1): KafkaCdoSnapshotProjectionResult {
         maxIdlePolls.requirePositiveNumber("maxIdlePolls")

@@ -8,14 +8,14 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import java.util.concurrent.TimeUnit
 
 /**
- * Publishes JaVers snapshot events through a vanilla Apache Kafka [Producer].
+ * vanilla Apache Kafka [Producer]를 통해 JaVers snapshot event를 publish합니다.
  *
- * ## Behavior / Contract
- * - Publishes to [options.topic].
- * - Uses [keyMapper] for the Kafka record key.
- * - Waits up to [VanillaKafkaCdoSnapshotRepositoryOptions.publishTimeout] for the send acknowledgement.
- * - Optionally flushes after a successful acknowledgement.
- * - Closes the producer only when [VanillaKafkaCdoSnapshotRepositoryOptions.closeProducerOnClose] is `true`.
+ * ## 동작 / 계약
+ * - [options.topic]으로 publish합니다.
+ * - Kafka record key에는 [keyMapper]를 사용합니다.
+ * - send acknowledgement를 [VanillaKafkaCdoSnapshotRepositoryOptions.publishTimeout]까지 기다립니다.
+ * - acknowledgement가 성공하면 선택적으로 flush합니다.
+ * - [VanillaKafkaCdoSnapshotRepositoryOptions.closeProducerOnClose]가 `true`일 때만 producer를 close합니다.
  */
 class VanillaKafkaSnapshotEventPublisher(
     private val producer: Producer<String, String>,
@@ -28,7 +28,7 @@ class VanillaKafkaSnapshotEventPublisher(
     }
 
     /**
-     * Publishes [event] with an explicit Kafka key.
+     * 명시적 Kafka key로 [event]를 publish합니다.
      */
     fun publish(event: CdoSnapshotEvent<String>, key: String) {
         key.requireNotBlank("key")
