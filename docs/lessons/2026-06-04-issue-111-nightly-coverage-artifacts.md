@@ -1,32 +1,32 @@
-# Issue 111 Nightly Coverage Artifact Gate
+# Issue 111 야간 커버리지 아티팩트 보호 장치
 
-## Context
+## 배경
 
-Issue #111 found that nightly full coverage aggregation downloaded `coverage-*`
-artifacts with `continue-on-error: true` and then uploaded whatever was present.
-That made missing module coverage artifacts hard to notice.
+Issue #111에서는 야간 전체 커버리지 집계가 `continue-on-error: true`로
+`coverage-*` 아티팩트를 내려받은 뒤, 실제로 존재하는 파일만 업로드한다는
+문제를 발견했다. 이 때문에 모듈 커버리지 아티팩트 누락을 알아차리기 어려웠다.
 
-## Decision
+## 결정
 
-Keep the artifact download step tolerant so the aggregation job can print a
-specific validation message, then fail the job when any full-scope coverage
-artifact is missing or empty.
+집계 작업에서 구체적인 검증 메시지를 출력할 수 있도록 아티팩트 다운로드 단계는
+실패를 허용한다. 그다음 전체 범위 커버리지 아티팩트가 하나라도 누락되거나 비어
+있으면 작업을 실패시킨다.
 
-## Outcome
+## 결과
 
-`nightly-tests.yml` now defines the expected full-scope coverage artifact names
-in the coverage aggregation job and validates them before uploading
-`coverage-all`.
+이제 `nightly-tests.yml`의 커버리지 집계 작업에서 전체 범위에 필요한 커버리지
+아티팩트 이름을 정의하고, `coverage-all`을 업로드하기 전에 각 아티팩트를
+검증한다.
 
-## Verification Evidence
+## 검증 근거
 
 - `actionlint .github/workflows/nightly-tests.yml`
-- Dry-run shell validation with all expected artifacts present
-- Dry-run shell validation with one expected artifact missing
+- 필요한 모든 아티팩트가 있는 상태에서 셸 검증 드라이런
+- 필요한 아티팩트 하나가 누락된 상태에서 셸 검증 드라이런
 - `git diff --check`
 
-## Future Guidance
+## 향후 지침
 
-When adding, renaming, or removing nightly modules, update the test job, coverage
-artifact upload name, coverage aggregation `needs`, and expected artifact list in
-one change.
+야간 모듈을 추가하거나 이름을 바꾸거나 제거할 때는 테스트 작업, 커버리지
+아티팩트 업로드 이름, 커버리지 집계의 `needs`, 예상 아티팩트 목록을 한
+변경에서 함께 갱신한다.

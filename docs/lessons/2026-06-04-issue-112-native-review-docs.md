@@ -1,29 +1,28 @@
-# Issue 112 Native Review Documentation Cleanup
+# 이슈 112 네이티브 리뷰 문서 정리
 
-## Context
+## 배경
 
-Several historical `docs/superpowers/**` and `docs/lessons/**` files still used
-old external CLI review language in ways that could read like current process
-requirements.
+과거에 작성된 여러 `docs/superpowers/**` 및 `docs/lessons/**` 파일에는 외부 CLI
+리뷰에 관한 오래된 표현이 남아 있어, 현재도 적용되는 프로세스 요구사항으로
+오해할 수 있었다.
 
-## Decision
+## 결정
 
-Preserve the historical fact that external review attempts happened, but remove
-wording that makes those tools look like required gates. Current work must use
-local/native 7-tier review with P0=0 and P1=0 as the required review evidence.
+외부 리뷰를 시도했다는 역사적 사실은 보존하되, 해당 도구가 필수 게이트인 것처럼
+보이는 표현은 제거한다. 현재 작업에서는 필수 리뷰 증거로 로컬/네이티브 7단계
+리뷰를 사용하고 `P0=0`, `P1=0`을 충족해야 한다.
 
-## Outcome
+## 결과
 
-Historical design, plan, and lesson notes now describe external tool outages as
-past context only. Active gate language points to local/native review and CI
-evidence.
+과거의 설계, 계획 및 교훈 문서에서 외부 도구 장애는 이제 과거의 맥락으로만
+설명한다. 현재 적용되는 게이트 문구는 로컬/네이티브 리뷰와 CI 증거를 가리킨다.
 
-## Verification Evidence
+## 검증 증거
 
-- Review-gate keyword scan over `docs`
+- `docs` 전체의 리뷰 게이트 키워드 검사
 - `git diff --check`
 
-## Future Guidance
+## 향후 지침
 
-When preserving old execution evidence, label unavailable external tool output
-as historical context and keep the active DoD gate tied to local/native review.
+오래된 실행 증거를 보존할 때는 사용할 수 없는 외부 도구의 출력을 과거 맥락으로
+명시하고, 현재 적용되는 DoD 게이트는 로컬/네이티브 리뷰에 연결한다.
