@@ -10,14 +10,14 @@ private const val JDK_CODEC_DEPRECATION_MESSAGE =
         "Use JaversCodecs.Fory or JaversCodecs.Kryo for trusted binary payloads, or JaversCodecs.String for JSON."
 
 /**
- * Factory object providing pre-configured [JaversCodec] instances.
+ * 미리 구성된 [JaversCodec] instance를 제공하는 factory object입니다.
  *
- * ## Behavior / Contract
- * - All codecs are lazily initialized on first access.
- * - String family: JSON-string-based encoding with optional compression.
- * - Binary family: binary serialization via BinarySerializer (Kryo/Fory) with optional compression.
- * - JDK-serialization codecs are retained only as obsolete compatibility bridges.
- * - Map family: bidirectional [JsonObject] ↔ `Map<String, Any?>` conversion.
+ * ## 동작 / 계약
+ * - 모든 codec은 최초 접근 시점에 lazy initialization됩니다.
+ * - String 계열: 선택적 압축을 지원하는 JSON string 기반 encoding입니다.
+ * - Binary 계열: 선택적 압축을 지원하며 BinarySerializer(Kryo/Fory)로 바이너리 직렬화합니다.
+ * - JDK serialization codec은 obsolete compatibility bridge로만 유지합니다.
+ * - Map 계열: [JsonObject]와 `Map<String, Any?>` 사이를 양방향 변환합니다.
  *
  * ```kotlin
  * val codec = JaversCodecs.LZ4String
@@ -28,36 +28,36 @@ private const val JDK_CODEC_DEPRECATION_MESSAGE =
  */
 object JaversCodecs {
 
-    /** Default codec ([String]). */
+    /** 기본 codec입니다([String]). */
     val Default by lazy { String }
 
-    // String Codecs
+    // String codec
 
-    /** Plain JSON string codec (no compression). */
+    /** 압축하지 않는 plain JSON string codec입니다. */
     val String by lazy { StringJaversCodec() }
 
-    /** GZip-compressed string codec. */
+    /** GZip으로 압축하는 string codec입니다. */
     val GZipString by lazy { CompressibleStringJaversCodec(String, Compressors.GZip) }
 
-    /** Deflate-compressed string codec. */
+    /** Deflate로 압축하는 string codec입니다. */
     val DeflateString by lazy { CompressibleStringJaversCodec(String, Compressors.Deflate) }
 
-    /** LZ4-compressed string codec. */
+    /** LZ4로 압축하는 string codec입니다. */
     val LZ4String by lazy { CompressibleStringJaversCodec(String, Compressors.LZ4) }
 
-    /** Snappy-compressed string codec. */
+    /** Snappy로 압축하는 string codec입니다. */
     val SnappyString by lazy { CompressibleStringJaversCodec(String, Compressors.Snappy) }
 
-    /** Zstd-compressed string codec. */
+    /** Zstd로 압축하는 string codec입니다. */
     val ZstdString by lazy { CompressibleStringJaversCodec(String, Compressors.Zstd) }
 
-    // Binary Codecs - JDK Serialization
+    // Binary codec - JDK serialization
 
     /**
-     * JDK-serialization binary codec.
+     * JDK serialization 기반 binary codec입니다.
      *
-     * @deprecated JDK deserialization is unsafe for untrusted bytes. Prefer
-     * [Fory], [Kryo], or [String] depending on the storage contract.
+     * @deprecated JDK deserialization은 신뢰할 수 없는 byte에 대해 안전하지 않습니다.
+     * 저장 계약에 따라 [Fory], [Kryo], 또는 [String]을 사용하세요.
      */
     @BluetapeObsoleteApi
     @Deprecated(
@@ -107,9 +107,9 @@ object JaversCodecs {
     )
     val ZstdJdk by lazy { CompressibleBinaryJaversCodec(jdkBinaryCodec(), Compressors.Zstd) }
 
-    // Binary Codecs - Kryo Serialization
+    // Binary codec - Kryo serialization
 
-    /** Kryo-serialization binary codec. */
+    /** Kryo serialization 기반 binary codec입니다. */
     val Kryo by lazy { BinaryJaversCodec(BinarySerializers.Kryo) }
 
     val DeflateKryo by lazy { CompressibleBinaryJaversCodec(Kryo, Compressors.Deflate) }
@@ -118,9 +118,9 @@ object JaversCodecs {
     val SnappyKryo by lazy { CompressibleBinaryJaversCodec(Kryo, Compressors.Snappy) }
     val ZstdKryo by lazy { CompressibleBinaryJaversCodec(Kryo, Compressors.Zstd) }
 
-    // Binary Codecs - Fory Serialization
+    // Binary codec - Fory serialization
 
-    /** Fory-serialization binary codec. */
+    /** Fory serialization 기반 binary codec입니다. */
     val Fory by lazy { BinaryJaversCodec(BinarySerializers.Fory) }
 
     val DeflateFory by lazy { CompressibleBinaryJaversCodec(Fory, Compressors.Deflate) }
@@ -129,9 +129,9 @@ object JaversCodecs {
     val SnappyFory by lazy { CompressibleBinaryJaversCodec(Fory, Compressors.Snappy) }
     val ZstdFory by lazy { CompressibleBinaryJaversCodec(Fory, Compressors.Zstd) }
 
-    // Map Codec
+    // Map codec
 
-    /** Codec that converts [JsonObject] ↔ `Map<String, Any?>`. */
+    /** [JsonObject]와 `Map<String, Any?>` 사이를 변환하는 codec입니다. */
     val Map by lazy { MapJaversCodec() }
 
     @OptIn(BluetapeObsoleteApi::class)

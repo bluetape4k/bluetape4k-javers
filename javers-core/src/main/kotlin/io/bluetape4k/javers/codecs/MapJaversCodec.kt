@@ -3,11 +3,11 @@ package io.bluetape4k.javers.codecs
 import com.google.gson.JsonObject
 
 /**
- * Codec that converts a [JsonObject] to and from `Map<String, Any?>`.
+ * [JsonObject]와 `Map<String, Any?>` 사이를 양방향 변환하는 codec입니다.
  *
- * ## Contract
- * - Uses [JaversGsonElementConverter] for both conversion directions.
- * - [decode] always returns a non-null [JsonObject].
+ * ## 계약
+ * - 두 변환 방향 모두 [JaversGsonElementConverter]를 사용합니다.
+ * - [decode]는 항상 non-null [JsonObject]를 반환합니다.
  *
  * ```kotlin
  * val codec = MapJaversCodec()
