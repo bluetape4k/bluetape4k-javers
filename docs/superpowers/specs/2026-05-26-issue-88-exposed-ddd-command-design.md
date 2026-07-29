@@ -1,6 +1,6 @@
 # Issue #88 — javers-exposed-ddd Command-Side Example 설계
 
-Date: 2026-05-26
+일자: 2026-05-26
 Issue: https://github.com/bluetape4k/bluetape4k-javers/issues/88
 Parent: https://github.com/bluetape4k/bluetape4k-javers/issues/5
 
@@ -48,7 +48,7 @@ Example은 독립적으로 review할 수 있을 만큼 작아야 하며 Kafka co
   - Repository load가 source table에서 state를 reconstruct할 수 있다.
 - Example이 계속 실행되도록 top-level docs, WIP, CI, Nightly를 갱신한다.
 
-## Non-goal
+## 제외 목표
 
 - Kafka event consumption 및 Redis read model projection. #89가 다룬다.
 - Envers comparison benchmark. #90이 다룬다.
@@ -99,7 +99,7 @@ Command-side source table은 의도적으로 단순하다.
 - `actionlint`
 - `git diff --check`
 
-## Risk
+## 위험
 
 - JaVers는 Kotlin inline/value ID와 collection을 엄격하게 다룬다. Test는 mapped aggregate가 value object가 아니라 entity임을 검증해야 한다.
 - Example dependency는 published library API를 확장하면 안 된다. Example module은 `javers-ddd`와 `javers-exposed`에 implementation dependency를 사용할 수 있다.
@@ -107,4 +107,4 @@ Command-side source table은 의도적으로 단순하다.
 
 ## 검토 노트
 
-이전 #4 external CLI review attempt는 `API Error: 400 This organization has been disabled.`를 반환했다. 현재 workflow policy는 local/native 7-tier review와 CI evidence를 required gate로 사용하므로, 해당 historical tool outage는 active blocker가 아니다.
+이전 #4 외부 CLI 검토 시도는 `API Error: 400 This organization has been disabled.`를 반환했다. 현재 workflow policy는 local/native 7-tier review와 CI evidence를 필수 gate로 사용하므로, 해당 과거 도구 장애는 현재 blocker가 아니다.

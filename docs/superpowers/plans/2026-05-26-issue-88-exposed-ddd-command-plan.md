@@ -1,6 +1,6 @@
 # Issue #88 — javers-exposed-ddd Command-Side Example 계획
 
-Date: 2026-05-26
+일자: 2026-05-26
 Issue: https://github.com/bluetape4k/bluetape4k-javers/issues/88
 Spec: `docs/superpowers/specs/2026-05-26-issue-88-exposed-ddd-command-design.md`
 
@@ -48,7 +48,7 @@ update를 추가한다.
    - `git diff --check`
    - GitHub PR checks after PR creation.
 
-## PR Boundary
+## PR 경계
 
 이 PR은 #88만 닫고 #5를 parent로 reference한다. #5, #89, #90은 닫으면 안 된다.
 

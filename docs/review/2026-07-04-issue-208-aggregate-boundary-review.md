@@ -7,7 +7,7 @@
 - event publication은 source persistence와 JaVers audit commit 이후에 유지한다.
 - JaVers commit failure와 publisher failure에 대한 failure-injection coverage를 추가한다.
 
-## 7-Tier Review
+## 7-Tier 검토
 
 | Tier | 판정 | 증거 |
 |---|---|---|

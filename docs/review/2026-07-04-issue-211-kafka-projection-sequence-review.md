@@ -8,7 +8,7 @@
 - Lettuce Redis projection snapshot 및 sequence write를 하나의 serialized `MULTI`/`EXEC` boundary에 유지한다.
 - Caffeine, Exposed H2, Lettuce Redis projection target에 대한 regression coverage를 추가한다.
 
-## 7-Tier Review
+## 7-Tier 검토
 
 | Tier | 판정 | 증거 |
 |---|---|---|

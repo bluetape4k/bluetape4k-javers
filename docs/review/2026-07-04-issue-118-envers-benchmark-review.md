@@ -7,7 +7,7 @@
 - example tests는 behavior-focused로 유지하고 README locale pair를 맞춘다.
 - CI 및 Nightly benchmark smoke job을 확장해 새 Envers benchmark task를 커버한다.
 
-## 7-Tier Review
+## 7-Tier 검토
 
 | Tier | 판정 | 증거 |
 |---|---|---|

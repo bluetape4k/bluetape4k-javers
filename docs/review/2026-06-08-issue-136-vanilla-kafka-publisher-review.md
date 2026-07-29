@@ -1,4 +1,4 @@
-# Issue #136 - Vanilla Kafka Snapshot Publisher Review
+# Issue #136 - Vanilla Kafka Snapshot Publisher 검토
 
 ## 범위
 
@@ -9,9 +9,9 @@ Issue #136에서 계획하고 구현한 scope:
 - `javers-persistence-kafka` production source, tests, and README locale pair
 - `javers-persistence-kafka` Kafka test fixture IDs
 
-이 review file은 branch가 Step 2-R, Step 3-R, Step 6-R을 지나는 동안 갱신된다.
+이 검토 파일은 branch가 Step 2-R, Step 3-R, Step 6-R을 지나는 동안 갱신된다.
 
-## Step 2-R Spec Review
+## Step 2-R Spec 검토
 
 | Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
@@ -25,7 +25,7 @@ Issue #136에서 계획하고 구현한 scope:
 
 Step 2-R 판정: P0=0, P1=0으로 PASS.
 
-## Step 3-R Plan Review
+## Step 3-R Plan 검토
 
 | 관점 | 결과 | 필요한 수정 | Counts |
 |---|---|---|---|
@@ -36,7 +36,7 @@ Step 2-R 판정: P0=0, P1=0으로 PASS.
 
 Step 3-R 판정: P0=0, P1=0으로 PASS.
 
-## Step 6-R Final Review
+## Step 6-R 최종 검토
 
 | Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
@@ -50,7 +50,7 @@ Step 3-R 판정: P0=0, P1=0으로 PASS.
 
 Step 6-R 판정: P0=0, P1=0으로 PASS.
 
-## Post-PR Review Comment 후속 조치
+## PR 검토 Comment 후속 조치
 
 - Thread `PRRT_kwDOSVj8-s6Hqnle`: `VanillaKafkaCdoSnapshotRepository` constructor를 private으로 만들고 companion `operator fun invoke(...)` factory를 노출해 처리했다.
 - Thread `PRRT_kwDOSVj8-s6Hqn90`: producer 및 metadata MockK instance를 class field로 옮기고 `@BeforeEach`에서 clear하도록 처리했다.
@@ -66,6 +66,6 @@ Step 6-R 판정: P0=0, P1=0으로 PASS.
 - `git diff --check`
   - 결과: PASS, no whitespace errors.
 
-## Final Gate 판정
+## 최종 gate 판정
 
-P0=0. P1=0. PR creation is allowed.
+P0=0. P1=0. PR 생성을 허용한다.

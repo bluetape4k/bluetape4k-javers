@@ -34,7 +34,7 @@ class DummyUser(@Id val name: String, var surname: String? = null): AbstractDumm
     var propertyWithDiffIgnoredType: DummyIgnoredType? = null
     var propertyWithDiffIgnoredSubType: IgnoredSubType? = null
 
-    // primitives and primitive boxes
+    // primitive와 primitive box
     var flag: Boolean = false
     var boxedFlag: Boolean? = null
     var age: Int = 0
@@ -43,20 +43,20 @@ class DummyUser(@Id val name: String, var surname: String? = null): AbstractDumm
     var sex: SEX? = null
     var largeInt: Int? = null
 
-    // collections
+    // collection
     var stringSet: MutableSet<String> = mutableSetOf()
     var stringList: MutableList<String> = mutableListOf()
     var integerList: MutableList<Int> = mutableListOf()
     var primitiveMap: MutableMap<String, LocalDateTime> = mutableMapOf()
     var valueMap: MutableMap<String, LocalDateTime> = mutableMapOf()
 
-    var objectMap: MutableMap<String, DummyUserDetails> = mutableMapOf()   // not supported
+    var objectMap: MutableMap<String, DummyUserDetails> = mutableMapOf()   // 지원하지 않음
 
-    // array
+    // 배열
     var intArray: IntArray? = null
     var dateTimes: Array<LocalDateTime>? = null
 
-    // reference
+    // 참조
     var supervisor: DummyUser? = null
     var dummyUserDetails: DummyUserDetails? = null
     var dummyUserDetailsList: MutableList<DummyUserDetails> = mutableListOf()

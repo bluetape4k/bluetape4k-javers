@@ -17,7 +17,7 @@
 
 ## 번역 기준 적용
 
-- 섹션 제목: `## 동작/계약` → `## Behavior / Contract`
+- 섹션 제목: `## Behavior / Contract` → `## 동작/계약`
 - `~한다` 서술형 → 3인칭 단수 (`Returns`, `Filters`, `Maps` 등)
 - `true/false 반환` → `Returns true when ... / Returns false otherwise`
 - 예제 주석 내 한국어 설명 영어화
@@ -25,4 +25,4 @@
 ## 향후 지침
 
 - 새 공개 API를 추가할 때는 처음부터 영어로 KDoc을 작성한다(`CLAUDE.md` 정책).
-- 계약을 명시하는 API에는 `## Behavior / Contract` 섹션을 표준으로 적용한다.
+- 계약을 명시하는 API에는 `## 동작/계약` 섹션을 표준으로 적용한다.

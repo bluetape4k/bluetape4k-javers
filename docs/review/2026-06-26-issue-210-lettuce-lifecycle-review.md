@@ -1,13 +1,13 @@
-# Review - Issue 210 Lettuce Repository Lifecycle
+# 검토 - Issue 210 Lettuce Repository Lifecycle
 
-Date: 2026-06-26
-Scope: `LettuceCdoSnapshotRepository`, Redis persistence tests, Spring Boot auto-configuration tests.
+일자: 2026-06-26
+범위: `LettuceCdoSnapshotRepository`, Redis persistence tests, Spring Boot auto-configuration tests.
 
 ## 결과
 
 남은 P0/P1 finding은 없다.
 
-## Review Notes 요약
+## 검토 기록 요약
 
 - Ownership boundary가 명시적이다. caller는 `RedisClient` ownership을 유지하고,
   repository는 해당 client에서 자신이 연 connection만 소유한다.

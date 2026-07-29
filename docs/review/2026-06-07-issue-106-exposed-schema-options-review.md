@@ -1,4 +1,4 @@
-# Issue 106 Local Review - Exposed Schema Options
+# Issue 106 로컬 검토 - Exposed Schema Options
 
 ## 범위
 

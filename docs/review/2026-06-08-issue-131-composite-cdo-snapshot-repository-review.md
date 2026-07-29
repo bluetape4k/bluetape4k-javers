@@ -1,15 +1,15 @@
-# Issue 131 Composite CDO Snapshot Repository Review
+# Issue 131 Composite CDO Snapshot Repository 검토
 
 ## 범위
 
 - Branch: `feat/issue-131-composite-repository`
 - Base: `origin/develop@e54336d`
 - Issue: `#131`
-- 검토한 production scope:
+- 검토한 production 범위:
   - `javers-core/src/main/kotlin/io/bluetape4k/javers/repository/composite/*.kt`
-- 검토한 test scope:
+- 검토한 test 범위:
   - `javers-core/src/test/kotlin/io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryTest.kt`
-- 검토한 docs and assets:
+- 검토한 문서와 asset:
   - `README.md`, `README.ko.md`
   - `javers-core/README.md`, `javers-core/README.ko.md`
   - `javers-core/docs/images/readme-diagrams/javers-core-composite-repository-01.{dot,plain,svg,png}`
@@ -19,26 +19,26 @@ Native subagent note: Step 6-R은 보통 bounded native reviewer lane을 선호�
 
 ## 증거
 
-- Required references loaded:
+- 필요한 reference 로드:
   - `/Users/debop/.codex/skills/bluetape4k-full-feature/references/step-6r-code-review.md`
   - `/Users/debop/.codex/skills/bluetape4k-full-feature/references/step-4p-perf-scan.md`
   - `/Users/debop/.codex/skills/bluetape4k-code-patterns/SKILL.md`
   - `/Users/debop/.codex/skills/bluetape4k-diagram/SKILL.md`
-- CodeGraph review context:
+- CodeGraph 검토 context:
   - `status=ok`
   - `changed_files=11`
   - `impacted_files=0`
   - guidance: changes are well-contained with minimal blast radius.
-- Static scans:
+- Static scan:
   - Kotlin forbidden-pattern scan은 새 composite source와 tests에서 match를 반환하지 않았다.
   - Legacy composite API-name 및 stray-text scan은 source, docs, README files에서 stale public name 또는 stray text를 찾지 못했다.
   - README image link는 `.png`를 가리키며, matching `.dot`, `.plain`, `.svg`, `.png`가 존재한다.
   - `rg "Inter|Arial|Helvetica" javers-core/docs/images/readme-diagrams/javers-core-composite-repository-01.svg` returned no matches.
-- Visual evidence:
+- 시각 증거:
   - Rendered PNG를 `view_image`로 inspected했다.
   - Final README diagram은 original wide component layout을 유지하면서 title/subtitle을 포함한 기존 bluetape4k rounded outer-frame format을 적용한다.
   - Final diagram label은 English이며 visible하다. `1700x760` rendering 후 node/text overlap 또는 connector crowding은 관찰되지 않았다.
-- Tests:
+- Test:
   - `./gradlew :javers-core:test --no-configuration-cache --no-build-cache --console=plain`
   - Result: `BUILD SUCCESSFUL`, `SUCCESS: Executed 197 tests in 13.8s`.
   - Earlier adapter regression: `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
@@ -65,7 +65,7 @@ Native subagent note: Step 6-R은 보통 bounded native reviewer lane을 선호�
 |---|---|---|---|---|
 | P2 | `CompositeCdoSnapshotException.kt:14` | API robustness | Public aggregate exception이 caller-provided list를 직접 받고 message construction 이후 validate했다. | Validated payload construction, immutable copy, `serialVersionUID`, regression test를 추가했다. |
 
-## PR Comment 후속 조치
+## PR comment 후속 조치
 
 | Thread | 영역 | 해결 |
 |---|---|---|
@@ -77,7 +77,7 @@ Native subagent note: Step 6-R은 보통 bounded native reviewer lane을 선호�
 
 | Iteration | P0 | P1 | P2 | P3 | Action |
 |---|---:|---:|---:|---:|---|
-| Initial local Step 6-R | 0 | 0 | 1 | 0 | public exception defensive-copy/validation robustness를 수정했다. |
+| 초기 로컬 Step 6-R | 0 | 0 | 1 | 0 | public exception defensive-copy/validation robustness를 수정했다. |
 | Post-fix Step 6-R | 0 | 0 | 0 | 0 | `javers-core:test`를 재실행했고 static scan은 계속 clean이다. |
 
 ## Gate 판정

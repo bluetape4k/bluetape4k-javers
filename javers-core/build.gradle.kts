@@ -32,12 +32,12 @@ dependencies {
     testImplementation(bt4k.bluetape4k.testcontainers)
     testImplementation(bt4k.guava)
 
-    // Cache for Javers repository
+    // JaVers repository용 cache
     compileOnly(libs.caffeine)
     compileOnly(libs.caffeine.jcache)
     compileOnly(libs.cache2k.core)
 
-    // Mongo
+    // Mongo 연동
     compileOnly(libs.mongo.bson)
     compileOnly(libs.mongo.bson.kotlin)
     compileOnly(libs.mongo.bson.kotlinx)
@@ -45,11 +45,11 @@ dependencies {
     compileOnly(libs.mongodb.driver.kotlin.sync)
     compileOnly(libs.mongodb.driver.kotlin.coroutine)
 
-    // Codec
+    // Codec 연동
     compileOnly(libs.kryo5)
     compileOnly(bt4k.fory.kotlin)
 
-    // Compression
+    // 압축
     compileOnly(libs.lz4.java)
     compileOnly(libs.snappy.java)
     compileOnly(bt4k.zstd.jni)

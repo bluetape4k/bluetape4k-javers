@@ -1,4 +1,4 @@
-# Issue #178 - Kafka Key Redaction Review
+# Issue #178 - Kafka Key Redaction 검토
 
 ## 범위
 
@@ -35,4 +35,4 @@
 
 ## Gate 판정
 
-P0=0, P1=0. staging에서 모든 new helper, test, lesson, review file 포함을 확인한 뒤 PR creation이 가능하다.
+P0=0, P1=0. staging에서 모든 new helper, test, lesson, review file 포함을 확인한 뒤 PR 생성이 가능하다.

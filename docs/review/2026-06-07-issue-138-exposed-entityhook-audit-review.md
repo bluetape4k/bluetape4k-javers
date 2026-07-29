@@ -1,4 +1,4 @@
-# Issue #138 Exposed EntityHook Audit Review
+# Issue #138 Exposed EntityHook Audit 검토
 
 ## 범위
 

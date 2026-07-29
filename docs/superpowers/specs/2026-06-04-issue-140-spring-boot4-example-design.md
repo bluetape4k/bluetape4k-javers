@@ -120,7 +120,7 @@ Test body에서는 bluetape4k assertion extension을 사용하고 새 test asser
 
 | Tier | 영역 | P0 | P1 | P2 | P3 | 근거 |
 |---|---|---:|---:|---:|---:|---|
-| 1 | Security | 0 | 0 | 0 | 0 | Example에는 auth boundary와 secret이 없다. Validation rule은 caller-controlled identifier와 numeric field를 cover한다. |
+| 1 | 보안 | 0 | 0 | 0 | 0 | Example에는 auth boundary와 secret이 없다. 검증 rule은 caller-controlled identifier와 numeric field를 cover한다. |
 | 2 | Ops/SRE Reliability | 0 | 0 | 0 | 0 | Example-local H2/Exposed startup이 explicit하고 background client가 없다. Production retry/outbox는 non-goal이다. |
 | 3 | Structural Impact | 0 | 0 | 0 | 0 | 새 example module만 추가하며 production public API change는 없다. |
 | 4 | Kotlin/API Quality | 0 | 0 | 0 | 0 | Kotlin data contract와 explicit package/module boundary가 지정됐다. Public KDoc 영향은 example-local이다. |

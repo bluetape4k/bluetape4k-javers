@@ -119,7 +119,7 @@ Testcontainers-backed tests must run serially in one Gradle invocation.
 | P2 | Inherited filtering이 모든 snapshot을 load하므로 첫 구현은 broad JQL query에서 O(N)일 수 있다. | First-release scope로 수용한다. Non-goal 및 future pushdown target으로 문서화한다. |
 | P2 | CI/Nightly는 local Gradle test만이 아니라 새 module도 포함해야 한다. | Plan에 수용한다. |
 
-### Historical External CLI Review Attempt
+### 과거 외부 CLI 검토 시도
 
 이 작업 중 historical artifact가 `.omx/artifacts` 아래 기록됐다.
 

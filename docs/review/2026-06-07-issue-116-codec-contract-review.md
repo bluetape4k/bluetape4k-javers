@@ -1,6 +1,6 @@
-# Issue 116 Codec Contract Review
+# Issue 116 Codec 계약 검토
 
-- Date: 2026-06-07 KST
+- 일자: 2026-06-07 KST
 - 범위:
   - `javers-core/src/test/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepositoryCodecContractTest.kt`
   - `javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryCodecContractTest.kt`
@@ -19,7 +19,7 @@ Repository codec contract는 production-code 변경 없이 커버된다.
 - Lettuce와 Redisson은 기본값으로 `JaversCodecs.LZ4Fory`를 사용하고, injected binary codec을 통해 snapshot을 round-trip한다.
 - CI gitleaks installer는 release URL을 재구성하지 않고 release API에서 현재 Linux x64 asset을 resolve한다.
 
-## PR Review 후속 조치
+## PR 검토 후속 조치
 
 PR #166 review comments는 production-code 변경 없이 처리했다.
 
@@ -28,12 +28,12 @@ PR #166 review comments는 production-code 변경 없이 처리했다.
 - Redis codec contract tests는 neighboring-test interference를 피하도록 test별 unique repository namespace를 사용한다.
 - Snapshot count assertion은 이제 `shouldHaveSize`를 사용한다.
 
-## 7-Tier Local Review
+## 7-Tier 로컬 검토
 
 | Tier | 결과 | 증거 |
 |---|---:|---|
 | Spec / issue 적합성 | PASS | Issue #116 acceptance는 default repository codec coverage, 지원되는 곳의 custom codec round-trip, maintainer-visible expectation을 요구한다. |
-| 정확성 | PASS | Contract tests가 default codec identity와 behavior-level snapshot round-trip 또는 Kafka publish payload decoding을 assert한다. |
+| 정확성 | PASS | 계약 tests가 default codec identity와 behavior-level snapshot round-trip 또는 Kafka publish payload decoding을 assert한다. |
 | Regression risk | PASS | Production code는 변경하지 않았다. 테스트는 기존 repository constructor와 fixture를 사용한다. |
 | Concurrency / infra risk | PASS | Redis와 Kafka module은 이미 JUnit parallel execution을 비활성화한다. Testcontainers-backed module은 하나의 Gradle invocation에서 검증했다. |
 | Security / data safety | PASS | 테스트는 in-memory H2, local Testcontainers fixture, overridden Kafka publish future를 사용한다. secret이나 external production system은 없다. |
@@ -47,7 +47,7 @@ PR #166 review comments는 production-code 변경 없이 처리했다.
 - P2: 0
 - P3: 0
 
-## Tooling Notes
+## 도구 비고
 
 - 이 worktree의 CodeGraph lookup이 zero graph nodes를 반환하여 structural graph evidence를 사용할 수 없었다.
 - 이 세션에서 IntelliJ diagnostics MCP를 사용할 수 없어 Gradle compile과 targeted/full tests를 fallback evidence로 사용했다.

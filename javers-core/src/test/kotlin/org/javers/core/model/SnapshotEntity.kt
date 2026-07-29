@@ -61,7 +61,7 @@ data class SnapshotEntity(
     var multiMapPrimitiveToValueObject: Multimap<String, DummyAddress>? = null
     var multiMapPrimitiveToEntity: Multimap<String, SnapshotEntity>? = null
     var multiMapEntityToEntity: Multimap<SnapshotEntity, SnapshotEntity>? = null
-    //    var multiMapValueObjectToValueObject: Multimap<DummyAddress, DummyAddress>? = null // not supported
+    //    var multiMapValueObjectToValueObject: Multimap<DummyAddress, DummyAddress>? = null // 지원하지 않음
 
     val mapOfPrimitives: MutableMap<String, Int> = mutableMapOf()
     val mapOfValues: MutableMap<LocalDate, BigDecimal> = mutableMapOf()
@@ -75,7 +75,7 @@ data class SnapshotEntity(
     var shallowPhonesList: MutableList<ShallowPhone> = mutableListOf()
     var shallowPhonesMap: MutableMap<String, ShallowPhone> = mutableMapOf()
 
-    //    val mapVoToPrimitive: MutableMap<DummyAddress, String> = mutableMapOf()  // not supported
-    //    var nonParameterizedMap: Map<*, *>? = null                                       // not supported
+    //    val mapVoToPrimitive: MutableMap<DummyAddress, String> = mutableMapOf()  // 지원하지 않음
+    //    var nonParameterizedMap: Map<*, *>? = null                                       // 지원하지 않음
 
 }

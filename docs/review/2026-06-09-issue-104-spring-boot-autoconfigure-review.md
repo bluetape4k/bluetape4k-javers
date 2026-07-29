@@ -1,4 +1,4 @@
-# Issue 104 7-Tier Code Review
+# Issue 104 7-Tier Code 검토
 
 ## 검토 범위
 
@@ -10,12 +10,12 @@
 - CI/Nightly module coverage: `.github/workflows/ci.yml`,
   `.github/workflows/nightly-tests.yml`
 
-## Independent Review Lanes
+## 독립 검토 lane
 
 당시 native callable surface는 OMX `agent_type`을 노출하지 않았다. 따라서 review는
 independent work를 생략하지 않고 bounded role-injected subagent lane을 사용했다.
 
-| Lane | Role | Result |
+| Lane | Role | 결과 |
 |---|---|---|
 | Anscombe | `code-reviewer` | Spring Kafka topic binding과 test assertion quality issue를 발견했다. |
 | Bernoulli | `architect` | Boot-created `KafkaTemplate`의 P1 Spring Kafka ordering risk를 발견했고 topic binding 및 Exposed DDL default도 지적했다. |
@@ -30,14 +30,14 @@ independent work를 생략하지 않고 bounded role-injected subagent lane을 �
 | 1. Security | Secrets, trust boundaries, payload exposure | 0 | 0 | 0 | 0 | PASS |
 | 2. Ops/SRE reliability | Startup ordering, DDL defaults, Kafka publish failure | 0 | 0 | 0 | 0 | PASS |
 | 3. Structural impact | Module boundary, compileOnly guards, Boot 4 modularization | 0 | 0 | 0 | 0 | PASS |
-| 4. Kotlin code quality | Validation helpers, public API KDoc, assertion style | 0 | 0 | 0 | 0 | PASS |
+| 4. Kotlin 코드 품질 | 검증 helpers, public API KDoc, assertion style | 0 | 0 | 0 | 0 | PASS |
 | 5. Tests/types/silent failure | Boot-created bean ordering, configured Kafka topic, schema defaults | 0 | 0 | 0 | 0 | PASS |
 | 6. Performance/stability | Bounded Kafka send, opt-in DDL, no new background work | 0 | 0 | 0 | 0 | PASS |
 | 7. Documentation/release/evidence | README locale parity, BOM docs, PR body evidence | 0 | 0 | 0 | 0 | PASS |
 
 Final gate: `P0 = 0`, `P1 = 0`.
 
-## 수정한 Review Findings
+## 수정한 review finding
 
 | Severity | 결과 | 수정 |
 |---|---|---|
@@ -54,7 +54,7 @@ Final gate: `P0 = 0`, `P1 = 0`.
 
 ## 증거
 
-| Evidence | Result |
+| 증거 | 결과 |
 |---|---|
 | Context7 Spring Boot 4 docs query for Kafka auto-configuration | `spring-boot-kafka`의 Spring Boot 4 Kafka auto-config class가 `org.springframework.boot.kafka.autoconfigure.KafkaAutoConfiguration`임을 확인했다. |
 | `gno query "bluetape4k-javers module registration CI Nightly coverage AutoConfiguration" -c bluetape4k-github --fast --no-rerank` | prior Spring Boot 4 example/module-registration PR evidence를 찾았다. |

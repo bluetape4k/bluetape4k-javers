@@ -27,13 +27,13 @@
 
 | Tier | 영역 | P0 | P1 | P2 | P3 | 증거 |
 |---|---|---:|---:|---:|---:|---|
-| 1 | Security | 0 | 0 | 0 | 0 | Request DTO는 Bean Validation을 사용한다. secret, auth boundary, arbitrary polymorphic type deserialization은 없다. |
-| 2 | Ops/SRE Reliability | 0 | 0 | 0 | 1 | H2 schema는 startup에서 `InitializingBean`을 통해 initialize된다. background client는 없다. P3: example에는 custom health/readiness endpoint가 없지만 example scope에서는 허용 가능하다. |
-| 3 | Structural Impact | 0 | 0 | 0 | 0 | Production module API는 변경되지 않았다. example project는 `examples-javers-*` name을 사용하며 `isExampleProject()`로 계속 제외된다. |
-| 4 | Kotlin/Code Quality | 0 | 0 | 0 | 0 | DTO는 `Serializable`을 구현하고 `serialVersionUID`를 정의한다. public class/DTO는 English KDoc을 가진다. Exposed import는 top-level `eq`를 사용한다. |
-| 5 | Tests/Types/Silent Failure | 0 | 0 | 0 | 0 | Tests는 create, paid transition, lookup, history metadata, 404, invalid payload, history cap을 커버한다. Assertions는 bluetape4k assertion extension을 사용한다. |
-| 6 | Performance/Stability | 0 | 0 | 0 | 1 | History limit은 100으로 capped된다. suspend/event-loop blocking은 없다. P3: example은 synchronous JDBC를 사용하며, JDBC/Spring MVC에서 예상되는 동작이고 virtual-thread runtime usage에 적합하다고 문서화했다. |
-| 7 | Docs/Release/Evidence | 0 | 0 | 0 | 0 | README locale set, AGENTS, CI/Nightly, Kover artifact, spec, plan, research, lesson coverage가 assigned됐다. |
+| 1 | 보안 | 0 | 0 | 0 | 0 | Request DTO는 Bean Validation을 사용한다. secret, auth boundary, arbitrary polymorphic type deserialization은 없다. |
+| 2 | 운영/SRE 신뢰성 | 0 | 0 | 0 | 1 | H2 schema는 startup에서 `InitializingBean`을 통해 initialize된다. background client는 없다. P3: example에는 custom health/readiness endpoint가 없지만 example scope에서는 허용 가능하다. |
+| 3 | 구조 영향 | 0 | 0 | 0 | 0 | Production module API는 변경되지 않았다. example project는 `examples-javers-*` name을 사용하며 `isExampleProject()`로 계속 제외된다. |
+| 4 | Kotlin/코드 품질 | 0 | 0 | 0 | 0 | DTO는 `Serializable`을 구현하고 `serialVersionUID`를 정의한다. public class/DTO는 English KDoc을 가진다. Exposed import는 top-level `eq`를 사용한다. |
+| 5 | 테스트/타입/무음 실패 | 0 | 0 | 0 | 0 | Tests는 create, paid transition, lookup, history metadata, 404, invalid payload, history cap을 커버한다. Assertions는 bluetape4k assertion extension을 사용한다. |
+| 6 | 성능/안정성 | 0 | 0 | 0 | 1 | History limit은 100으로 capped된다. suspend/event-loop blocking은 없다. P3: example은 synchronous JDBC를 사용하며, JDBC/Spring MVC에서 예상되는 동작이고 virtual-thread runtime usage에 적합하다고 문서화했다. |
+| 7 | 문서/릴리스/증거 | 0 | 0 | 0 | 0 | README locale set, AGENTS, CI/Nightly, Kover artifact, spec, plan, research, lesson coverage가 assigned됐다. |
 
 ## 해결된 Findings
 
@@ -44,7 +44,7 @@
 | P1 | 4 | Boot 4가 Jackson 3을 제공하는데 Jackson dependency가 처음에는 Jackson 2 `com.fasterxml.jackson.module:jackson-module-kotlin`을 사용했다. | `tools.jackson.module:jackson-module-kotlin`과 `tools.jackson.databind.ObjectMapper`로 전환했다. |
 | P2 | 7 | 의도한 변경은 Gradle command name뿐이었지만 기존 benchmark test 실행이 benchmark metric을 다시 썼다. | 기존 benchmark metric value를 보존하고 저장된 command string만 변경했다. |
 
-## Final Gate
+## 최종 Gate
 
 - P0 = 0
 - P1 = 0

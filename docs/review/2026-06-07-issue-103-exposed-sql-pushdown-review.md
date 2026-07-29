@@ -38,7 +38,7 @@
 - Module regression:
   - `./gradlew :javers-exposed:test --no-configuration-cache --no-build-cache --no-parallel --console=plain` PASS.
   - 46 tests executed.
-- Code Review Graph:
+- Code Review Graph 증거:
   - 이 worktree의 graph stats가 `Files: 0`, `Last updated: never`로 보고되어 graph impact data는 증거로 사용하지 않았다.
 - IntelliJ diagnostics:
   - 이 세션에서 IntelliJ MCP diagnostics tool을 사용할 수 없어 Gradle compile과 targeted tests를 fallback evidence로 사용했다.

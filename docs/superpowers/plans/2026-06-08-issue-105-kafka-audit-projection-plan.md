@@ -1,6 +1,6 @@
-# Issue #105 - Kafka Audit Projection Plan
+# Issue #105 - Kafka Audit Projection 계획
 
-## Lane
+## 실행 Lane
 
 Full Feature / Type A. 이 작업은 public projection API, replay semantics,
 Kafka/Redis integration coverage, README locale updates, local reviews, PR을
@@ -19,7 +19,7 @@ Kafka/Redis integration coverage, README locale updates, local reviews, PR을
    - target read store가 기존 `CdoSnapshotRepository`인지 확인한다.
    - 구현 전 P0=0 및 P1=0이 필요하다.
 
-3. Step 4 - Implementation
+3. Step 4 - 구현
    - `KafkaCdoSnapshotProjectionOptions`를 추가한다.
    - `KafkaCdoSnapshotProjectionResult`를 추가한다.
    - `KafkaCdoSnapshotProjector`를 추가한다.
@@ -37,7 +37,7 @@ Kafka/Redis integration coverage, README locale updates, local reviews, PR을
    - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`을 실행한다.
    - `git diff --check`를 실행한다.
 
-6. Step 6-R - Final review
+6. Step 6-R - 최종 검토
    - `docs/review/2026-06-08-issue-105-kafka-audit-projection-review.md`를 추가한다.
    - P0=0 및 P1=0인 local 7-tier final review를 실행한다.
 
@@ -54,7 +54,7 @@ Kafka/Redis integration coverage, README locale updates, local reviews, PR을
 PR이 존재하고, PR body가 verified되고, validation이 recorded되며, local review가
 P0=0/P1=0을 보고하면 중단한다. Merge는 별도의 user-approved action으로 남는다.
 
-## 알려진 Risk
+## 알려진 위험
 
 - Kafka와 Redis Testcontainers는 serial로 실행해야 한다.
 - 현재 Kafka wire value는 여전히 encoded snapshot payload뿐이다.

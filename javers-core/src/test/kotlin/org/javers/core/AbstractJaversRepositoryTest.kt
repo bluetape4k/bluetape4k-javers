@@ -113,15 +113,15 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `CommitMetadata에 현재 LocalDateTime과 Instant를 사용한다`() {
-        // GIVEN
+        // 준비
         val now = ZonedDateTime.now()
         setNow(now)
 
-        // WHEN
+        // 실행
         javers.commit("author", SnapshotEntity(1))
         val snapshot = javers.latestSnapshotOrNull<SnapshotEntity>(1)
 
-        // THEN
+        // 검증
         snapshot.shouldNotBeNull()
         snapshot.commitMetadata.author shouldBeEqualTo "author"
         snapshot.commitMetadata.commitDateInstant shouldBeEqualTo now.toInstant()
@@ -134,10 +134,10 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `다양한 primitive 수형을 commit 합니다`() {
-        // GIVEN
+        // 준비
         val s = PrimitiveEntity("1")
 
-        // WHEN
+        // 실행
         javers.commit("author", s)
 
         s.intField = 10
@@ -159,7 +159,7 @@ abstract class AbstractJaversRepositoryTest {
 
         javers.commit("author", s)
 
-        // THEN
+        // 검증
         val changes = javers.findChanges(queryAnyDomainObject())
         changes shouldHaveSize 18
 
@@ -172,7 +172,7 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `ValueObject를 소유한 Entity의 snapshot으로부터 ValueObject 변경을 조회`() {
-        // GIVEN
+        // 준비
         val data = listOf(
             DummyUserDetails(1, DummyAddress(city = "London")),
             DummyUserDetails(1, DummyAddress(city = "Paris")),
@@ -180,7 +180,7 @@ abstract class AbstractJaversRepositoryTest {
             SnapshotEntity(1, valueObjectRef = DummyAddress("Paris")),
             SnapshotEntity(2, valueObjectRef = DummyAddress("Rome")),
             SnapshotEntity(2, valueObjectRef = DummyAddress("Paris")),
-            // Noise
+            // 잡음 데이터
             SnapshotEntity(2, valueObjectRef = DummyAddress("Paris")).apply {
                 arrayOfValueObjects = arrayOf(DummyAddress("Luton"))
             }
@@ -188,10 +188,10 @@ abstract class AbstractJaversRepositoryTest {
 
         data.forEach { javers.commit("author", it) }
 
-        // WHEN
+        // 실행
         val changes = javers.findChanges(queryByValueObject<SnapshotEntity>("valueObjectRef"))
 
-        // THEN
+        // 검증
         log.debug { changes.prettyPrint() }
         changes.forEach {
             log.debug { "change=$it" }
@@ -203,7 +203,7 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `JaversRepository로 Reference Object 변화 이력을 저장합니다`() {
-        // GIVEN
+        // 준비
         val ref = SnapshotEntity(id = 2)
         val cdo = SnapshotEntity(id = 1).apply {
             entityRef = ref
@@ -220,10 +220,10 @@ abstract class AbstractJaversRepositoryTest {
         cdo.intProperty = 5
         javers.commit("author2", cdo)   // v. 2
 
-        // WHEN
+        // 실행
         val snapshots = javers.findSnapshots(queryByInstanceId<SnapshotEntity>(1))
 
-        // THEN
+        // 검증
 //        val refId = GlobalIdTestBuilder.instanceId(2, SnapshotEntity::class)
 //        log.trace { "refId=$refId" }
 //
@@ -271,17 +271,17 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `엔티티 속성을 Repository의 가장 최신 것과 비교하기`() {
-        //GIVEN
+        // 준비
         val user = DummyUser(name = "John").apply { age = 18 }
         javers.commit("login", user)
 
-        // WHEN
+        // 실행
         user.age = 19
         javers.commit("login", user)
 
         val history = javers.findChanges(queryByInstanceId<DummyUser>("John"))
 
-        // THEN
+        // 검증
         with(history[0]) {
 
             log.trace { "change=${javers.jsonConverter.toJson(this)}" }
@@ -299,18 +299,18 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `Repository로부터 온전한 엔티티인 Shadow를 가져온다`() {
-        //GIVEN
+        // 준비
         val user = DummyUser(name = "John").apply { age = 18 }
         javers.commit("login", user)
 
-        // WHEN
+        // 실행
         user.age = 19
         javers.commit("login", user)
 
         // Shadows는 저장된 Snapshot 변경이력으로부터, 원하는 객체 재구성해준다
         val shadows = javers.findShadows<DummyUser>(queryByInstance(user))
 
-        // THEN
+        // 검증
         shadows shouldHaveSize 2
 
         val newUser = shadows[0].get()
@@ -337,14 +337,14 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `부모클래스의 Generic 필드에 대한 변화를 Commit하기`() {
-        // GIVEN
+        // 준비
         javers.commit("author", ConcreteWithActualType("a", listOf("1")))
         javers.commit("author", ConcreteWithActualType("a", listOf("1", "2")))
 
-        // WHEN
+        // 실행
         val changes = javers.findChanges(queryByClass<ConcreteWithActualType>())
 
-        // THEN
+        // 검증
         val change = changes[0]
 
         Assumptions.assumeTrue { change is CollectionChange<*> }
@@ -363,7 +363,7 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `ValueObject와 소유권자인 Entity 를 ValueObject 쿼리로 조회하기`() {
-        // GIVEN
+        // 준비
         javers.commit(
             "author",
             NewEntityWithTypeAlias(1.toBigDecimal()).apply { valueObject = NewValueObjectWithTypeAlias(5) })
@@ -371,10 +371,10 @@ abstract class AbstractJaversRepositoryTest {
             "author",
             NewEntityWithTypeAlias(1.toBigDecimal()).apply { valueObject = NewValueObjectWithTypeAlias(6) })
 
-        // WHEN
+        // 실행
         val changes = javers.findChanges(queryByValueObject<NewEntityWithTypeAlias>("valueObject"))
 
-        // THEN
+        // 검증
         changes shouldHaveSize 2
 
         val valueChange = changes.find { it is ValueChange && it.propertyName == "some" } as ValueChange
@@ -386,7 +386,7 @@ abstract class AbstractJaversRepositoryTest {
     @ParameterizedTest
     @MethodSource("getTimeRangeQuery")
     fun `Entity Snapshot을 기간으로 검색하기`(query: JqlQuery, expectedCommitDates: List<LocalDateTime>) {
-        // GIVEN:
+        // 준비:
         repeat(5) {
             val index = it + 1
             val entity = SnapshotEntity(1).apply { intProperty = index }
@@ -395,11 +395,11 @@ abstract class AbstractJaversRepositoryTest {
             javers.commit("author", entity)
         }
 
-        // WHEN
+        // 실행
         val snapshots = javers.findSnapshots(query)
         val commitDates = snapshots.map { it.commitMetadata.commitDate }
 
-        // THEN
+        // 검증
         commitDates shouldContainSame expectedCommitDates
     }
 
@@ -432,14 +432,14 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `Entity snapshot version 은 증가됩니다`() {
-        // WHEN
+        // 실행
         val entity = SnapshotEntity(id = 1).apply { intProperty = 11 }
         javers.commit("author", entity)
         javers.commit("author", entity.apply { intProperty = 22 })
         javers.commit("author", entity.apply { intProperty = 33 })
         javers.commit("author", entity.apply { intProperty = 44 })
 
-        // THEN
+        // 검증
         val snapshots = javers.findSnapshots(queryByInstanceId<SnapshotEntity>(1))
         snapshots shouldHaveSize 4
         snapshots.forEach {
@@ -501,7 +501,7 @@ abstract class AbstractJaversRepositoryTest {
 
     @RepeatedTest(3)
     fun `200개의 다른 snapshot들을 조회한다`() {
-        // GIVEN:
+        // 준비:
         repeat(200) {
             javers.commit("author", SnapshotEntity(id = 1).apply { intProperty = it + 1 })
         }
@@ -509,10 +509,10 @@ abstract class AbstractJaversRepositoryTest {
         // val instanceId = JaversTestBuilder.javersTestAssembly().instanceId(SnapshotEntity(id = 1))
         // val snapshotIdentifiers = List(200) { SnapshotIdentifier(instanceId, it + 1L) }
 
-        // WHEN:
+        // 실행:
         // val snapshots = repository.getSnapshots(snapshotIdentifiers)
 
-        // THEN:
+        // 검증:
         // snapshots shouldHaveSize snapshotIdentifiers.size
     }
 
@@ -526,10 +526,10 @@ abstract class AbstractJaversRepositoryTest {
         )
         javers.commit("author", SnapshotEntity(id = 1), commitProperties)
 
-        // WHEN
+        // 실행
         val snapshot = javers.findSnapshots(queryByInstanceId<SnapshotEntity>(1)).first()
 
-        // THEN
+        // 검증
         snapshot.commitMetadata.properties shouldContainSame commitProperties
     }
 
@@ -558,21 +558,21 @@ abstract class AbstractJaversRepositoryTest {
 
     @Test
     fun `변경이 없는 zero snapshots 은 commit 되지 않습니다`() {
-        // GIVEN
+        // 준비
         val anEntity = SnapshotEntity(1).apply { intProperty = 100 }
 
-        // WHEN
+        // 실행
         val commit = javers.commit("author", anEntity)
         val snapshots = javers.findSnapshots(queryByInstanceId<SnapshotEntity>(1))
 
-        // THEN
+        // 검증
         snapshots shouldHaveSize 1
         repository.headId shouldBeEqualTo commit.id
 
-        // WHEN: 변경이 없는 엔티티는 저장되면 안됩니다
+        // 실행: 변경이 없는 엔티티는 저장되면 안됩니다
         javers.commit("author", anEntity)
 
-        // THEN: 저장되지 않았으므로 headId의 변화가 없다
+        // 검증: 저장되지 않았으므로 headId의 변화가 없다
         repository.headId shouldBeEqualTo commit.id
     }
 

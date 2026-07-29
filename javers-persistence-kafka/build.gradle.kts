@@ -10,7 +10,7 @@ dependencies {
     testImplementation(bt4k.bluetape4k.junit5)
     testImplementation(bt4k.bluetape4k.testcontainers)
 
-    // Javers
+    // JaVers
     api(libs.javers.core)
     api(project(":javers-core"))
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
@@ -21,20 +21,20 @@ dependencies {
     implementation(bt4k.bluetape4k.kafka)
     compileOnly(libs.spring.kafka)
 
-    // Redis projection target tests
+    // Redis projection target 테스트
     testImplementation(bt4k.bluetape4k.lettuce)
     testImplementation(libs.lettuce.core)
 
-    // Codec
+    // Codec 연동
     compileOnly(bt4k.fory.kotlin)
     compileOnly(libs.kryo5)
 
-    // Compression
+    // 압축
     compileOnly(libs.lz4.java)
     compileOnly(libs.snappy.java)
     compileOnly(bt4k.zstd.jni)
 
-    // Test
+    // 테스트
     testImplementation(libs.testcontainers.kafka)
     testRuntimeOnly(libs.h2)
 }

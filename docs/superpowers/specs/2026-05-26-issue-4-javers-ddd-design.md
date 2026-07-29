@@ -86,5 +86,5 @@ Base class는 JaVers commit/history behavior와 event publication을 처리한�
 ## 검토 노트
 
 - Historical external CLI review attempt는 `.omx/artifacts` 아래 기록됐다.
-- 결과: `API Error: 400 This organization has been disabled.`로 blocked.
+- 결과: `API Error: 400 This organization has been disabled.`로 차단됨.
 - Local decision: current issue requirement, source inspection, compile/test validation, local/native 7-tier review를 사용해 구현을 진행한다. 이 historical tool outage는 active process gate가 아니다.
