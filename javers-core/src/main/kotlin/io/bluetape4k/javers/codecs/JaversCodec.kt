@@ -3,11 +3,11 @@ package io.bluetape4k.javers.codecs
 import com.google.gson.JsonObject
 
 /**
- * Codec interface that encodes and decodes a JaVers [JsonObject] as [T].
+ * JaVers [JsonObject]를 [T] 형식으로 encode/decode하는 codec interface입니다.
  *
- * ## Contract
- * - [encode] converts a [JsonObject] into the target representation.
- * - [decode] restores encoded data into a [JsonObject], or returns `null` on failure.
+ * ## 계약
+ * - [encode]는 [JsonObject]를 대상 표현 형식으로 변환합니다.
+ * - [decode]는 encode된 데이터를 [JsonObject]로 복원하며, 실패하면 `null`을 반환합니다.
  *
  * ```kotlin
  * val codec: JaversCodec<String> = JaversCodecs.String
@@ -19,12 +19,12 @@ import com.google.gson.JsonObject
 interface JaversCodec<T: Any> {
 
     /**
-     * Encodes a [JsonObject] as [T].
+     * [JsonObject]를 [T] 형식으로 encode합니다.
      */
     fun encode(jsonElement: JsonObject): T
 
     /**
-     * Decodes encoded data into a [JsonObject], or returns `null` on failure.
+     * encode된 데이터를 [JsonObject]로 decode하며, 실패하면 `null`을 반환합니다.
      */
     fun decode(encodedData: T): JsonObject?
 

@@ -4,11 +4,11 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 
 /**
- * Default codec that encodes and decodes a [JsonObject] as a JSON string.
+ * [JsonObject]를 JSON string으로 encode/decode하는 기본 codec입니다.
  *
- * ## Contract
- * - [encode] delegates to [JsonObject.toString].
- * - [decode] returns `null` when parsing fails.
+ * ## 계약
+ * - [encode]는 [JsonObject.toString]에 위임합니다.
+ * - [decode]는 parse에 실패하면 `null`을 반환합니다.
  *
  * ```kotlin
  * val codec = StringJaversCodec()

@@ -12,13 +12,13 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 /**
- * Cache2k-backed in-memory [CdoSnapshot] repository.
+ * Cache2k 기반 in-memory [CdoSnapshot] repository입니다.
  *
- * ## Behavior / Contract
- * - Uses a [Cache] instance to hold snapshot lists per GlobalId in memory.
- * - Snapshots are inserted at the front of the list (index 0) so the newest entry comes first.
- * - Both [saveSnapshot] and [loadSnapshots] are protected by a lock to prevent
- *   [java.util.ConcurrentModificationException] during concurrent access.
+ * ## 동작 / 계약
+ * - [Cache] instance를 사용해 GlobalId별 snapshot list를 memory에 보관합니다.
+ * - 최신 snapshot이 먼저 오도록 list 앞쪽(index 0)에 snapshot을 삽입합니다.
+ * - 동시 접근 중 [java.util.ConcurrentModificationException]이 발생하지 않도록
+ *   [saveSnapshot]과 [loadSnapshots]를 lock으로 보호합니다.
  *
  * ```kotlin
  * val repo = Cache2KCdoSnapshotRepository()
@@ -27,7 +27,7 @@ import kotlin.concurrent.withLock
  *     .build()
  * ```
  *
- * @param codec the [JaversCodec] used to encode/decode snapshots (default: LZ4-compressed string)
+ * @param codec snapshot encode/decode에 사용하는 [JaversCodec]입니다. 기본값은 LZ4로 압축한 string codec입니다.
  */
 class Cache2KCdoSnapshotRepository(
     codec: JaversCodec<String> = JaversCodecs.LZ4String,

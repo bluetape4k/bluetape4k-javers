@@ -12,13 +12,13 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 /**
- * Caffeine-cache-backed in-memory [CdoSnapshot] repository.
+ * Caffeine cache 기반 in-memory [CdoSnapshot] repository입니다.
  *
- * ## Behavior / Contract
- * - Uses a [Cache] instance to hold snapshot lists per GlobalId in memory.
- * - Snapshots are inserted at the front of the list (index 0) so the newest entry comes first.
- * - Both [saveSnapshot] and [loadSnapshots] are protected by a lock to prevent
- *   [java.util.ConcurrentModificationException] during concurrent access.
+ * ## 동작 / 계약
+ * - [Cache] instance를 사용해 GlobalId별 snapshot list를 memory에 보관합니다.
+ * - 최신 snapshot이 먼저 오도록 list 앞쪽(index 0)에 snapshot을 삽입합니다.
+ * - 동시 접근 중 [java.util.ConcurrentModificationException]이 발생하지 않도록
+ *   [saveSnapshot]과 [loadSnapshots]를 lock으로 보호합니다.
  *
  * ```kotlin
  * val repo = CaffeineCdoSnapshotRepository()
@@ -27,7 +27,7 @@ import kotlin.concurrent.withLock
  *     .build()
  * ```
  *
- * @param codec the [JaversCodec] used to encode/decode snapshots (default: LZ4-compressed string)
+ * @param codec snapshot encode/decode에 사용하는 [JaversCodec]입니다. 기본값은 LZ4로 압축한 string codec입니다.
  */
 class CaffeineCdoSnapshotRepository(
     codec: JaversCodec<String> = JaversCodecs.LZ4String,
@@ -38,7 +38,7 @@ class CaffeineCdoSnapshotRepository(
     private val lock = ReentrantLock()
 
     /**
-     * Cache holding encoded snapshot lists per GlobalId (key=globalId, value=list of encoded snapshots).
+     * GlobalId별 encode된 snapshot list를 보관하는 cache입니다(key=globalId, value=encode된 snapshot list).
      */
     private val snapshotCache: Cache<String, MutableList<String>> by lazy {
         caffeine {
@@ -47,7 +47,7 @@ class CaffeineCdoSnapshotRepository(
     }
 
     /**
-     * Cache holding the sequence number for each [CommitId].
+     * 각 [CommitId]의 sequence number를 보관하는 cache입니다.
      */
     private val commitSeqCache: Cache<CommitId, Long> by lazy {
         caffeine {

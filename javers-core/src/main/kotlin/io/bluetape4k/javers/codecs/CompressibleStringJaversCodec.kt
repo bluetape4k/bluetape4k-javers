@@ -5,11 +5,11 @@ import io.bluetape4k.io.compressor.Compressor
 import io.bluetape4k.io.compressor.Compressors
 
 /**
- * A string codec that compresses the output of [StringJaversCodec] using a [Compressor].
+ * [StringJaversCodec]의 출력값을 [Compressor]로 압축하는 string codec입니다.
  *
- * ## Behavior / Contract
- * - encode: stringify via innerCodec → compress
- * - decode: decompress → parse via innerCodec
+ * ## 동작 / 계약
+ * - encode: innerCodec으로 문자열화한 뒤 압축합니다.
+ * - decode: 압축을 해제한 뒤 innerCodec으로 parse합니다.
  *
  * ```kotlin
  * val codec = CompressibleStringJaversCodec(
@@ -20,8 +20,8 @@ import io.bluetape4k.io.compressor.Compressors
  * val decoded = codec.decode(compressed)
  * ```
  *
- * @property innerCodec the inner codec that performs string conversion
- * @property compressor the [Compressor] used for compression/decompression (default: GZip)
+ * @property innerCodec 실제 string 변환과 parse를 수행하는 내부 codec입니다.
+ * @property compressor 압축과 압축 해제에 사용하는 [Compressor]입니다. 기본값은 GZip입니다.
  */
 class CompressibleStringJaversCodec(
     private val innerCodec: StringJaversCodec,
