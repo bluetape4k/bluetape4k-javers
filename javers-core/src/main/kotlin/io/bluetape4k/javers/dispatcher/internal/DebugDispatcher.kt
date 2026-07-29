@@ -4,19 +4,19 @@ import io.bluetape4k.javers.dispatcher.JaversDispatcher
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * A debug-purpose [CompositeDispatcher] that retains all dispatched domain objects for verification.
+ * verification을 위해 dispatch된 모든 domain object를 보관하는 debug-purpose [CompositeDispatcher]입니다.
  *
- * ## Behavior / Contract
- * - All dispatched event objects are stored in a [CopyOnWriteArrayList] per event category.
- * - Use [isSaved], [isDeleted], and [isDeletedById] to verify whether events were received.
- * - Use [clear] to reset all stored event records.
+ * ## 동작 / 계약
+ * - dispatch된 모든 event object를 event category별 [CopyOnWriteArrayList]에 저장합니다.
+ * - event 수신 여부는 [isSaved], [isDeleted], [isDeletedById]로 확인합니다.
+ * - 저장된 모든 event record를 초기화할 때는 [clear]를 사용합니다.
  *
- * @param dispatchers collection of [JaversDispatcher] instances that propagate events externally
+ * @param dispatchers event를 외부로 전파하는 [JaversDispatcher] instance collection입니다.
  */
 class DebugDispatcher(dispatchers: Collection<JaversDispatcher>): CompositeDispatcher(dispatchers) {
 
     /**
-     * Data class holding information about a delete-by-id event.
+     * delete-by-id event 정보를 보관하는 data class입니다.
      */
     data class DeletedById(val id: Any, val domainType: Class<*>)
 
@@ -39,16 +39,16 @@ class DebugDispatcher(dispatchers: Collection<JaversDispatcher>): CompositeDispa
         super.sendDeletedById(domainObjectId, domainType)
     }
 
-    /** Returns true if a save event was received for the given domain object. */
+    /** 지정한 domain object의 save event를 수신했으면 `true`를 반환합니다. */
     fun isSaved(domainObject: Any): Boolean = savedObjects.contains(domainObject)
 
-    /** Returns true if a delete event was received for the given domain object. */
+    /** 지정한 domain object의 delete event를 수신했으면 `true`를 반환합니다. */
     fun isDeleted(domainObject: Any): Boolean = deletedObjects.contains(domainObject)
 
-    /** Returns true if a delete-by-id event was received for the given id and type. */
+    /** 지정한 id와 type의 delete-by-id event를 수신했으면 `true`를 반환합니다. */
     fun isDeletedById(id: Any, domainType: Class<*>): Boolean = deletedByIds.contains(DeletedById(id, domainType))
 
-    /** Clears all stored event records. */
+    /** 저장된 모든 event record를 지웁니다. */
     fun clear() {
         savedObjects.clear()
         deletedObjects.clear()

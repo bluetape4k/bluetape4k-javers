@@ -3,15 +3,13 @@ package io.bluetape4k.javers.repository.composite
 import java.io.Serializable
 
 /**
- * Options for [CompositeCdoSnapshotRepository].
+ * [CompositeCdoSnapshotRepository] option입니다.
  *
- * ## Behavior / Contract
- * - [writeFailurePolicy] controls secondary `saveSnapshot` and `persist`
- *   failures after the primary has succeeded.
- * - [ensureSchemaFailurePolicy] controls secondary schema initialization
- *   failures after the primary has succeeded.
- * - [closeFailurePolicy] controls whether close stops on the first closeable
- *   delegate failure or attempts every closeable delegate.
+ * ## 동작 / 계약
+ * - [writeFailurePolicy]는 primary 성공 후 secondary `saveSnapshot` 및 `persist` failure를 제어합니다.
+ * - [ensureSchemaFailurePolicy]는 primary 성공 후 secondary schema initialization failure를 제어합니다.
+ * - [closeFailurePolicy]는 close가 첫 closeable delegate failure에서 중단할지,
+ *   모든 closeable delegate를 시도할지 제어합니다.
  */
 @ConsistentCopyVisibility
 data class CompositeCdoSnapshotRepositoryOptions private constructor(
@@ -24,12 +22,12 @@ data class CompositeCdoSnapshotRepositoryOptions private constructor(
         private const val serialVersionUID: Long = 5379184729384729384L
 
         /**
-         * Default composite repository options.
+         * 기본 composite repository option입니다.
          */
         val Default: CompositeCdoSnapshotRepositoryOptions = CompositeCdoSnapshotRepositoryOptions()
 
         /**
-         * Creates composite repository options.
+         * composite repository option을 생성합니다.
          */
         operator fun invoke(
             writeFailurePolicy: CompositeCdoSnapshotFailurePolicy = CompositeCdoSnapshotFailurePolicy.FAIL_FAST,

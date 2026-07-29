@@ -35,23 +35,22 @@ import kotlin.concurrent.withLock
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Abstract class providing common implementation for [CdoSnapshotRepository].
+ * [CdoSnapshotRepository]의 공통 구현을 제공하는 abstract class입니다.
  *
- * ## Behavior / Contract
- * - Uses a [JaversCodec] to convert [CdoSnapshot] ↔ encoded format [T].
- * - [persist] is thread-safe via a lock, assigns a [Snowflake]-based sequence number,
- *   and delegates the whole commit write to [persistCommit].
- * - [projectSnapshot] restores decoded replay snapshots together with commit
- *   head and sequence metadata.
- * - Common [QueryParams]-based filtering (author, date, version, commitId, etc.) is handled here.
- * - Subclasses must implement [getKeys], [contains], [getSeq], [updateCommitId],
- *   [getSnapshotSize], [saveSnapshot], and [loadSnapshots].
- * - Persistent subclasses may override [loadHeadId] to restore the latest persisted
- *   head commit after a repository rebuild.
+ * ## 동작 / 계약
+ * - [JaversCodec]을 사용해 [CdoSnapshot]과 encode된 [T] 형식 사이를 변환합니다.
+ * - [persist]는 lock으로 thread-safe하게 실행되며, [Snowflake] 기반 sequence number를 배정한 뒤
+ *   전체 commit write를 [persistCommit]에 위임합니다.
+ * - [projectSnapshot]은 decode된 replay snapshot과 함께 commit head 및 sequence metadata를 복원합니다.
+ * - author, date, version, commitId 등 공통 [QueryParams] 기반 filtering을 여기서 처리합니다.
+ * - subclass는 [getKeys], [contains], [getSeq], [updateCommitId], [getSnapshotSize],
+ *   [saveSnapshot], [loadSnapshots]를 구현해야 합니다.
+ * - persistent subclass는 repository rebuild 후 최신 persisted head commit을 복원하기 위해
+ *   [loadHeadId]를 override할 수 있습니다.
  *
- * @param T the type of encoded snapshot data (e.g. String, ByteArray)
- * @property codec the [JaversCodec] used to encode/decode snapshots
- * @property commitIdSupplier the [Snowflake] used to generate commit sequence numbers
+ * @param T encode된 snapshot data의 type입니다(예: String, ByteArray).
+ * @property codec snapshot encode/decode에 사용하는 [JaversCodec]입니다.
+ * @property commitIdSupplier commit sequence number 생성에 사용하는 [Snowflake]입니다.
  */
 abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected val codec: JaversCodec<T>,
@@ -77,9 +76,9 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected abstract fun updateCommitId(commitId: CommitId, sequence: Long)
 
     /**
-     * Restores the latest head commit from persistent storage.
+     * persistent storage에서 최신 head commit을 복원합니다.
      *
-     * Return `null` when the repository is empty or does not support head restoration.
+     * repository가 비어 있거나 head 복원을 지원하지 않으면 `null`을 반환합니다.
      */
     protected open fun loadHeadId(): CommitId? = null
 
@@ -109,13 +108,13 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     protected fun doDecode(data: T): JsonObject? = codec.decode(data)
 
     /**
-     * Loads all snapshots from the repository, sorted by sequence number in descending order.
+     * repository의 모든 snapshot을 sequence number 내림차순으로 정렬해 load합니다.
      *
-     * ## OOM Warning
-     * This method materializes every snapshot into memory before filtering.
-     * For large repositories this is an unbounded memory allocation.
-     * When the key count exceeds 10,000, a warning is logged.
-     * Prefer JQL query-based access ([getSnapshots], [getStateHistory]) for production use.
+     * ## OOM 경고
+     * 이 method는 filtering 전에 모든 snapshot을 memory에 materialize합니다.
+     * 대형 repository에서는 제한 없는 memory allocation이 될 수 있습니다.
+     * key count가 10,000개를 넘으면 warning을 기록합니다.
+     * Production에서는 JQL query 기반 접근([getSnapshots], [getStateHistory])을 우선 사용하세요.
      */
     protected fun getAll(): List<CdoSnapshot> {
         val keys = getKeys()
@@ -131,7 +130,7 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     }
 
     override fun ensureSchema() {
-        // Nothing to do.
+        // 수행할 작업이 없습니다.
     }
 
     override fun getLatest(globalId: GlobalId): Optional<CdoSnapshot> = when {
@@ -218,13 +217,12 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     }
 
     /**
-     * Persists every snapshot in [commit] and stores the commit [sequence].
+     * [commit]의 모든 snapshot을 persist하고 commit [sequence]를 저장합니다.
      *
-     * ## Contract
-     * The default implementation preserves the original per-snapshot write
-     * behavior. Durable repositories that can provide commit-level atomicity
-     * should override this method and wrap the whole operation in the backend's
-     * transaction or batch primitive.
+     * ## 계약
+     * 기본 구현은 기존 per-snapshot write 동작을 보존합니다.
+     * commit-level atomicity를 제공할 수 있는 durable repository는 이 method를 override하고
+     * 전체 operation을 backend의 transaction 또는 batch primitive로 감싸야 합니다.
      */
     protected open fun persistCommit(commit: Commit, sequence: Long) {
         commit.snapshots.forEach {
@@ -244,11 +242,10 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
     }
 
     /**
-     * Persists a replayed [snapshot] and stores the commit [sequence].
+     * replay된 [snapshot]을 persist하고 commit [sequence]를 저장합니다.
      *
-     * Backends with transaction or batch primitives should override this method
-     * so the snapshot row and sequence metadata are restored as one projection
-     * unit.
+     * transaction 또는 batch primitive가 있는 backend는 snapshot row와 sequence metadata가
+     * 하나의 projection unit으로 복원되도록 이 method를 override해야 합니다.
      */
     protected open fun persistProjectedSnapshot(snapshot: CdoSnapshot, sequence: Long) {
         saveSnapshot(snapshot)

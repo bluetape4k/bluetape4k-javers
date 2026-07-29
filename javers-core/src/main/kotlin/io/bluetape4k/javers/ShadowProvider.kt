@@ -8,12 +8,12 @@ import java.lang.reflect.Field
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Singleton provider that creates and caches [ShadowFactory] instances per [Javers] instance.
+ * [Javers] instance별 [ShadowFactory]를 생성하고 cache하는 singleton provider입니다.
  *
- * ## Behavior / Contract
- * - A [ShadowFactory] is cached in a [ConcurrentHashMap] per [Javers] instance.
- * - The internal [TypeMapper] is extracted via reflection on the first call.
- * - Throws [IllegalStateException] if Javers internals change and the `typeMapper` field is not found.
+ * ## 동작 / 계약
+ * - [Javers] instance마다 [ShadowFactory]를 [ConcurrentHashMap]에 cache합니다.
+ * - 최초 호출 시 reflection으로 내부 [TypeMapper]를 추출합니다.
+ * - Javers 내부 구조가 바뀌어 `typeMapper` field를 찾을 수 없으면 [IllegalStateException]을 던집니다.
  *
  * ```kotlin
  * val factory = ShadowProvider.getShadowFactory(javers)
@@ -26,13 +26,13 @@ object ShadowProvider: KLogging() {
     private val shadowFactories = ConcurrentHashMap<Javers, ShadowFactory>()
 
     /**
-     * Returns the [ShadowFactory] corresponding to the given [javers] instance.
+     * 지정한 [javers] instance에 대응하는 [ShadowFactory]를 반환합니다.
      *
-     * ## Behavior / Contract
-     * - Always returns the same [ShadowFactory] for the same [Javers] instance.
-     * - On the first call, extracts the internal [TypeMapper] from [Javers] via reflection.
+     * ## 동작 / 계약
+     * - 같은 [Javers] instance에 대해서는 항상 같은 [ShadowFactory]를 반환합니다.
+     * - 최초 호출 시 [Javers]에서 내부 [TypeMapper]를 reflection으로 추출합니다.
      *
-     * @param javers the [Javers] instance whose shadow factory is needed
+     * @param javers shadow factory가 필요한 [Javers] instance입니다.
      */
     fun getShadowFactory(javers: Javers): ShadowFactory {
         return shadowFactories.computeIfAbsent(javers) {
@@ -41,9 +41,9 @@ object ShadowProvider: KLogging() {
     }
 
     /**
-     * Extracts the internal [TypeMapper] from [Javers] via reflection.
+     * [Javers]에서 내부 [TypeMapper]를 reflection으로 추출합니다.
      *
-     * @throws IllegalStateException if the `typeMapper` field cannot be found in the Javers class
+     * @throws IllegalStateException Javers class에서 `typeMapper` field를 찾을 수 없을 때 발생합니다.
      */
     private fun getTypeMapper(javers: Javers): TypeMapper {
         return typeMappers.computeIfAbsent(javers) {

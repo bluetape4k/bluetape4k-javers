@@ -1,11 +1,11 @@
 package io.bluetape4k.javers.base
 
 /**
- * Enumerates entity state change event types.
+ * entity state change event type을 열거합니다.
  *
- * - [UNKNOWN]: unknown event
- * - [SAVED]: entity creation or update
- * - [DELETED]: entity deletion
+ * - [UNKNOWN]: 알 수 없는 event
+ * - [SAVED]: entity 생성 또는 수정
+ * - [DELETED]: entity 삭제
  *
  * ```kotlin
  * val type = EntityEventType.SAVED
@@ -14,20 +14,20 @@ package io.bluetape4k.javers.base
  */
 enum class EntityEventType(val status: String) {
 
-    /** Unknown event. */
+    /** 알 수 없는 event입니다. */
     UNKNOWN("UNKNOWN"),
 
-    /** Entity creation or update. */
+    /** entity 생성 또는 수정 event입니다. */
     SAVED("SAVED"),
 
-    /** Entity deletion. */
+    /** entity 삭제 event입니다. */
     DELETED("DELETED");
 
     override fun toString(): String = status
 
     companion object {
         /**
-         * Returns the [EntityEventType] matching [status], or `null` when no type matches.
+         * [status]와 일치하는 [EntityEventType]을 반환하며, 일치하는 type이 없으면 `null`을 반환합니다.
          */
         fun valueOf(status: String): EntityEventType? {
             return entries.firstOrNull { it.status == status }

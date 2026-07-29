@@ -4,7 +4,7 @@ import org.javers.core.diff.Change
 import org.javers.core.diff.Diff
 
 /**
- * Returns affected objects for the requested change type from this [Diff].
+ * 이 [Diff]에서 요청한 change type의 영향을 받은 object를 반환합니다.
  *
  * ```kotlin
  * val removedObjects = diff.objectsByChangeType<ObjectRemoved>()
@@ -15,7 +15,7 @@ inline fun <reified T: Change> Diff.objectsByChangeType(): MutableList<Any?> =
     getObjectsByChangeType(T::class.java)
 
 /**
- * Returns changes of the requested type from this [Diff].
+ * 이 [Diff]에서 요청한 type의 change를 반환합니다.
  *
  * ```kotlin
  * val valueChanges = diff.changesByType<ValueChange>()

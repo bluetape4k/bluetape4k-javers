@@ -9,28 +9,26 @@ import java.io.Serializable
 import java.time.Instant
 
 /**
- * Stable codec identifiers used in [CdoSnapshotEventMetadata.codecId].
+ * [CdoSnapshotEventMetadata.codecId]에서 사용하는 stable codec identifier입니다.
  */
 object CdoSnapshotEventCodecIds {
 
     /**
-     * Plain JaVers JSON string payload encoded with [JaversCodecs.String].
+     * [JaversCodecs.String]으로 encode한 plain JaVers JSON string payload입니다.
      */
     const val JSON_STRING: String = "javers:string-json"
 }
 
 /**
- * Transport-neutral metadata for a JaVers [CdoSnapshot] event.
+ * JaVers [CdoSnapshot] event를 위한 transport-neutral metadata입니다.
  *
- * ## Behavior / Contract
- * - [globalIdValue], [commitId], [snapshotType], [codecId], and [idempotencyKey]
- *   are non-blank.
- * - [commitMajorId] is positive and [commitMinorId] is zero or positive.
- * - [snapshotVersion] is positive.
- * - [repositorySequence] is nullable because `AbstractCdoSnapshotRepository`
- *   assigns its sequence after `saveSnapshot()` succeeds.
- * - [idempotencyKey] is opaque. Transports may use it for deduplication, but
- *   should not parse it.
+ * ## 동작 / 계약
+ * - [globalIdValue], [commitId], [snapshotType], [codecId], [idempotencyKey]는 non-blank입니다.
+ * - [commitMajorId]는 positive이고 [commitMinorId]는 zero-or-positive입니다.
+ * - [snapshotVersion]은 positive입니다.
+ * - `AbstractCdoSnapshotRepository`가 `saveSnapshot()` 성공 후 sequence를 배정하므로
+ *   [repositorySequence]는 nullable입니다.
+ * - [idempotencyKey]는 opaque입니다. Transport가 deduplication에 사용할 수 있지만 parse하면 안 됩니다.
  *
  * ```kotlin
  * val metadata = CdoSnapshotEventMetadata.from(snapshot, CdoSnapshotEventCodecIds.JSON_STRING)
@@ -56,7 +54,7 @@ data class CdoSnapshotEventMetadata private constructor(
         private const val serialVersionUID: Long = 1649948814417484804L
 
         /**
-         * Creates validated transport-neutral snapshot event metadata.
+         * validation된 transport-neutral snapshot event metadata를 생성합니다.
          */
         operator fun invoke(
             globalIdValue: String,
@@ -97,7 +95,7 @@ data class CdoSnapshotEventMetadata private constructor(
         }
 
         /**
-         * Builds metadata from a JaVers [snapshot].
+         * JaVers [snapshot]에서 metadata를 생성합니다.
          */
         fun from(
             snapshot: CdoSnapshot,
@@ -122,7 +120,7 @@ data class CdoSnapshotEventMetadata private constructor(
         }
 
         /**
-         * Returns a stable opaque key for the same global id, commit id, and snapshot version.
+         * 같은 global id, commit id, snapshot version에 대해 stable opaque key를 반환합니다.
          */
         fun defaultIdempotencyKey(snapshot: CdoSnapshot): String =
             "${snapshot.globalId.value()}:${snapshot.commitId.value()}:${snapshot.version}"
@@ -130,11 +128,11 @@ data class CdoSnapshotEventMetadata private constructor(
 }
 
 /**
- * Encoded JaVers snapshot event ready for a transport-specific publisher.
+ * transport-specific publisher에 전달할 준비가 된 encode된 JaVers snapshot event입니다.
  *
- * @param T encoded payload type
- * @property metadata transport-neutral snapshot metadata
- * @property payload encoded snapshot payload
+ * @param T encode된 payload type입니다.
+ * @property metadata transport-neutral snapshot metadata입니다.
+ * @property payload encode된 snapshot payload입니다.
  */
 @ConsistentCopyVisibility
 data class CdoSnapshotEvent<T: Any> private constructor(
@@ -146,7 +144,7 @@ data class CdoSnapshotEvent<T: Any> private constructor(
         private const val serialVersionUID: Long = -7275910613949652842L
 
         /**
-         * Creates an encoded snapshot event.
+         * encode된 snapshot event를 생성합니다.
          */
         operator fun <T: Any> invoke(
             metadata: CdoSnapshotEventMetadata,
@@ -157,17 +155,17 @@ data class CdoSnapshotEvent<T: Any> private constructor(
 }
 
 /**
- * Synchronous publisher contract for encoded JaVers snapshot events.
+ * encode된 JaVers snapshot event를 위한 synchronous publisher contract입니다.
  *
- * ## Behavior / Contract
- * - [publish] returns only after the transport accepts or acknowledges [event].
- * - Publish failures are propagated to the caller.
- * - Implementations that catch [InterruptedException] must restore interrupt status.
+ * ## 동작 / 계약
+ * - [publish]는 transport가 [event]를 accept 또는 acknowledge한 뒤에만 반환합니다.
+ * - Publish failure는 caller로 전파합니다.
+ * - [InterruptedException]을 catch하는 구현은 interrupt status를 복원해야 합니다.
  */
 fun interface CdoSnapshotEventPublisher<T: Any> {
 
     /**
-     * Publishes [event] or throws when the transport cannot accept it.
+     * [event]를 publish하며, transport가 accept할 수 없으면 예외를 던집니다.
      */
     fun publish(event: CdoSnapshotEvent<T>)
 }

@@ -4,7 +4,7 @@ import org.javers.core.commit.CommitId
 import org.javers.core.commit.CommitMetadata
 
 /**
- * Returns the major and minor ids of this [CommitId] as a [Pair].
+ * 이 [CommitId]의 major/minor id를 [Pair]로 반환합니다.
  *
  * ```kotlin
  * val (major, minor) = commitId.version
@@ -14,13 +14,13 @@ import org.javers.core.commit.CommitMetadata
 val CommitId.version: Pair<Long, Int> get() = Pair(majorId, minorId)
 
 /**
- * Compares two [CommitMetadata] values by commit id.
+ * 두 [CommitMetadata] 값을 commit id 기준으로 비교합니다.
  */
 operator fun CommitMetadata.compareTo(that: CommitMetadata): Int =
     this.id.compareTo(that.id)
 
 /**
- * Returns the commit time as epoch milliseconds.
+ * commit 시간을 epoch milliseconds로 반환합니다.
  *
  * ```kotlin
  * val ts = commitMetadata.commitTimestamp

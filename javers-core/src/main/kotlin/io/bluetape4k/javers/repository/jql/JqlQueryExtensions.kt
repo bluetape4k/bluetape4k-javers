@@ -9,7 +9,7 @@ import java.util.stream.Stream
 import kotlin.streams.asSequence
 
 /**
- * Finds shadows from this [JqlQuery].
+ * 이 [JqlQuery]로 shadow를 조회합니다.
  *
  * ```kotlin
  * val query = queryByInstanceId<Person>("bob")
@@ -20,25 +20,25 @@ inline fun <reified T: Any> JqlQuery.findShadows(javers: Javers): MutableList<Sh
     javers.findShadows(this)
 
 /**
- * Finds shadows from this [JqlQuery] as a [Stream].
+ * 이 [JqlQuery]로 shadow를 조회하고 [Stream]으로 반환합니다.
  */
 inline fun <reified T: Any> JqlQuery.findShadowsAndStream(javers: Javers): Stream<Shadow<T>> =
     javers.findShadowsAndStream(this)
 
 /**
- * Finds shadows from this [JqlQuery] as a [Sequence].
+ * 이 [JqlQuery]로 shadow를 조회하고 [Sequence]로 반환합니다.
  */
 inline fun <reified T: Any> JqlQuery.findShadowsAndSequence(javers: Javers): Sequence<Shadow<T>> =
     javers.findShadowsAndStream<T>(this).asSequence()
 
 /**
- * Finds snapshots from this [JqlQuery].
+ * 이 [JqlQuery]로 snapshot을 조회합니다.
  */
 fun JqlQuery.findSnapshots(javers: Javers): MutableList<CdoSnapshot> =
     javers.findSnapshots(this)
 
 /**
- * Finds changes from this [JqlQuery].
+ * 이 [JqlQuery]로 change를 조회합니다.
  */
 fun JqlQuery.findChanges(javers: Javers): Changes =
     javers.findChanges(this)
