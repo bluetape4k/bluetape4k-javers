@@ -1,11 +1,11 @@
 # Issue #176 - Spring Kafka Timeout Validation Review
 
-## Scope
+## 범위
 
-Issue #176 fixes asymmetric timeout validation between the Spring Kafka snapshot
-publisher path and the vanilla Kafka path.
+Issue #176은 Spring Kafka snapshot publisher path와 vanilla Kafka path 사이의
+asymmetric timeout validation을 수정한다.
 
-Reviewed files:
+검토한 파일:
 
 - `javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaPublishTimeoutSupport.kt`
 - `javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt`
@@ -16,19 +16,19 @@ Reviewed files:
 
 ## Step 6-R Final Review
 
-| Tier | Scope | Findings | Counts |
+| Tier | 범위 | 결과 | Counts |
 |---|---|---|---|
-| 1 Security | Kafka publish input boundary | The change rejects invalid timeout values before publish. It does not add deserialization, credential, or external input expansion. | P0=0, P1=0, P2=0, P3=0 |
-| 2 Ops/SRE | Bounded publish wait | `requirePositivePublishTimeout()` delegates to bluetape4k-core `requireGt(Duration.ZERO, ...)`, rejecting zero and negative durations while keeping Spring and vanilla Kafka bounded-wait semantics aligned. | P0=0, P1=0, P2=0, P3=0 |
-| 3 Structural | Adapter boundary | The helper is package-internal and reused by Spring repository, Spring publisher, and vanilla options. No public API shape or module dependency changes. | P0=0, P1=0, P2=0, P3=0 |
-| 4 Kotlin/API quality | Validation and constructor behavior | Public construction boundaries now fail fast. `KafkaSnapshotEventPublisher` uses a private constructor plus companion `invoke` instead of `init` validation. | P0=0, P1=0, P2=0, P3=0 |
-| 5 Tests/types/silent failure | Regression tests | Tests cover `Duration.ZERO` and negative duration for both `KafkaCdoSnapshotRepository` and `KafkaSnapshotEventPublisher`. Existing vanilla non-positive timeout test still passes through the shared helper. | P0=0, P1=0, P2=0, P3=0 |
-| 6 Performance/stability | Runtime behavior | Valid positive timeouts preserve existing blocking `Future.get(timeout)` behavior. Invalid values now fail at construction instead of at publish time. | P0=0, P1=0, P2=0, P3=0 |
-| 7 Documentation/release/evidence | Lessons and release impact | Lessons capture the adapter validation rule. No README, CI, Nightly, BOM, or changelog update is needed for this internal consistency fix. | P0=0, P1=0, P2=0, P3=0 |
+| 1 Security | Kafka publish input boundary | 변경은 publish 전에 invalid timeout value를 reject한다. deserialization, credential, external input expansion은 추가하지 않는다. | P0=0, P1=0, P2=0, P3=0 |
+| 2 Ops/SRE | Bounded publish wait | `requirePositivePublishTimeout()`은 bluetape4k-core `requireGt(Duration.ZERO, ...)`로 delegate하여 zero/negative duration을 reject하고 Spring/vanilla Kafka bounded-wait semantics를 맞춘다. | P0=0, P1=0, P2=0, P3=0 |
+| 3 Structural | Adapter boundary | helper는 package-internal이며 Spring repository, Spring publisher, vanilla options에서 재사용된다. public API shape 또는 module dependency 변경은 없다. | P0=0, P1=0, P2=0, P3=0 |
+| 4 Kotlin/API quality | Validation과 constructor behavior | Public construction boundary는 이제 fail fast한다. `KafkaSnapshotEventPublisher`는 `init` validation 대신 private constructor와 companion `invoke`를 사용한다. | P0=0, P1=0, P2=0, P3=0 |
+| 5 Tests/types/silent failure | Regression tests | 테스트는 `KafkaCdoSnapshotRepository`와 `KafkaSnapshotEventPublisher` 양쪽의 `Duration.ZERO` 및 negative duration을 커버한다. 기존 vanilla non-positive timeout test도 shared helper를 통해 계속 통과한다. | P0=0, P1=0, P2=0, P3=0 |
+| 6 Performance/stability | Runtime behavior | valid positive timeout은 기존 blocking `Future.get(timeout)` behavior를 보존한다. invalid value는 이제 publish time이 아니라 construction에서 fail한다. | P0=0, P1=0, P2=0, P3=0 |
+| 7 Documentation/release/evidence | Lesson 및 release impact | Lesson은 adapter validation rule을 기록한다. 이 internal consistency fix에는 README, CI, Nightly, BOM, changelog update가 필요하지 않다. | P0=0, P1=0, P2=0, P3=0 |
 
-Step 6-R verdict: PASS with P0=0 and P1=0.
+Step 6-R 판정: P0=0, P1=0으로 PASS.
 
-## Evidence
+## 증거
 
 - `KafkaPublishTimeoutSupport.kt:5-7`: shared positive timeout guard delegates to bluetape4k-core `requireGt`.
 - `KafkaCdoSnapshotRepository.kt:53`: Spring repository validates before constructing the publisher.
@@ -36,13 +36,13 @@ Step 6-R verdict: PASS with P0=0 and P1=0.
 - `VanillaKafkaCdoSnapshotRepository.kt:54-55`: vanilla options use the same guard.
 - `KafkaCdoSnapshotRepositoryTest.kt:195-227`: Spring repository and publisher regression tests cover zero and negative durations.
 
-## Validation Evidence
+## 검증 증거
 
 - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-  - Result: PASS, 24 tests executed.
+  - 결과: PASS, 24 tests executed.
 - `git diff --check`
-  - Result: PASS, no whitespace errors.
+  - 결과: PASS, no whitespace errors.
 
-## Final Gate
+## Final Gate 판정
 
 P0=0. P1=0. PR creation is allowed.
