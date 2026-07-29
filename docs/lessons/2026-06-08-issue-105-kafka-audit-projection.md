@@ -1,27 +1,26 @@
-# Issue #105 - Kafka Audit Projection Lesson
+# Issue #105 - Kafka 감사 프로젝션에서 얻은 교훈
 
-## Context
+## 배경
 
-Kafka snapshot repositories are intentionally write-only, but #105 needed a
-read-capable audit path.
+Kafka 스냅샷 저장소는 의도적으로 쓰기 전용이지만, #105에는 읽기를 지원하는 감사
+경로가 필요했다.
 
-## Decision
+## 결정
 
-Keep Kafka repositories as publishers and introduce a separate projector that
-replays Kafka records into an existing `CdoSnapshotRepository`.
+Kafka 저장소는 발행자 역할로 유지하고, Kafka 레코드를 기존
+`CdoSnapshotRepository`에 재생하는 별도의 프로젝터를 도입한다.
 
-## Outcome
+## 결과
 
-The projection path reuses bluetape4k-kafka consumers, existing JaVers codecs,
-Redis/Caffeine repository targets, and Testcontainers launchers without adding a
-new storage abstraction.
+프로젝션 경로는 새로운 저장소 추상화를 추가하지 않고 bluetape4k-kafka 소비자,
+기존 JaVers 코덱, Redis/Caffeine 저장소 대상, Testcontainers 실행기를 재사용한다.
 
-## Verification
+## 검증
 
 - `./gradlew :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-- Result: `SUCCESS: Executed 39 tests in 10.9s`
+- 결과: `SUCCESS: Executed 39 tests in 10.9s`
 
-## Future Guidance
+## 향후 지침
 
-For #131, compose durable read storage plus Kafka publishing explicitly. Do not
-make the Kafka repositories silently read-capable.
+#131에서는 영속 읽기 저장소와 Kafka 발행을 명시적으로 조합한다. Kafka 저장소에
+암묵적으로 읽기 기능을 추가해서는 안 된다.
