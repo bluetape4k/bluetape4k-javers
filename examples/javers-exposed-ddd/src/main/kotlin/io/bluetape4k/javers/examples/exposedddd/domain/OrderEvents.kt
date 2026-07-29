@@ -5,7 +5,7 @@ import java.io.Serializable
 import java.time.Instant
 
 /**
- * Event emitted when an order is placed.
+ * 주문이 생성될 때 발행되는 event입니다.
  */
 data class OrderPlaced(
     override val aggregateId: OrderId,
@@ -24,7 +24,7 @@ data class OrderPlaced(
 }
 
 /**
- * Event emitted when an order is marked as paid.
+ * 주문이 결제 완료로 표시될 때 발행되는 event입니다.
  */
 data class OrderMarkedPaid(
     override val aggregateId: OrderId,

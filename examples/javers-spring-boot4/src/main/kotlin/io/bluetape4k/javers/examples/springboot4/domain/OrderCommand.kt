@@ -3,7 +3,7 @@ package io.bluetape4k.javers.examples.springboot4.domain
 import java.io.Serializable
 
 /**
- * Command accepted by the order Spring Boot 4 example.
+ * 주문 Spring Boot 4 예제가 처리하는 command입니다.
  */
 sealed interface OrderCommand {
     val orderId: OrderId
@@ -11,7 +11,7 @@ sealed interface OrderCommand {
 }
 
 /**
- * Places a new order for [customerId].
+ * [customerId] 고객의 새 주문을 생성합니다.
  */
 data class PlaceOrderCommand(
     override val orderId: OrderId,
@@ -25,7 +25,7 @@ data class PlaceOrderCommand(
 }
 
 /**
- * Marks an existing order as paid.
+ * 기존 주문을 결제 완료 상태로 표시합니다.
  */
 data class MarkOrderPaidCommand(
     override val orderId: OrderId,

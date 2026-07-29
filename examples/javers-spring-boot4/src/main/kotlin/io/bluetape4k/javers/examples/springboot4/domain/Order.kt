@@ -9,12 +9,12 @@ import java.math.BigDecimal
 import java.time.Instant
 
 /**
- * Order aggregate used by the command-side JaVers + Exposed example.
+ * command-side JaVers + Exposed 예제에서 사용하는 주문 aggregate입니다.
  *
- * ## Contract
- * The aggregate is persisted by Exposed as the source of truth and committed to
- * JaVers after every command-side state transition. The [id] property is marked
- * with JaVers [Id] so JaVers maps this class as an entity.
+ * ## 계약
+ * 이 aggregate는 Exposed에 source of truth로 저장되고, command-side 상태 전이가
+ * 끝날 때마다 JaVers에 commit됩니다. [id] 속성에는 JaVers [Id]가 지정되어
+ * JaVers가 이 클래스를 entity로 매핑합니다.
  */
 @ConsistentCopyVisibility
 data class Order private constructor(

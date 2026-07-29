@@ -8,11 +8,11 @@ import java.math.BigDecimal
 import java.time.Instant
 
 /**
- * Redis-backed query-side read model for the order CQRS example.
+ * 주문 CQRS 예제를 위한 Redis 기반 query-side read model입니다.
  *
- * ## Contract
- * Instances are derived from domain events and optimized for reads. They are
- * not the command-side source of truth.
+ * ## 계약
+ * instance는 domain event에서 파생되며 조회에 최적화됩니다. command-side의
+ * source of truth는 아닙니다.
  */
 data class OrderSummary(
     val orderId: OrderId,

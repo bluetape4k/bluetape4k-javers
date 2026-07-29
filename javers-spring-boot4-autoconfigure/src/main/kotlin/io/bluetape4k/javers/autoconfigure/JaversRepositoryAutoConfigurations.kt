@@ -28,7 +28,7 @@ import org.springframework.kafka.core.KafkaTemplate
 import java.time.Duration
 
 /**
- * Auto-configures an Exposed JDBC JaVers repository from an existing [Database] bean.
+ * 기존 [Database] bean에서 Exposed JDBC JaVers repository를 auto-configure합니다.
  */
 @AutoConfiguration(before = [JaversAutoConfiguration::class])
 @ConditionalOnClass(
@@ -54,7 +54,7 @@ import java.time.Duration
 class JaversExposedRepositoryAutoConfiguration {
 
     /**
-     * Creates the Exposed-backed JaVers repository.
+     * Exposed 기반 JaVers repository를 생성합니다.
      */
     @Bean("javersExposedCdoSnapshotRepository")
     fun javersExposedCdoSnapshotRepository(
@@ -82,7 +82,7 @@ class JaversExposedRepositoryAutoConfiguration {
 }
 
 /**
- * Auto-configures a Lettuce Redis JaVers repository from an existing [RedisClient] bean.
+ * 기존 [RedisClient] bean에서 Lettuce Redis JaVers repository를 auto-configure합니다.
  */
 @AutoConfiguration(before = [JaversAutoConfiguration::class])
 @ConditionalOnClass(
@@ -110,7 +110,7 @@ class JaversExposedRepositoryAutoConfiguration {
 class JaversLettuceRepositoryAutoConfiguration {
 
     /**
-     * Creates the Lettuce-backed JaVers repository.
+     * Lettuce 기반 JaVers repository를 생성합니다.
      */
     @Bean("javersLettuceCdoSnapshotRepository")
     fun javersLettuceCdoSnapshotRepository(
@@ -125,7 +125,7 @@ class JaversLettuceRepositoryAutoConfiguration {
 }
 
 /**
- * Auto-configures a Redisson Redis JaVers repository from an existing [RedissonClient] bean.
+ * 기존 [RedissonClient] bean에서 Redisson Redis JaVers repository를 auto-configure합니다.
  */
 @AutoConfiguration(before = [JaversAutoConfiguration::class])
 @ConditionalOnClass(
@@ -153,7 +153,7 @@ class JaversLettuceRepositoryAutoConfiguration {
 class JaversRedissonRepositoryAutoConfiguration {
 
     /**
-     * Creates the Redisson-backed JaVers repository.
+     * Redisson 기반 JaVers repository를 생성합니다.
      */
     @Bean("javersRedissonCdoSnapshotRepository")
     fun javersRedissonCdoSnapshotRepository(
@@ -168,7 +168,7 @@ class JaversRedissonRepositoryAutoConfiguration {
 }
 
 /**
- * Auto-configures a Spring Kafka write-only JaVers repository from an existing [KafkaTemplate] bean.
+ * 기존 [KafkaTemplate] bean에서 Spring Kafka write-only JaVers repository를 auto-configure합니다.
  */
 @AutoConfiguration(
     before = [JaversAutoConfiguration::class],
@@ -197,7 +197,7 @@ class JaversRedissonRepositoryAutoConfiguration {
 class JaversSpringKafkaRepositoryAutoConfiguration {
 
     /**
-     * Creates the Spring Kafka write-only JaVers repository.
+     * Spring Kafka write-only JaVers repository를 생성합니다.
      */
     @Bean("javersSpringKafkaCdoSnapshotRepository")
     fun javersSpringKafkaCdoSnapshotRepository(
@@ -212,7 +212,7 @@ class JaversSpringKafkaRepositoryAutoConfiguration {
 }
 
 /**
- * Auto-configures a vanilla Kafka write-only JaVers repository from an existing [Producer] bean.
+ * 기존 [Producer] bean에서 vanilla Kafka write-only JaVers repository를 auto-configure합니다.
  */
 @AutoConfiguration(before = [JaversAutoConfiguration::class])
 @ConditionalOnClass(
@@ -238,7 +238,7 @@ class JaversSpringKafkaRepositoryAutoConfiguration {
 class JaversVanillaKafkaRepositoryAutoConfiguration {
 
     /**
-     * Creates the vanilla Kafka write-only JaVers repository.
+     * vanilla Kafka write-only JaVers repository를 생성합니다.
      */
     @Bean("javersVanillaKafkaCdoSnapshotRepository")
     fun javersVanillaKafkaCdoSnapshotRepository(

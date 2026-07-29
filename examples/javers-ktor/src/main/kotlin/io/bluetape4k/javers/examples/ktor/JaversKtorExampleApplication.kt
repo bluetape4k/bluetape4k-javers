@@ -47,11 +47,11 @@ private const val MAX_HISTORY_LIMIT = 100
 private val DatabaseNamePattern = Regex("[A-Za-z0-9_-]+")
 
 /**
- * Configures the Ktor JaVers audit example application.
+ * Ktor JaVers audit 예제 application을 설정합니다.
  *
- * ## Contract
- * This module explicitly wires Exposed JDBC, JaVers, and Ktor routes. It is an
- * example-local setup and does not provide production auto-configuration.
+ * ## 계약
+ * 이 module은 Exposed JDBC, JaVers, Ktor route를 명시적으로 연결합니다. 예제
+ * 내부 설정이며 production auto-configuration을 제공하지 않습니다.
  */
 fun Application.javersKtorModule(
     databaseName: String = "javers-ktor",
@@ -257,7 +257,7 @@ private fun String.requirePositiveBigDecimal(parameterName: String): BigDecimal 
 }
 
 /**
- * Request body for placing a new order.
+ * 새 주문 생성 요청 body입니다.
  */
 @Serializable
 data class PlaceOrderRequest(
@@ -272,7 +272,7 @@ data class PlaceOrderRequest(
 }
 
 /**
- * Request body item for placing an order.
+ * 주문 생성 요청에 포함되는 item body입니다.
  */
 @Serializable
 data class OrderItemRequest(
@@ -286,7 +286,7 @@ data class OrderItemRequest(
 }
 
 /**
- * Request body for marking an order as paid.
+ * 주문을 결제 완료로 표시하는 요청 body입니다.
  */
 @Serializable
 data class MarkOrderPaidRequest(
@@ -298,7 +298,7 @@ data class MarkOrderPaidRequest(
 }
 
 /**
- * REST representation of the current command-side order state.
+ * 현재 command-side 주문 상태의 REST 표현입니다.
  */
 @Serializable
 data class OrderResponse(
@@ -316,7 +316,7 @@ data class OrderResponse(
 }
 
 /**
- * REST representation of one order line.
+ * 주문 line 하나의 REST 표현입니다.
  */
 @Serializable
 data class OrderItemResponse(
@@ -331,7 +331,7 @@ data class OrderItemResponse(
 }
 
 /**
- * REST response containing bounded JaVers snapshot history for an order.
+ * 주문의 제한된 JaVers snapshot 이력을 담는 REST 응답입니다.
  */
 @Serializable
 data class OrderHistoryResponse(
@@ -345,7 +345,7 @@ data class OrderHistoryResponse(
 }
 
 /**
- * REST representation of one JaVers snapshot.
+ * JaVers snapshot 하나의 REST 표현입니다.
  */
 @Serializable
 data class OrderSnapshotResponse(

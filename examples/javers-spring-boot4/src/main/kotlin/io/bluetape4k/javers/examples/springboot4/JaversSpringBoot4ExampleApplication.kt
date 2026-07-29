@@ -4,7 +4,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 /**
- * Spring Boot 4 entrypoint for the explicit JaVers + Exposed example.
+ * 명시적 JaVers + Exposed 예제를 위한 Spring Boot 4 entrypoint입니다.
  */
 @SpringBootApplication
 class JaversSpringBoot4ExampleApplication

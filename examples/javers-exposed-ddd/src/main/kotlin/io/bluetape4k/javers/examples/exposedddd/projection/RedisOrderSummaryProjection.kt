@@ -15,11 +15,11 @@ import java.math.BigDecimal
 import java.time.Instant
 
 /**
- * Stores order summaries in Redis as one JSON document per order.
+ * 주문 summary를 주문별 JSON document 하나로 Redis에 저장합니다.
  *
- * ## Contract
- * The projection is updated from ordered order domain events. It stores the
- * latest query-side summary under a deterministic key derived from [OrderId].
+ * ## 계약
+ * 이 projection은 정렬된 주문 domain event로 갱신됩니다. 최신 query-side summary를
+ * [OrderId]에서 파생한 결정적 key 아래에 저장합니다.
  */
 class RedisOrderSummaryProjection(
     private val commands: RedisCommands<String, String>,

@@ -20,12 +20,12 @@ import org.springframework.context.annotation.Configuration
 import java.time.Clock
 
 /**
- * Explicit runtime wiring for the Spring Boot 4 example.
+ * Spring Boot 4 예제를 위한 명시적 runtime wiring입니다.
  *
- * ## Contract
- * This configuration creates the Exposed database, JaVers repository, and order
- * command handler directly. It is example-local wiring, not Spring Boot
- * auto-configuration for bluetape4k-javers.
+ * ## 계약
+ * 이 configuration은 Exposed database, JaVers repository, 주문 command handler를
+ * 직접 생성합니다. 예제 내부 wiring이며 bluetape4k-javers용 Spring Boot
+ * auto-configuration이 아닙니다.
  */
 @Configuration(proxyBeanMethods = false)
 class JaversExampleConfiguration {

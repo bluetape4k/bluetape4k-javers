@@ -70,7 +70,7 @@ dependencies {
     implementation(bt4k.exposed.java.time)
     implementation(bt4k.hikaricp)
     implementation(libs.testcontainers.postgresql)
-    // The central catalog does not expose hibernate-envers yet; keep this benchmark-only pin narrow.
+    // 중앙 catalog가 아직 hibernate-envers를 노출하지 않으므로 benchmark 전용 pin으로 좁게 유지합니다.
     implementation("org.hibernate.orm:hibernate-envers:7.3.4.Final")
     runtimeOnly(bt4k.postgresql)
 }
