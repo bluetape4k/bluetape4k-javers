@@ -13,13 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 private var isJaversEntityHookAuditing by transactionScope { false }
 
 /**
- * Lifecycle handle for JaVers auditing through Exposed DAO `EntityHook`.
+ * Exposed DAO `EntityHook`을 통한 JaVers auditing lifecycle handle입니다.
  *
- * ## Contract
- * A subscription registers one global Exposed hook and must be closed when the
- * application scope ends. Only configured DAO entity classes are audited.
- * Created and updated events are committed from the flushed DAO state. Removed
- * events are committed as JaVers terminal snapshots by id.
+ * ## 계약
+ * subscription은 global Exposed hook 하나를 등록하며 application scope가 끝날 때 close되어야 합니다.
+ * 구성된 DAO entity class만 audit합니다.
+ * Created/Updated event는 flushed DAO state에서 commit합니다.
+ * Removed event는 id 기반 JaVers terminal snapshot으로 commit합니다.
  *
  * ```kotlin
  * val subscription = ExposedJaversEntityHookSubscription.subscribe(
@@ -96,7 +96,7 @@ class ExposedJaversEntityHookSubscription private constructor(
 
     companion object {
         /**
-         * Registers a JaVers audit hook for the supplied Exposed DAO mappings.
+         * 제공된 Exposed DAO mapping에 대해 JaVers audit hook을 등록합니다.
          */
         fun subscribe(
             javers: Javers,
