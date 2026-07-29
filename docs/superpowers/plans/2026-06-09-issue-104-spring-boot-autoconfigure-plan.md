@@ -1,24 +1,21 @@
 # Issue 104 Spring Boot 4 Auto-Configuration Plan
 
-## Scope
+## 범위
 
-Implement a Spring Boot 4 auto-configuration module for existing JaVers Exposed,
-Redis, and Kafka repository backends.
+기존 JaVers Exposed, Redis, Kafka repository backend용 Spring Boot 4 auto-configuration
+module을 구현한다.
 
-## Steps
+## 단계
 
-1. Create `javers-spring-boot4-autoconfigure` and register it in Gradle.
-2. Add configuration properties and backend-specific auto-configuration phases.
-3. Add `ApplicationContextRunner` tests for backend selection, backoff, and
-   optional-class absence.
-4. Add module README files and update root README locale set, CHANGELOG, and
-   repo `AGENTS.md`.
-5. Register the module in CI and Nightly test/coverage workflows.
-6. Validate with Gradle compile/test/Kover, `actionlint`, `git diff --check`,
-   and 7-Tier review.
-7. Create PR against `develop`; merge only after explicit user approval.
+1. `javers-spring-boot4-autoconfigure`를 만들고 Gradle에 등록한다.
+2. configuration properties와 backend-specific auto-configuration phase를 추가한다.
+3. backend selection, backoff, optional-class absence에 대한 `ApplicationContextRunner` tests를 추가한다.
+4. module README files를 추가하고 root README locale set, CHANGELOG, repo `AGENTS.md`를 갱신한다.
+5. CI 및 Nightly test/coverage workflows에 module을 등록한다.
+6. Gradle compile/test/Kover, `actionlint`, `git diff --check`, 7-Tier review로 검증한다.
+7. `develop` 대상 PR을 만든다. explicit user approval 이후에만 merge한다.
 
-## Validation Commands
+## 검증 명령
 
 ```bash
 ./gradlew projects --no-configuration-cache --no-build-cache --console=plain
@@ -29,16 +26,16 @@ actionlint .github/workflows/ci.yml .github/workflows/nightly-tests.yml
 git diff --check
 ```
 
-## Plan Review
+## 계획 검토
 
-| Tier | Result | Notes |
+| Tier | 결과 | 비고 |
 |---|---|---|
-| Security | PASS | No credential creation or secret handling planned. |
-| Ops/SRE | PASS | Conditional startup and caller-owned clients reduce surprise side effects. |
-| Structural | PASS | Separate module avoids widening existing repository modules. |
-| Kotlin | PASS | Uses Spring Boot 4 slice auto-configuration conventions. |
-| Tests | PASS | Tests target all supported backend branches and backoff behavior. |
-| Performance | PASS | No background polling, retries, or thread ownership added. |
-| Docs/Release | PASS | Module registration and README locale updates are explicit plan items. |
+| Security | PASS | credential creation 또는 secret handling은 계획하지 않았다. |
+| Ops/SRE | PASS | conditional startup과 caller-owned client가 예상치 못한 side effect를 줄인다. |
+| Structural | PASS | 별도 module로 기존 repository module 확장을 피한다. |
+| Kotlin | PASS | Spring Boot 4 slice auto-configuration convention을 사용한다. |
+| Tests | PASS | tests는 지원되는 모든 backend branch와 backoff behavior를 target한다. |
+| Performance | PASS | background polling, retry, thread ownership은 추가하지 않는다. |
+| Docs/Release | PASS | module registration과 README locale update가 explicit plan item이다. |
 
 Final gate: `P0 = 0`, `P1 = 0`.

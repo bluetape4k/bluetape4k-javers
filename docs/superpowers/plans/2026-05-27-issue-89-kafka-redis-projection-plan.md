@@ -1,49 +1,45 @@
 # Issue 89 Kafka to Redis Projection Plan
 
-## Complexity
+## 복잡도
 
-Type A feature slice. It touches a new example module, external infrastructure
-adapters, integration tests, and user-facing README content.
+Type A feature slice. 새 example module, external infrastructure adapter,
+integration tests, user-facing README content를 건드린다.
 
-## Steps
+## 단계
 
-1. Add dependencies to `examples/javers-exposed-ddd`.
+1. `examples/javers-exposed-ddd`에 dependency를 추가한다.
    - Kafka clients
    - Lettuce Redis client
    - bluetape4k Testcontainers
    - Kafka Testcontainers
 
-2. Add read-side model and Redis store.
+2. read-side model과 Redis store를 추가한다.
    - `OrderSummary`
    - `RedisOrderSummaryProjection`
    - `OrderQueryService`
 
-3. Add Kafka event path.
+3. Kafka event path를 추가한다.
    - `OrderDomainEventJsonCodec`
    - `OrderKafkaEventPublisher`
    - `OrderProjectionEventConsumer`
 
-4. Add tests.
-   - Codec and Redis projection behavior
+4. tests를 추가한다.
+   - Codec 및 Redis projection behavior
    - Kafka producer/consumer to Redis projection integration
-   - Existing command handler regression remains passing
+   - 기존 command handler regression은 계속 통과해야 한다.
 
-5. Update docs.
+5. docs를 갱신한다.
    - README.md and README.ko.md diagrams and scope text
    - WIP.md active queue
    - `docs/lessons/2026-05-27-issue-89-kafka-redis-projection.md`
 
-6. Review and verify.
+6. review 및 검증을 수행한다.
    - Local 7-Tier review with P0/P1=0
    - `./gradlew :javers-exposed-ddd:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
    - `git diff --check`
 
-## Risks
+## 위험
 
-- Kafka/Testcontainers startup can be slow. Tests must stay serial through the
-  existing Gradle test mutex and the requested 300 second command timeout.
-- Lettuce synchronous commands are safe for this single-test flow, but the
-  projection store should keep a dedicated connection and close it.
-- JSON event compatibility is example-scoped. It should not become a public
-  cross-module serialization contract in this slice.
-
+- Kafka/Testcontainers startup은 느릴 수 있다. tests는 기존 Gradle test mutex와 요청된 300초 command timeout 안에서 serial 상태를 유지해야 한다.
+- Lettuce synchronous command는 이 single-test flow에서는 안전하지만 projection store는 dedicated connection을 유지하고 닫아야 한다.
+- JSON event compatibility는 example-scoped다. 이 slice에서 public cross-module serialization contract가 되면 안 된다.

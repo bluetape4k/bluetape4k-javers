@@ -1,42 +1,33 @@
-# Issue #135 - Snapshot Event Pipeline Design
+# Issue #135 - Snapshot Event Pipeline 설계
 
-## Context
+## 맥락
 
-Issue #135 asks for a pluggable snapshot event pipeline so JaVers snapshot
-events can flow through Kafka, NATS JetStream, Amazon SQS, and future
-transports without hard-coding repository composition to Kafka.
+Issue #135는 repository composition을 Kafka에 hard-code하지 않고 JaVers snapshot event가 Kafka, NATS JetStream, Amazon SQS, future transport를 통해 흐를 수 있도록 pluggable snapshot event pipeline을 요구한다.
 
-Current `develop` evidence:
+현재 `develop` 근거:
 
 - Base branch: `origin/develop@9c63a0d`.
 - #136 is merged. `javers-persistence-kafka` now provides:
   - `KafkaCdoSnapshotRepository` for Spring Kafka `KafkaTemplate`.
   - `VanillaKafkaCdoSnapshotRepository` for Apache Kafka `Producer<String, String>`.
-- Both Kafka repositories are intentionally write-only.
-- `AbstractCdoSnapshotRepository.persist()` calls `saveSnapshot(snapshot)` and
-  updates the repository head only after every publish succeeds.
-- `saveSnapshot()` receives a `CdoSnapshot`, not the original `Commit`, so
-  transport metadata must be derived from `CdoSnapshot` and
-  `snapshot.commitMetadata`.
-- The version catalog contains `bluetape4k-nats`; it does not contain an SQS /
-  AWS SDK alias in this repository.
-- The version catalog already contains `bluetape4k-kafka`; this PR uses that
-  governed dependency for vanilla Kafka producer creation helpers instead of
-  wiring raw Kafka client construction locally.
+- 두 Kafka repository는 의도적으로 write-only다.
+- `AbstractCdoSnapshotRepository.persist()`는 `saveSnapshot(snapshot)`을 호출하고 모든 publish가 성공한 뒤에만 repository head를 update한다.
+- `saveSnapshot()`은 original `Commit`이 아니라 `CdoSnapshot`을 받으므로 transport metadata는 `CdoSnapshot` 및 `snapshot.commitMetadata`에서 파생해야 한다.
+- Version catalog는 `bluetape4k-nats`를 포함하지만 이 repository에는 SQS / AWS SDK alias가 없다.
+- Version catalog는 이미 `bluetape4k-kafka`를 포함한다. 이 PR은 raw Kafka client construction을 local로 wiring하지 않고 vanilla Kafka producer creation helper용 governed dependency를 사용한다.
 
-## Scope
+## 범위
 
-Implement a transport-neutral snapshot event contract and adapt the existing
-Kafka repository paths to it.
+Transport-neutral snapshot event contract를 구현하고 기존 Kafka repository path를 이에 맞게 adapt한다.
 
-In scope:
+Scope 포함:
 
-- Add a small public event model in `javers-core`:
+- `javers-core`에 작은 public event model을 추가한다.
   - `CdoSnapshotEventMetadata`
   - `CdoSnapshotEvent<T>`
   - `CdoSnapshotEventPublisher<T>`
   - codec id constants for built-in snapshot-event payloads
-- Metadata fields:
+- Metadata field:
   - global id value
   - commit id string
   - commit major id
@@ -48,54 +39,44 @@ In scope:
   - commit timestamp
   - codec id
   - idempotency key
-- Add Kafka publisher adapters in `javers-persistence-kafka`:
+- `javers-persistence-kafka`에 Kafka publisher adapter를 추가한다.
   - Spring Kafka adapter backed by `KafkaTemplate<String, String>`.
   - Vanilla Kafka adapter backed by Apache Kafka `Producer<String, String>`.
   - Vanilla producer factory backed by `bluetape4k-kafka` `producerOf(...)`.
-- Refactor `KafkaCdoSnapshotRepository` and
-  `VanillaKafkaCdoSnapshotRepository` to build `CdoSnapshotEvent<String>` and
-  delegate publishing to the adapters while preserving current write-only
-  behavior and failure propagation.
-- Update README English/Korean locale pair with transport selection guidance and
-  NATS/SQS adapter design notes.
-- Record NATS JetStream and SQS as testable adapter designs, not new runtime
-  dependencies, in this issue.
+- 현재 write-only behavior와 failure propagation을 보존하면서 `KafkaCdoSnapshotRepository` 및 `VanillaKafkaCdoSnapshotRepository`가 `CdoSnapshotEvent<String>`을 만들고 adapter에 publishing을 delegate하도록 refactor한다.
+- README English/Korean locale pair를 transport selection guidance 및 NATS/SQS adapter design note로 갱신한다.
+- 이 issue에서 NATS JetStream과 SQS는 새 runtime dependency가 아니라 testable adapter design으로 기록한다.
 
-Out of scope:
+Scope 제외:
 
-- No new publishable module.
-- No NATS JetStream implementation in this PR.
-- No SQS/AWS SDK implementation in this PR.
-- No read-capable Kafka projection; #105 owns that.
-- No durable-history plus event-stream composition; #131 owns that.
-- No retries, background queues, batching, metrics API, or circuit breaker.
+- 새 publishable module을 추가하지 않는다.
+- 이 PR에서 NATS JetStream implementation을 추가하지 않는다.
+- 이 PR에서 SQS/AWS SDK implementation을 추가하지 않는다.
+- Read-capable Kafka projection을 추가하지 않는다. #105가 소유한다.
+- Durable-history plus event-stream composition을 추가하지 않는다. #131이 소유한다.
+- Retry, background queue, batching, metrics API, circuit breaker를 추가하지 않는다.
 
-## Public API Contract
+## Public API 계약
 
 ### `CdoSnapshotEventMetadata`
 
-`CdoSnapshotEventMetadata` is a serializable value object that carries
-transport-neutral routing, ordering, idempotency, and observability metadata.
+`CdoSnapshotEventMetadata`는 transport-neutral routing, ordering, idempotency, observability metadata를 담는 serializable value object다.
 
-Rules:
+Rule:
 
-- `globalIdValue`, `commitId`, `snapshotType`, `codecId`, and
-  `idempotencyKey` are non-blank.
-- `snapshotVersion` is positive.
-- `repositorySequence` is nullable because the current base repository assigns
-  its sequence after `saveSnapshot()` succeeds.
-- `idempotencyKey` is opaque and must not be parsed by transports. The default
-  key is stable for the same snapshot: global id + commit id + snapshot version.
-- `commitTimestamp` uses `snapshot.commitMetadata.commitDateInstant`.
+- `globalIdValue`, `commitId`, `snapshotType`, `codecId`, `idempotencyKey`는 non-blank다.
+- `snapshotVersion`은 positive다.
+- 현재 base repository가 `saveSnapshot()` 성공 후 sequence를 assign하므로 `repositorySequence`는 nullable이다.
+- `idempotencyKey`는 opaque이며 transport가 parse하면 안 된다. Default key는 동일 snapshot에 대해 stable하다: global id + commit id + snapshot version.
+- `commitTimestamp`는 `snapshot.commitMetadata.commitDateInstant`를 사용한다.
 
 ### `CdoSnapshotEvent<T>`
 
-`CdoSnapshotEvent<T>` combines metadata and an encoded payload. Current Kafka
-paths use `T = String` with the plain JaVers JSON string codec.
+`CdoSnapshotEvent<T>`는 metadata와 encoded payload를 결합한다. 현재 Kafka path는 plain JaVers JSON string codec과 함께 `T = String`을 사용한다.
 
 ### `CdoSnapshotEventPublisher<T>`
 
-`CdoSnapshotEventPublisher<T>` is a synchronous contract:
+`CdoSnapshotEventPublisher<T>`는 synchronous contract다.
 
 ```kotlin
 fun interface CdoSnapshotEventPublisher<T: Any> {
@@ -103,117 +84,96 @@ fun interface CdoSnapshotEventPublisher<T: Any> {
 }
 ```
 
-Behavior:
+동작:
 
-- `publish()` returns only after the transport accepts or acknowledges the
-  event according to that adapter's contract.
-- Failures are propagated as exceptions.
-- Callers may wrap transport-specific checked, timeout, or interrupted errors in
-  `RuntimeException`, but must preserve `InterruptedException` interrupt status.
-- The interface does not own resource lifecycle. Adapter classes may implement
-  `AutoCloseable` when they wrap a caller-owned client with explicit close
-  ownership options.
+- `publish()`는 transport가 해당 adapter contract에 따라 event를 accept 또는 acknowledge한 뒤에만 반환한다.
+- Failure는 exception으로 propagate된다.
+- Caller는 transport-specific checked, timeout, interrupted error를 `RuntimeException`으로 wrap할 수 있지만 `InterruptedException` interrupt status는 보존해야 한다.
+- Interface는 resource lifecycle을 소유하지 않는다. Adapter class는 explicit close ownership option으로 caller-owned client를 wrap할 때 `AutoCloseable`을 구현할 수 있다.
 
 ## Kafka Adapter Contract
 
 Spring Kafka adapter:
 
-- Publishes to the template default topic by default.
-- Uses `event.metadata.globalIdValue` as the Kafka key unless a caller supplies
-  a key mapper.
-- Sends `event.payload` as the value.
-- Blocks up to `publishTimeout`.
-- Restores interrupt status on `InterruptedException`.
-- Propagates publish failures so repository head is not advanced.
+- 기본적으로 template default topic에 publish한다.
+- Caller가 key mapper를 제공하지 않으면 `event.metadata.globalIdValue`를 Kafka key로 사용한다.
+- `event.payload`를 value로 전송한다.
+- `publishTimeout`까지 block한다.
+- `InterruptedException`에서 interrupt status를 restore한다.
+- Repository head가 advance되지 않도록 publish failure를 propagate한다.
 
 Vanilla Kafka adapter:
 
-- Publishes to `VanillaKafkaCdoSnapshotRepositoryOptions.topic`.
-- Uses `event.metadata.globalIdValue` as the Kafka key unless a caller supplies
-  a key mapper.
-- Can create a producer from caller-supplied config through the governed
-  `bluetape4k-kafka` `producerOf(...)` helper.
-- Sends `event.payload` as the value.
-- Blocks up to `publishTimeout`.
-- Optionally flushes after successful acknowledgement.
-- Closes the producer only when `closeProducerOnClose = true`.
+- `VanillaKafkaCdoSnapshotRepositoryOptions.topic`에 publish한다.
+- Caller가 key mapper를 제공하지 않으면 `event.metadata.globalIdValue`를 Kafka key로 사용한다.
+- Governed `bluetape4k-kafka` `producerOf(...)` helper를 통해 caller-supplied config에서 producer를 만들 수 있다.
+- `event.payload`를 value로 전송한다.
+- `publishTimeout`까지 block한다.
+- Successful acknowledgement 후 optional하게 flush한다.
+- `closeProducerOnClose = true`일 때만 producer를 close한다.
 
 ## NATS JetStream Design Artifact
 
-NATS JetStream adapter shape:
+NATS JetStream adapter 형태:
 
-- Client surface: a caller-provided JetStream publishing client from the
-  governed `bluetape4k-nats` dependency line.
-- Subject mapper: default subject from configuration plus optional mapper.
+- Client surface: governed `bluetape4k-nats` dependency line의 caller-provided JetStream publishing client.
+- Subject mapper: configuration의 default subject plus optional mapper.
 - Payload: `event.payload`.
 - Headers / metadata: global id, commit id, snapshot version, snapshot type,
   codec id, and idempotency key.
-- Acknowledgement: publish acknowledgement must be received before `publish()`
-  returns.
-- Failure behavior: publish timeout or negative acknowledgement is propagated.
-- Ordering: documented as subject/stream-dependent, not equivalent to Kafka
-  partition ordering.
-- Lifecycle: caller owns the NATS connection unless an explicit ownership option
-  is added later.
+- Acknowledgement: `publish()` 반환 전에 publish acknowledgement를 받아야 한다.
+- Failure behavior: publish timeout 또는 negative acknowledgement를 propagate한다.
+- Ordering: Kafka partition ordering과 equivalent하지 않고 subject/stream-dependent로 문서화한다.
+- Lifecycle: explicit ownership option이 나중에 추가되지 않는 한 caller가 NATS connection을 소유한다.
 
-This issue records the adapter contract without adding a NATS implementation.
+이 issue는 NATS implementation을 추가하지 않고 adapter contract를 기록한다.
 
 ## SQS Design Artifact
 
-SQS adapter shape:
+SQS adapter 형태:
 
-- Client surface: caller-provided AWS SDK SQS client after a separate dependency
-  governance decision adds the SDK alias.
+- Client surface: 별도 dependency governance decision이 SDK alias를 추가한 뒤의 caller-provided AWS SDK SQS client.
 - Queue URL: required, non-blank configuration.
 - Payload: `event.payload`.
 - Message attributes: global id, commit id, snapshot version, snapshot type,
   codec id, idempotency key.
-- FIFO support: message group id and deduplication id are required only for FIFO
-  queues and must not be exposed as mandatory fields for standard queues.
-- Acknowledgement: `sendMessage` / `sendMessageBatch` success is the publish
-  acknowledgement.
-- Failure behavior: client error, timeout, or partial batch failure is
-  propagated.
-- Ordering and retry semantics are documented as queue-type-specific, not Kafka
-  equivalent.
+- FIFO support: message group id와 deduplication id는 FIFO queue에서만 required이며 standard queue용 mandatory field로 노출하면 안 된다.
+- Acknowledgement: `sendMessage` / `sendMessageBatch` success가 publish acknowledgement다.
+- Failure behavior: client error, timeout, partial batch failure를 propagate한다.
+- Ordering 및 retry semantics는 Kafka equivalent가 아니라 queue-type-specific으로 문서화한다.
 
-This issue records the adapter contract without adding an SQS implementation.
+이 issue는 SQS implementation을 추가하지 않고 adapter contract를 기록한다.
 
-## Documentation Requirements
+## 문서 요구사항
 
-- Update `javers-persistence-kafka/README.md`.
-- Update `javers-persistence-kafka/README.ko.md`.
-- Document:
+- `javers-persistence-kafka/README.md`를 갱신한다.
+- `javers-persistence-kafka/README.ko.md`를 갱신한다.
+- 다음을 문서화한다.
   - event pipeline contract
   - Kafka Spring vs vanilla adapter selection
   - NATS JetStream planned adapter semantics
   - SQS planned adapter semantics
   - why #105 and #131 remain separate
 
-## Validation Requirements
+## 검증 요구사항
 
-- Unit tests for metadata extraction and default idempotency key.
-- Unit tests for publisher contract delegation in both Kafka repository paths.
-- Unit tests for Spring Kafka and vanilla Kafka adapters:
+- Metadata extraction 및 default idempotency key용 unit test.
+- 두 Kafka repository path의 publisher contract delegation용 unit test.
+- Spring Kafka 및 vanilla Kafka adapter용 unit test:
   - key mapper
   - payload preservation
   - timeout/failure propagation
   - interrupt preservation
   - vanilla flush and close ownership
-- Existing Kafka repository behavior must remain passing.
-- Run Testcontainers-backed Kafka module tests serially:
+- 기존 Kafka repository behavior는 계속 통과해야 한다.
+- Testcontainers-backed Kafka module test를 serial로 실행한다.
   - `./gradlew :javers-core:test :javers-persistence-kafka:test --no-configuration-cache --no-build-cache --no-parallel --console=plain`
-- Run production dependency check for the Kafka module to confirm
-  `bluetape4k-kafka` is present and no new NATS or SQS/AWS SDK runtime
-  dependency is introduced.
-- Run `git diff --check`.
+- Kafka module의 production dependency check를 실행해 `bluetape4k-kafka`가 존재하고 새 NATS 또는 SQS/AWS SDK runtime dependency가 도입되지 않았음을 확인한다.
+- `git diff --check`를 실행한다.
 
-## Risks
+## Risk
 
-- Public API breadth: keep the core contract small and transport-neutral.
-- Metadata availability: repository sequence is nullable because it is not known
-  inside `saveSnapshot()` before publish.
-- Semantics mismatch: README must not imply NATS or SQS behaves like Kafka.
-- Dependency creep: use the governed `bluetape4k-kafka` dependency for Kafka
-  helpers, but do not add AWS SDK/SQS or NATS implementation dependencies in
-  this PR.
+- Public API breadth: core contract를 작고 transport-neutral하게 유지한다.
+- Metadata availability: repository sequence는 publish 전 `saveSnapshot()` 안에서 알 수 없으므로 nullable이다.
+- Semantics mismatch: README는 NATS 또는 SQS가 Kafka처럼 동작한다고 암시하면 안 된다.
+- Dependency creep: Kafka helper에는 governed `bluetape4k-kafka` dependency를 사용하지만, 이 PR에서 AWS SDK/SQS 또는 NATS implementation dependency를 추가하지 않는다.
