@@ -1,38 +1,39 @@
-# 2026-05-20 — README overview visual placement
+# 2026-05-20 — README 개요 시각 자료 배치
 
-## Context
+## 배경
 
-README diagrams and charts need to be treated as source-backed documentation,
-not as decorative generated assets. The current pass used the 2026 reference
-documents and the shared README diagram style guide, but source code and build
-layout remained the authority for module names and grouping.
+README 다이어그램과 차트는 장식용 생성 이미지가 아니라 소스를 근거로 한
+문서로 다뤄야 한다. 이번 작업에서는 2026년 참고 문서와 공용 README
+다이어그램 스타일 가이드를 사용했지만, 모듈 이름과 그룹 구성은 소스 코드와
+빌드 구조를 기준으로 정했다.
 
-## Decision
+## 결정
 
-Add English-only SVG+PNG README overview visuals for the root README and place
-the overview diagram before installation, usage, or build instructions. Move
-existing Architecture/Diagram sections upward when they were appended after
-usage examples.
+루트 README에 영어로만 작성한 SVG+PNG 개요 시각 자료를 추가하고, 개요
+다이어그램을 설치, 사용법 또는 빌드 안내보다 앞에 배치한다. 기존
+Architecture/Diagram 섹션이 사용 예제 뒤에 추가되어 있다면 위쪽으로 옮긴다.
 
-## Outcome
+## 결과
 
-`bluetape4k-javers` now has a root README overview diagram and module composition chart, and
-its README visual placement follows the overview-first rule. Generated labels
-avoid localized text inside the images.
+`bluetape4k-javers`의 루트 README에 개요 다이어그램과 모듈 구성 차트가
+추가되었으며, README 시각 자료 배치는 개요 우선 규칙을 따른다. 생성된
+레이블에는 현지화된 텍스트를 넣지 않았다.
 
-## Verification
+## 검증
 
-- Generated SVG files parsed with `xmllint --noout`.
-- Generated PNG files rendered with `rsvg-convert`.
-- Workspace README image-link scan reported zero missing local images.
-- Workspace Architecture/Diagram ordering scan reported zero remaining sections
-  behind Installation, Usage, Examples, or Build headings.
-- Generated root overview SVG text contained no non-ASCII characters.
+- 생성된 SVG 파일을 `xmllint --noout`으로 파싱했다.
+- 생성된 PNG 파일을 `rsvg-convert`로 렌더링했다.
+- 워크스페이스 README 이미지 링크 검사에서 누락된 로컬 이미지가 0개였다.
+- 워크스페이스 Architecture/Diagram 순서 검사 결과 Installation, Usage,
+  Examples 또는 Build 제목 뒤에 남아 있는 해당 섹션이 0개였다.
+- 생성된 루트 개요 SVG 텍스트에 비 ASCII 문자가 없었다.
 
-## Future Note
+## 향후 참고 사항
 
-Do not append architecture diagrams to the end of README files. Keep overview
-or architecture diagrams near the top, then place class, sequence, ERD, or flow
-diagrams beside the section they explain.
+아키텍처 다이어그램을 README 파일 끝에 추가하지 않는다. 개요 또는 아키텍처
+다이어그램은 문서 상단 가까이에 두고, 클래스, 시퀀스, ERD 또는 흐름
+다이어그램은 해당 다이어그램이 설명하는 섹션 옆에 배치한다.
 
-Root overview diagrams and composition charts place BOM first when present and Examples or Additional examples last when present; middle groups keep the source-backed orientation order unless a repo-specific README calls for alphabetic grouping.
+루트 개요 다이어그램과 구성 차트는 BOM이 있으면 맨 앞에 두고, Examples 또는
+Additional examples가 있으면 맨 뒤에 둔다. 중간 그룹은 저장소별 README에서
+알파벳순 구성을 요구하지 않는 한 소스에 근거한 방향 순서를 유지한다.

@@ -1,33 +1,33 @@
-# 2026-05-18 — JaVers WIP audit and Redis head rebuild risk
+# 2026-05-18 — JaVers WIP 감사와 Redis head 재구성 위험
 
-## Context
+## 배경
 
-The WIP queue still listed closed 0.1.0 release-prep issues (#29 through #32)
-after the release work had been completed. A GNO lookup pointed to the recent
-0.1.0 pre-release fix lesson, then GitHub issue state was used as the source of
-truth for the current open queue.
+릴리스 작업이 완료된 뒤에도 WIP 대기열에는 이미 종료된 0.1.0 릴리스 준비
+이슈(#29~#32)가 남아 있었다. GNO 검색으로 최근의 0.1.0 사전 릴리스 수정
+교훈 문서를 찾은 뒤, 현재 열린 대기열을 판단하는 진실 공급원으로 GitHub 이슈
+상태를 사용했다.
 
-## Decision
+## 결정
 
-Register #62 for the remaining Redis persistence correctness risk: persistent
-Lettuce/Redisson repositories store snapshots and commit sequence metadata, but
-`AbstractCdoSnapshotRepository.getHeadId()` returns only the in-memory `head`
-field after repository rebuild.
+남아 있는 Redis 영속성 정확성 위험을 추적하기 위해 #62를 등록한다. 영속
+Lettuce/Redisson 저장소는 스냅샷과 커밋 순서 메타데이터를 저장하지만, 저장소를
+재구성한 뒤 `AbstractCdoSnapshotRepository.getHeadId()`는 메모리 내 `head`
+필드만 반환한다.
 
-## Outcome
+## 결과
 
-`WIP.md` now lists four open issues assigned to `debop`: #62, #3, #4, and #5.
-The release-prep chain is moved to recently completed work, and #62 is the next
-correctness item before Redis-backed examples expand.
+이제 `WIP.md`에는 `debop`에게 할당된 열린 이슈 네 건(#62, #3, #4, #5)이
+기록되어 있다. 릴리스 준비 작업 묶음은 최근 완료 항목으로 옮겼으며, #62는
+Redis 기반 예제를 확장하기 전에 해결할 다음 정확성 항목이 되었다.
 
-## Verification
+## 검증
 
-- `gh issue list --state open --assignee debop` returned four open issues.
-- `gh issue view 62` confirmed #62 is open, labelled `bug`, and assigned to
-  `debop`.
-- `rg` confirmed #62 and the open count are present in `WIP.md`.
+- `gh issue list --state open --assignee debop`에서 열린 이슈 네 건을 확인했다.
+- `gh issue view 62`로 #62가 열린 상태이고 `bug` 레이블이 지정되었으며
+  `debop`에게 할당되었음을 확인했다.
+- `rg`로 `WIP.md`에 #62와 열린 이슈 수가 기록되어 있음을 확인했다.
 
-## Future Agents
+## 향후 작업 지침
 
-When auditing WIP files, prefer GNO for historical context, then reconcile with
-live GitHub state before editing queue counts or priorities.
+WIP 파일을 감사할 때는 먼저 GNO에서 이력을 확인하고, 대기열의 항목 수나
+우선순위를 수정하기 전에 현재 GitHub 상태와 대조한다.
