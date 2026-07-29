@@ -21,15 +21,14 @@ import java.time.Duration
 import java.util.Properties
 
 /**
- * Options for [VanillaKafkaCdoSnapshotRepository].
+ * [VanillaKafkaCdoSnapshotRepository] option입니다.
  *
- * ## Behavior / Contract
- * - [topic] is the Kafka topic used for every published snapshot.
- * - [publishTimeout] bounds the blocking wait for Kafka acknowledgement.
- * - [flushAfterSend] calls [Producer.flush] after a successful acknowledgement.
- * - [closeProducerOnClose] controls whether [VanillaKafkaCdoSnapshotRepository.close]
- *   closes the producer. It defaults to `false` because producers are usually
- *   owned by the application lifecycle.
+ * ## 동작 / 계약
+ * - [topic]은 publish되는 모든 snapshot에 사용하는 Kafka topic입니다.
+ * - [publishTimeout]은 Kafka acknowledgement를 기다리는 blocking wait를 제한합니다.
+ * - [flushAfterSend]는 acknowledgement가 성공한 뒤 [Producer.flush]를 호출합니다.
+ * - [closeProducerOnClose]는 [VanillaKafkaCdoSnapshotRepository.close]가 producer를 close할지 제어합니다.
+ *   producer는 보통 application lifecycle이 소유하므로 기본값은 `false`입니다.
  */
 @ConsistentCopyVisibility
 data class VanillaKafkaCdoSnapshotRepositoryOptions private constructor(
@@ -43,7 +42,7 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions private constructor(
         private const val serialVersionUID: Long = 1532863228759821530L
 
         /**
-         * Creates validated options for [VanillaKafkaCdoSnapshotRepository].
+         * validation된 [VanillaKafkaCdoSnapshotRepository] option을 생성합니다.
          */
         operator fun invoke(
             topic: String,
@@ -65,19 +64,18 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions private constructor(
 }
 
 /**
- * Write-only JaVers repository that publishes [CdoSnapshot] values with a vanilla Kafka [Producer].
+ * vanilla Kafka [Producer]로 [CdoSnapshot] 값을 publish하는 write-only JaVers repository입니다.
  *
- * ## Behavior / Contract
- * - [saveSnapshot] publishes a Kafka record to [options.topic], using [keyMapper]
- *   for the key and the encoded snapshot event payload as the value.
- * - The publish blocks up to [VanillaKafkaCdoSnapshotRepositoryOptions.publishTimeout].
- * - Publish failures are propagated as [RuntimeException] so that [persist] does not
- *   advance the audit-log head on error.
- * - [InterruptedException] restores the thread interrupt flag before propagation.
- * - **This repository is write-only.** All read methods return empty/false/0.
- *   The first read-path call logs a warning; repeated read-path calls log at debug level.
- * - The producer is caller-owned by default. Set [VanillaKafkaCdoSnapshotRepositoryOptions.closeProducerOnClose]
- *   to `true` when this repository should close it.
+ * ## 동작 / 계약
+ * - [saveSnapshot]은 [options.topic]으로 Kafka record를 publish하며,
+ *   key에는 [keyMapper], value에는 encode된 snapshot event payload를 사용합니다.
+ * - publish는 [VanillaKafkaCdoSnapshotRepositoryOptions.publishTimeout]까지 block합니다.
+ * - publish failure는 [RuntimeException]으로 전파되므로 [persist]가 error 시 audit-log head를 advance하지 않습니다.
+ * - [InterruptedException]은 전파 전에 thread interrupt flag를 복원합니다.
+ * - **이 repository는 write-only입니다.** 모든 read method는 empty/false/0을 반환합니다.
+ *   첫 read-path 호출은 warning을 기록하고, 반복 read-path 호출은 debug level로 기록합니다.
+ * - producer는 기본적으로 caller-owned입니다. 이 repository가 producer를 close해야 하면
+ *   [VanillaKafkaCdoSnapshotRepositoryOptions.closeProducerOnClose]를 `true`로 설정하세요.
  *
  * ```kotlin
  * val options = VanillaKafkaCdoSnapshotRepositoryOptions(topic = "order-audit-events")
@@ -87,9 +85,9 @@ data class VanillaKafkaCdoSnapshotRepositoryOptions private constructor(
  *     .build()
  * ```
  *
- * @property producer the Apache Kafka producer used for publishing snapshots
- * @property options publishing and lifecycle options
- * @property keyMapper maps a JaVers snapshot to the Kafka record key
+ * @property producer snapshot publish에 사용하는 Apache Kafka producer입니다.
+ * @property options publish 및 lifecycle option입니다.
+ * @property keyMapper JaVers snapshot을 Kafka record key로 mapping합니다.
  */
 class VanillaKafkaCdoSnapshotRepository private constructor(
     private val producer: Producer<String, String>,
@@ -99,7 +97,7 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
 
     companion object: KLogging() {
         /**
-         * Creates a write-only JaVers repository backed by an Apache Kafka [Producer].
+         * Apache Kafka [Producer] 기반 write-only JaVers repository를 생성합니다.
          */
         operator fun invoke(
             producer: Producer<String, String>,
@@ -113,7 +111,7 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
             )
 
         /**
-         * Creates a repository and its Kafka producer with bluetape4k-kafka [producerOf].
+         * bluetape4k-kafka [producerOf]로 repository와 Kafka producer를 생성합니다.
          */
         operator fun invoke(
             producerConfigs: Map<String, Any?>,
@@ -131,7 +129,7 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
             )
 
         /**
-         * Creates a repository and its Kafka producer with bluetape4k-kafka [producerOf].
+         * bluetape4k-kafka [producerOf]로 repository와 Kafka producer를 생성합니다.
          */
         operator fun invoke(
             producerProperties: Properties,
@@ -176,7 +174,7 @@ class VanillaKafkaCdoSnapshotRepository private constructor(
     }
 
     override fun updateCommitId(commitId: CommitId, sequence: Long) {
-        // Nothing to do: the Kafka publisher is write-only and does not persist commit sequences.
+        // 수행할 작업이 없습니다. Kafka publisher는 write-only이며 commit sequence를 persist하지 않습니다.
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int {

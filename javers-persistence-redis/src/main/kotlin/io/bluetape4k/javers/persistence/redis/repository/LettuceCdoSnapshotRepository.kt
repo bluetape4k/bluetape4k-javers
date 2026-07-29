@@ -21,21 +21,21 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 /**
- * Lettuce-based Redis [CdoSnapshot] repository.
+ * Lettuce 기반 Redis [CdoSnapshot] repository입니다.
  *
- * ## Behavior / Contract
- * - Snapshots are stored newest-first in a Redis LIST keyed as `javers:{name}:snapshot:{globalId}`.
- * - [saveSnapshot] uses a MULTI/EXEC transaction to atomically LPUSH the snapshot and HSET the GlobalId index.
- * - [persist] batches every snapshot in a JaVers commit and the commit sequence update into one MULTI/EXEC boundary.
- * - [projectSnapshot] restores a replayed snapshot and its commit sequence in one MULTI/EXEC boundary.
- * - The entire MULTI/EXEC sequence is serialized with a [ReentrantLock] because the shared synchronous
- *   Lettuce connection is not thread-safe for pipelined transactions — concurrent callers would otherwise
- *   interleave commands between `multi()` and `exec()`.
- * - On transaction failure, DISCARD is attempted (failures during DISCARD are logged separately),
- *   and the original exception is propagated so that [persist] does not advance the audit-log head.
- * - The default codec is [JaversCodecs.LZ4Fory] (LZ4 + Fory serialization).
- * - The caller owns [client]. This repository owns only the read/write connections it opens from that client
- *   and closes them from [close].
+ * ## 동작 / 계약
+ * - Snapshot은 `javers:{name}:snapshot:{globalId}` key의 Redis LIST에 newest-first로 저장됩니다.
+ * - [saveSnapshot]은 MULTI/EXEC transaction으로 snapshot LPUSH와 GlobalId index HSET을 atomic하게 수행합니다.
+ * - [persist]는 JaVers commit의 모든 snapshot과 commit sequence update를 하나의 MULTI/EXEC boundary로 batch 처리합니다.
+ * - [projectSnapshot]은 replay된 snapshot과 그 commit sequence를 하나의 MULTI/EXEC boundary에서 복원합니다.
+ * - shared synchronous Lettuce connection은 pipelined transaction에 대해 thread-safe하지 않으므로
+ *   전체 MULTI/EXEC sequence를 [ReentrantLock]으로 직렬화합니다. 그렇지 않으면 concurrent caller가
+ *   `multi()`와 `exec()` 사이에 command를 interleave할 수 있습니다.
+ * - transaction failure 시 DISCARD를 시도합니다(DISCARD 중 failure는 별도로 log합니다).
+ *   원래 exception은 전파되어 [persist]가 audit-log head를 advance하지 않습니다.
+ * - 기본 codec은 [JaversCodecs.LZ4Fory](LZ4 + Fory serialization)입니다.
+ * - caller가 [client]를 소유합니다. 이 repository는 해당 client에서 연 read/write connection만 소유하며
+ *   [close]에서 닫습니다.
  *
  * ```kotlin
  * val repo = LettuceCdoSnapshotRepository("user", redisClient)
@@ -46,9 +46,9 @@ import kotlin.concurrent.withLock
  * val snapshots = javers.findSnapshots(queryByClass<Person>())
  * ```
  *
- * @param name repository name used as a Redis key prefix
- * @param client Lettuce [RedisClient] instance
- * @param codec the [JaversCodec] used to encode/decode [CdoSnapshot]
+ * @param name Redis key prefix로 사용하는 repository name입니다.
+ * @param client Lettuce [RedisClient] instance입니다.
+ * @param codec [CdoSnapshot] encode/decode에 사용하는 [JaversCodec]입니다.
  */
 class LettuceCdoSnapshotRepository(
     val name: String,
@@ -62,25 +62,25 @@ class LettuceCdoSnapshotRepository(
         private const val SNAPSHOT_SUFFIX = "snapshot:"
     }
 
-    // Redis HASH key storing [GlobalId.value()] entries for fast key lookup
+    // 빠른 key lookup을 위해 [GlobalId.value()] entry를 저장하는 Redis HASH key입니다.
     private val cacheSetKey: String = "javers:$name:$CACHE_KEY_SET"
 
-    // Redis HASH key storing CommitId → sequence number mappings
+    // CommitId -> sequence number mapping을 저장하는 Redis HASH key입니다.
     private val sequenceSetKey: String = "javers:$name:$SEQUENCE_SET"
 
-    // Prefix for Redis LIST keys that store snapshots per GlobalId
+    // GlobalId별 snapshot을 저장하는 Redis LIST key prefix입니다.
     private val snapshotPrefix = "javers:$name:$SNAPSHOT_SUFFIX"
 
     private val redisCodec = LettuceBinaryCodecs.lz4Fory<Any>()
 
-    // Read-only connection owned by this repository.
+    // 이 repository가 소유하는 read-only connection입니다.
     private val readConnection = lazy { client.connect(redisCodec) }
     private val commands by lazy { readConnection.value.sync() }
 
-    // Dedicated connection used exclusively for MULTI/EXEC in saveSnapshot.
-    // Keeping it separate from `commands` prevents read-path commands (lrange, hget, etc.)
-    // from being queued into an open transaction on the same Lettuce connection.
-    // `transactionLock` serializes concurrent saveSnapshot calls on this connection.
+    // saveSnapshot의 MULTI/EXEC에만 사용하는 전용 connection입니다.
+    // `commands`와 분리해 read-path command(lrange, hget 등)가 같은 Lettuce connection의
+    // open transaction에 queue되는 것을 방지합니다.
+    // `transactionLock`은 이 connection의 concurrent saveSnapshot 호출을 직렬화합니다.
     private val transactionLock = ReentrantLock()
     private val closeLock = ReentrantLock()
     private var closed = false
@@ -197,10 +197,10 @@ class LettuceCdoSnapshotRepository(
     }
 
     /**
-     * Builds the Redis LIST key for the given GlobalId value.
+     * 지정한 GlobalId 값에 대한 Redis LIST key를 만듭니다.
      *
-     * @param id the [CdoSnapshot] GlobalId value (e.g. `User/1`)
-     * @return the Redis key (e.g. `javers:user:snapshot:User/1`)
+     * @param id [CdoSnapshot] GlobalId 값입니다(예: `User/1`).
+     * @return Redis key입니다(예: `javers:user:snapshot:User/1`).
      */
     private fun makeSnapshotKey(id: String): String {
         return snapshotPrefix + id

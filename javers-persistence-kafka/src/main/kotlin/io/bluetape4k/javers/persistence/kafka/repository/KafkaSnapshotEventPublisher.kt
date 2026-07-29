@@ -8,14 +8,14 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 /**
- * Publishes JaVers snapshot events through a Spring Kafka [KafkaTemplate].
+ * Spring Kafka [KafkaTemplate]를 통해 JaVers snapshot event를 publish합니다.
  *
- * ## Behavior / Contract
- * - Publishes to [topic] when it is set, otherwise to the template default topic
- *   with [KafkaTemplate.sendDefault].
- * - Uses [keyMapper] for the Kafka record key.
- * - Waits up to [publishTimeout] for the send acknowledgement.
- * - Restores interrupt status before propagating an interrupted publish.
+ * ## 동작 / 계약
+ * - [topic]이 설정되어 있으면 해당 topic으로 publish하고, 그렇지 않으면 [KafkaTemplate.sendDefault]로
+ *   template default topic에 publish합니다.
+ * - Kafka record key에는 [keyMapper]를 사용합니다.
+ * - send acknowledgement를 [publishTimeout]까지 기다립니다.
+ * - interrupted publish를 전파하기 전에 interrupt status를 복원합니다.
  */
 class KafkaSnapshotEventPublisher private constructor(
     private val kafkaOperations: KafkaTemplate<String, String>,
@@ -28,7 +28,7 @@ class KafkaSnapshotEventPublisher private constructor(
 
     companion object {
         /**
-         * Creates a Spring Kafka snapshot event publisher with validated publish timeout.
+         * validation된 publish timeout으로 Spring Kafka snapshot event publisher를 생성합니다.
          */
         operator fun invoke(
             kafkaOperations: KafkaTemplate<String, String>,
@@ -42,7 +42,7 @@ class KafkaSnapshotEventPublisher private constructor(
             )
 
         /**
-         * Creates a Spring Kafka snapshot event publisher that sends to [topic].
+         * [topic]으로 전송하는 Spring Kafka snapshot event publisher를 생성합니다.
          */
         fun withTopic(
             kafkaOperations: KafkaTemplate<String, String>,
@@ -63,7 +63,7 @@ class KafkaSnapshotEventPublisher private constructor(
     }
 
     /**
-     * Publishes [event] with an explicit Kafka key.
+     * 명시적 Kafka key로 [event]를 publish합니다.
      */
     fun publish(event: CdoSnapshotEvent<String>, key: String) {
         key.requireNotBlank("key")
