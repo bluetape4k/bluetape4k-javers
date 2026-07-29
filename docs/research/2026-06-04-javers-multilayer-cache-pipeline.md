@@ -5,9 +5,9 @@ source_type: official-docs-plus-repo-check
 repo: bluetape4k/bluetape4k-javers
 ---
 
-# JaVers multilayer repository cache and pipeline research
+# JaVers multilayer repository cache 및 pipeline 연구
 
-## Source links
+## Source link
 
 - Redisson collections reference: https://redisson.pro/docs/data-and-services/collections/
   - PullMD: quality 1, share_id `ef7a9374`, fetched `2026-06-04T10:17:52.307Z`.
@@ -24,51 +24,51 @@ repo: bluetape4k/bluetape4k-javers
 - AWS SDK for Java `SqsClient`: https://docs.aws.amazon.com/java/api/latest/software/amazon/awssdk/services/sqs/SqsClient.html
   - PullMD: quality 1, share_id `0e244361`, fetched `2026-06-04T10:19:12.174Z`.
 
-## Repo-local facts
+## Repo-local 사실
 
-- `bluetape4k-javers` already has `javers-exposed`, `javers-persistence-redis`, and `javers-persistence-kafka`.
-- `javers-persistence-redis` already provides both `RedissonCdoSnapshotRepository` and `LettuceCdoSnapshotRepository`.
-- `javers-persistence-kafka` currently uses Spring Kafka `KafkaTemplate` and is explicitly write-only.
-- `bluetape4k-projects/cache/cache-core` already provides provider-neutral `NearCacheOperations`, `SuspendNearCacheOperations`, resilience decorators, local cache providers such as Caffeine, and shared near-cache test guidance.
-- `bluetape4k-projects/cache/cache-lettuce` already provides Lettuce native/JCache near-cache implementations, RESP3 client-tracking invalidation, resilient near-cache variants, and benchmark evidence.
-- `bluetape4k-projects/cache/cache-redisson` already provides Redisson JCache, `RedissonNearCache`, `RedissonSuspendNearCache`, `RLocalCachedMap`-backed near-cache support, and memoizers.
-- `bluetape4k-exposed/exposed/exposed-cache` already defines cache-backend-agnostic Exposed repository contracts, `CacheMode`, `CacheWriteMode`, `LocalCacheConfig`, Redis-specific repository contracts, and reusable test fixtures.
-- `bluetape4k-exposed/exposed/exposed-jdbc-lettuce` already implements Exposed JDBC + Lettuce Redis read-through, write-through, write-behind, synchronous and suspended repository contracts, and Exposed-based `MapLoader` / `MapWriter`.
-- `bluetape4k-exposed/exposed/exposed-jdbc-redisson` already implements Exposed JDBC + Redisson read-through, write-through, write-behind, near-cache, synchronous and suspended repository contracts, and Exposed-based `MapLoader` / `MapWriter`.
-- JDBC-backed Exposed repositories are the preferred high-throughput baseline when they can run on Java virtual threads: the blocking JDBC path stays simple, while virtual threads reduce request/thread contention. JaVers JDBC cache code should therefore avoid monitor-based synchronization and preserve virtual-thread friendliness.
-- Issue #89 / PR #92 already added an example CQRS flow: Exposed command-side snapshots, Kafka events, and Redis projection.
-- Issue #105 is an open design issue for a read-capable Kafka audit projection path.
-- Issue #131 is an open composite repository issue for durable history plus event stream. This research updated it to milestone `0.3.0`.
+- `bluetape4k-javers`에는 이미 `javers-exposed`, `javers-persistence-redis`, `javers-persistence-kafka`가 있다.
+- `javers-persistence-redis`는 이미 `RedissonCdoSnapshotRepository`와 `LettuceCdoSnapshotRepository`를 모두 제공한다.
+- `javers-persistence-kafka`는 현재 Spring Kafka `KafkaTemplate`을 사용하고 명시적으로 write-only다.
+- `bluetape4k-projects/cache/cache-core`는 provider-neutral `NearCacheOperations`, `SuspendNearCacheOperations`, resilience decorator, Caffeine 같은 local cache provider, shared near-cache test guidance를 이미 제공한다.
+- `bluetape4k-projects/cache/cache-lettuce`는 Lettuce native/JCache near-cache implementation, RESP3 client-tracking invalidation, resilient near-cache variant, benchmark evidence를 이미 제공한다.
+- `bluetape4k-projects/cache/cache-redisson`은 Redisson JCache, `RedissonNearCache`, `RedissonSuspendNearCache`, `RLocalCachedMap`-backed near-cache support, memoizer를 이미 제공한다.
+- `bluetape4k-exposed/exposed/exposed-cache`는 cache-backend-agnostic Exposed repository contract, `CacheMode`, `CacheWriteMode`, `LocalCacheConfig`, Redis-specific repository contract, reusable test fixture를 이미 정의한다.
+- `bluetape4k-exposed/exposed/exposed-jdbc-lettuce`는 Exposed JDBC + Lettuce Redis read-through, write-through, write-behind, synchronous/suspended repository contract, Exposed-based `MapLoader` / `MapWriter`를 이미 구현한다.
+- `bluetape4k-exposed/exposed/exposed-jdbc-redisson`은 Exposed JDBC + Redisson read-through, write-through, write-behind, near-cache, synchronous/suspended repository contract, Exposed-based `MapLoader` / `MapWriter`를 이미 구현한다.
+- Java virtual thread에서 실행할 수 있으면 JDBC-backed Exposed repository가 선호되는 high-throughput baseline이다. Blocking JDBC path는 단순하게 유지되고 virtual thread는 request/thread contention을 줄인다. 따라서 JaVers JDBC cache code는 monitor-based synchronization을 피하고 virtual-thread friendliness를 보존해야 한다.
+- Issue #89 / PR #92는 Exposed command-side snapshot, Kafka event, Redis projection으로 구성된 example CQRS flow를 이미 추가했다.
+- Issue #105는 read-capable Kafka audit projection path용 open design issue다.
+- Issue #131은 durable history plus event stream용 open composite repository issue다. 이 research는 이를 milestone `0.3.0`으로 갱신했다.
 
-## Research synthesis
+## 연구 종합
 
-Redis cache-aside remains the conservative baseline for lowering repeated read latency: read Redis first, fall back to the database, write the loaded value to Redis, and invalidate on primary writes. Redis documents TTL-bounded staleness, explicit invalidation, hashes/JSON for partial updates, and Lua-based stampede mitigation as useful pieces.
+Redis cache-aside는 repeated read latency를 낮추는 conservative baseline이다. Redis를 먼저 읽고, database로 fall back하며, load한 value를 Redis에 write하고, primary write에서 invalidate한다. Redis 문서는 TTL-bounded staleness, explicit invalidation, partial update용 hash/JSON, Lua-based stampede mitigation을 유용한 구성 요소로 설명한다.
 
-Redisson gives the stronger feature set for a true repository-level cache layer. Its `RMap` family supports read-through via `MapLoader`, write-through via synchronous `MapWriter`, and write-behind via delayed batched `MapWriter`. `RLocalCachedMap` adds a near-cache on the client side, with invalidation/update synchronization across instances. This is directly relevant to a Redis + Exposed + DB latency layer, but the implementation must make staleness, replay/rebuild, and failure semantics explicit.
+Redisson은 true repository-level cache layer에 더 강한 feature set을 제공한다. `RMap` family는 `MapLoader` 기반 read-through, synchronous `MapWriter` 기반 write-through, delayed batched `MapWriter` 기반 write-behind를 지원한다. `RLocalCachedMap`은 client side near-cache와 instance 간 invalidation/update synchronization을 추가한다. 이는 Redis + Exposed + DB latency layer와 직접 관련되지만, implementation은 staleness, replay/rebuild, failure semantics를 explicit하게 해야 한다.
 
-Lettuce is a good low-level Redis client for synchronous, asynchronous, and reactive access. It is already present in the JaVers Redis repository, so new work should focus on parity tests, selection guidance, and avoiding transactional connection misuse rather than creating a duplicate repository.
+Lettuce는 synchronous, asynchronous, reactive access용 좋은 low-level Redis client다. JaVers Redis repository에 이미 있으므로 새 작업은 duplicate repository를 만드는 대신 parity test, selection guidance, transactional connection misuse 방지에 집중해야 한다.
 
-For implementation planning, the JaVers work should not create a fresh cache/exposed abstraction from scratch. The required path is to reuse and adapt the existing bluetape4k cache and Exposed cache surfaces:
+Implementation planning에서 JaVers 작업은 fresh cache/exposed abstraction을 처음부터 만들면 안 된다. 필요한 path는 기존 bluetape4k cache 및 Exposed cache surface를 재사용하고 adapt하는 것이다.
 
-- Use `bluetape4k-projects/cache/cache-core` contracts for provider-neutral near-cache behavior, statistics, resilience, and test expectations.
-- Use `bluetape4k-projects/cache/cache-lettuce` and `cache/cache-redisson` provider implementations before adding any JaVers-specific near-cache wrapper.
-- Use `bluetape4k-exposed/exposed/exposed-cache` contracts and test fixtures for read-through, write-through, write-behind, `CacheMode`, and `CacheWriteMode` semantics.
-- Use `bluetape4k-exposed/exposed/exposed-jdbc-lettuce` and `exposed/exposed-jdbc-redisson` repository implementations as the baseline for Exposed + Redis + DB behavior, especially their `MapLoader` / `MapWriter`, sync/suspend repository shape, and near-cache/write-behind behavior.
-- Only add JaVers-specific code for mapping JaVers `CdoSnapshot` / commit metadata into those existing contracts, or for behavior that cannot be represented by the existing cache/exposed modules.
-- Treat JDBC + virtual threads as a first-class performance mode. If the implementation introduces locks or blocking coordination, prefer explicit lock primitives and bounded queues over `synchronized` / `@Synchronized`, and validate the JDBC path under virtual-thread execution.
+- Provider-neutral near-cache behavior, statistics, resilience, test expectation에는 `bluetape4k-projects/cache/cache-core` contract를 사용한다.
+- JaVers-specific near-cache wrapper를 추가하기 전에 `bluetape4k-projects/cache/cache-lettuce` 및 `cache/cache-redisson` provider implementation을 사용한다.
+- Read-through, write-through, write-behind, `CacheMode`, `CacheWriteMode` semantics에는 `bluetape4k-exposed/exposed/exposed-cache` contract와 test fixture를 사용한다.
+- Exposed + Redis + DB behavior의 baseline으로 `bluetape4k-exposed/exposed/exposed-jdbc-lettuce` 및 `exposed/exposed-jdbc-redisson` repository implementation을 사용한다. 특히 `MapLoader` / `MapWriter`, sync/suspend repository shape, near-cache/write-behind behavior를 기준으로 삼는다.
+- JaVers-specific code는 JaVers `CdoSnapshot` / commit metadata를 기존 contract에 mapping하거나 기존 cache/exposed module로 표현할 수 없는 behavior에 대해서만 추가한다.
+- JDBC + virtual thread를 first-class performance mode로 취급한다. Implementation이 lock 또는 blocking coordination을 도입하면 `synchronized` / `@Synchronized`보다 explicit lock primitive와 bounded queue를 선호하고 virtual-thread execution에서 JDBC path를 validate한다.
 
-Kafka has two useful API surfaces for this repo. Spring Kafka `KafkaTemplate` wraps producer operations and returns `CompletableFuture` send results. The vanilla Kafka `KafkaProducer` is thread-safe, asynchronous, supports batching, idempotence, and transactions, and should support a Spring-free adapter. Because this project already depends on `bluetape4k-kafka` patterns elsewhere, a vanilla adapter should reuse those helpers where practical.
+Kafka에는 이 repo에 유용한 API surface가 두 개 있다. Spring Kafka `KafkaTemplate`은 producer operation을 wrap하고 `CompletableFuture` send result를 반환한다. Vanilla Kafka `KafkaProducer`는 thread-safe 및 asynchronous이고 batching, idempotence, transaction을 지원하므로 Spring-free adapter를 지원해야 한다. 이 project가 다른 곳에서 이미 `bluetape4k-kafka` pattern에 의존하므로 vanilla adapter는 practical한 범위에서 해당 helper를 재사용해야 한다.
 
-NATS JetStream and AWS SQS are viable alternate pipeline adapters, but they differ from Kafka. JetStream returns publish acknowledgements and supports sync/async publishing. SQS is a hosted queue that decouples distributed components and provides `sendMessage` / `sendMessageBatch`, but ordering, FIFO grouping, deduplication, visibility timeout, and DLQ behavior must be documented separately from Kafka semantics.
+NATS JetStream과 AWS SQS는 viable alternate pipeline adapter지만 Kafka와 다르다. JetStream은 publish acknowledgement를 반환하고 sync/async publishing을 지원한다. SQS는 distributed component를 decouple하고 `sendMessage` / `sendMessageBatch`를 제공하는 hosted queue지만 ordering, FIFO grouping, deduplication, visibility timeout, DLQ behavior는 Kafka semantics와 별도로 문서화해야 한다.
 
-## Recommended issue split
+## 권장 issue split
 
-1. Reuse existing #131 for the multi-layer repository: Exposed as primary durable read store, Redis as optional cache/read projection, Kafka as optional write stream. Require reuse of `bluetape4k-exposed` cache/exposed repositories before adding JaVers-only abstractions, and keep the JDBC path virtual-thread friendly.
-2. Create a Redis latency strategy issue for cache-aside/read-through/write-through/write-behind plus Redisson near-cache evaluation. Require reuse of `bluetape4k-projects/cache` and `bluetape4k-exposed/exposed-jdbc-{lettuce,redisson}`; include JDBC + virtual-thread validation when measuring latency.
-3. Create a Redis client parity issue because Lettuce and Redisson repositories already exist. Scope it to JaVers parity over existing implementations, not new cache infrastructure.
-4. Create a pluggable message pipeline issue for Kafka, NATS JetStream, SQS, and future transports.
-5. Create a vanilla Kafka / `bluetape4k-kafka` issue so users are not forced into Spring Kafka.
+1. Multi-layer repository에는 기존 #131을 재사용한다. Exposed는 primary durable read store, Redis는 optional cache/read projection, Kafka는 optional write stream으로 둔다. JaVers-only abstraction을 추가하기 전에 `bluetape4k-exposed` cache/exposed repository 재사용을 요구하고 JDBC path는 virtual-thread friendly하게 유지한다.
+2. Cache-aside/read-through/write-through/write-behind plus Redisson near-cache evaluation용 Redis latency strategy issue를 만든다. `bluetape4k-projects/cache`와 `bluetape4k-exposed/exposed-jdbc-{lettuce,redisson}` 재사용을 요구하고 latency 측정 시 JDBC + virtual-thread validation을 포함한다.
+3. Lettuce와 Redisson repository가 이미 있으므로 Redis client parity issue를 만든다. Scope는 새 cache infrastructure가 아니라 기존 implementation 위의 JaVers parity로 제한한다.
+4. Kafka, NATS JetStream, SQS, future transport용 pluggable message pipeline issue를 만든다.
+5. User가 Spring Kafka를 강제받지 않도록 vanilla Kafka / `bluetape4k-kafka` issue를 만든다.
 
 ## Assets
 
-No image assets were needed.
+Image asset은 필요하지 않았다.
