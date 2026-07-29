@@ -1,60 +1,60 @@
 # WIP - bluetape4k-javers
 
 Snapshot: 2026-06-26 KST
-Scope: open GitHub issues assigned to `debop`.
-Open count: 5 issues.
+범위: `debop`에게 할당된 열린 GitHub issue.
+열린 issue 수: 5개.
 
-## Current Direction
+## 현재 방향
 
-`0.2.0` is the latest published stable Javers release and is the version
-consumed by `bluetape4k-dependencies` `1.2.0`.
+`0.2.0`은 최신 published stable Javers release이며
+`bluetape4k-dependencies` `1.2.0`이 소비하는 버전이다.
 
-The `0.2.1` patch lane has no open GitHub issues, but it is not tagged or
-published yet. Treat `0.2.1` as the stable Javers candidate for the next
-`bluetape4k-dependencies` release train until the release is completed and
-Maven Central visibility is verified.
+`0.2.1` patch lane에는 열린 GitHub issue가 없지만 아직 tag 또는 publish가
+완료되지 않았다. release가 완료되고 Maven Central visibility가 검증될 때까지
+`0.2.1`을 다음 `bluetape4k-dependencies` release train의 stable Javers
+candidate로 취급한다.
 
-Development is open on the `0.3.0` line with `snapshotVersion=` kept empty for
-workflow-injected snapshot publication. `0.3.0` is not the stable Javers input
-for the next dependencies release train unless the train is explicitly retargeted.
+`0.3.0` line에서는 development가 열려 있으며, workflow-injected snapshot
+publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으로 retarget되지
+않는 한 `0.3.0`은 다음 dependencies release train의 stable Javers input이 아니다.
 
-## Milestone Snapshot
+## Milestone 현황
 
-| Milestone | Open | Closed | Notes |
+| Milestone | Open | Closed | 비고 |
 |---|---:|---:|---|
-| `0.2.1` | 0 | 21 | Patch candidate for the next dependencies train; tag/release still missing. |
-| `0.3.0` | 4 | 77 | Next development queue after the 0.2.1 patch lane. |
-| `backlog` | 1 | 4 | Future R2DBC persistence research; not a `0.3.0` blocker. |
+| `0.2.1` | 0 | 21 | 다음 dependencies train의 patch candidate이며 tag/release는 아직 없다. |
+| `0.3.0` | 4 | 77 | 0.2.1 patch lane 이후의 다음 development queue. |
+| `backlog` | 1 | 4 | 향후 R2DBC persistence research이며 `0.3.0` blocker가 아니다. |
 
-Open PRs: none.
+열린 PR: 없음.
 
-## Active Queue
+## 활성 작업 대기열
 
-| Priority | Issue | Milestone | Notes |
+| 우선순위 | Issue | Milestone | 비고 |
 |---|---|---|---|
-| P1 | [#208](https://github.com/bluetape4k/bluetape4k-javers/issues/208) fix: make DDD aggregate save audit/event boundary atomic | 0.3.0 | Release-prep data-integrity blocker found by #192. |
-| P1 | [#209](https://github.com/bluetape4k/bluetape4k-javers/issues/209) fix: make durable snapshot persist commit-atomic | 0.3.0 | Release-prep data-integrity blocker found by #192. |
-| P1 | [#211](https://github.com/bluetape4k/bluetape4k-javers/issues/211) fix: preserve Kafka projection head and sequence semantics | 0.3.0 | Release-prep replay consistency blocker found by #192. |
-| P2 | [#118](https://github.com/bluetape4k/bluetape4k-javers/issues/118) build: move Envers comparison benchmark into a benchmark module | 0.3.0 | Benchmark module registration work; verify Gradle projects/tasks and benchmark docs. |
-| P3 | [#119](https://github.com/bluetape4k/bluetape4k-javers/issues/119) research: evaluate R2DBC persistence support for JaVers snapshots | backlog | Keep separate from 0.3.0; requires backend feasibility research before implementation. |
+| P1 | [#208](https://github.com/bluetape4k/bluetape4k-javers/issues/208) fix: make DDD aggregate save audit/event boundary atomic | 0.3.0 | #192에서 발견된 release-prep data-integrity blocker. |
+| P1 | [#209](https://github.com/bluetape4k/bluetape4k-javers/issues/209) fix: make durable snapshot persist commit-atomic | 0.3.0 | #192에서 발견된 release-prep data-integrity blocker. |
+| P1 | [#211](https://github.com/bluetape4k/bluetape4k-javers/issues/211) fix: preserve Kafka projection head and sequence semantics | 0.3.0 | #192에서 발견된 release-prep replay consistency blocker. |
+| P2 | [#118](https://github.com/bluetape4k/bluetape4k-javers/issues/118) build: move Envers comparison benchmark into a benchmark module | 0.3.0 | Benchmark module registration 작업이며 Gradle projects/tasks와 benchmark docs를 검증한다. |
+| P3 | [#119](https://github.com/bluetape4k/bluetape4k-javers/issues/119) research: evaluate R2DBC persistence support for JaVers snapshots | backlog | `0.3.0`과 분리해 유지하며, 구현 전에 backend feasibility research가 필요하다. |
 
-## Recently Completed
+## 최근 완료
 
-- #77 merged by PR #85: README persistence option diagram.
-- #3 merged by PR #86: `javers-exposed` Exposed JDBC CDO snapshot repository.
-- #4 merged by PR #87: `javers-ddd` aggregate/domain-event helpers.
-- #88 merged by PR #91: command-side `examples/javers-exposed-ddd` scaffold.
-- #89 merged by PR #92: Kafka to Redis projection flow.
-- #90 merged by PR #93: Envers comparison benchmark results.
-- #5 parent is closed by the final tracking PR after #88, #89, and #90 landed.
-- #95 merged by PR #96: `javers-exposed` database smoke coverage now uses the
-  shared `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix.
-- PR #128 opened the `0.3.0` development line.
-- PR #206 removed `compileTestKotlin` warning noise.
-- #192, #193, #194, #210, #212, and #213 are closed on the `0.3.0` line.
-- #195 merged by PR #219: benchmark module README and CI/Nightly smoke coverage.
+- #77은 PR #85로 merge됐다: README persistence option diagram.
+- #3은 PR #86으로 merge됐다: `javers-exposed` Exposed JDBC CDO snapshot repository.
+- #4는 PR #87로 merge됐다: `javers-ddd` aggregate/domain-event helper.
+- #88은 PR #91로 merge됐다: command-side `examples/javers-exposed-ddd` scaffold.
+- #89는 PR #92로 merge됐다: Kafka to Redis projection flow.
+- #90은 PR #93으로 merge됐다: Envers comparison benchmark result.
+- #5 parent는 #88, #89, #90이 반영된 뒤 final tracking PR로 닫혔다.
+- #95는 PR #96으로 merge됐다: `javers-exposed` database smoke coverage가 공유
+  `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix를 사용한다.
+- PR #128이 `0.3.0` development line을 열었다.
+- PR #206이 `compileTestKotlin` warning noise를 제거했다.
+- #192, #193, #194, #210, #212, #213은 `0.3.0` line에서 닫혔다.
+- #195는 PR #219로 merge됐다: benchmark module README와 CI/Nightly smoke coverage.
 
-## Dependency Map
+## 의존성 지도
 
 ```text
 #5 examples/javers-exposed-ddd parent (complete)
@@ -78,24 +78,24 @@ Open PRs: none.
   -> #213 POM license metadata
 ```
 
-## WIP Limits
+## WIP 제한
 
-| Lane | Limit | Current next |
+| 작업선 | 제한 | 다음 작업 |
 |---|---:|---|
 | Data integrity blockers | 1 | #208, then #209, then #211 |
-| Release metadata blockers | 1 | Complete for the current WIP snapshot. |
-| Small refactor / maintenance | 1 | Complete for the current WIP snapshot. |
-| Lifecycle cleanup | 1 | Complete for the current WIP snapshot. |
+| Release metadata blockers | 1 | 현재 WIP snapshot 기준 완료. |
+| Small refactor / maintenance | 1 | 현재 WIP snapshot 기준 완료. |
+| Lifecycle cleanup | 1 | 현재 WIP snapshot 기준 완료. |
 | Benchmark build/docs | 1 | #118 |
-| Future research | 1 | #119 only after 0.3.0 is clear |
+| Future research | 1 | `0.3.0`이 정리된 뒤 #119만 진행 |
 
-## Verification Evidence
+## 검증 증거
 
-- Live GitHub issues checked on 2026-06-26 KST:
-  `0.2.1` has 0 open issues, `0.3.0` has 4 open issues, and `backlog` has 1
-  open issue.
-- Live GitHub releases checked on 2026-06-26 KST: `0.2.0` exists; `0.2.1` does
-  not yet exist.
-- Live GitHub PRs checked on 2026-06-26 KST: no open PRs.
-- Main worktree checked on 2026-06-26 KST: `develop` is clean and aligned with
-  `origin/develop`.
+- 2026-06-26 KST에 live GitHub issue를 확인했다:
+  `0.2.1`에는 열린 issue가 0개, `0.3.0`에는 열린 issue가 4개, `backlog`에는
+  열린 issue가 1개였다.
+- 2026-06-26 KST에 live GitHub release를 확인했다: `0.2.0`은 존재하고
+  `0.2.1`은 아직 없다.
+- 2026-06-26 KST에 live GitHub PR을 확인했다: 열린 PR 없음.
+- 2026-06-26 KST에 main worktree를 확인했다: `develop`은 clean이고
+  `origin/develop`과 정렬돼 있었다.
