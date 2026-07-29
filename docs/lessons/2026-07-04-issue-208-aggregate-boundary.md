@@ -1,27 +1,26 @@
-# Issue #208 aggregate save boundary
+# Issue #208 애그리거트 저장 경계
 
-## Context
+## 배경
 
-`AggregateRepository.save` persisted source state, committed JaVers audit state,
-and then published events as separate sequential effects. Exposed-backed example
-repositories opened their own source transaction inside `persist`, so JaVers
-failure could leave source rows without audit history.
+`AggregateRepository.save`는 소스 상태를 영속화하고 JaVers 감사 상태를 커밋한 다음,
+별도의 순차적 효과로 이벤트를 발행했다. Exposed 기반 예제 저장소는 `persist` 내부에서
+자체 소스 트랜잭션을 열었으므로 JaVers 실패 시 감사 이력 없이 소스 행만 남을 수 있었다.
 
-## Decision
+## 결정
 
-Add a protected `saveAuditBoundary` hook to the base repository and override it
-in Exposed-backed examples with `transaction(database)`. Keep event publication
-after the source/audit boundary and treat publisher failure as a propagated
-best-effort failure that does not roll back committed source/audit state.
+기본 저장소에 `protected` `saveAuditBoundary` 훅을 추가하고 Exposed 기반 예제에서는
+`transaction(database)`로 재정의한다. 이벤트 발행은 소스/감사 경계 뒤에 유지한다.
+발행자 실패는 이미 커밋된 소스/감사 상태를 롤백하지 않고 호출자에게 전파되는 최선 노력
+방식의 실패로 처리한다.
 
-## Outcome
+## 결과
 
-Failure-injection tests now prove rollback on JaVers commit failure and retained
-source/audit state on publisher failure.
+이제 실패 주입 테스트로 JaVers 커밋 실패 시 롤백되고 발행자 실패 시 소스/감사 상태가
+유지되는지 검증한다.
 
-## Future Guidance
+## 향후 지침
 
-When adding a durable `AggregateRepository` adapter, override
-`saveAuditBoundary` if the source store and JaVers repository can share a
-transaction. If publisher rollback is required, add an explicit outbox instead
-of moving synchronous publisher calls back inside the audit transaction.
+내구성 있는 `AggregateRepository` 어댑터를 추가할 때 소스 저장소와 JaVers 저장소가
+트랜잭션을 공유할 수 있다면 `saveAuditBoundary`를 재정의한다. 발행자 실패까지 롤백해야
+한다면 동기식 발행자 호출을 감사 트랜잭션 안으로 다시 옮기는 대신 명시적인 아웃박스를
+추가한다.
