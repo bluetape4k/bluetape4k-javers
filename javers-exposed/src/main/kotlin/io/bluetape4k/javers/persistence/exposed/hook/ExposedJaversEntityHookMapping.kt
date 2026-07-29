@@ -9,13 +9,12 @@ import org.jetbrains.exposed.v1.dao.EntityClass
 import org.jetbrains.exposed.v1.dao.toEntity
 
 /**
- * Maps one Exposed DAO entity class to one detached JaVers audit type.
+ * 하나의 Exposed DAO entity class를 하나의 detached JaVers audit type으로 mapping합니다.
  *
- * ## Contract
- * The mapper is invoked only for `Created` and `Updated` lifecycle events. It
- * should return a detached domain object or DTO, not the transaction-bound DAO
- * entity itself. `Removed` events use [toAuditId] and [auditType] to create a
- * JaVers terminal snapshot by id.
+ * ## 계약
+ * mapper는 `Created`와 `Updated` lifecycle event에서만 호출됩니다.
+ * transaction-bound DAO entity 자체가 아니라 detached domain object 또는 DTO를 반환해야 합니다.
+ * `Removed` event는 [toAuditId]와 [auditType]을 사용해 id 기반 JaVers terminal snapshot을 생성합니다.
  *
  * ```kotlin
  * val mapping = ExposedJaversEntityHookMapping.of(CustomerEntity) { entity ->
@@ -46,7 +45,7 @@ class ExposedJaversEntityHookMapping<ID: Any, E: Entity<ID>, A: Any>(
 
     companion object {
         /**
-         * Creates a mapping with an audit type inferred from [A].
+         * [A]에서 audit type을 추론해 mapping을 생성합니다.
          */
         inline fun <ID: Any, E: Entity<ID>, reified A: Any> of(
             entityClass: EntityClass<ID, E>,

@@ -6,11 +6,10 @@ import org.jetbrains.exposed.v1.javatime.datetime
 import java.io.Serializable
 
 /**
- * Stores encoded JaVers CDO snapshots for Exposed JDBC persistence.
+ * Exposed JDBC persistence를 위한 encode된 JaVers CDO snapshot을 저장합니다.
  *
- * The [state] column contains the full encoded `CdoSnapshot` JSON payload
- * produced by JaVers. Other columns duplicate query-oriented metadata for
- * indexing, inspection, and future SQL pushdown.
+ * [state] column은 JaVers가 생성한 전체 encode된 `CdoSnapshot` JSON payload를 담습니다.
+ * 다른 column은 indexing, inspection, 향후 SQL pushdown을 위해 query-oriented metadata를 중복 저장합니다.
  */
 open class CdoSnapshotTableMapping(
     tableName: String = DEFAULT_TABLE_NAME,
@@ -42,10 +41,10 @@ object CdoSnapshotTable: CdoSnapshotTableMapping() {
 }
 
 /**
- * Stores JaVers commit metadata and repository sequence numbers.
+ * JaVers commit metadata와 repository sequence number를 저장합니다.
  *
- * [sequence] is the repository-local ordering value used to restore the latest
- * `CommitId` after rebuilding a persistent repository instance.
+ * [sequence]는 persistent repository instance를 rebuild한 뒤 최신 `CommitId`를 복원하는 데 사용하는
+ * repository-local ordering value입니다.
  */
 open class CommitTableMapping(
     tableName: String = DEFAULT_TABLE_NAME,
@@ -78,12 +77,12 @@ object CommitTable: CommitTableMapping() {
 }
 
 /**
- * Table names used by [ExposedJaversSchema].
+ * [ExposedJaversSchema]가 사용하는 table name입니다.
  *
- * ## Contract
- * Defaults preserve the original `javers_commit` and `javers_snapshot` table
- * names. Use this named value object instead of passing two raw strings to
- * avoid commit/snapshot table ordering mistakes.
+ * ## 계약
+ * 기본값은 기존 `javers_commit`과 `javers_snapshot` table name을 보존합니다.
+ * commit/snapshot table ordering 실수를 피하려면 raw string 두 개를 직접 넘기지 말고
+ * 이 named value object를 사용하세요.
  */
 @ConsistentCopyVisibility
 data class ExposedJaversTableNames private constructor(
@@ -109,11 +108,11 @@ data class ExposedJaversTableNames private constructor(
 }
 
 /**
- * Exposed table mapping pair used by `ExposedCdoSnapshotRepository`.
+ * `ExposedCdoSnapshotRepository`가 사용하는 Exposed table mapping pair입니다.
  *
- * ## Contract
- * [tables] is ordered for schema creation and drop helpers. Default schema uses
- * the source-compatible [CommitTable] and [CdoSnapshotTable] singleton objects.
+ * ## 계약
+ * [tables]는 schema creation 및 drop helper에 맞게 정렬되어 있습니다.
+ * 기본 schema는 source-compatible [CommitTable]과 [CdoSnapshotTable] singleton object를 사용합니다.
  */
 class ExposedJaversSchema(
     val commitTable: CommitTableMapping,

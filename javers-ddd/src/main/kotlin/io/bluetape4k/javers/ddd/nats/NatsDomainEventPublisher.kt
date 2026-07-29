@@ -5,16 +5,15 @@ import io.bluetape4k.javers.ddd.DomainEventPublisher
 import io.nats.client.Connection
 
 /**
- * Publishes domain events through a NATS Java client [Connection].
+ * NATS Java client [Connection]을 통해 domain event를 publish합니다.
  *
- * ## Contract
- * The publisher is synchronous from the repository point of view: it invokes
- * [Connection.publish] for each event. Payload serialization is supplied by the
- * consumer so this module does not force a JSON library or schema format.
+ * ## 계약
+ * repository 관점에서 이 publisher는 synchronous합니다. 각 event마다 [Connection.publish]를 호출합니다.
+ * payload serialization은 consumer가 제공하므로 이 module은 JSON library나 schema format을 강제하지 않습니다.
  *
- * @property connection NATS connection
- * @property subjectResolver maps a domain event to a NATS subject
- * @property serializer converts a domain event to a NATS payload
+ * @property connection NATS connection입니다.
+ * @property subjectResolver domain event를 NATS subject로 mapping합니다.
+ * @property serializer domain event를 NATS payload로 변환합니다.
  */
 class NatsDomainEventPublisher(
     private val connection: Connection,

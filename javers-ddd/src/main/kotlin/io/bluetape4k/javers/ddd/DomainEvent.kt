@@ -3,12 +3,12 @@ package io.bluetape4k.javers.ddd
 import java.time.Instant
 
 /**
- * Domain event emitted by an [AggregateRoot].
+ * [AggregateRoot]가 emit한 domain event입니다.
  *
- * ## Contract
- * Events are intentionally modeled as an interface, not a sealed class, so
- * consumers can declare event types in their own modules. [attributes] are
- * copied into JaVers commit properties by [toJaversProperties].
+ * ## 계약
+ * consumer가 자신의 module에서 event type을 선언할 수 있도록 event는 sealed class가 아니라
+ * interface로 의도적으로 modeling합니다. [attributes]는 [toJaversProperties]에 의해
+ * JaVers commit properties로 copy됩니다.
  *
  * ```kotlin
  * data class OrderPlaced(
@@ -20,28 +20,28 @@ import java.time.Instant
 interface DomainEvent {
 
     /**
-     * Identifier of the aggregate that emitted this event.
+     * 이 event를 emit한 aggregate의 identifier입니다.
      */
     val aggregateId: Any
 
     /**
-     * Time when the domain event happened.
+     * domain event가 발생한 시간입니다.
      */
     val occurredOn: Instant
 
     /**
-     * Optional event-specific metadata stored as JaVers commit properties.
+     * JaVers commit properties로 저장할 optional event-specific metadata입니다.
      */
     val attributes: Map<String, String>
         get() = emptyMap()
 }
 
 /**
- * Converts a [DomainEvent] to stable JaVers commit properties.
+ * [DomainEvent]를 stable JaVers commit properties로 변환합니다.
  *
- * ## Contract
- * Reserved properties describe the event type, aggregate id, and occurrence
- * time. User attributes are namespaced under `event.` to avoid collisions.
+ * ## 계약
+ * reserved property는 event type, aggregate id, occurrence time을 설명합니다.
+ * 사용자 attribute는 collision을 피하기 위해 `event.` namespace 아래에 배치합니다.
  */
 fun DomainEvent.toJaversProperties(): Map<String, String> {
     val properties = linkedMapOf(

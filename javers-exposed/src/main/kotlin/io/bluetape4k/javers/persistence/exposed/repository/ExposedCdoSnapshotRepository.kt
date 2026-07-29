@@ -47,13 +47,12 @@ import java.io.Serializable
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Options for [ExposedCdoSnapshotRepository].
+ * [ExposedCdoSnapshotRepository] option입니다.
  *
- * ## Contract
- * Defaults preserve the original `javers_commit` / `javers_snapshot` table
- * mapping and keep [ensureSchema] creating those tables. Set
- * [createSchemaOnEnsure] to `false` when schema migrations are owned by an
- * external migration tool.
+ * ## 계약
+ * 기본값은 기존 `javers_commit` / `javers_snapshot` table mapping을 보존하고
+ * [ensureSchema]가 해당 table을 생성하도록 유지합니다.
+ * schema migration을 external migration tool이 소유할 때는 [createSchemaOnEnsure]를 `false`로 설정하세요.
  *
  * ```kotlin
  * val options = ExposedCdoSnapshotRepositoryOptions(
@@ -80,16 +79,15 @@ data class ExposedCdoSnapshotRepositoryOptions(
 }
 
 /**
- * JaVers CDO snapshot repository backed by Exposed JDBC.
+ * Exposed JDBC 기반 JaVers CDO snapshot repository입니다.
  *
- * ## Contract
- * - Stores one row per [CdoSnapshot] in [CdoSnapshotTable].
- * - Stores one row per JaVers commit in [CommitTable].
- * - Encodes the full snapshot JSON with [codec], allowing JaVers to reconstruct
- *   snapshots through its configured JSON converter.
- * - Uses Exposed `transaction {}` or `transaction(database) {}` for every
- *   operation and never manages JDBC commits directly.
- * - Uses [options] to customize table names and schema creation ownership.
+ * ## 계약
+ * - [CdoSnapshotTable]에 [CdoSnapshot]마다 한 row를 저장합니다.
+ * - [CommitTable]에 JaVers commit마다 한 row를 저장합니다.
+ * - [codec]으로 전체 snapshot JSON을 encode하여 JaVers가 구성된 JSON converter로 snapshot을 재구성할 수 있게 합니다.
+ * - 모든 operation에 Exposed `transaction {}` 또는 `transaction(database) {}`를 사용하며
+ *   JDBC commit을 직접 관리하지 않습니다.
+ * - [options]로 table name과 schema creation ownership을 customize합니다.
  *
  * ```kotlin
  * val repository = ExposedCdoSnapshotRepository(database)
@@ -99,9 +97,9 @@ data class ExposedCdoSnapshotRepositoryOptions(
  * repository.ensureSchema()
  * ```
  *
- * @property database optional Exposed database used to route transactions
- * @property codec codec used to persist JaVers snapshot JSON
- * @property options table mapping and schema initialization options
+ * @property database transaction routing에 사용하는 optional Exposed database입니다.
+ * @property codec JaVers snapshot JSON persist에 사용하는 codec입니다.
+ * @property options table mapping과 schema initialization option입니다.
  */
 class ExposedCdoSnapshotRepository(
     private val database: Database? = null,

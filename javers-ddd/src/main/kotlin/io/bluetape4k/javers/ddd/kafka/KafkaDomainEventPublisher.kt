@@ -6,15 +6,15 @@ import io.bluetape4k.javers.ddd.spring.publishAfterCommit
 import org.springframework.kafka.core.KafkaTemplate
 
 /**
- * Publishes domain events to Kafka with Spring Kafka's [KafkaTemplate].
+ * Spring Kafka [KafkaTemplate]로 domain event를 Kafka에 publish합니다.
  *
- * ## Contract
- * If Spring transaction synchronization is active, events are sent in
- * `afterCommit`. Otherwise, they are sent immediately.
+ * ## 계약
+ * Spring transaction synchronization이 active이면 event를 `afterCommit`에서 보냅니다.
+ * 그렇지 않으면 즉시 보냅니다.
  *
- * @property kafkaTemplate template used to send domain events
- * @property topicResolver maps a domain event to a Kafka topic
- * @property keyResolver maps a domain event to a Kafka record key
+ * @property kafkaTemplate domain event 전송에 사용하는 template입니다.
+ * @property topicResolver domain event를 Kafka topic으로 mapping합니다.
+ * @property keyResolver domain event를 Kafka record key로 mapping합니다.
  */
 class KafkaDomainEventPublisher(
     private val kafkaTemplate: KafkaTemplate<String, DomainEvent>,
