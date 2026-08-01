@@ -20,6 +20,8 @@
 
 - `0.2.1` release-train patch 이후 `0.3.0` 개발 라인을 열었다.
 - local `bluetape4k-bom` 참조를 `1.11.0-SNAPSHOT`에 맞췄다.
+- 한국어 release-facing changelog에서 Keep a Changelog `Fixed` category를
+  `버그 수정`으로 표준화했다 ([#289](https://github.com/bluetape4k/bluetape4k-javers/issues/289)).
 
 ## [0.2.1] - 2026-06-01
 
@@ -57,7 +59,7 @@
   `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix로 옮겼다
   ([#95](https://github.com/bluetape4k/bluetape4k-javers/issues/95), [PR #96](https://github.com/bluetape4k/bluetape4k-javers/pull/96)).
 
-### 수정
+### 버그 수정
 
 - Redis rebuild scenario를 포함한 persistent backend에서 persistent JaVers
   repository head recovery를 복구했다
@@ -118,7 +120,7 @@
   `CompressibleStringJaversCodec` / `CompressibleBinaryJaversCodec`로 이름
   변경했다 (typo fix, pre-1.0 API cleanup) ([#43][i43], [PR #47][pr47]).
 
-### 수정
+### 버그 수정
 
 - `AbstractCdoSnapshotRepository.saveSnapshot()`이 예외를 조용히 삼키지 않고
   전파하도록 수정했다 ([#33][i33], [PR #47][pr47]).
