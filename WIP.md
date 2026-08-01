@@ -1,30 +1,31 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-06-26 KST
+Snapshot: 2026-08-01 KST
 범위: `debop`에게 할당된 열린 GitHub issue.
-열린 issue 수: 5개.
+열린 issue 수: 2개.
 
 ## 현재 방향
 
-`0.2.0`은 최신 published stable Javers release이며
-`bluetape4k-dependencies` `1.2.0`이 소비하는 버전이다.
+`0.2.1`은 2026-06-27에 published된 최신 stable Javers release이며,
+`bluetape4k-dependencies` `1.3.1` release가 소비하는 버전이다.
 
-`0.2.1` patch lane에는 열린 GitHub issue가 없지만 아직 tag 또는 publish가
-완료되지 않았다. release가 완료되고 Maven Central visibility가 검증될 때까지
-`0.2.1`을 다음 `bluetape4k-dependencies` release train의 stable Javers
-candidate로 취급한다.
+`0.2.1` patch lane에는 열린 GitHub issue가 없고 release/tag가 완료됐다.
+다음 stable Javers release는 `0.3.0` development line의 작업과 별도로
+정한다.
 
 `0.3.0` line에서는 development가 열려 있으며, workflow-injected snapshot
 publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으로 retarget되지
 않는 한 `0.3.0`은 다음 dependencies release train의 stable Javers input이 아니다.
+현재 `0.3.0`에서 `debop`에게 할당된 열린 issue는 한국어 `Fixed` terminology
+follow-up인 #289 하나다.
 
 ## Milestone 현황
 
 | Milestone | Open | Closed | 비고 |
 |---|---:|---:|---|
-| `0.2.1` | 0 | 21 | 다음 dependencies train의 patch candidate이며 tag/release는 아직 없다. |
-| `0.3.0` | 4 | 77 | 0.2.1 patch lane 이후의 다음 development queue. |
-| `backlog` | 1 | 4 | 향후 R2DBC persistence research이며 `0.3.0` blocker가 아니다. |
+| `0.2.1` | 0 | 29 | `bluetape4k-dependencies` `1.3.1`이 소비하는 published patch release. |
+| `0.3.0` | 1 | 131 | #289 한국어 changelog terminology follow-up만 열려 있다. |
+| `backlog` | 1 | 6 | 향후 R2DBC persistence research이며 `0.3.0` blocker가 아니다. |
 
 열린 PR: 없음.
 
@@ -32,10 +33,7 @@ publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으
 
 | 우선순위 | Issue | Milestone | 비고 |
 |---|---|---|---|
-| P1 | [#208](https://github.com/bluetape4k/bluetape4k-javers/issues/208) fix: make DDD aggregate save audit/event boundary atomic | 0.3.0 | #192에서 발견된 release-prep data-integrity blocker. |
-| P1 | [#209](https://github.com/bluetape4k/bluetape4k-javers/issues/209) fix: make durable snapshot persist commit-atomic | 0.3.0 | #192에서 발견된 release-prep data-integrity blocker. |
-| P1 | [#211](https://github.com/bluetape4k/bluetape4k-javers/issues/211) fix: preserve Kafka projection head and sequence semantics | 0.3.0 | #192에서 발견된 release-prep replay consistency blocker. |
-| P2 | [#118](https://github.com/bluetape4k/bluetape4k-javers/issues/118) build: move Envers comparison benchmark into a benchmark module | 0.3.0 | Benchmark module registration 작업이며 Gradle projects/tasks와 benchmark docs를 검증한다. |
+| P2 | [#289](https://github.com/bluetape4k/bluetape4k-javers/issues/289) docs(i18n): standardize Korean CHANGELOG Fixed terminology | 0.3.0 | #256 follow-up. Korean `Fixed` heading을 `버그 수정`으로 통일하고 release metadata와 English heading을 보존한다. |
 | P3 | [#119](https://github.com/bluetape4k/bluetape4k-javers/issues/119) research: evaluate R2DBC persistence support for JaVers snapshots | backlog | `0.3.0`과 분리해 유지하며, 구현 전에 backend feasibility research가 필요하다. |
 
 ## 최근 완료
@@ -50,9 +48,14 @@ publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으
 - #95는 PR #96으로 merge됐다: `javers-exposed` database smoke coverage가 공유
   `bluetape4k-exposed-jdbc-tests` H2/PostgreSQL/MySQL_V8 matrix를 사용한다.
 - PR #128이 `0.3.0` development line을 열었다.
-- PR #206이 `compileTestKotlin` warning noise를 제거했다.
-- #192, #193, #194, #210, #212, #213은 `0.3.0` line에서 닫혔다.
-- #195는 PR #219로 merge됐다: benchmark module README와 CI/Nightly smoke coverage.
+- PR #206이 `compileTestKotlin` warning noise를 제거했고, #192, #193, #194,
+  #208, #209, #210, #211, #212, #213, #224, #232, #233, #234가
+  `0.3.0` line에서 닫혔다.
+- #118 benchmark module move가 닫혔고, #195는 PR #219로 merge됐다:
+  benchmark module README와 CI/Nightly smoke coverage.
+- Epic #254와 #255-#271이 닫혔고, PR #272-#288이 한국어 문서/KDoc localization
+  train과 final parity audit를 완료했다.
+- PR #253이 GitHub Actions `actions/setup-python` dependabot update로 merge됐다.
 
 ## 의존성 지도
 
@@ -76,26 +79,30 @@ publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으
   -> #211 Kafka projection replay head/sequence semantics
   -> #212 BOM publishable-module constraints
   -> #213 POM license metadata
+
+#254 Korean localization epic (complete)
+  -> #255-#271 scope, document, KDoc, and final parity work
+      -> #289 Korean `Fixed` terminology follow-up (open)
 ```
 
 ## WIP 제한
 
 | 작업선 | 제한 | 다음 작업 |
 |---|---:|---|
-| Data integrity blockers | 1 | #208, then #209, then #211 |
+| Data integrity blockers | 1 | 현재 WIP snapshot 기준 완료. |
 | Release metadata blockers | 1 | 현재 WIP snapshot 기준 완료. |
-| Small refactor / maintenance | 1 | 현재 WIP snapshot 기준 완료. |
-| Lifecycle cleanup | 1 | 현재 WIP snapshot 기준 완료. |
-| Benchmark build/docs | 1 | #118 |
-| Future research | 1 | `0.3.0`이 정리된 뒤 #119만 진행 |
+| Documentation maintenance | 1 | #289 |
+| Future research | 1 | #289 완료 후 `0.3.0`이 정리되면 #119 진행 |
 
 ## 검증 증거
 
-- 2026-06-26 KST에 live GitHub issue를 확인했다:
-  `0.2.1`에는 열린 issue가 0개, `0.3.0`에는 열린 issue가 4개, `backlog`에는
-  열린 issue가 1개였다.
-- 2026-06-26 KST에 live GitHub release를 확인했다: `0.2.0`은 존재하고
-  `0.2.1`은 아직 없다.
-- 2026-06-26 KST에 live GitHub PR을 확인했다: 열린 PR 없음.
-- 2026-06-26 KST에 main worktree를 확인했다: `develop`은 clean이고
+- 2026-08-01 KST에 live GitHub issue를 확인했다: `debop`에게 할당된 열린
+  issue는 #289 (`0.3.0`)와 #119 (`backlog`)로 2개다.
+- 같은 시각 milestone을 확인했다: `0.2.1`은 0 open / 29 closed,
+  `0.3.0`은 1 open / 131 closed, `backlog`는 1 open / 6 closed다.
+- 2026-08-01 KST에 live GitHub release를 확인했다: `0.2.1`이 최신
+  `bluetape4k-javers` release이며, `bluetape4k-dependencies` `1.3.1` catalog가
+  `bluetape4k-javers-bom` `0.2.1`을 가리킨다.
+- 2026-08-01 KST에 live GitHub PR을 확인했다: 열린 PR 없음.
+- 문서 갱신 전 main worktree를 확인했다: `develop`은 clean이고
   `origin/develop`과 정렬돼 있었다.
