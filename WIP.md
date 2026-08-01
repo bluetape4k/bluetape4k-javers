@@ -2,7 +2,7 @@
 
 Snapshot: 2026-08-01 KST
 범위: `debop`에게 할당된 열린 GitHub issue.
-열린 issue 수: 2개.
+열린 issue 수: 1개.
 
 ## 현재 방향
 
@@ -16,15 +16,15 @@ Snapshot: 2026-08-01 KST
 `0.3.0` line에서는 development가 열려 있으며, workflow-injected snapshot
 publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으로 retarget되지
 않는 한 `0.3.0`은 다음 dependencies release train의 stable Javers input이 아니다.
-현재 `0.3.0`에서 `debop`에게 할당된 열린 issue는 한국어 `Fixed` terminology
-follow-up인 #289 하나다.
+현재 `0.3.0`에서 `debop`에게 할당된 열린 issue는 없다. #289 한국어 `Fixed`
+terminology follow-up은 PR #290으로 완료됐다.
 
 ## Milestone 현황
 
 | Milestone | Open | Closed | 비고 |
 |---|---:|---:|---|
 | `0.2.1` | 0 | 29 | `bluetape4k-dependencies` `1.3.1`이 소비하는 published patch release. |
-| `0.3.0` | 1 | 131 | #289 한국어 changelog terminology follow-up만 열려 있다. |
+| `0.3.0` | 0 | 133 | #289 한국어 changelog terminology follow-up이 PR #290으로 완료됐다. |
 | `backlog` | 1 | 6 | 향후 R2DBC persistence research이며 `0.3.0` blocker가 아니다. |
 
 열린 PR: 없음.
@@ -33,7 +33,6 @@ follow-up인 #289 하나다.
 
 | 우선순위 | Issue | Milestone | 비고 |
 |---|---|---|---|
-| P2 | [#289](https://github.com/bluetape4k/bluetape4k-javers/issues/289) docs(i18n): standardize Korean CHANGELOG Fixed terminology | 0.3.0 | #256 follow-up. Korean `Fixed` heading을 `버그 수정`으로 통일하고 release metadata와 English heading을 보존한다. |
 | P3 | [#119](https://github.com/bluetape4k/bluetape4k-javers/issues/119) research: evaluate R2DBC persistence support for JaVers snapshots | backlog | `0.3.0`과 분리해 유지하며, 구현 전에 backend feasibility research가 필요하다. |
 
 ## 최근 완료
@@ -56,6 +55,7 @@ follow-up인 #289 하나다.
 - Epic #254와 #255-#271이 닫혔고, PR #272-#288이 한국어 문서/KDoc localization
   train과 final parity audit를 완료했다.
 - PR #253이 GitHub Actions `actions/setup-python` dependabot update로 merge됐다.
+- #289 한국어 `Fixed` terminology follow-up이 PR #290으로 merge됐다.
 
 ## 의존성 지도
 
@@ -82,7 +82,7 @@ follow-up인 #289 하나다.
 
 #254 Korean localization epic (complete)
   -> #255-#271 scope, document, KDoc, and final parity work
-      -> #289 Korean `Fixed` terminology follow-up (open)
+      -> #289 Korean `Fixed` terminology follow-up (complete, PR #290)
 ```
 
 ## WIP 제한
@@ -91,18 +91,18 @@ follow-up인 #289 하나다.
 |---|---:|---|
 | Data integrity blockers | 1 | 현재 WIP snapshot 기준 완료. |
 | Release metadata blockers | 1 | 현재 WIP snapshot 기준 완료. |
-| Documentation maintenance | 1 | #289 |
-| Future research | 1 | #289 완료 후 `0.3.0`이 정리되면 #119 진행 |
+| Documentation maintenance | 1 | 현재 WIP snapshot 기준 완료. |
+| Future research | 1 | `0.3.0`이 정리됐으므로 #119 진행 가능 |
 
 ## 검증 증거
 
-- 2026-08-01 KST에 live GitHub issue를 확인했다: `debop`에게 할당된 열린
-  issue는 #289 (`0.3.0`)와 #119 (`backlog`)로 2개다.
+- 2026-08-01 KST에 PR #290 merge 후 live GitHub issue를 확인했다:
+  `debop`에게 할당된 열린 issue는 #119 (`backlog`) 1개이며 #289는 닫혔다.
 - 같은 시각 milestone을 확인했다: `0.2.1`은 0 open / 29 closed,
-  `0.3.0`은 1 open / 131 closed, `backlog`는 1 open / 6 closed다.
+  `0.3.0`은 0 open / 133 closed, `backlog`는 1 open / 6 closed다.
 - 2026-08-01 KST에 live GitHub release를 확인했다: `0.2.1`이 최신
   `bluetape4k-javers` release이며, `bluetape4k-dependencies` `1.3.1` catalog가
   `bluetape4k-javers-bom` `0.2.1`을 가리킨다.
 - 2026-08-01 KST에 live GitHub PR을 확인했다: 열린 PR 없음.
-- 문서 갱신 전 main worktree를 확인했다: `develop`은 clean이고
+- PR #290 merge 후 main worktree를 확인했다: `develop`은 clean이고
   `origin/develop`과 정렬돼 있었다.
