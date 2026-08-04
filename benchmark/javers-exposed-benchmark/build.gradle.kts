@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlinx.benchmark)
+    alias(bt4k.plugins.kotlinx.benchmark)
     kotlin("plugin.allopen")
 }
 
@@ -15,7 +15,7 @@ benchmark {
     targets {
         register("main") {
             this as kotlinx.benchmark.gradle.JvmBenchmarkTarget
-            jmhVersion = libs.versions.jmh.get()
+            jmhVersion = bt4k.versions.managed.jmh.core.h350a653f63e5.get()
         }
     }
     configurations {
@@ -59,10 +59,10 @@ dependencies {
 
     implementation(bt4k.bluetape4k.core)
     implementation(bt4k.bluetape4k.testcontainers)
-    implementation(libs.javers.core)
-    implementation(libs.kotlinx.benchmark.runtime)
-    implementation(libs.kotlinx.benchmark.runtime.jvm)
-    implementation(libs.jmh.core)
+    implementation(bt4k.javers.core)
+    implementation(bt4k.kotlinx.benchmark.runtime)
+    implementation(bt4k.kotlinx.benchmark.runtime.jvm)
+    implementation(bt4k.jmh.core)
 
     implementation(platform(bt4k.exposed.bom))
     implementation(bt4k.exposed.core)

@@ -17,7 +17,7 @@ artifacts {
 }
 
 dependencies {
-    api(libs.javers.core)
+    api(bt4k.javers.core)
 
     api(bt4kLibrary("bluetape4k-annotations"))
     api(bt4k.bluetape4k.io)
@@ -33,24 +33,24 @@ dependencies {
     testImplementation(bt4k.guava)
 
     // JaVers repository용 cache
-    compileOnly(libs.caffeine)
-    compileOnly(libs.caffeine.jcache)
-    compileOnly(libs.cache2k.core)
+    compileOnly(bt4k.caffeine)
+    compileOnly(bt4k.caffeine.jcache)
+    compileOnly(bt4k.cache2k.core)
 
     // Mongo 연동
-    compileOnly(libs.mongo.bson)
-    compileOnly(libs.mongo.bson.kotlin)
-    compileOnly(libs.mongo.bson.kotlinx)
-    compileOnly(libs.mongodb.driver.sync)
-    compileOnly(libs.mongodb.driver.kotlin.sync)
-    compileOnly(libs.mongodb.driver.kotlin.coroutine)
+    compileOnly(bt4k.mongo.bson)
+    compileOnly(bt4k.mongo.bson.kotlin)
+    compileOnly(bt4k.mongo.bson.kotlinx)
+    compileOnly(bt4k.mongodb.driver.sync)
+    compileOnly(bt4k.mongodb.driver.kotlin.sync)
+    compileOnly(bt4k.mongodb.driver.kotlin.coroutine)
 
     // Codec 연동
-    compileOnly(libs.kryo5)
+    compileOnly(bt4k.kryo5)
     compileOnly(bt4k.fory.kotlin)
 
     // 압축
-    compileOnly(libs.lz4.java)
-    compileOnly(libs.snappy.java)
+    compileOnly(bt4k.at.yawk.lz4.java)
+    compileOnly(bt4k.snappy.java)
     compileOnly(bt4k.zstd.jni)
 }
