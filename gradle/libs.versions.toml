@@ -4,42 +4,27 @@
 [versions]
 bluetape4k = "1.11.1-SNAPSHOT"  # https://mvnrepository.com/artifact/io.github.bluetape4k/bluetape4k-bom
 
-kotlinx-atomicfu = "0.32.1"  # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/atomicfu
 kotlinx-benchmark = "0.4.17"  # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-benchmark-runtime
 
-javers = "7.11.0"  # https://mvnrepository.com/artifact/org.javers/javers-core
-h2 = "2.4.240"  # https://mvnrepository.com/artifact/com.h2database/h2
 
 
 
 mongo-driver = "5.7.0"  # https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-lz4 = "1.11.0"  # https://mvnrepository.com/artifact/at.yawk.lz4/lz4-java
 
 caffeine = "3.2.4"  # https://mvnrepository.com/artifact/com.github.ben-manes.caffeine/caffeine
 cache2k = "2.6.1.Final"  # https://mvnrepository.com/artifact/org.cache2k/cache2k-api
 
 
-logback = "1.5.32"  # https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
 
-junit-jupiter = "6.0.3"  # https://mvnrepository.com/artifact/org.junit/junit-bom
-mockk = "1.14.9"  # https://mvnrepository.com/artifact/io.mockk/mockk
 
 # Plugin versions
-detekt = "1.23.8"  # https://mvnrepository.com/artifact/io.gitlab.arturbosch.detekt/detekt-gradle-plugin
-test-logger = "4.0.0"  # https://mvnrepository.com/artifact/com.adarshr/gradle-test-logger-plugin
-jmh = "1.37"  # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 
 # ────────────────────────────────────────────────────────────────────────────
 [plugins]
-kotlinx-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
-kotlinx-benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "kotlinx-benchmark" }
 
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger" }
 
 # ────────────────────────────────────────────────────────────────────────────
 [libraries]
-jetbrains-annotations = { module = "org.jetbrains:annotations", version = "26.1.0" }  # https://mvnrepository.com/artifact/org.jetbrains/annotations
 
 # Kotlin
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom" }
@@ -52,14 +37,10 @@ kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test" }
-kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
-kotlinx-benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "kotlinx-benchmark" }
-kotlinx-benchmark-runtime-jvm = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime-jvm", version.ref = "kotlinx-benchmark" }
 
 # bluetape4k — consumed from Maven Central snapshots
 
 # Javers
-javers-core = { module = "org.javers:javers-core", version.ref = "javers" }
 
 # Exposed
 exposed-bom = { module = "org.jetbrains.exposed:exposed-bom" }
@@ -69,7 +50,6 @@ exposed-dao = { module = "org.jetbrains.exposed:exposed-dao" }
 jcl-over-slf4j = { module = "org.slf4j:jcl-over-slf4j" }
 jul-to-slf4j = { module = "org.slf4j:jul-to-slf4j" }
 log4j-over-slf4j = { module = "org.slf4j:log4j-over-slf4j" }
-logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 # Kafka
 kafka-clients = { module = "org.apache.kafka:kafka-clients" }
@@ -80,19 +60,10 @@ spring-kafka-test = { module = "org.springframework.kafka:spring-kafka-test" }
 lettuce-core = { module = "io.lettuce:lettuce-core" }
 
 # MongoDB
-mongo-bson = { module = "org.mongodb:bson", version.ref = "mongo-driver" }
-mongo-bson-kotlin = { module = "org.mongodb:bson-kotlin", version.ref = "mongo-driver" }
-mongo-bson-kotlinx = { module = "org.mongodb:bson-kotlinx", version.ref = "mongo-driver" }
-mongodb-driver-sync = { module = "org.mongodb:mongodb-driver-sync", version.ref = "mongo-driver" }
-mongodb-driver-kotlin-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongo-driver" }
-mongodb-driver-kotlin-sync = { module = "org.mongodb:mongodb-driver-kotlin-sync", version.ref = "mongo-driver" }
 
 # Codecs
-kryo5 = { module = "com.esotericsoftware:kryo", version = "5.6.2" }  # https://mvnrepository.com/artifact/com.esotericsoftware/kryo
 
 # Compression
-lz4-java = { module = "at.yawk.lz4:lz4-java", version.ref = "lz4" }
-snappy-java = { module = "org.xerial.snappy:snappy-java", version = "1.1.10.8" }  # https://mvnrepository.com/artifact/org.xerial.snappy/snappy-java
 
 # Protobuf
 
@@ -100,17 +71,10 @@ snappy-java = { module = "org.xerial.snappy:snappy-java", version = "1.1.10.8" }
 protobuf-kotlin = { module = "com.google.protobuf:protobuf-kotlin" }
 
 # Cache
-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version.ref = "caffeine" }
-caffeine-jcache = { module = "com.github.ben-manes.caffeine:jcache", version.ref = "caffeine" }
-cache2k-api = { module = "org.cache2k:cache2k-api", version.ref = "cache2k" }
-cache2k-core = { module = "org.cache2k:cache2k-core", version.ref = "cache2k" }
-cache2k-jcache = { module = "org.cache2k:cache2k-jcache", version.ref = "cache2k" }
 
 # Test
-junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-jupiter" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 awaitility-kotlin = { module = "org.awaitility:awaitility-kotlin" }
 testcontainers-bom = { module = "org.testcontainers:testcontainers-bom" }
 testcontainers = { module = "org.testcontainers:testcontainers" }
@@ -120,5 +84,3 @@ testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgr
 testcontainers-mysql = { module = "org.testcontainers:testcontainers-mysql" }
 
 # JDBC drivers
-h2 = { module = "com.h2database:h2", version.ref = "h2" }
-jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }

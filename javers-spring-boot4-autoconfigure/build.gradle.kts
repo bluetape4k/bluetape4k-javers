@@ -8,7 +8,7 @@ dependencies {
     compileOnly(platform(bt4k.exposed.bom))
     testImplementation(platform(bt4k.exposed.bom))
 
-    compileOnly(libs.javers.core)
+    compileOnly(bt4k.javers.core)
     compileOnly(bt4k.bluetape4k.core)
     compileOnly(project(":javers-core"))
     compileOnly(project(":javers-exposed"))
@@ -21,7 +21,7 @@ dependencies {
     compileOnly(libs.spring.kafka)
     compileOnly(libs.kafka.clients)
     compileOnly(bt4k.fory.kotlin)
-    compileOnly(libs.lz4.java)
+    compileOnly(bt4k.at.yawk.lz4.java)
     compileOnly("org.springframework.boot:spring-boot")
     compileOnly("org.springframework.boot:spring-boot-autoconfigure")
     compileOnly("org.springframework:spring-context")
@@ -41,12 +41,12 @@ dependencies {
     testImplementation(libs.spring.kafka)
     testImplementation(libs.kafka.clients)
     testImplementation(bt4k.fory.kotlin)
-    testImplementation(libs.lz4.java)
+    testImplementation(bt4k.at.yawk.lz4.java)
     testImplementation("org.springframework.boot:spring-boot-test")
     testImplementation("org.springframework.boot:spring-boot-autoconfigure")
     testImplementation("org.springframework.boot:spring-boot-kafka")
     testImplementation("org.springframework:spring-context")
     // ApplicationContextRunner의 assertable context API에 필요하며 assertion은 bluetape4k 범위에서만 사용합니다.
     testImplementation("org.assertj:assertj-core")
-    testRuntimeOnly(libs.h2)
+    testRuntimeOnly(bt4k.h2.v2)
 }

@@ -7,6 +7,8 @@
 
 ## [미공개]
 
+## [0.3.0] - 2026-08-06
+
 ### 추가
 
 - Exposed, Redis, Kafka repository backend 전반에서 Spring Boot 4 조건부

@@ -1,7 +1,7 @@
 dependencies {
     implementation(bt4k.bluetape4k.core)
     implementation(bt4k.bluetape4k.lettuce)
-    implementation(libs.javers.core)
+    implementation(bt4k.javers.core)
     implementation(project(":javers-ddd"))
     implementation(project(":javers-exposed"))
 
@@ -11,11 +11,11 @@ dependencies {
     implementation(bt4k.exposed.java.time)
     implementation(libs.kafka.clients)
 
-    runtimeOnly(libs.h2)
+    runtimeOnly(bt4k.h2.v2)
 
     testImplementation(bt4k.bluetape4k.junit5)
     testImplementation(bt4k.bluetape4k.testcontainers)
-    testImplementation(libs.h2)
+    testImplementation(bt4k.h2.v2)
     testImplementation(bt4k.hikaricp)
     testImplementation(libs.testcontainers.kafka)
     testImplementation(libs.testcontainers.postgresql)

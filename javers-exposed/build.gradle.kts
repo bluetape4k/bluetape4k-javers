@@ -13,7 +13,7 @@ dependencies {
     implementation(platform(bt4kLibrary("bluetape4k-exposed-bom")))
     api(bt4kLibrary("bluetape4k-exposed-jdbc"))
 
-    api(libs.javers.core)
+    api(bt4k.javers.core)
     api(project(":javers-core"))
     testImplementation(project(path = ":javers-core", configuration = "testJar"))
 
@@ -25,7 +25,7 @@ dependencies {
 
     testImplementation(bt4k.bluetape4k.junit5)
     testImplementation(bt4kLibrary("bluetape4k-exposed-jdbc-tests"))
-    testRuntimeOnly(libs.h2)
+    testRuntimeOnly(bt4k.h2.v2)
     testRuntimeOnly(bt4k.postgresql)
     testRuntimeOnly(bt4k.mysql.connector.j)
 }

@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.kotlinx.benchmark)
+    alias(bt4k.plugins.kotlinx.benchmark)
     kotlin("plugin.allopen")
 }
 
@@ -15,7 +15,7 @@ benchmark {
     targets {
         register("main") {
             this as kotlinx.benchmark.gradle.JvmBenchmarkTarget
-            jmhVersion = libs.versions.jmh.get()
+            jmhVersion = bt4k.versions.managed.jmh.core.h350a653f63e5.get()
         }
     }
     configurations {
@@ -59,10 +59,10 @@ dependencies {
 
     implementation(bt4k.bluetape4k.core)
     implementation(bt4k.bluetape4k.testcontainers)
-    implementation(libs.javers.core)
-    implementation(libs.kotlinx.benchmark.runtime)
-    implementation(libs.kotlinx.benchmark.runtime.jvm)
-    implementation(libs.jmh.core)
+    implementation(bt4k.javers.core)
+    implementation(bt4k.kotlinx.benchmark.runtime)
+    implementation(bt4k.kotlinx.benchmark.runtime.jvm)
+    implementation(bt4k.jmh.core)
 
     implementation(platform(bt4k.exposed.bom))
     implementation(bt4k.exposed.core)
@@ -70,7 +70,6 @@ dependencies {
     implementation(bt4k.exposed.java.time)
     implementation(bt4k.hikaricp)
     implementation(libs.testcontainers.postgresql)
-    // 중앙 catalog가 아직 hibernate-envers를 노출하지 않으므로 benchmark 전용 pin으로 좁게 유지합니다.
-    implementation("org.hibernate.orm:hibernate-envers:7.3.4.Final")
+    implementation(bt4k.hibernate73.envers)
     runtimeOnly(bt4k.postgresql)
 }

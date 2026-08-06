@@ -4,7 +4,7 @@ configurations {
 
 dependencies {
     api(bt4k.bluetape4k.core)
-    api(libs.javers.core)
+    api(bt4k.javers.core)
     api(project(":javers-core"))
 
     compileOnly(libs.spring.kafka)
@@ -12,6 +12,6 @@ dependencies {
 
     testImplementation(project(":javers-exposed"))
     testImplementation(bt4k.bluetape4k.junit5)
-    testImplementation(libs.h2)
-    testImplementation(libs.mockk)
+    testImplementation(bt4k.h2.v2)
+    testImplementation(bt4k.mockk)
 }
