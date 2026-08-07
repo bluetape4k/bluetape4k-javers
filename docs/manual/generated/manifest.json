@@ -201,14 +201,14 @@
       "en",
       "ko"
     ],
-    "manualVersion": "0.2",
+    "manualVersion": "0.3",
     "sourceRoot": "docs/manual"
   },
-  "releaseCommit": "bffe19439ca891fa5301a76421bdef7ba75252a0",
-  "releaseRef": "0.2.1",
-  "releaseTag": "0.2.1",
+  "releaseCommit": "978d0490fc438570e7520643aed50e20614772d1",
+  "releaseRef": "0.3.0",
+  "releaseTag": "0.3.0",
   "repository": "bluetape4k-javers",
   "schemaVersion": 2,
-  "stableMinor": "0.2",
-  "stableVersion": "0.2.1"
+  "stableMinor": "0.3",
+  "stableVersion": "0.3.0"
 }

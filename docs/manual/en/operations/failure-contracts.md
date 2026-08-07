@@ -1,6 +1,6 @@
 # Failure contracts
 
-The 0.2.1 adapters propagate storage and publication failures, but propagation is not rollback. Define what remains after each step before adding retries.
+The 0.3.0 adapters propagate storage and publication failures, but propagation is not rollback. Define what remains after each step before adding retries.
 
 | Failure point | Possible state | Required production response |
 | --- | --- | --- |
@@ -9,9 +9,9 @@ The 0.2.1 adapters propagate storage and publication failures, but propagation i
 | Kafka publication | domain and audit may exist without an event | outbox/retry record; do not blindly repeat the whole command |
 | consumer/projection | Kafka record may be replayed; Redis may be stale or partly updated | idempotent apply, controlled offsets, replay and drift repair |
 
-`AbstractCdoSnapshotRepository.persist` saves snapshots one at a time, then advances the in-memory head and writes a commit sequence. A thrown exception stops later work; it does not undo already completed external writes. The implementation is in [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt).
+`AbstractCdoSnapshotRepository.persist` saves snapshots one at a time, then advances the in-memory head and writes a commit sequence. A thrown exception stops later work; it does not undo already completed external writes. The implementation is in [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt).
 
-Idempotency is an application contract in 0.2.1. SQL has a unique GlobalId/version index, Kafka uses GlobalId as a key, and the example uses deterministic Redis keys, but none supplies a complete command/event deduplication protocol. Record stable command and event IDs, decide whether duplicate commits are allowed, and make projection updates compare an event sequence or version.
+Idempotency is an application contract in 0.3.0. SQL has a unique GlobalId/version index, Kafka uses GlobalId as a key, and the example uses deterministic Redis keys, but none supplies a complete command/event deduplication protocol. Record stable command and event IDs, decide whether duplicate commits are allowed, and make projection updates compare an event sequence or version.
 
 Schema ownership also belongs to deployment. `ensureSchema()` is convenient, not a migration ledger. Kafka topic retention/partitioning and Redis persistence/eviction are equally part of correctness. Document owners and recovery commands alongside the service.
 

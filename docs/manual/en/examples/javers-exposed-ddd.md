@@ -35,11 +35,11 @@ Use a real PostgreSQL Testcontainer before adopting the schema or transaction as
 
 The smallest useful reading sequence is:
 
-1. [`Order.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/Order.kt) defines the aggregate invariant and `PLACED` to `PAID` transition.
-2. [`OrderCommand.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderCommand.kt) separates request intent from stored state.
-3. [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt) creates the aggregate or loads and changes it.
-4. [`OrderRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/persistence/OrderRepository.kt) stores `example_order` through Exposed, then delegates the JaVers commit and event publication to `AggregateRepository`.
-5. [`OrderCommandHandlerTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderCommandHandlerTest.kt) states the expected command-side result.
+1. [`Order.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/Order.kt) defines the aggregate invariant and `PLACED` to `PAID` transition.
+2. [`OrderCommand.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderCommand.kt) separates request intent from stored state.
+3. [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt) creates the aggregate or loads and changes it.
+4. [`OrderRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/persistence/OrderRepository.kt) stores `example_order` through Exposed, then delegates the JaVers commit and event publication to `AggregateRepository`.
+5. [`OrderCommandHandlerTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderCommandHandlerTest.kt) states the expected command-side result.
 
 For `PlaceOrderCommand(order-1)` with two `12.50` items, the test expects:
 
@@ -59,12 +59,12 @@ Run only these command-side tests when changing aggregate or audit behavior:
 
 Continue from the domain event to the query model:
 
-1. [`OrderEvents.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderEvents.kt) defines audit attributes and event payload fields.
-2. [`OrderDomainEventJsonCodec.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderDomainEventJsonCodec.kt) fixes the example-local JSON shape.
-3. [`OrderKafkaEventPublisher.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderKafkaEventPublisher.kt) sends synchronously and uses the order ID as the record key.
-4. [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt) polls records and applies them in poll order.
-5. [`RedisOrderSummaryProjection.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt) writes one JSON document per order.
-6. [`OrderQueryService.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderQueryService.kt) reads only Redis.
+1. [`OrderEvents.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderEvents.kt) defines audit attributes and event payload fields.
+2. [`OrderDomainEventJsonCodec.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderDomainEventJsonCodec.kt) fixes the example-local JSON shape.
+3. [`OrderKafkaEventPublisher.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderKafkaEventPublisher.kt) sends synchronously and uses the order ID as the record key.
+4. [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt) polls records and applies them in poll order.
+5. [`RedisOrderSummaryProjection.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt) writes one JSON document per order.
+6. [`OrderQueryService.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderQueryService.kt) reads only Redis.
 
 Run the released end-to-end projection test:
 
@@ -113,4 +113,4 @@ For production, introduce an explicit outbox and consumer idempotency policy, ve
 6. Delete the Redis key and rebuild it without reading the command-side table directly.
 7. Version the event JSON and keep old payloads readable in a codec compatibility test.
 
-The full released dependency set is pinned in [`build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/build.gradle.kts). Keep the example's claims at this release boundary when comparing it with later repository code.
+The full released dependency set is pinned in [`build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/build.gradle.kts). Keep the example's claims at this release boundary when comparing it with later repository code.

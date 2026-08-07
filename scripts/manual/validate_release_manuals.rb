@@ -7,8 +7,8 @@ require_relative "release_contract"
 
 module ManualDocs
   class ReleaseManualValidator
-    DEFAULT_TAG = "0.2.1"
-    DEFAULT_SHA = "bffe19439ca891fa5301a76421bdef7ba75252a0"
+    DEFAULT_TAG = "0.3.0"
+    DEFAULT_SHA = "978d0490fc438570e7520643aed50e20614772d1"
     DEFAULT_INVENTORY_PATH = "build/manual/release-module-inventory.json"
 
     def self.parse_cli(arguments)

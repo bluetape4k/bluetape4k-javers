@@ -38,7 +38,7 @@ try {
 }
 ```
 
-Lettuce는 최신 스냅샷이 앞에 오도록 `javers:{name}:snapshot:{globalId}` 목록에 바이트 배열을 저장합니다. GlobalId 색인은 `javers:{name}:globalId:set`, 커밋 순서는 `javers:{name}:sequence:set`에 둡니다. 스냅샷 목록 추가와 GlobalId 색인 갱신은 Redis 트랜잭션 하나로 묶지만, 상위 저장 흐름이 나중에 수행하는 순서 갱신은 별도입니다. 정확한 동작은 [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)에 있습니다.
+Lettuce는 최신 스냅샷이 앞에 오도록 `javers:{name}:snapshot:{globalId}` 목록에 바이트 배열을 저장합니다. GlobalId 색인은 `javers:{name}:globalId:set`, 커밋 순서는 `javers:{name}:sequence:set`에 둡니다. 스냅샷 목록 추가와 GlobalId 색인 갱신은 Redis 트랜잭션 하나로 묶지만, 상위 저장 흐름이 나중에 수행하는 순서 갱신은 별도입니다. 정확한 동작은 [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)에 있습니다.
 
 ## Redisson 시작 예제
 
@@ -68,7 +68,7 @@ try {
 }
 ```
 
-Redisson은 GlobalId별 스냅샷 목록을 `javers:{name}:snapshot`, 커밋 순서를 `javers:{name}:sequence`에 저장합니다. 스냅샷 추가와 나중의 순서 갱신은 서로 다른 원격 작업입니다. 구현은 [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)에서 확인하세요.
+Redisson은 GlobalId별 스냅샷 목록을 `javers:{name}:snapshot`, 커밋 순서를 `javers:{name}:sequence`에 저장합니다. 스냅샷 추가와 나중의 순서 갱신은 서로 다른 원격 작업입니다. 구현은 [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)에서 확인하세요.
 
 두 저장소 모두 기본 LZ4/Fory 코덱을 쓰고 최신 스냅샷부터 반환합니다. 저장소를 다시 만들면 순서 맵을 훑어 최신 커밋을 복원합니다.
 
@@ -86,7 +86,7 @@ Lettuce는 트랜잭션 오류를 호출자에게 전달하고 `DISCARD`도 시�
 ./gradlew :javers-persistence-redis:test
 ```
 
-릴리스는 Redis Testcontainers에서 Lettuce와 Redisson의 커밋·섀도 테스트를 각각 실행합니다. 저장소 재생성 뒤 최신 커밋 복원은 [`LettuceJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceJaversCommitTest.kt)와 [`RedissonJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonJaversCommitTest.kt)가 검증합니다.
+릴리스는 Redis Testcontainers에서 Lettuce와 Redisson의 커밋·섀도 테스트를 각각 실행합니다. 저장소 재생성 뒤 최신 커밋 복원은 [`LettuceJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceJaversCommitTest.kt)와 [`RedissonJaversCommitTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/test/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonJaversCommitTest.kt)가 검증합니다.
 
 ## 하지 않는 일
 

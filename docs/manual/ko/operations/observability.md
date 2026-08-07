@@ -17,4 +17,4 @@ API 호출이 성공했다고 해서 업무 상태, 감사 이력, 프로젝션�
 
 애플리케이션 애그리거트 ID 하나를 골라 최신 감사 스냅샷과 예상 업무 버전 또는 필드를 비교합니다. 이어서 Redis의 최신 이벤트나 프로젝션 버전을 비교합니다. 차이가 나면 도메인-감사, 감사-발행, 소비자 지연, 프로젝션 적용 가운데 어디서 끊겼는지 분류하세요. 민감한 전체 페이로드를 메트릭 레이블에 넣지 말고, 상세 증거는 접근이 통제된 진단 로그에 남깁니다.
 
-예제 소비자는 Kafka에서 읽은 순서대로 이벤트를 적용하고 같은 키의 순서를 기대하지만, 지연 메트릭과 오프셋 관리는 제공하지 않습니다. 운영 구성에서 따로 추가해야 합니다. 소스는 [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt)입니다.
+예제 소비자는 Kafka에서 읽은 순서대로 이벤트를 적용하고 같은 키의 순서를 기대하지만, 지연 메트릭과 오프셋 관리는 제공하지 않습니다. 운영 구성에서 따로 추가해야 합니다. 소스는 [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt)입니다.

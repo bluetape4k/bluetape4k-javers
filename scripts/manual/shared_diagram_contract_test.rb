@@ -29,7 +29,7 @@ class SharedDiagramContractTest < Minitest::Test
     git("add", ".")
     git("commit", "-qm", "release fixture")
     @release_commit = git("rev-parse", "HEAD")
-    git("tag", "0.2.1")
+    git("tag", "0.3.0")
     write_manifest(@release_commit)
     write_pair("sample", "snapshot")
     write_inventory([entry("sample", manual: "selected")])
@@ -61,15 +61,15 @@ class SharedDiagramContractTest < Minitest::Test
   def test_rejects_release_ref_commit_mismatch
     write_manifest("0" * 40)
 
-    assert_includes contract.errors, "manual releaseRef 0.2.1 resolves to #{@release_commit}, expected #{'0' * 40}"
+    assert_includes contract.errors, "manual releaseRef 0.3.0 resolves to #{@release_commit}, expected #{'0' * 40}"
   end
 
   def test_check_reports_selected_asset_missing_from_release
     write_pair("future", "snapshot")
     write_inventory([entry("future", manual: "selected")])
 
-    assert_includes contract.errors, "future: missing release source 0.2.1:docs/images/readme-diagrams/future.svg"
-    assert_includes contract.errors, "future: missing release source 0.2.1:docs/images/readme-diagrams/future.png"
+    assert_includes contract.errors, "future: missing release source 0.3.0:docs/images/readme-diagrams/future.svg"
+    assert_includes contract.errors, "future: missing release source 0.3.0:docs/images/readme-diagrams/future.png"
   end
 
   def test_check_reports_manual_mirror_directory
@@ -129,8 +129,8 @@ class SharedDiagramContractTest < Minitest::Test
       @root.join("docs/manual/manifest.yaml"),
       YAML.dump({
         "repository" => "bluetape4k-javers",
-        "stableMinor" => "0.2",
-        "releaseRef" => "0.2.1",
+        "stableMinor" => "0.3",
+        "releaseRef" => "0.3.0",
         "releaseCommit" => commit,
         "overview" => { "assets" => ["assets/readme-diagrams/sample.png", "assets/readme-diagrams/sample.svg"] },
       }),

@@ -4,21 +4,21 @@
 
 ## Released dependency structure
 
-This diagram is loaded directly from the immutable `0.2.1` release commit and shows the BOM structure documented here. Select the preview to open the SVG at the same release commit.
+This diagram is loaded directly from the immutable `0.3.0` release commit and shows the BOM structure documented here. Select the preview to open the SVG at the same release commit.
 
-[![bluetape4k-javers 0.2.1 BOM structure](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.svg)
+[![bluetape4k-javers 0.3.0 BOM structure](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/bom-architecture-01.svg)
 
 ## Coordinate and selection
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.1"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
 }
 ```
 
-Choose the BOM when a standalone build consumes two or more Javers modules and cannot import `io.github.bluetape4k:bluetape4k-dependencies`. The platform contains dependency constraints, not runtime code. Its release build derives constraints from every subproject except the BOM itself; the exact rule is pinned in [`bom/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/bom/build.gradle.kts).
+Choose the BOM when a standalone build consumes two or more Javers modules and cannot import `io.github.bluetape4k:bluetape4k-dependencies`. The platform contains dependency constraints, not runtime code. Its release build derives constraints from every subproject except the BOM itself; the exact rule is pinned in [`bom/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/bom/build.gradle.kts).
 
 ## What it aligns
 
