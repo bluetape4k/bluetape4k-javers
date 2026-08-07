@@ -105,7 +105,7 @@ def shell(title, subtitle, body, legend: nil)
       #{text(78, 128, subtitle, size: 18, fill: PALETTE[:muted], klass: "subtitle")}
       #{body}
       #{legend}
-      #{text(1520, 980, "bluetape4k-javers 0.2.1", size: 15, fill: "#7892aa", anchor: "end")}
+      #{text(1520, 980, "bluetape4k-javers 0.3.0", size: 15, fill: "#7892aa", anchor: "end")}
     </svg>
   SVG
 end

@@ -5,7 +5,7 @@ require "tmpdir"
 require_relative "release_inventory"
 
 class ReleaseInventoryTest < Minitest::Test
-  SHA = "bffe19439ca891fa5301a76421bdef7ba75252a0"
+  SHA = "978d0490fc438570e7520643aed50e20614772d1"
 
   def row(path: ":javers-core", source: "javers-core", kind: "library")
     { "gradlePath" => path, "projectName" => path.delete_prefix(":"), "sourceDir" => source, "kind" => kind }
@@ -29,7 +29,7 @@ class ReleaseInventoryTest < Minitest::Test
       output = File.join(root, "output.json")
       File.write(input, JSON.generate(rows))
       inventory = ManualDocs::ReleaseInventory.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         inventory_path: input, output_path: output, expected_count: expected_count,
         expected_kinds: expected_kinds, expected_projects: expected_projects, git_runner: git_runner,
       )

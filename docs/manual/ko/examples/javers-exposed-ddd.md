@@ -13,7 +13,7 @@
 
 예제는 이 책임을 저장소별로 나눕니다. Exposed가 현재 `Order`를 저장하고, `ExposedCdoSnapshotRepository`가 JaVers 커밋과 스냅샷을 저장합니다. Kafka는 `OrderPlaced`, `OrderMarkedPaid`를 전달하고, Redis는 `OrderSummary`를 보관합니다. Redis는 조회용 프로젝션이지 원본 저장소가 아닙니다. JaVers 테이블도 감사 저장소이지 명령 측 주문 테이블을 대신하지 않습니다.
 
-## 0.2.1 테스트가 준비하는 환경
+## 0.3.0 테스트가 준비하는 환경
 
 JDK 21과 Docker 호환 컨테이너 실행 환경을 준비한 뒤 저장소 루트에서 실행합니다.
 
@@ -21,9 +21,9 @@ JDK 21과 Docker 호환 컨테이너 실행 환경을 준비한 뒤 저장소 �
 ./gradlew :javers-exposed-ddd:test
 ```
 
-0.2.1 테스트는 PostgreSQL 서버를 띄우지 않습니다. `OrderCommandHandlerTest`와 `OrderProjectionFlowTest`는 `MODE=PostgreSQL`을 켠 인메모리 H2를 사용합니다. 프로젝션 테스트는 Projects에서 제공하는 Testcontainers 실행 도구로 Kafka와 Redis를 시작합니다.
+0.3.0 테스트는 PostgreSQL 서버를 띄우지 않습니다. `OrderCommandHandlerTest`와 `OrderProjectionFlowTest`는 `MODE=PostgreSQL`을 켠 인메모리 H2를 사용합니다. 프로젝션 테스트는 Projects에서 제공하는 Testcontainers 실행 도구로 Kafka와 Redis를 시작합니다.
 
-| 책임 | 0.2.1 테스트 환경 | 검증하는 범위 |
+| 책임 | 0.3.0 테스트 환경 | 검증하는 범위 |
 |---|---|---|
 | 주문·JaVers 테이블 | PostgreSQL 호환 모드의 H2 | 예제 스키마에서 명령, 스냅샷, 이력 조회가 이어지는지 |
 | 도메인 이벤트 전달 | Kafka Testcontainer | 주문 ID를 키로 이벤트를 발행하고 소비하는지 |
@@ -35,11 +35,11 @@ JDK 21과 Docker 호환 컨테이너 실행 환경을 준비한 뒤 저장소 �
 
 다음 순서로 읽으면 명령 측 책임이 한 단계씩 보입니다.
 
-1. [`Order.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/Order.kt)에서 애그리거트 불변 조건과 `PLACED`에서 `PAID`로 바뀌는 규칙을 확인합니다.
-2. [`OrderCommand.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderCommand.kt)는 요청 의도와 저장 상태를 분리합니다.
-3. [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt)는 새 애그리거트를 만들거나 기존 애그리거트를 읽어 상태를 바꿉니다.
-4. [`OrderRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/persistence/OrderRepository.kt)는 Exposed로 `example_order`를 저장한 뒤 `AggregateRepository`에 JaVers 커밋과 이벤트 발행을 맡깁니다.
-5. [`OrderCommandHandlerTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderCommandHandlerTest.kt)에서 명령 처리 결과를 확인합니다.
+1. [`Order.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/Order.kt)에서 애그리거트 불변 조건과 `PLACED`에서 `PAID`로 바뀌는 규칙을 확인합니다.
+2. [`OrderCommand.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderCommand.kt)는 요청 의도와 저장 상태를 분리합니다.
+3. [`OrderCommandHandler.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderCommandHandler.kt)는 새 애그리거트를 만들거나 기존 애그리거트를 읽어 상태를 바꿉니다.
+4. [`OrderRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/persistence/OrderRepository.kt)는 Exposed로 `example_order`를 저장한 뒤 `AggregateRepository`에 JaVers 커밋과 이벤트 발행을 맡깁니다.
+5. [`OrderCommandHandlerTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderCommandHandlerTest.kt)에서 명령 처리 결과를 확인합니다.
 
 단가가 `12.50`인 상품 두 개로 `PlaceOrderCommand(order-1)`을 실행하면 테스트는 다음 결과를 기대합니다.
 
@@ -59,14 +59,14 @@ JDK 21과 Docker 호환 컨테이너 실행 환경을 준비한 뒤 저장소 �
 
 이제 도메인 이벤트가 조회 결과로 바뀌는 경로를 읽습니다.
 
-1. [`OrderEvents.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderEvents.kt)는 감사 속성과 이벤트 내용을 정의합니다.
-2. [`OrderDomainEventJsonCodec.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderDomainEventJsonCodec.kt)는 이 예제에서만 쓰는 JSON 형식을 고정합니다.
-3. [`OrderKafkaEventPublisher.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderKafkaEventPublisher.kt)는 주문 ID를 레코드 키로 삼아 동기식으로 전송합니다.
-4. [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt)는 가져온 순서대로 이벤트를 적용합니다.
-5. [`RedisOrderSummaryProjection.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt)는 주문별 JSON 문서 하나를 Redis에 저장합니다.
-6. [`OrderQueryService.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderQueryService.kt)는 Redis만 읽습니다.
+1. [`OrderEvents.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/domain/OrderEvents.kt)는 감사 속성과 이벤트 내용을 정의합니다.
+2. [`OrderDomainEventJsonCodec.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderDomainEventJsonCodec.kt)는 이 예제에서만 쓰는 JSON 형식을 고정합니다.
+3. [`OrderKafkaEventPublisher.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderKafkaEventPublisher.kt)는 주문 ID를 레코드 키로 삼아 동기식으로 전송합니다.
+4. [`OrderProjectionEventConsumer.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/messaging/OrderProjectionEventConsumer.kt)는 가져온 순서대로 이벤트를 적용합니다.
+5. [`RedisOrderSummaryProjection.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/projection/RedisOrderSummaryProjection.kt)는 주문별 JSON 문서 하나를 Redis에 저장합니다.
+6. [`OrderQueryService.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/main/kotlin/io/bluetape4k/javers/examples/exposedddd/service/OrderQueryService.kt)는 Redis만 읽습니다.
 
-0.2.1의 프로젝션 통합 테스트는 다음 명령으로 실행합니다.
+0.3.0의 프로젝션 통합 테스트는 다음 명령으로 실행합니다.
 
 ```bash
 ./gradlew :javers-exposed-ddd:test --tests '*OrderProjectionFlowTest*'
@@ -88,7 +88,7 @@ JDK 21과 Docker 호환 컨테이너 실행 환경을 준비한 뒤 저장소 �
 
 ## 운영에 그대로 가져가면 안 되는 부분
 
-0.2.1 예제는 여러 자원의 조정을 애플리케이션 책임으로 남겨 둡니다.
+0.3.0 예제는 여러 자원의 조정을 애플리케이션 책임으로 남겨 둡니다.
 
 - `OrderRepository.persist`, JaVers 커밋, Kafka 발행은 순차 작업 세 개이며 하나의 트랜잭션이 아닙니다.
 - JaVers 커밋이 실패하면 주문 행만 저장될 수 있습니다.
@@ -113,4 +113,4 @@ JDK 21과 Docker 호환 컨테이너 실행 환경을 준비한 뒤 저장소 �
 6. Redis 키를 지운 뒤 명령 측 테이블을 직접 읽지 않고 프로젝션을 복구합니다.
 7. 이벤트 JSON에 버전을 넣고 이전 형식의 내용도 읽는 코덱 호환성 테스트를 작성합니다.
 
-0.2.1 예제의 전체 의존성은 [`build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/build.gradle.kts)에 고정돼 있습니다. 이후 저장소의 구현과 비교하더라도 이 매뉴얼의 설명은 해당 릴리스 경계를 기준으로 읽어야 합니다.
+0.3.0 예제의 전체 의존성은 [`build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/build.gradle.kts)에 고정돼 있습니다. 이후 저장소의 구현과 비교하더라도 이 매뉴얼의 설명은 해당 릴리스 경계를 기준으로 읽어야 합니다.

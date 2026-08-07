@@ -12,7 +12,7 @@ dependencies {
 
 Choose this module when aggregates have stable IDs, JaVers history should carry domain-event metadata, and the service can explicitly own recovery between persistence, audit, and publication. Use `javers-core` directly if the service does not need the aggregate repository and publisher contracts.
 
-The central APIs are [`AggregateRoot`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRoot.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), [`DomainEvent`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt), and [`DomainEventPublisher`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEventPublisher.kt).
+The central APIs are [`AggregateRoot`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRoot.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), [`DomainEvent`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt), and [`DomainEventPublisher`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEventPublisher.kt).
 
 ## Runnable quick start: aggregate commit metadata
 
@@ -50,7 +50,7 @@ check(snapshot.commitMetadata.properties["domainEventType"] == OrderPlaced::clas
 check(snapshot.commitMetadata.properties["event.channel"] == "web")
 ```
 
-For one event, `toJaversProperties()` records `domainEventType`, `aggregateId`, `occurredOn`, and namespaced `event.*` attributes. For multiple events it records only `domainEventCount` and comma-separated `domainEventTypes`; per-event attributes are not retained. This mapping is defined in [`DomainEvent.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt).
+For one event, `toJaversProperties()` records `domainEventType`, `aggregateId`, `occurredOn`, and namespaced `event.*` attributes. For multiple events it records only `domainEventCount` and comma-separated `domainEventTypes`; per-event attributes are not retained. This mapping is defined in [`DomainEvent.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt).
 
 ## Execution and failure semantics
 
@@ -70,7 +70,7 @@ Record a command/event ID when retries or deduplication matter. Monitor failures
 ./gradlew :javers-ddd:test
 ```
 
-The release test [`AggregateRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/test/kotlin/io/bluetape4k/javers/ddd/AggregateRepositoryTest.kt) proves saved state, commit metadata, event publication, history, and shadow fallback. Add failure injection between all three save steps.
+The release test [`AggregateRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/test/kotlin/io/bluetape4k/javers/ddd/AggregateRepositoryTest.kt) proves saved state, commit metadata, event publication, history, and shadow fallback. Add failure injection between all three save steps.
 
 ## Non-goals
 

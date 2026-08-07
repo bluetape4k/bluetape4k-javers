@@ -10,7 +10,7 @@ dependencies {
 }
 ```
 
-`CdoSnapshotRepository`는 JaVers `JaversRepository`를 확장해 스냅샷 한 건 저장과 GlobalId별 최신순 조회를 정의합니다. `AbstractCdoSnapshotRepository`는 모든 어댑터가 공유하는 쿼리 필터, 코덱, 최신 커밋 관리, 저장 순서를 구현합니다. [`CdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt)와 [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt)가 실제 계약입니다.
+`CdoSnapshotRepository`는 JaVers `JaversRepository`를 확장해 스냅샷 한 건 저장과 GlobalId별 최신순 조회를 정의합니다. `AbstractCdoSnapshotRepository`는 모든 어댑터가 공유하는 쿼리 필터, 코덱, 최신 커밋 관리, 저장 순서를 구현합니다. [`CdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt)와 [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt)가 실제 계약입니다.
 
 ## 바로 실행하는 예제
 
@@ -37,7 +37,7 @@ val changes = javers.findChanges(queryByInstanceId<Order>(1L))
 check(changes.isNotEmpty())
 ```
 
-쿼리 확장은 [`QueryBuilderExtensions.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/jql/QueryBuilderExtensions.kt)에 있고, 같은 커밋·조회 흐름을 [`CommitAndQueryExamples.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/test/kotlin/io/bluetape4k/javers/examples/CommitAndQueryExamples.kt)에서 검증합니다.
+쿼리 확장은 [`QueryBuilderExtensions.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/jql/QueryBuilderExtensions.kt)에 있고, 같은 커밋·조회 흐름을 [`CommitAndQueryExamples.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/test/kotlin/io/bluetape4k/javers/examples/CommitAndQueryExamples.kt)에서 검증합니다.
 
 ## 저장 방식과 실패 경계
 
@@ -61,7 +61,7 @@ check(changes.isNotEmpty())
 
 - 도메인 객체를 저장하지 않습니다.
 - 캐시 저장소는 영속 감사 이력을 보장하지 않습니다.
-- 0.2.1에는 여러 스냅샷 저장소를 합치는 기능이 없습니다.
+- 0.3.0에는 여러 스냅샷 저장소를 합치는 기능이 없습니다.
 - 쿼리 확장을 써도 메모리 필터가 데이터 저장소의 쿼리로 바뀌지는 않습니다.
 
 다음은 [감사 모델](../architecture/audit-model.md), [테스트 안내](../guides/testing.md), [영속 방식 선택](../persistence/selection-guide.md)입니다.

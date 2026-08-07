@@ -47,7 +47,7 @@ try {
 }
 ```
 
-`saveSnapshot`은 `sendDefault(GlobalId, encodedSnapshot)`을 호출하고 반환된 `Future`를 기본 30초까지 기다립니다. 첫 커밋 전에 `KafkaTemplate`의 기본 토픽을 지정해야 합니다. 레코드 키는 스냅샷 GlobalId이고 값은 `JaversCodecs.String`이 만든 압축하지 않은 JSON입니다. 정확한 계약은 [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)에 있습니다.
+`saveSnapshot`은 `sendDefault(GlobalId, encodedSnapshot)`을 호출하고 반환된 `Future`를 기본 30초까지 기다립니다. 첫 커밋 전에 `KafkaTemplate`의 기본 토픽을 지정해야 합니다. 레코드 키는 스냅샷 GlobalId이고 값은 `JaversCodecs.String`이 만든 압축하지 않은 JSON입니다. 정확한 계약은 [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt)에 있습니다.
 
 저장소가 발행할 수 있는 동안 프로듀서 팩토리도 살아 있어야 합니다. 위 `finally`는 짧게 실행하는 독립 프로그램에 맞습니다. 관리형 애플리케이션에서는 진행 중인 커밋이 끝난 뒤 애플리케이션 종료 단계에서 팩토리를 닫으세요.
 
@@ -59,7 +59,7 @@ JaVers는 스냅샷마다 `saveSnapshot`을 한 번 호출합니다. 스냅샷�
 
 ## 실패와 전달 방식
 
-시간 초과, 인터럽트, 프로듀서 오류는 `RuntimeException`으로 전달하며 인터럽트가 발생하면 스레드의 인터럽트 플래그를 되살립니다. 같은 JaVers 커밋의 앞 레코드는 성공하고 뒤 발행만 실패할 수 있습니다. 명령을 다시 실행하면 중복 레코드가 생길 수 있습니다. 0.2.1에는 프로듀서 트랜잭션, 아웃박스, 소비자, 재생 조정, 중복 제거 저장소, exactly-once 흐름이 없습니다.
+시간 초과, 인터럽트, 프로듀서 오류는 `RuntimeException`으로 전달하며 인터럽트가 발생하면 스레드의 인터럽트 플래그를 되살립니다. 같은 JaVers 커밋의 앞 레코드는 성공하고 뒤 발행만 실패할 수 있습니다. 명령을 다시 실행하면 중복 레코드가 생길 수 있습니다. 0.3.0에는 프로듀서 트랜잭션, 아웃박스, 소비자, 재생 조정, 중복 제거 저장소, exactly-once 흐름이 없습니다.
 
 프로듀서의 `acks`, 멱등성, 재시도, 전달 시간 제한과 토픽 파티션, 보존 기간, ACL을 명시하세요. 애그리거트별 순서가 중요하면 GlobalId 키를 유지하고 파티션 동작을 검증합니다. 발행 지연, 시간 초과, 오류율, 소비자 지연, 데드 레터 처리, 프로젝션 불일치를 관측하세요. 페이로드 스키마와 코덱은 버전이 있는 연동 계약으로 다뤄야 합니다.
 
@@ -69,7 +69,7 @@ JaVers는 스냅샷마다 `saveSnapshot`을 한 번 호출합니다. 스냅샷�
 ./gradlew :javers-persistence-kafka:test
 ```
 
-[`KafkaCdoSnapshotRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/test/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepositoryTest.kt)는 발행 성공, 실패한 `Future`의 예외 전달, 최신 커밋을 복원하지 못하는 계약을 검증합니다. 애플리케이션 테스트에서는 실제 레코드를 소비해 토픽, 키, 페이로드 디코딩, 중복 처리, 여러 스냅샷 중 일부만 발행된 뒤의 복구를 확인하세요.
+[`KafkaCdoSnapshotRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-kafka/src/test/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepositoryTest.kt)는 발행 성공, 실패한 `Future`의 예외 전달, 최신 커밋을 복원하지 못하는 계약을 검증합니다. 애플리케이션 테스트에서는 실제 레코드를 소비해 토픽, 키, 페이로드 디코딩, 중복 처리, 여러 스냅샷 중 일부만 발행된 뒤의 복구를 확인하세요.
 
 ## 하지 않는 일
 

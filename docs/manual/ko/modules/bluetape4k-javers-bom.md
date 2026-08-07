@@ -4,21 +4,21 @@
 
 ## 배포본 의존성 구조
 
-아래 그림은 `0.2.1` 배포 커밋의 README 자산을 직접 불러와 이 매뉴얼 버전의 BOM 구성을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `0.3.0` 배포 커밋의 README 자산을 직접 불러와 이 매뉴얼 버전의 BOM 구성을 보여 줍니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
-[![bluetape4k-javers 0.2.1 BOM 구조](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/bom-architecture-01.svg)
+[![bluetape4k-javers 0.3.0 BOM 구조](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/bom-architecture-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/bom-architecture-01.svg)
 
 ## 좌표와 선택 기준
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.2.1"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
 }
 ```
 
-독립된 빌드에서 Javers 모듈을 둘 이상 사용하지만 `io.github.bluetape4k:bluetape4k-dependencies`를 가져올 수 없다면 이 BOM을 사용합니다. 플랫폼에는 버전 제약만 있고 실행 코드는 없습니다. 릴리스 빌드는 BOM 자신을 제외한 모든 하위 프로젝트를 제약에 넣습니다. 정확한 규칙은 [`bom/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/bom/build.gradle.kts)에 있습니다.
+독립된 빌드에서 Javers 모듈을 둘 이상 사용하지만 `io.github.bluetape4k:bluetape4k-dependencies`를 가져올 수 없다면 이 BOM을 사용합니다. 플랫폼에는 버전 제약만 있고 실행 코드는 없습니다. 릴리스 빌드는 BOM 자신을 제외한 모든 하위 프로젝트를 제약에 넣습니다. 정확한 규칙은 [`bom/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/bom/build.gradle.kts)에 있습니다.
 
 ## 맞춰 주는 범위
 

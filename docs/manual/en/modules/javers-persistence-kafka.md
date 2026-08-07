@@ -47,7 +47,7 @@ try {
 }
 ```
 
-`saveSnapshot` uses `sendDefault(GlobalId, encodedSnapshot)` and waits for the returned future for up to 30 seconds by default. Configure the template's default topic before the first commit. The record key is the snapshot GlobalId and the value is uncompressed JSON produced by `JaversCodecs.String`. The exact contract is in [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt).
+`saveSnapshot` uses `sendDefault(GlobalId, encodedSnapshot)` and waits for the returned future for up to 30 seconds by default. Configure the template's default topic before the first commit. The record key is the snapshot GlobalId and the value is uncompressed JSON produced by `JaversCodecs.String`. The exact contract is in [`KafkaCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-kafka/src/main/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository.kt).
 
 Keep the producer factory alive while the repository can publish. The `finally` block is appropriate for a short standalone process; a managed application should destroy the factory during application shutdown, after in-flight commits have finished.
 
@@ -59,7 +59,7 @@ JaVers calls `saveSnapshot` once per snapshot. A commit that produces several sn
 
 ## Failure modes and delivery semantics
 
-Timeout, interruption, and producer errors become `RuntimeException`; interruption restores the thread interrupt flag. Earlier records from the same JaVers commit may already be accepted when a later send fails. Retrying the command may publish duplicates. Release 0.2.1 supplies no producer transaction, outbox, consumer, replay coordinator, deduplication key beyond GlobalId, or exactly-once workflow.
+Timeout, interruption, and producer errors become `RuntimeException`; interruption restores the thread interrupt flag. Earlier records from the same JaVers commit may already be accepted when a later send fails. Retrying the command may publish duplicates. Release 0.3.0 supplies no producer transaction, outbox, consumer, replay coordinator, deduplication key beyond GlobalId, or exactly-once workflow.
 
 Set producer `acks`, idempotence, retries, delivery timeout, topic partitions, retention, and ACLs explicitly. If ordering per aggregate matters, keep GlobalId as the key and verify partition behavior. Monitor send latency, timeouts, error rate, topic lag, dead-letter handling, and consumer projection drift. Treat the payload schema and codec as a versioned integration contract.
 
@@ -69,7 +69,7 @@ Set producer `acks`, idempotence, retries, delivery timeout, topic partitions, r
 ./gradlew :javers-persistence-kafka:test
 ```
 
-[`KafkaCdoSnapshotRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-persistence-kafka/src/test/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepositoryTest.kt) verifies successful publication, failed-future propagation, and absent head restoration. Application tests should consume the record and assert topic, key, payload decoding, duplicate handling, and recovery after a partial multi-snapshot commit.
+[`KafkaCdoSnapshotRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-kafka/src/test/kotlin/io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepositoryTest.kt) verifies successful publication, failed-future propagation, and absent head restoration. Application tests should consume the record and assert topic, key, payload decoding, duplicate handling, and recovery after a partial multi-snapshot commit.
 
 ## Non-goals
 

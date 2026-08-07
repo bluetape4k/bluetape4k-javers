@@ -6,7 +6,7 @@ require "yaml"
 require_relative "manual_contract"
 
 class ManualContractTest < Minitest::Test
-  RELEASE = { "ref" => "0.2.1", "commit" => "bffe19439ca891fa5301a76421bdef7ba75252a0" }.freeze
+  RELEASE = { "ref" => "0.3.0", "commit" => "978d0490fc438570e7520643aed50e20614772d1" }.freeze
 
   def validate(module_overrides = {}, manifest_overrides = {})
     Dir.mktmpdir do |root|
@@ -24,9 +24,9 @@ class ManualContractTest < Minitest::Test
       }.merge(module_overrides)
       manifest = {
         "schemaVersion" => 2, "repository" => "bluetape4k-javers", "releaseRef" => RELEASE["ref"],
-        "stableVersion" => RELEASE["ref"], "stableMinor" => "0.2", "releaseTag" => RELEASE["ref"],
+        "stableVersion" => RELEASE["ref"], "stableMinor" => "0.3", "releaseTag" => RELEASE["ref"],
         "releaseCommit" => RELEASE["commit"],
-        "publication" => { "manualVersion" => "0.2", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => "planned" },
+        "publication" => { "manualVersion" => "0.3", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => "planned" },
         "evidence" => ManualDocs::Validator::PINNED_EVIDENCE.map(&:dup), "modules" => [row],
       }.merge(manifest_overrides)
       path = File.join(root, "docs/manual/manifest.yaml")
@@ -51,7 +51,7 @@ class ManualContractTest < Minitest::Test
 
   def test_requires_both_locale_routes_when_content_is_complete
     validate({}, "publication" => {
-      "manualVersion" => "0.2", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => "complete",
+      "manualVersion" => "0.3", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => "complete",
     }) do |validator|
       assert validator.errors.any? { |error| error.include?("missing English route") }
       assert validator.errors.any? { |error| error.include?("missing Korean route") }
@@ -88,7 +88,7 @@ class ManualContractTest < Minitest::Test
 
   def test_rejects_release_metadata_other_than_the_pinned_release
     validate({}, "releaseRef" => "0.2.0", "releaseCommit" => "a" * 40) do |validator|
-      assert validator.errors.any? { |error| error.include?("releaseRef must be 0.2.1") }
+      assert validator.errors.any? { |error| error.include?("releaseRef must be 0.3.0") }
       assert validator.errors.any? { |error| error.include?("releaseCommit must be #{RELEASE['commit']}") }
     end
   end

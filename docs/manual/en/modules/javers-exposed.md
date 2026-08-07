@@ -11,7 +11,7 @@ dependencies {
 }
 ```
 
-`ExposedCdoSnapshotRepository` is the module's primary API. `CdoSnapshotTable` maps to `javers_snapshot` with a unique `(global_id, version)` index. `CommitTable` maps to `javers_commit` and stores author, timestamps, properties, and the repository-local sequence used to restore the head. See [`JaversExposedTables.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt).
+`ExposedCdoSnapshotRepository` is the module's primary API. `CdoSnapshotTable` maps to `javers_snapshot` with a unique `(global_id, version)` index. `CommitTable` maps to `javers_commit` and stores author, timestamps, properties, and the repository-local sequence used to restore the head. See [`JaversExposedTables.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt).
 
 ## Runnable quick start: initialize and register
 
@@ -42,11 +42,11 @@ val javers = JaversBuilder.javers()
 javers.commit("order-service", order)
 ```
 
-`ensureSchema()` invokes `SchemaUtils.create(CommitTable, CdoSnapshotTable)`. It is useful for tests and local startup. Production should version the same schema with the service's migration process and run the application with DML-only permissions where possible. The implementation is pinned in [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt).
+`ensureSchema()` invokes `SchemaUtils.create(CommitTable, CdoSnapshotTable)`. It is useful for tests and local startup. Production should version the same schema with the service's migration process and run the application with DML-only permissions where possible. The implementation is pinned in [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt).
 
 ## Persistence and query semantics
 
-Every repository operation runs in `transaction(database)` or the current default Exposed transaction. `saveSnapshot` inserts commit metadata if absent and then inserts one encoded snapshot. The inherited persist loop saves snapshots one by one and updates the commit sequence afterward in another transaction. Domain data, every audit snapshot, and the head sequence are therefore not one database transaction in 0.2.1.
+Every repository operation runs in `transaction(database)` or the current default Exposed transaction. `saveSnapshot` inserts commit metadata if absent and then inserts one encoded snapshot. The inherited persist loop saves snapshots one by one and updates the commit sequence afterward in another transaction. Domain data, every audit snapshot, and the head sequence are therefore not one database transaction in 0.3.0.
 
 Snapshots for one GlobalId are returned by descending version. Broader JaVers queries inherit the core repository's `getAll()` filtering and do not push filters into SQL. Plan indexes and retention for the current schema, but do not assume that an arbitrary JQL query becomes a bounded SQL query.
 
@@ -62,7 +62,7 @@ Monitor transaction failures, duplicate-key errors, row growth, large payloads, 
 ./gradlew :javers-exposed:test
 ```
 
-[`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt) verifies schema use, newest-first history, query filtering, snapshot lookup, and head restoration. Run database smoke tests against the same vendor and migration used in production.
+[`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt) verifies schema use, newest-first history, query filtering, snapshot lookup, and head restoration. Run database smoke tests against the same vendor and migration used in production.
 
 ## Non-goals
 

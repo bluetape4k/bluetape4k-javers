@@ -2,13 +2,13 @@
 
 0.2 매뉴얼은 벤치마크 결과를 제품 순위표로 쓰지 않습니다. 어떤 작업을 어느 환경에서 실행했는지, 수치가 어느 방향으로 좋다고 해석하는지, 다른 환경에서 결과가 달라질 조건은 무엇인지까지 함께 기록해야 쓸모 있는 근거가 됩니다.
 
-## 0.2.1에 포함된 측정 자료
+## 0.3.0에 포함된 측정 자료
 
-0.2.1 릴리스에는 벤치마크 산출물이 하나 있습니다.
+0.3.0 릴리스에는 벤치마크 산출물이 하나 있습니다.
 
-- [`2026-05-27-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)
+- [`2026-05-27-javers-exposed-ddd-envers-comparison.json`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)
 
-이 파일은 같은 릴리스의 [`EnversComparisonBenchmarkTest`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/EnversComparisonBenchmarkTest.kt)가 만들었습니다. 0.2.1 이후에 추가된 전용 벤치마크 모듈이나 결과 파일은 이 매뉴얼의 근거로 사용하지 않습니다.
+이 파일은 같은 릴리스의 [`EnversComparisonBenchmark`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/EnversComparisonBenchmark.kt)가 만들었습니다. 0.3.0 이후에 추가된 전용 벤치마크 모듈이나 결과 파일은 이 매뉴얼의 근거로 사용하지 않습니다.
 
 ## 결과를 읽는 순서
 
@@ -23,9 +23,9 @@
 산출물에 기록된 명령은 다음과 같습니다.
 
 ```bash
-./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
 성능을 선택 기준으로 삼으려면 실제 JDK, OS, 데이터베이스, 데이터 규모, 조회 형태로 다시 실행하세요. 결정 영향이 크다면 원본 산출물을 남기고, 여러 JVM 포크의 분포를 비교하며, 준비 시간과 안정 상태 작업 시간을 분리해 측정해야 합니다.
 
-세부 수치와 제약은 [JaVers + Exposed와 Envers 비교](exposed-ddd-envers.md)에, 기능 흐름은 [0.2.1 주문 예제](../examples/javers-exposed-ddd.md)에 정리돼 있습니다.
+세부 수치와 제약은 [JaVers + Exposed와 Envers 비교](exposed-ddd-envers.md)에, 기능 흐름은 [0.3.0 주문 예제](../examples/javers-exposed-ddd.md)에 정리돼 있습니다.

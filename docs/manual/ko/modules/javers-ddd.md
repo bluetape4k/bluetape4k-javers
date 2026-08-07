@@ -12,7 +12,7 @@ dependencies {
 
 애그리거트 ID가 안정적이고, JaVers 이력에 도메인 이벤트 메타데이터를 남기며, 저장·감사·발행 사이의 복구를 서비스가 직접 설계할 때 선택합니다. 애그리거트 저장소와 발행자 계약이 필요 없다면 `javers-core`를 바로 쓰는 편이 단순합니다.
 
-핵심 API는 [`AggregateRoot`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRoot.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), [`DomainEvent`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt), [`DomainEventPublisher`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEventPublisher.kt)입니다.
+핵심 API는 [`AggregateRoot`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRoot.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), [`DomainEvent`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt), [`DomainEventPublisher`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEventPublisher.kt)입니다.
 
 ## 바로 실행하는 예제: 애그리거트 커밋 메타데이터
 
@@ -50,7 +50,7 @@ check(snapshot.commitMetadata.properties["domainEventType"] == OrderPlaced::clas
 check(snapshot.commitMetadata.properties["event.channel"] == "web")
 ```
 
-이벤트가 하나면 `toJaversProperties()`가 `domainEventType`, `aggregateId`, `occurredOn`, `event.*` 속성을 커밋에 넣습니다. 여러 이벤트를 한 번에 넘기면 `domainEventCount`와 쉼표로 연결한 `domainEventTypes`만 남고 이벤트별 속성은 저장하지 않습니다. 정확한 변환은 [`DomainEvent.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt)에 있습니다.
+이벤트가 하나면 `toJaversProperties()`가 `domainEventType`, `aggregateId`, `occurredOn`, `event.*` 속성을 커밋에 넣습니다. 여러 이벤트를 한 번에 넘기면 `domainEventCount`와 쉼표로 연결한 `domainEventTypes`만 남고 이벤트별 속성은 저장하지 않습니다. 정확한 변환은 [`DomainEvent.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/DomainEvent.kt)에 있습니다.
 
 ## 실행 순서와 실패 경계
 
@@ -70,7 +70,7 @@ check(snapshot.commitMetadata.properties["event.channel"] == "web")
 ./gradlew :javers-ddd:test
 ```
 
-릴리스의 [`AggregateRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/test/kotlin/io/bluetape4k/javers/ddd/AggregateRepositoryTest.kt)는 저장 결과, 커밋 메타데이터, 이벤트 발행, 이력, 섀도 대체 경로를 검증합니다. 애플리케이션에서는 저장 단계 세 곳 사이에 실패를 주입하는 테스트를 더하세요.
+릴리스의 [`AggregateRepositoryTest.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/test/kotlin/io/bluetape4k/javers/ddd/AggregateRepositoryTest.kt)는 저장 결과, 커밋 메타데이터, 이벤트 발행, 이력, 섀도 대체 경로를 검증합니다. 애플리케이션에서는 저장 단계 세 곳 사이에 실패를 주입하는 테스트를 더하세요.
 
 ## 하지 않는 일
 

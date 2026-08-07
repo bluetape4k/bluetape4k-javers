@@ -12,7 +12,7 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
-`CdoSnapshotTable`은 `javers_snapshot`에 GlobalId, 커밋 ID, 버전, 유형, 인코딩한 상태, 변경 프로퍼티, 관리 유형을 저장합니다. `(global_id, version)`에는 고유 인덱스가 있습니다. `CommitTable`은 `javers_commit`에 작성자, 시각, 프로퍼티와 저장소 내부 순서 값을 저장합니다. 이 값으로 저장소를 다시 만들 때 최신 커밋을 복원합니다. 실제 스키마는 [`JaversExposedTables.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt)에 있습니다.
+`CdoSnapshotTable`은 `javers_snapshot`에 GlobalId, 커밋 ID, 버전, 유형, 인코딩한 상태, 변경 프로퍼티, 관리 유형을 저장합니다. `(global_id, version)`에는 고유 인덱스가 있습니다. `CommitTable`은 `javers_commit`에 작성자, 시각, 프로퍼티와 저장소 내부 순서 값을 저장합니다. 이 값으로 저장소를 다시 만들 때 최신 커밋을 복원합니다. 실제 스키마는 [`JaversExposedTables.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/schema/JaversExposedTables.kt)에 있습니다.
 
 ## 트랜잭션 경계
 
@@ -20,4 +20,4 @@ val javers = JaversBuilder.javers()
 
 오류는 호출자에게 전달되지만 먼저 끝난 작업까지 되돌리지는 않습니다. 재시도할 때 고유 인덱스만으로 전체 멱등성을 보장할 수 없습니다. 운영에서는 아웃박스, 명시적인 조정 절차, 정합성 점검 가운데 필요한 방식을 정해야 합니다.
 
-`ensureSchema()`는 테스트와 로컬 실행에 쓰고, 운영 테이블은 마이그레이션 절차로 관리하세요. 애플리케이션 저장소와 트랜잭션 소유권은 [bluetape4k-exposed 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/)에 있습니다. 구현은 [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)를 참고하세요.
+`ensureSchema()`는 테스트와 로컬 실행에 쓰고, 운영 테이블은 마이그레이션 절차로 관리하세요. 애플리케이션 저장소와 트랜잭션 소유권은 [bluetape4k-exposed 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-exposed/1.11/modules/bluetape4k-exposed-jdbc/transaction-ownership/)에 있습니다. 구현은 [`ExposedCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/main/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository.kt)를 참고하세요.

@@ -1,6 +1,6 @@
 # bluetape4k-javers 0.2 매뉴얼
 
-애플리케이션의 현재 상태, 감사 이력, 조회용 프로젝션을 한 저장소의 역할로 묶으면 장애 복구 기준이 흐려집니다. `bluetape4k-javers` 0.2.1은 Exposed, Redis, Kafka를 JaVers에 연결하지만 세 방식이 맡는 일은 서로 다릅니다. 이 매뉴얼은 기능 목록보다 먼저 그 경계를 설명합니다.
+애플리케이션의 현재 상태, 감사 이력, 조회용 프로젝션을 한 저장소의 역할로 묶으면 장애 복구 기준이 흐려집니다. `bluetape4k-javers` 0.3.0은 Exposed, Redis, Kafka를 JaVers에 연결하지만 세 방식이 맡는 일은 서로 다릅니다. 이 매뉴얼은 기능 목록보다 먼저 그 경계를 설명합니다.
 
 ## 핵심 기능
 
@@ -11,13 +11,13 @@
 - **실패와 관측성 계약:** [실패 계약](operations/failure-contracts.md)과 [관측성](operations/observability.md)에서 부분 쓰기, 재시도, 지연, 복구 신호를 정합니다.
 - **실행 예제와 비교 자료:** [Exposed DDD 예제](examples/javers-exposed-ddd.md)와 [JaVers·Exposed DDD·Envers 비교](benchmarks/exposed-ddd-envers.md)를 통해 추상화가 실제 코드와 측정 근거로 어떻게 이어지는지 확인할 수 있습니다.
 
-설명 기준은 `0.2.1` 릴리스와 커밋 `bffe19439ca891fa5301a76421bdef7ba75252a0`입니다. Ktor 연동, Spring Boot 4 자동 구성과 예제, 전용 Gradle 벤치마크 모듈은 0.2.1 뒤에 추가됐으므로 0.2 기능으로 다루지 않습니다.
+설명 기준은 `0.3.0` 릴리스와 커밋 `978d0490fc438570e7520643aed50e20614772d1`입니다. Ktor 연동, Spring Boot 4 자동 구성과 예제, 전용 Gradle 벤치마크 모듈은 0.3.0 뒤에 추가됐으므로 0.2 기능으로 다루지 않습니다.
 
 ## 릴리스 구성 한눈에 보기
 
-아래 그림은 `0.2.1` 배포 커밋의 README 자산을 직접 불러옵니다. 이 매뉴얼 버전에서 사용할 수 있는 구조만 보여 주며, 이후 Snapshot에 추가된 모듈과 연결 관계는 일부러 넣지 않았습니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
+아래 그림은 `0.3.0` 배포 커밋의 README 자산을 직접 불러옵니다. 이 매뉴얼 버전에서 사용할 수 있는 구조만 보여 주며, 이후 Snapshot에 추가된 모듈과 연결 관계는 일부러 넣지 않았습니다. 미리보기를 누르면 같은 배포 커밋의 SVG 원본이 열립니다.
 
-[![bluetape4k-javers 0.2.1 저장소 개요](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/root-readme-overview-01.svg)
+[![bluetape4k-javers 0.3.0 저장소 개요](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/root-readme-overview-01.svg)
 
 ## 학습 지도
 
@@ -48,4 +48,4 @@ JaVers 데이터 구조가 먼저 궁금하면 [감사 모델](architecture/audi
 - 벤치마크: [측정 결과를 읽는 방법](benchmarks/overview.md), [JaVers·Exposed DDD·Envers 비교](benchmarks/exposed-ddd-envers.md)
 - 생태계 확장: [Exposed와 애플리케이션 구조로 이어지는 경로](guides/cross-repository-paths.md)
 
-동작 기준은 릴리스 소스입니다. 출발점은 [`CdoSnapshotRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), [`javers-exposed-ddd` 예제](https://github.com/bluetape4k/bluetape4k-javers/tree/0.2.1/examples/javers-exposed-ddd)입니다.
+동작 기준은 릴리스 소스입니다. 출발점은 [`CdoSnapshotRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), [`javers-exposed-ddd` 예제](https://github.com/bluetape4k/bluetape4k-javers/tree/0.3.0/examples/javers-exposed-ddd)입니다.

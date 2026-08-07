@@ -73,7 +73,7 @@ module ManualDocs
       identities = rows.to_h do |row|
         [row.fetch("gradlePath"), row.slice("projectName", "sourceDir", "kind")]
       end
-      raise ReleaseInventoryError, "release project identity does not match the pinned 0.2.1 inventory" unless identities == @expected_projects
+      raise ReleaseInventoryError, "release project identity does not match the pinned 0.3.0 inventory" unless identities == @expected_projects
     end
 
     def validate_row(row)

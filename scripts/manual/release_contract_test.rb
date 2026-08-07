@@ -7,7 +7,7 @@ require_relative "release_contract"
 require_relative "validate_release_manuals"
 
 class ReleaseContractTest < Minitest::Test
-  SHA = "bffe19439ca891fa5301a76421bdef7ba75252a0"
+  SHA = "978d0490fc438570e7520643aed50e20614772d1"
 
   def runner(tree:, type: "tag", sha: SHA)
     lambda do |arguments|
@@ -22,14 +22,14 @@ class ReleaseContractTest < Minitest::Test
 
   def test_rejects_missing_tag
     contract = ManualDocs::ReleaseContract.new(
-      repository_root: Dir.pwd, tag: "0.2.1", expected_sha: SHA, git_runner: ->(_arguments) { ["", false] },
+      repository_root: Dir.pwd, tag: "0.3.0", expected_sha: SHA, git_runner: ->(_arguments) { ["", false] },
     )
     assert contract.errors.any? { |error| error.include?("tag not found") }
   end
 
   def test_rejects_wrong_tag_commit
     contract = ManualDocs::ReleaseContract.new(
-      repository_root: Dir.pwd, tag: "0.2.1", expected_sha: SHA,
+      repository_root: Dir.pwd, tag: "0.3.0", expected_sha: SHA,
       git_runner: runner(tree: [], sha: "a" * 40),
     )
     assert contract.errors.any? { |error| error.include?("expected #{SHA}") }
@@ -40,7 +40,7 @@ class ReleaseContractTest < Minitest::Test
       FileUtils.mkdir_p(File.join(root, "docs/manual/en"))
       File.write(File.join(root, "docs/manual/en/index.md"), "[source](../../../javers-core/src/Missing.kt)\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert contract.errors.any? { |error| error.include?("release path not found") }
@@ -56,7 +56,7 @@ class ReleaseContractTest < Minitest::Test
         [code]: ../../../javers-core/src/Missing.kt
       MARKDOWN
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert contract.errors.any? { |error| error.include?("release path not found") }
@@ -69,7 +69,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<https://github.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert contract.errors.any? { |error| error.include?("source link commit develop") }
@@ -82,7 +82,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<https://github.com/bluetape4k/bluetape4k-javers/blob/#{SHA}/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert_empty contract.errors
@@ -96,7 +96,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<HTTPS://GitHub.com/bluetape4k/bluetape4k-javers/blob/develop/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert contract.errors.any? { |error| error.include?("source link commit develop") }
@@ -110,7 +110,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<hTtPs://gItHuB.cOm/bluetape4k/bluetape4k-javers/blob/#{SHA}/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert_empty contract.errors
@@ -124,7 +124,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<https://github.com/BlueTape4K/BlueTape4K-JaVers/blob/develop/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert contract.errors.any? { |error| error.include?("source link commit develop") }
@@ -138,7 +138,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<https://github.com/BlueTape4K/BlueTape4K-JaVers/blob/#{SHA}/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert_empty contract.errors
@@ -152,7 +152,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<https://raw.githubusercontent.com/BlueTape4K/BlueTape4K-JaVers/develop/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert contract.errors.any? { |error| error.include?("source link commit develop") }
@@ -166,7 +166,7 @@ class ReleaseContractTest < Minitest::Test
       File.write(File.join(root, "docs/manual/en/index.md"),
         "<HTTPS://RAW.GITHUBUSERCONTENT.COM/BlueTape4K/BlueTape4K-JaVers/#{SHA}/javers-core/src/Present.kt>\n")
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         git_runner: runner(tree: ["javers-core/src/Present.kt"]),
       )
       assert_empty contract.errors
@@ -188,10 +188,10 @@ class ReleaseContractTest < Minitest::Test
     return unless ManualDocs::ReleaseManualValidator.respond_to?(:parse_cli)
 
     parsed = ManualDocs::ReleaseManualValidator.parse_cli(
-      ["0.2.1", SHA, "build/manual/release-module-inventory.json", "--allow-planned"],
+      ["0.3.0", SHA, "build/manual/release-module-inventory.json", "--allow-planned"],
     )
     assert_equal true, parsed.fetch(:allow_planned)
-    assert_equal "0.2.1", parsed.fetch(:tag)
+    assert_equal "0.3.0", parsed.fetch(:tag)
     assert_equal SHA, parsed.fetch(:expected_sha)
     assert_equal "build/manual/release-module-inventory.json", parsed.fetch(:inventory_path)
   end
@@ -218,7 +218,7 @@ class ReleaseContractTest < Minitest::Test
       manifest = File.join(root, "docs/manual/manifest.yaml")
       File.write(manifest, YAML.dump("modules" => [{ "id" => "core", "sourceDir" => "javers-core", "sourcePaths" => ["missing"] }]))
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA, manifest_path: manifest,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA, manifest_path: manifest,
         git_runner: runner(tree: ["javers-core/build.gradle.kts"]),
       )
       assert contract.errors.any? { |error| error.include?("sourcePath not found in release tree") }
@@ -231,7 +231,7 @@ class ReleaseContractTest < Minitest::Test
       manifest = File.join(root, "docs/manual/manifest.yaml")
       File.write(manifest, YAML.dump("modules" => [], "evidence" => [{ "id" => "benchmark", "path" => "docs/benchmark/missing.json" }]))
       contract = ManualDocs::ReleaseContract.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA, manifest_path: manifest,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA, manifest_path: manifest,
         git_runner: runner(tree: []),
       )
       result = contract.validate
@@ -244,7 +244,7 @@ class ReleaseContractTest < Minitest::Test
     Dir.mktmpdir do |root|
       result = ManualDocs::ReleaseContract::ValidationResult.new(errors: [], checked_count: 0, source_path_count: 0, evidence_path_count: 0)
       validator = ManualDocs::ReleaseManualValidator.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         inventory_path: File.join(root, "missing.json"), manifest_path: File.join(root, "docs/manual/manifest.yaml"),
         release_contract: Struct.new(:validate).new(result),
       )
@@ -274,9 +274,9 @@ class ReleaseContractTest < Minitest::Test
       FileUtils.mkdir_p(File.dirname(evidence))
       File.write(evidence, "{}\n")
       manifest = {
-        "schemaVersion" => 2, "repository" => "bluetape4k-javers", "releaseRef" => "0.2.1",
-        "stableVersion" => "0.2.1", "stableMinor" => "0.2", "releaseTag" => "0.2.1", "releaseCommit" => SHA,
-        "publication" => { "manualVersion" => "0.2", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => content_status },
+        "schemaVersion" => 2, "repository" => "bluetape4k-javers", "releaseRef" => "0.3.0",
+        "stableVersion" => "0.3.0", "stableMinor" => "0.3", "releaseTag" => "0.3.0", "releaseCommit" => SHA,
+        "publication" => { "manualVersion" => "0.3", "sourceRoot" => "docs/manual", "locales" => %w[en ko], "contentStatus" => content_status },
         "overview" => { "documents" => documents }, "evidence" => ManualDocs::Validator::PINNED_EVIDENCE.map(&:dup),
         "modules" => [row],
       }
@@ -288,7 +288,7 @@ class ReleaseContractTest < Minitest::Test
         errors: release_errors, checked_count: 0, source_path_count: 1, evidence_path_count: 1,
       )
       yield ManualDocs::ReleaseManualValidator.new(
-        repository_root: root, tag: "0.2.1", expected_sha: SHA,
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
         inventory_path: inventory_path, manifest_path: manifest_path,
         release_contract: Struct.new(:validate).new(result), allow_planned: allow_planned,
       )

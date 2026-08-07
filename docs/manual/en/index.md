@@ -1,6 +1,6 @@
 # bluetape4k-javers 0.2 manual
 
-Object auditing becomes difficult when application state, audit history, and query projections are treated as one store. `bluetape4k-javers` 0.2.1 gives Kotlin services a JaVers audit layer with Exposed, Redis, and Kafka adapters, but each adapter has a different responsibility. This manual starts with those boundaries so that a service does not accidentally use a cache or stream as its only recoverable record.
+Object auditing becomes difficult when application state, audit history, and query projections are treated as one store. `bluetape4k-javers` 0.3.0 gives Kotlin services a JaVers audit layer with Exposed, Redis, and Kafka adapters, but each adapter has a different responsibility. This manual starts with those boundaries so that a service does not accidentally use a cache or stream as its only recoverable record.
 
 ## Core capabilities
 
@@ -11,13 +11,13 @@ Object auditing becomes difficult when application state, audit history, and que
 - **Failure and observability contracts:** [Failure contracts](operations/failure-contracts.md) and [observability](operations/observability.md) define partial-write, retry, lag, and recovery signals.
 - **Runnable learning and comparison:** The [Exposed DDD example](examples/javers-exposed-ddd.md) and [JaVers/Exposed DDD/Envers comparison](benchmarks/exposed-ddd-envers.md) connect the abstractions to code and measured evidence.
 
-The manual is pinned to release `0.2.1` (`bffe19439ca891fa5301a76421bdef7ba75252a0`). Ktor integration, Spring Boot 4 auto-configuration and examples, and the dedicated Gradle benchmark module were added after that release. They are not 0.2 features.
+The manual is pinned to release `0.3.0` (`978d0490fc438570e7520643aed50e20614772d1`). Ktor integration, Spring Boot 4 auto-configuration and examples, and the dedicated Gradle benchmark module were added after that release. They are not 0.2 features.
 
 ## Release overview
 
-This repository overview is loaded directly from the immutable `0.2.1` release commit. It shows only the structure available to users of this manual; newer Snapshot modules and relationships are intentionally excluded. Select the preview to open the SVG at the same release commit.
+This repository overview is loaded directly from the immutable `0.3.0` release commit. It shows only the structure available to users of this manual; newer Snapshot modules and relationships are intentionally excluded. Select the preview to open the SVG at the same release commit.
 
-[![bluetape4k-javers 0.2.1 repository overview](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/images/readme-diagrams/root-readme-overview-01.svg)
+[![bluetape4k-javers 0.3.0 repository overview](https://raw.githubusercontent.com/bluetape4k/bluetape4k-javers/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/root-readme-overview-01.png)](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/images/readme-diagrams/root-readme-overview-01.svg)
 
 ## Learning map
 
@@ -50,4 +50,4 @@ If you need to understand JaVers data, read [the audit model](architecture/audit
 - Benchmarks: [how to read the evidence](benchmarks/overview.md) and the [JaVers, Exposed DDD, and Envers comparison](benchmarks/exposed-ddd-envers.md)
 - Ecosystem path: [where this repository connects to Exposed and application architecture](guides/cross-repository-paths.md)
 
-The release source is the behavior authority. The most important starting points are [`CdoSnapshotRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), and the [`javers-exposed-ddd` example](https://github.com/bluetape4k/bluetape4k-javers/tree/0.2.1/examples/javers-exposed-ddd).
+The release source is the behavior authority. The most important starting points are [`CdoSnapshotRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt), [`AggregateRepository`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-ddd/src/main/kotlin/io/bluetape4k/javers/ddd/AggregateRepository.kt), and the [`javers-exposed-ddd` example](https://github.com/bluetape4k/bluetape4k-javers/tree/0.3.0/examples/javers-exposed-ddd).

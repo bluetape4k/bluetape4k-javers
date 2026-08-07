@@ -8,10 +8,10 @@
 
 ## Projects 경계
 
-Redis 클라이언트, Kafka 유틸리티, JaVers 흐름 밖의 DDD 기반 기능, Testcontainers 실행기는 `bluetape4k-projects`가 맡습니다. [Projects 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-projects/)에서 확인할 수 있습니다. 0.2.1 예제가 사용하는 기반 의존성은 [`examples/javers-exposed-ddd/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/build.gradle.kts)에 고정돼 있습니다.
+Redis 클라이언트, Kafka 유틸리티, JaVers 흐름 밖의 DDD 기반 기능, Testcontainers 실행기는 `bluetape4k-projects`가 맡습니다. [Projects 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-projects/)에서 확인할 수 있습니다. 0.3.0 예제가 사용하는 기반 의존성은 [`examples/javers-exposed-ddd/build.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/build.gradle.kts)에 고정돼 있습니다.
 
 ## 버전 경계
 
 소비자는 `io.github.bluetape4k:bluetape4k-dependencies` 생태계 버전 하나를 가져와 Projects, Exposed, Redis, Kafka, Javers 버전을 맞춥니다. 애플리케이션 빌드에서 별도 호환표를 만들지 않는 것이 기본입니다.
 
-Ktor 연동, Spring Boot 4 자동 구성, `examples/javers-ktor`, `examples/javers-spring-boot4`, `benchmark/javers-exposed-benchmark`는 0.2.1 뒤에 추가됐습니다. `develop` 소스를 0.2 계약으로 읽으면 안 됩니다. 릴리스 모듈은 [`settings.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/settings.gradle.kts)에서 확인할 수 있습니다.
+Ktor 연동, Spring Boot 4 자동 구성, `examples/javers-ktor`, `examples/javers-spring-boot4`, `benchmark/javers-exposed-benchmark`는 0.3.0 뒤에 추가됐습니다. `develop` 소스를 0.2 계약으로 읽으면 안 됩니다. 릴리스 모듈은 [`settings.gradle.kts`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/settings.gradle.kts)에서 확인할 수 있습니다.

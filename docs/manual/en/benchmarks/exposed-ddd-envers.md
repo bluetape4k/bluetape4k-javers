@@ -4,7 +4,7 @@ The released benchmark compares two audit implementations inside the `javers-exp
 
 ## Recorded workload
 
-[`EnversComparisonBenchmarkTest`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/EnversComparisonBenchmarkTest.kt) creates a fresh in-memory H2 database for each implementation and runs three scenarios:
+[`EnversComparisonBenchmark`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/EnversComparisonBenchmark.kt) runs the bounded audit comparison for each implementation and records three scenarios:
 
 - **insert**: persist forty distinct orders after five warmup inserts;
 - **update**: prepare forty orders, then change each status to `PAID` once;
@@ -15,12 +15,12 @@ The measurements are sequential elapsed wall-clock time collected with `measureN
 The exact reproduction command is:
 
 ```bash
-./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
 ## Recorded environment
 
-The released [JSON artifact](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json) records the following run metadata:
+The released [JSON artifact](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json) records the following run metadata:
 
 | Field | Value |
 |---|---|
@@ -66,7 +66,7 @@ This artifact does not prove:
 - behavior with large histories, wide object graphs, custom mappings, indexes, caches, or network latency;
 - Kafka publication, Redis projection, end-to-end command latency, or recovery cost;
 - equivalent audit semantics, storage volume, query results, or operational complexity;
-- performance of repository code or benchmark modules added after 0.2.1.
+- performance of repository code or benchmark modules added after 0.3.0.
 
 It is a single local documentation run, not a JMH benchmark or release-wide performance claim.
 

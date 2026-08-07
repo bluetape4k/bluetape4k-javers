@@ -10,7 +10,7 @@ dependencies {
 }
 ```
 
-`CdoSnapshotRepository` extends JaVers `JaversRepository` with single-snapshot save and newest-first GlobalId lookup. `AbstractCdoSnapshotRepository` supplies JaVers query filtering, codec integration, commit-head handling, and the persist loop used by every adapter. See [`CdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt) and [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt).
+`CdoSnapshotRepository` extends JaVers `JaversRepository` with single-snapshot save and newest-first GlobalId lookup. `AbstractCdoSnapshotRepository` supplies JaVers query filtering, codec integration, commit-head handling, and the persist loop used by every adapter. See [`CdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/CdoSnapshotRepository.kt) and [`AbstractCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository.kt).
 
 ## Runnable quick start
 
@@ -37,7 +37,7 @@ val changes = javers.findChanges(queryByInstanceId<Order>(1L))
 check(changes.isNotEmpty())
 ```
 
-The query helper is defined in [`QueryBuilderExtensions.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/jql/QueryBuilderExtensions.kt), and the same commit/query shape is exercised in [`CommitAndQueryExamples.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-core/src/test/kotlin/io/bluetape4k/javers/examples/CommitAndQueryExamples.kt).
+The query helper is defined in [`QueryBuilderExtensions.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/main/kotlin/io/bluetape4k/javers/repository/jql/QueryBuilderExtensions.kt), and the same commit/query shape is exercised in [`CommitAndQueryExamples.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-core/src/test/kotlin/io/bluetape4k/javers/examples/CommitAndQueryExamples.kt).
 
 ## Persistence semantics and failure modes
 
@@ -61,7 +61,7 @@ The release test suite covers commits, snapshots, shadows, codecs, and all three
 
 - It does not persist domain objects.
 - Cache repositories do not provide durable history.
-- It does not combine multiple snapshot repositories in release 0.2.1.
+- It does not combine multiple snapshot repositories in release 0.3.0.
 - Query helpers do not turn in-memory filtering into datastore pushdown.
 
 Related reading: [audit model](../architecture/audit-model.md), [testing](../guides/testing.md), and [persistence selection](../persistence/selection-guide.md).

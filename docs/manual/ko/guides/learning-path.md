@@ -12,6 +12,6 @@
 
 ## 운영자와 테스트 담당자
 
-[관측](../operations/observability.md)에서 커밋 실패, 넓은 조회 비용, Kafka 지연, 프로젝션 불일치 신호를 고릅니다. [테스트](testing.md)는 이 위험을 단위 테스트, DB, Testcontainers 검증으로 나눕니다. 전체 흐름의 실행 기준은 [`OrderProjectionFlowTest`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderProjectionFlowTest.kt)입니다.
+[관측](../operations/observability.md)에서 커밋 실패, 넓은 조회 비용, Kafka 지연, 프로젝션 불일치 신호를 고릅니다. [테스트](testing.md)는 이 위험을 단위 테스트, DB, Testcontainers 검증으로 나눕니다. 전체 흐름의 실행 기준은 [`OrderProjectionFlowTest`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/OrderProjectionFlowTest.kt)입니다.
 
 공통 기반은 [Projects 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-projects/)과 [Exposed 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-exposed/)로 이어집니다.

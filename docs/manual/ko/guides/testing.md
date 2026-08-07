@@ -8,7 +8,7 @@
 
 ## 영속 저장 테스트
 
-Exposed에서는 스키마 생성과 마이그레이션으로 시작하는 경우를 나눠 검증합니다. 같은 엔티티를 여러 번 커밋하고 저장소를 다시 만든 뒤 최신 커밋과 최신순 이력을 확인하세요. GlobalId/버전 중복, 스냅샷 저장과 순서 값 갱신 사이의 실패도 다뤄야 합니다. 릴리스의 H2 검증은 [`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt)에 있습니다.
+Exposed에서는 스키마 생성과 마이그레이션으로 시작하는 경우를 나눠 검증합니다. 같은 엔티티를 여러 번 커밋하고 저장소를 다시 만든 뒤 최신 커밋과 최신순 이력을 확인하세요. GlobalId/버전 중복, 스냅샷 저장과 순서 값 갱신 사이의 실패도 다뤄야 합니다. 릴리스의 H2 검증은 [`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt)에 있습니다.
 
 Redis는 Lettuce와 Redisson을 각각 Testcontainers에서 실행합니다. 저장소 재생성, 이력, 섀도, 연결 실패, 영속성과 캐시 축출 설정을 확인하세요. Kafka는 발행 키와 페이로드, 30초 실패 경계, 읽기 메서드가 계속 비어 있는지를 검증합니다.
 

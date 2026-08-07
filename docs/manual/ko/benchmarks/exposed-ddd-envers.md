@@ -1,10 +1,10 @@
 # JaVers + Exposed와 Hibernate Envers 비교
 
-0.2.1의 벤치마크는 `javers-exposed-ddd` 테스트 모듈 안에서 두 감사 구현을 실행한 결과입니다. 숫자만 떼어 놓으면 잘못된 결론을 내리기 쉽습니다. 어떤 작업을 재었는지와 두 경로의 의미가 어떻게 다른지를 함께 봐야 합니다.
+0.3.0의 벤치마크는 `javers-exposed-ddd` 테스트 모듈 안에서 두 감사 구현을 실행한 결과입니다. 숫자만 떼어 놓으면 잘못된 결론을 내리기 쉽습니다. 어떤 작업을 재었는지와 두 경로의 의미가 어떻게 다른지를 함께 봐야 합니다.
 
 ## 측정한 작업
 
-[`EnversComparisonBenchmarkTest`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/examples/javers-exposed-ddd/src/test/kotlin/io/bluetape4k/javers/examples/exposedddd/EnversComparisonBenchmarkTest.kt)는 구현마다 새 인메모리 H2 데이터베이스를 만들고 세 시나리오를 실행합니다.
+[`EnversComparisonBenchmark`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/benchmark/javers-exposed-benchmark/src/main/kotlin/io/bluetape4k/javers/benchmark/exposed/EnversComparisonBenchmark.kt)는 구현별 제한된 감사 비교를 실행하고 세 가지 시나리오를 기록합니다.
 
 - **insert**: 준비용 삽입 5회 후 서로 다른 주문 40개를 저장합니다.
 - **update**: 주문 40개를 미리 저장하고 각각 한 번씩 `PAID`로 바꿉니다.
@@ -15,12 +15,12 @@
 산출물에 기록된 실행 명령은 다음과 같습니다.
 
 ```bash
-./gradlew :javers-exposed-ddd:test --tests '*EnversComparisonBenchmarkTest*' --no-configuration-cache --no-build-cache --no-parallel --console=plain
+./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
 ## 측정 환경
 
-0.2.1의 [JSON 산출물](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)에는 다음 실행 정보가 기록돼 있습니다.
+0.3.0의 [JSON 산출물](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/docs/benchmark/2026-05-27-javers-exposed-ddd-envers-comparison.json)에는 다음 실행 정보가 기록돼 있습니다.
 
 | 항목 | 값 |
 |---|---|
@@ -53,7 +53,7 @@ JSON에는 데이터베이스 종류가 없습니다. 두 구현이 각각 새 �
 - Envers 감사 시나리오는 리비전 ID 목록을 반환하는 `getRevisions`를 호출합니다.
 - JaVers 시나리오는 `OrderRepository.loadHistory`로 애그리거트의 스냅샷 이력을 조회합니다.
 
-따라서 이 결과는 하나의 정규화된 저장 작업을 서로 바꿔 끼울 수 있는 두 구현으로 비교한 것이 아닙니다. 0.2.1 예제에 들어 있는 두 경로를 그대로 실행한 결과입니다. Exposed, JaVers 직렬화, 커밋 메타데이터, 테이블 접근, Hibernate, Envers가 각각 얼마를 차지하는지도 이 측정만으로 분리할 수 없습니다.
+따라서 이 결과는 하나의 정규화된 저장 작업을 서로 바꿔 끼울 수 있는 두 구현으로 비교한 것이 아닙니다. 0.3.0 예제에 들어 있는 두 경로를 그대로 실행한 결과입니다. Exposed, JaVers 직렬화, 커밋 메타데이터, 테이블 접근, Hibernate, Envers가 각각 얼마를 차지하는지도 이 측정만으로 분리할 수 없습니다.
 
 ## 이 결과로 말할 수 없는 것
 
@@ -66,7 +66,7 @@ JSON에는 데이터베이스 종류가 없습니다. 두 구현이 각각 새 �
 - 긴 감사 이력, 큰 객체 그래프, 사용자 정의 매핑, 인덱스, 캐시, 네트워크 지연의 영향
 - Kafka 발행, Redis 프로젝션, 전체 명령 지연, 장애 복구 비용
 - 두 구현의 감사 의미, 저장 용량, 조회 결과, 운영 복잡도가 같다는 가정
-- 0.2.1 이후에 추가된 저장소 코드나 벤치마크 모듈의 성능
+- 0.3.0 이후에 추가된 저장소 코드나 벤치마크 모듈의 성능
 
 이 자료는 한 차례의 로컬 문서화 측정입니다. JMH 벤치마크나 릴리스 전체 성능 주장으로 해석하면 안 됩니다.
 
@@ -83,4 +83,4 @@ JSON에는 데이터베이스 종류가 없습니다. 두 구현이 각각 새 �
 5. 동시 쓰기 작업과 서비스에서 실제 노출할 감사 조회를 실행합니다.
 6. 복구와 운영 비용은 요청 지연 시간과 분리해 평가합니다.
 
-측정 원칙은 [벤치마크 근거 읽기](overview.md), 기능 흐름은 [0.2.1 예제](../examples/javers-exposed-ddd.md), 저장소 경계는 [Exposed 영속 방식](../persistence/exposed.md)에서 이어집니다.
+측정 원칙은 [벤치마크 근거 읽기](overview.md), 기능 흐름은 [0.3.0 예제](../examples/javers-exposed-ddd.md), 저장소 경계는 [Exposed 영속 방식](../persistence/exposed.md)에서 이어집니다.

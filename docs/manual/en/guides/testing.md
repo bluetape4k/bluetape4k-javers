@@ -8,7 +8,7 @@ Use cache-backed repositories for fast commit, snapshot, change, and shadow test
 
 ## Persistence tests
 
-For Exposed, test schema creation separately from migration-managed startup. Commit more than one version, reconstruct the repository, and verify head restoration and newest-first history. Exercise a duplicate GlobalId/version and a failure between snapshot and sequence updates. The release tests cover H2 plus database smoke paths in [`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/bffe19439ca891fa5301a76421bdef7ba75252a0/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt).
+For Exposed, test schema creation separately from migration-managed startup. Commit more than one version, reconstruct the repository, and verify head restoration and newest-first history. Exercise a duplicate GlobalId/version and a failure between snapshot and sequence updates. The release tests cover H2 plus database smoke paths in [`ExposedCdoSnapshotRepositoryH2Test.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-exposed/src/test/kotlin/io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryH2Test.kt).
 
 For Redis, run Lettuce and Redisson suites independently against Testcontainers. Verify repository reconstruction, history, shadow loading, connection failure, and your chosen persistence/eviction settings. For Kafka, assert the produced key and payload, the 30-second failure boundary, and the fact that reads stay empty.
 
