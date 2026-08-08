@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1040" viewBox="0 0 1860 1040" role="img" aria-label="javers-ddd class diagram">
 <defs>
 <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
-<marker id="arrowInherit" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M 13 7 L 1 1 L 1 13 Z" fill="#ffffff" stroke="#475569" stroke-width="1.3" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-<marker id="arrowUse" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowInherit" markerUnits="userSpaceOnUse" markerWidth="18" markerHeight="16" refX="13" refY="7" orient="auto" viewBox="0 0 14 14" data-role="uml-hollow" data-tip-direction="positive-x"><path d="M 13 7 L 1 1 L 1 13 Z" fill="#ffffff" stroke="#475569" stroke-width="1.3" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowUse" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="secondary" data-tip-direction="positive-x"><path d="M 0 0 L 14 7 L 0 14 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
 <style>
 .title{font-family:'Architects Daughter','Comic Sans MS',cursive;font-size:36px;fill:#183247;font-weight:700}
 .subtitle{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:15px;fill:#587086}
@@ -13,8 +13,8 @@
 .small{font-family:'Comic Mono','Comic Sans MS','DejaVu Sans',sans-serif;font-size:12px;fill:#587086}
 </style>
 
-<marker id="arrow059669" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
-<marker id="arrowD97706" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="11" refY="6" orient="auto"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
+<marker id="arrow059669" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="11" refY="6" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/></marker>
+<marker id="arrowD97706" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="11" refY="6" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x"><path d="M 0 0 L 12 6 L 0 12 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/></marker></defs>
 <rect x="0" y="0" width="1860" height="1040" rx="26" fill="#f7fafc"/>
 <rect x="20" y="20" width="1820" height="1000" rx="24" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
 <text class="title" x="54" y="64">javers-ddd Class Diagram</text>
