@@ -1,22 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1840" height="1240" viewBox="0 0 1840 1240" role="img" aria-label="bluetape4k-javers Architecture">
 <defs>
 <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="2" flood-color="#334155" flood-opacity="0.04"/></filter>
-<marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x">
 <path d="M 0 0 L 14 7 L 0 14 Z" fill="#2563eb" stroke-dasharray="none" style="stroke-dasharray:none"/>
 </marker>
-<marker id="arrowGreen" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<marker id="arrowGreen" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x">
 <path d="M 0 0 L 14 7 L 0 14 Z" fill="#059669" stroke-dasharray="none" style="stroke-dasharray:none"/>
 </marker>
-<marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<marker id="arrowAmber" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x">
 <path d="M 0 0 L 14 7 L 0 14 Z" fill="#d97706" stroke-dasharray="none" style="stroke-dasharray:none"/>
 </marker>
-<marker id="arrowPurple" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<marker id="arrowPurple" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x">
 <path d="M 0 0 L 14 7 L 0 14 Z" fill="#7c3aed" stroke-dasharray="none" style="stroke-dasharray:none"/>
 </marker>
-<marker id="arrowRose" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<marker id="arrowRose" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x">
 <path d="M 0 0 L 14 7 L 0 14 Z" fill="#e11d48" stroke-dasharray="none" style="stroke-dasharray:none"/>
 </marker>
-<marker id="arrowCyan" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" refX="12" refY="7" orient="auto">
+<marker id="arrowCyan" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" viewBox="0 0 12 12" data-role="primary" data-tip-direction="positive-x">
 <path d="M 0 0 L 14 7 L 0 14 Z" fill="#0891b2" stroke-dasharray="none" style="stroke-dasharray:none"/>
 </marker>
 <style>

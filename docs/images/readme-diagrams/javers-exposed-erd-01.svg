@@ -5,10 +5,10 @@
     <filter id="shadow" x="-12%" y="-14%" width="124%" height="136%">
       <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#64748b" flood-opacity="0.13"/>
     </filter>
-    <marker id="arrowJoin" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+    <marker id="arrowJoin" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 9 8" data-role="secondary" data-tip-direction="positive-x">
       <path d="M 1 1 L 8 4 L 1 7 Z" fill="#475569" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
-    <marker id="arrowSchema" markerWidth="9" markerHeight="8" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+    <marker id="arrowSchema" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 9 8" data-role="secondary" data-tip-direction="positive-x">
       <path d="M 1 1 L 8 4 L 1 7 Z" fill="#16a34a" stroke-dasharray="none" style="stroke-dasharray:none"/>
     </marker>
   </defs>

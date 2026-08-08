@@ -74,8 +74,8 @@ end
 def marker(color, size)
   id = marker_id(color, size)
   <<~SVG
-    <marker id="#{id}" markerWidth="#{size}" markerHeight="#{size}" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10">
-      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#{color}" stroke="#{color}" stroke-width="0.6"/>
+    <marker id="#{id}" markerWidth="#{size}" markerHeight="#{size}" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 10 10" data-role="#{size >= 16 ? "sequence" : "primary"}" data-tip-direction="positive-x">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#{color}" stroke="#{color}" stroke-width="0.6" stroke-dasharray="none"/>
     </marker>
   SVG
 end
