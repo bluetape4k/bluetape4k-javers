@@ -1,21 +1,21 @@
 # WIP - bluetape4k-javers
 
-Snapshot: 2026-08-01 KST
+스냅숏: 2026-08-01 KST
 범위: `debop`에게 할당된 열린 GitHub issue.
 열린 issue 수: 1개.
 
 ## 현재 방향
 
-`0.2.1`은 2026-06-27에 published된 최신 stable Javers release이며,
-`bluetape4k-dependencies` `1.3.1` release가 소비하는 버전이다.
+`0.2.1`은 2026-06-27에 게시된 최신 안정 Javers 릴리스이며,
+`bluetape4k-dependencies` `1.3.1` 릴리스가 소비하는 버전이다.
 
-`0.2.1` patch lane에는 열린 GitHub issue가 없고 release/tag가 완료됐다.
-다음 stable Javers release는 `0.3.0` development line의 작업과 별도로
+`0.2.1` 패치 라인에는 열린 GitHub issue가 없고 릴리스/태그가 완료됐다.
+다음 안정 Javers 릴리스는 `0.3.0` 개발 라인의 작업과 별도로
 정한다.
 
-`0.3.0` line에서는 development가 열려 있으며, workflow-injected snapshot
-publication을 위해 `snapshotVersion=`은 비워 둔다. train이 명시적으로 retarget되지
-않는 한 `0.3.0`은 다음 dependencies release train의 stable Javers input이 아니다.
+`0.3.0` 라인에서는 개발이 열려 있으며, 워크플로가 주입하는 스냅숏 게시를
+위해 `snapshotVersion=`은 비워 둔다. train이 명시적으로 retarget되지 않는 한
+`0.3.0`은 다음 dependencies release train의 안정 Javers 입력이 아니다.
 현재 `0.3.0`에서 `debop`에게 할당된 열린 issue는 없다. #289 한국어 `Fixed`
 terminology follow-up은 PR #290으로 완료됐다.
 
@@ -89,10 +89,10 @@ terminology follow-up은 PR #290으로 완료됐다.
 
 | 작업선 | 제한 | 다음 작업 |
 |---|---:|---|
-| Data integrity blockers | 1 | 현재 WIP snapshot 기준 완료. |
-| Release metadata blockers | 1 | 현재 WIP snapshot 기준 완료. |
-| Documentation maintenance | 1 | 현재 WIP snapshot 기준 완료. |
-| Future research | 1 | `0.3.0`이 정리됐으므로 #119 진행 가능 |
+| 데이터 무결성 blocker | 1 | 현재 WIP 스냅숏 기준 완료. |
+| 릴리스 메타데이터 blocker | 1 | 현재 WIP 스냅숏 기준 완료. |
+| 문서 유지보수 | 1 | 현재 WIP 스냅숏 기준 완료. |
+| 향후 연구 | 1 | `0.3.0`이 정리됐으므로 #119 진행 가능 |
 
 ## 검증 증거
 
