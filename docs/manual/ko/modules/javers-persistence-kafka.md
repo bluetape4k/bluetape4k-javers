@@ -63,6 +63,26 @@ JaVers는 스냅샷마다 `saveSnapshot`을 한 번 호출합니다. 스냅샷�
 
 프로듀서의 `acks`, 멱등성, 재시도, 전달 시간 제한과 토픽 파티션, 보존 기간, ACL을 명시하세요. 애그리거트별 순서가 중요하면 GlobalId 키를 유지하고 파티션 동작을 검증합니다. 발행 지연, 시간 초과, 오류율, 소비자 지연, 데드 레터 처리, 프로젝션 불일치를 관측하세요. 페이로드 스키마와 코덱은 버전이 있는 연동 계약으로 다뤄야 합니다.
 
+## 읽기 측 프로젝션 계약
+
+`KafkaCdoSnapshotProjector`는 인코딩된 snapshot value를 기존의 읽기 가능한
+`CdoSnapshotRepository`에 재생합니다. 현재 wire value에는 source repository
+sequence가 없으므로 snapshot topic은 정확히 하나의 partition이어야 합니다.
+첫 poll 전에 topology를 검사하고, multi-partition이면 decode·project·offset
+commit보다 먼저 `IllegalStateException`을 던집니다. 성공한 topology 검사는
+projector 수명 동안 재사용합니다.
+
+이 guard는 target-local poll 순서가 전역 JaVers head를 조용히 바꾸는 일을
+막습니다. 다중 partition replay를 지원하려면 버전이 있는 wire-visible
+monotonic sequence 계약을 별도로 정의해야 하며, topic partition 수만 바꾸는
+것으로는 충분하지 않습니다. 기존 `partition, offset` batch 순서와 전체 batch
+프로젝션 성공 후에만 offset을 commit하는 계약도 유지하세요.
+
+모듈 통합 테스트는 공용 Kafka test provider를 통해
+`bluetape4k-testcontainers`가 제공하는 실제 Kafka broker를 사용하고, Redis
+프로젝션으로 replay한 결과를 확인합니다. projector를 변경할 때 mock 회귀
+테스트와 이 Testcontainers 검증을 함께 유지하세요.
+
 ## 테스트
 
 ```bash

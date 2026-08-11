@@ -70,6 +70,25 @@ class KafkaCdoSnapshotProjectorTest {
     }
 
     @Test
+    fun `projector validates topic topology only once before replay`() {
+        val source = snapshotFixture()
+        val consumer = mockConsumer(records(source.encodedSnapshot))
+        val targetRepository = CaffeineCdoSnapshotRepository()
+        val targetJavers = newJavers(targetRepository)
+        val projector = KafkaCdoSnapshotProjector(
+            consumer = consumer,
+            jsonConverter = targetJavers.jsonConverter,
+            projectionRepository = targetRepository,
+            options = projectionOptions(),
+        )
+
+        projector.projectOnce()
+        projector.projectOnce()
+
+        verify(exactly = 1) { consumer.partitionsFor("audit.snapshots") }
+    }
+
+    @Test
     fun `options reject blank topic and non positive poll timeout`() {
         assertFailsWith<IllegalArgumentException> {
             KafkaCdoSnapshotProjectionOptions(topic = " ")

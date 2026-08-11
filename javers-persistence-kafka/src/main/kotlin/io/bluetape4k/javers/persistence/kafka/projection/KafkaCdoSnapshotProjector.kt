@@ -52,6 +52,8 @@ class KafkaCdoSnapshotProjector private constructor(
     private val options: KafkaCdoSnapshotProjectionOptions,
 ): AutoCloseable {
 
+    private var topicTopologyValidated = false
+
     companion object: KLogging() {
         /**
          * caller-owned Kafka [Consumer]로 projector를 생성합니다.
@@ -162,11 +164,16 @@ class KafkaCdoSnapshotProjector private constructor(
     }
 
     private fun validateTopicTopology() {
+        if (topicTopologyValidated) {
+            return
+        }
+
         val partitionCount = consumer.partitionsFor(options.topic).size
         check(partitionCount == 1) {
             "Kafka snapshot projection requires a single-partition topic. " +
                 "topic=${options.topic}, partitions=$partitionCount"
         }
+        topicTopologyValidated = true
     }
 
     /**
