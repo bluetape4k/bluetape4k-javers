@@ -3,7 +3,7 @@
 English | [한국어](./README.ko.md)
 
 `javers-ddd` is a small DDD helper layer for services that already persist
-aggregate roots and want JaVers audit history plus immediate domain-event
+aggregate roots and want JaVers audit history plus transaction-aware domain-event
 publication. It does not replace your source-of-truth repository. Your
 repository subclass still owns persistence and lookup; this module adds the
 JaVers commit and event-publisher step around that workflow.
@@ -82,16 +82,20 @@ Use the smallest publisher that matches the service boundary:
 | `NatsDomainEventPublisher` | A NATS connection publishes serialized event payloads. |
 
 Spring and Kafka publishers defer publication to `afterCommit` when Spring
-transaction synchronization is active. Otherwise they publish immediately.
-NATS publishes synchronously from the repository call using the subject resolver
-and serializer supplied by the consumer.
+transaction synchronization is active. Otherwise they publish immediately. Kafka
+waits for the broker acknowledgement up to `publishTimeout`; send failure,
+timeout, and interruption are propagated from the immediate call or transaction
+completion, while rollback sends nothing. NATS publishes synchronously from the
+repository call using the subject resolver and serializer supplied by the consumer.
 
 ## Delivery Semantics
 
 `AggregateRepository` publishes events after source persistence and the JaVers
-commit have succeeded. This is an immediate delivery helper, not a durable
-outbox implementation. Use a transactional outbox when exactly-once external
-delivery, replay, or cross-service recovery is required.
+commit have succeeded. Local publishers are immediate, while Spring and Kafka
+publishers may defer until `afterCommit`; Kafka acknowledgement failures remain
+observable at the documented completion point. This is not a durable outbox
+implementation. Use a transactional outbox when exactly-once external delivery,
+replay, or cross-service recovery is required.
 
 ## Dependency
 

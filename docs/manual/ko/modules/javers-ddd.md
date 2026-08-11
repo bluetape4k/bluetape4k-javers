@@ -54,9 +54,9 @@ check(snapshot.commitMetadata.properties["event.channel"] == "web")
 
 ## 실행 순서와 실패 경계
 
-`save`는 하위 클래스의 `persist`, `javers.commit`, `eventPublisher.publishAll` 순으로 호출합니다. `publishAll`은 컬렉션 순서대로 발행기를 부르지만, 실제 전달 방식은 구현마다 다릅니다. 아무 일도 하지 않는 발행기, 함수형 발행기, 복합 발행기는 즉시 실행되며 `publish`에서 난 예외를 호출자에게 전달합니다. Spring 애플리케이션 이벤트와 Kafka 발행기는 `publishAfterCommit`을 사용하므로 Spring 트랜잭션이 활성화돼 있으면 `afterCommit`까지 실행을 미룹니다. Kafka 발행기는 `KafkaTemplate.send()`가 돌려주는 `Future`를 기다리지 않으므로 브로커 전송 실패가 `save` 호출에 전달된다고 보장할 수 없습니다.
+`save`는 하위 클래스의 `persist`, `javers.commit`, `eventPublisher.publishAll` 순으로 호출합니다. `publishAll`은 컬렉션 순서대로 발행기를 부르지만, 실제 전달 방식은 구현마다 다릅니다. 아무 일도 하지 않는 발행기, 함수형 발행기, 복합 발행기는 즉시 실행되며 `publish`에서 난 예외를 호출자에게 전달합니다. Spring 애플리케이션 이벤트와 Kafka 발행기는 `publishAfterCommit`을 사용하므로 Spring 트랜잭션이 활성화돼 있으면 `afterCommit`까지 실행을 미룹니다. Kafka 발행기는 `publishTimeout`까지 `KafkaTemplate.send()` acknowledgement를 기다립니다. 활성 트랜잭션이 없으면 전송 실패·timeout·interrupt가 `publish`에서 발생하고, 활성 트랜잭션에서는 rollback 시 전송하지 않으며 커밋 완료 시 같은 실패를 전달합니다. 따라서 지연 경로의 실패는 원래 `save` 호출이 아니라 트랜잭션 완료 시점에 발생하며, 이 기능도 트랜잭셔널 아웃박스는 아닙니다.
 
-도메인 저장이 실패하면 감사와 발행기 호출을 시작하지 않습니다. JaVers 커밋이 실패하면 도메인 상태만 남을 수 있습니다. 즉시 실행하는 발행기가 실패하면 도메인 상태와 감사 이력은 있지만 일부 발행자나 뒤 이벤트는 실행되지 않을 수 있습니다. 실행을 미루거나 결과를 기다리지 않는 발행기는 전달 실패를 별도로 관측하고 복구해야 합니다.
+도메인 저장이 실패하면 감사와 발행기 호출을 시작하지 않습니다. JaVers 커밋이 실패하면 도메인 상태만 남을 수 있습니다. 즉시 실행하는 발행기가 실패하면 도메인 상태와 감사 이력은 있지만 일부 발행자나 뒤 이벤트는 실행되지 않을 수 있습니다. Kafka acknowledgement 실패는 `afterCommit` 지연 여부에 따라 `publish` 또는 트랜잭션 완료에서 관찰되므로, 호출자는 전달 실패를 계속 별도로 관측하고 복구해야 합니다.
 
 `load`는 먼저 원본 저장소를 찾고, 없을 때 최신 JaVers 섀도로 복원합니다. `loadHistory`는 애그리거트 ID의 스냅샷을 읽습니다. 섀도는 감사 복원에는 유용하지만 운영 DB가 반드시 있어야 하는 경로를 조용히 대신해서는 안 됩니다.
 
