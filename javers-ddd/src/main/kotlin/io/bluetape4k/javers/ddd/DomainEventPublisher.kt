@@ -6,6 +6,8 @@ package io.bluetape4k.javers.ddd
  * ## 계약
  * 구현체는 fail fast해야 합니다. [AggregateRepository]는 aggregate persistence와 JaVers commit이
  * 성공한 뒤에만 publisher를 호출합니다.
+ * Spring transaction-aware 구현체는 명시적으로 delivery를 `afterCommit`으로 미룰 수 있습니다.
+ * 이 경우에도 구현체는 실제 acknowledgement와 failure가 관찰되는 시점을 문서화해야 합니다.
  */
 fun interface DomainEventPublisher {
 

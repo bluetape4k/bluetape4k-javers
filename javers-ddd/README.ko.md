@@ -3,8 +3,8 @@
 [English](./README.md) | 한국어
 
 `javers-ddd`는 aggregate root를 이미 저장하고 있는 서비스가 JaVers audit
-history와 즉시 domain-event 발행을 함께 붙일 수 있도록 돕는 작은 DDD helper
-layer입니다. 이 모듈은 source-of-truth repository를 대체하지 않습니다. Repository
+history와 트랜잭션 경계를 인식하는 domain-event 발행을 함께 붙일 수 있도록 돕는
+작은 DDD helper layer입니다. 이 모듈은 source-of-truth repository를 대체하지 않습니다. Repository
 subclass가 여전히 persistence와 lookup을 책임지고, 이 모듈은 그 workflow 주변에
 JaVers commit과 event publisher 단계를 추가합니다.
 
@@ -82,16 +82,19 @@ val javers = JaversBuilder.javers()
 | `NatsDomainEventPublisher` | NATS connection으로 직렬화된 event payload를 발행할 때 |
 
 Spring과 Kafka publisher는 Spring transaction synchronization이 활성화되어 있으면
-`afterCommit`에서 발행합니다. 그렇지 않으면 즉시 발행합니다. NATS는 consumer가
-제공한 subject resolver와 serializer를 사용해 repository 호출 안에서 동기적으로
-발행합니다.
+`afterCommit`에서 발행합니다. 그렇지 않으면 즉시 발행합니다. Kafka는
+`publishTimeout`까지 broker acknowledgement를 기다리며, 전송 실패·timeout·interrupt를
+즉시 호출 또는 트랜잭션 완료에서 전달하고 rollback에서는 전송하지 않습니다. NATS는
+consumer가 제공한 subject resolver와 serializer를 사용해 repository 호출 안에서
+동기적으로 발행합니다.
 
 ## 전달 의미
 
 `AggregateRepository`는 source persistence와 JaVers commit이 성공한 뒤 event를
-발행합니다. 이 기능은 즉시 전달 helper이며 durable outbox 구현이 아닙니다.
-정확히 한 번 외부 전달, replay, cross-service recovery가 필요하다면 transactional
-outbox를 사용하세요.
+발행합니다. Local publisher는 즉시 실행하지만 Spring과 Kafka publisher는
+`afterCommit`까지 미룰 수 있으며, Kafka acknowledgement 실패는 문서화한 완료
+시점에서 관찰됩니다. 이 기능은 durable outbox 구현이 아닙니다. 정확히 한 번 외부
+전달, replay, cross-service recovery가 필요하다면 transactional outbox를 사용하세요.
 
 ## 의존성
 
