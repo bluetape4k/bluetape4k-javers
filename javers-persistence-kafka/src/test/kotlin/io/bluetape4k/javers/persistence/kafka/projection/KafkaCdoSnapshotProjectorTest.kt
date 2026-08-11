@@ -19,6 +19,8 @@ import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.CloseOptions
+import org.apache.kafka.common.Node
+import org.apache.kafka.common.PartitionInfo
 import org.apache.kafka.common.TopicPartition
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
@@ -33,6 +35,58 @@ import org.junit.jupiter.api.Test
 import java.time.Duration
 
 class KafkaCdoSnapshotProjectorTest {
+
+    @Test
+    fun `projectOnce rejects multi partition topic before projection`() {
+        val source = snapshotFixture()
+        val consumer = mockConsumer(
+            multiPartitionRecords(
+                0 to source.encodedSnapshot,
+                1 to source.encodedSnapshot,
+            ),
+        )
+        every { consumer.partitionsFor("audit.snapshots") } returns listOf(
+            partitionInfo(0),
+            partitionInfo(1),
+        )
+        val targetRepository = CaffeineCdoSnapshotRepository()
+        val targetJavers = newJavers(targetRepository)
+        val projector = KafkaCdoSnapshotProjector(
+            consumer = consumer,
+            jsonConverter = targetJavers.jsonConverter,
+            projectionRepository = targetRepository,
+            options = projectionOptions(),
+        )
+
+        val failure = assertFailsWith<IllegalStateException> {
+            projector.projectOnce()
+        }
+
+        failure.message shouldBeEqualTo
+            "Kafka snapshot projection requires a single-partition topic. topic=audit.snapshots, partitions=2"
+        verify(exactly = 0) { consumer.poll(any<Duration>()) }
+        verify(exactly = 0) { consumer.commitSync() }
+        targetRepository.getHeadId() shouldBeEqualTo null
+    }
+
+    @Test
+    fun `projector validates topic topology only once before replay`() {
+        val source = snapshotFixture()
+        val consumer = mockConsumer(records(source.encodedSnapshot))
+        val targetRepository = CaffeineCdoSnapshotRepository()
+        val targetJavers = newJavers(targetRepository)
+        val projector = KafkaCdoSnapshotProjector(
+            consumer = consumer,
+            jsonConverter = targetJavers.jsonConverter,
+            projectionRepository = targetRepository,
+            options = projectionOptions(),
+        )
+
+        projector.projectOnce()
+        projector.projectOnce()
+
+        verify(exactly = 1) { consumer.partitionsFor("audit.snapshots") }
+    }
 
     @Test
     fun `options reject blank topic and non positive poll timeout`() {
@@ -243,6 +297,7 @@ class KafkaCdoSnapshotProjectorTest {
     ): Consumer<String, String> {
         val consumer = mockk<Consumer<String, String>>(relaxed = true)
         every { consumer.poll(any<Duration>()) } returns records
+        every { consumer.partitionsFor(any()) } returns listOf(partitionInfo(0))
         every { consumer.commitSync() } just Runs
         every { consumer.close(any<CloseOptions>()) } just Runs
         return consumer
@@ -255,6 +310,27 @@ class KafkaCdoSnapshotProjectorTest {
         }
         return ConsumerRecords(mapOf(topicPartition to records), emptyMap())
     }
+
+    private fun multiPartitionRecords(vararg entries: Pair<Int, String>): ConsumerRecords<String, String> {
+        val recordsByPartition = entries
+            .groupBy({ it.first }, { it.second })
+            .map { (partition, values) ->
+                TopicPartition("audit.snapshots", partition) to values.mapIndexed { index, value ->
+                    ConsumerRecord("audit.snapshots", partition, index.toLong(), "snapshot-key-$partition-$index", value)
+                }
+            }
+            .toMap()
+        return ConsumerRecords(recordsByPartition, emptyMap())
+    }
+
+    private fun partitionInfo(partition: Int): PartitionInfo =
+        PartitionInfo(
+            "audit.snapshots",
+            partition,
+            Node.noNode(),
+            emptyArray(),
+            emptyArray(),
+        )
 
     private fun emptyRecords(): ConsumerRecords<String, String> = ConsumerRecords.empty()
 

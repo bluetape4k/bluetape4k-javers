@@ -201,9 +201,15 @@ partial-publish behavior를 명시적으로 유지해야 합니다.
 `KafkaCdoSnapshotProjector`는 현재 Kafka wire value인 encoded JaVers snapshot
 payload를 소비합니다. Metadata envelope이나 header contract는 필요하지 않습니다.
 
-각 poll batch는 deterministic `partition, offset` 순서로 적용합니다. Kafka가 total
-audit order를 제공하는 경우는 topic topology가 그렇게 구성된 때뿐입니다. 예를 들어
-single-partition audit topic이나 aggregate별 partitioning strategy가 필요합니다.
+Projector는 snapshot topic이 정확히 하나의 partition을 갖는 경우만 허용합니다. 첫
+poll 전에 topic topology를 검증하고 multi-partition topic이면 `IllegalStateException`을
+던집니다. 현재 wire value에는 source repository sequence가 없으므로 여러 partition의
+record를 project하면 target-local sequence가 poll 순서로 배정되어 전역 JaVers head가
+조용히 달라질 수 있습니다. 이 제한을 완화하려면 wire-visible monotonic sequence를
+먼저 정의해야 합니다.
+
+단일 partition topic에서는 각 poll batch를 deterministic `partition, offset` 순서로
+적용합니다.
 
 기본적으로 projector는 같은 GlobalId, commit id, version의 snapshot이 target
 repository에 이미 있으면 저장을 건너뜁니다. 이 동작은 read store에 이미 materialized된

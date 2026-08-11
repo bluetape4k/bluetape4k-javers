@@ -63,6 +63,27 @@ Timeout, interruption, and producer errors become `RuntimeException`; interrupti
 
 Set producer `acks`, idempotence, retries, delivery timeout, topic partitions, retention, and ACLs explicitly. If ordering per aggregate matters, keep GlobalId as the key and verify partition behavior. Monitor send latency, timeouts, error rate, topic lag, dead-letter handling, and consumer projection drift. Treat the payload schema and codec as a versioned integration contract.
 
+## Read-side projection contract
+
+`KafkaCdoSnapshotProjector` replays the encoded snapshot value into an existing
+read-capable `CdoSnapshotRepository`. The current wire value does not contain the
+source repository sequence, so the projector requires the snapshot topic to have
+exactly one partition. It checks the topic topology before the first poll and
+throws `IllegalStateException` before decoding, projecting, or committing offsets
+when the topic is multi-partition. A successful topology check is reused for the
+projector lifetime.
+
+This guard prevents target-local poll order from silently changing the global
+JaVers head. Multi-partition replay requires a separately versioned wire-visible
+monotonic sequence contract; changing the topic partition count alone is not
+enough. Keep the existing `partition, offset` batch order and commit offsets only
+after the complete batch has been projected successfully.
+
+The module integration test uses `bluetape4k-testcontainers` through the shared
+Kafka test provider and verifies real-broker replay into a Redis projection. Keep
+that Testcontainers check alongside mock regression tests when changing the
+projector.
+
 ## Testing
 
 ```bash
