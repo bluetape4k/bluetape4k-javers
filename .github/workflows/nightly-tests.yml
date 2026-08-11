@@ -616,8 +616,10 @@ jobs:
           merge-multiple: false
         continue-on-error: true
 
+      - name: Test coverage artifact validator
+        run: python3 .github/scripts/validate_kover_artifacts_test.py
+
       - name: Validate expected coverage artifacts
-        shell: bash
         run: |
           set -euo pipefail
 
@@ -634,40 +636,8 @@ jobs:
             coverage-javers-spring-boot4-autoconfigure
           )
 
-          missing_artifacts=()
-          empty_artifacts=()
-
-          for artifact in "${expected_artifacts[@]}"; do
-            artifact_dir="coverage-artifacts/${artifact}"
-            if [[ ! -d "${artifact_dir}" ]]; then
-              missing_artifacts+=("${artifact}")
-              continue
-            fi
-
-            if ! find "${artifact_dir}" -type f -name 'report.xml' -print -quit | grep -q .; then
-              empty_artifacts+=("${artifact}")
-            fi
-          done
-
-          if (( ${#missing_artifacts[@]} > 0 || ${#empty_artifacts[@]} > 0 )); then
-            echo "::error title=Nightly coverage artifacts incomplete::Expected full-scope coverage artifacts are missing or empty."
-
-            if (( ${#missing_artifacts[@]} > 0 )); then
-              printf 'Missing artifacts:\n'
-              printf '  - %s\n' "${missing_artifacts[@]}"
-            fi
-
-            if (( ${#empty_artifacts[@]} > 0 )); then
-              printf 'Empty artifacts:\n'
-              printf '  - %s\n' "${empty_artifacts[@]}"
-            fi
-
-            echo "Downloaded artifacts:"
-            find coverage-artifacts -maxdepth 2 -type d -print 2>/dev/null | sort || true
-            exit 1
-          fi
-
-          printf 'Validated %s expected full-scope coverage artifacts.\n' "${#expected_artifacts[@]}"
+          python3 .github/scripts/validate_kover_artifacts.py \
+            coverage-artifacts "${expected_artifacts[@]}"
 
       - name: Aggregate Kover coverage summary
         run: python3 .github/scripts/aggregate-kover-coverage.py coverage-artifacts

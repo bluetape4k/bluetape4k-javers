@@ -9,6 +9,11 @@ Release 0.3.0 provides two repositories:
 
 Both store encoded snapshots newest first per GlobalId, keep commit sequence data separately, and restore the latest head after repository reconstruction. They implement JaVers reads; unlike the Kafka adapter, they can load snapshot history and shadows. Their exact structures are in [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt) and [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt).
 
+`LettuceCdoSnapshotRepository.close()` is terminal: it closes only the connections
+opened by the repository, rejects later read/write operations with
+`IllegalStateException`, and leaves the caller-owned `RedisClient` running. Close
+the repository before shutting down the client.
+
 ## Selection and recovery
 
 Choose Lettuce when the service already manages Lettuce clients and wants explicit command-level behavior. Choose Redisson when Redisson distributed objects and lifecycle are the established operational path. Do not run both against the same namespace unless their wire structures have been proven compatible; 0.3.0 does not document cross-client migration.

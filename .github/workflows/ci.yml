@@ -713,8 +713,10 @@ jobs:
           merge-multiple: false
         continue-on-error: true
 
+      - name: Test coverage artifact validator
+        run: python3 .github/scripts/validate_kover_artifacts_test.py
+
       - name: Validate coverage artifacts
-        shell: bash
         env:
           JAVERS_CORE_CHANGED: ${{ needs.changes.outputs.javers-core }}
           JAVERS_DDD_CHANGED: ${{ needs.changes.outputs.javers-ddd }}
@@ -739,40 +741,8 @@ jobs:
           [[ "${JAVERS_REDIS_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-persistence-redis)
           [[ "${JAVERS_KAFKA_CHANGED}" == "true" ]] && expected_artifacts+=(coverage-persistence-kafka)
 
-          missing_artifacts=()
-          empty_artifacts=()
-
-          for artifact in "${expected_artifacts[@]}"; do
-            artifact_dir="coverage-artifacts/${artifact}"
-            if [[ ! -d "${artifact_dir}" ]]; then
-              missing_artifacts+=("${artifact}")
-              continue
-            fi
-
-            if ! find "${artifact_dir}" -type f \( -name 'report.xml' -o -name 'reportJvm.xml' \) -print -quit | grep -q .; then
-              empty_artifacts+=("${artifact}")
-            fi
-          done
-
-          if (( ${#missing_artifacts[@]} > 0 || ${#empty_artifacts[@]} > 0 )); then
-            echo "::error title=Coverage artifacts incomplete::Expected coverage artifacts are missing or empty."
-
-            if (( ${#missing_artifacts[@]} > 0 )); then
-              printf 'Missing artifacts:\n'
-              printf '  - %s\n' "${missing_artifacts[@]}"
-            fi
-
-            if (( ${#empty_artifacts[@]} > 0 )); then
-              printf 'Empty artifacts:\n'
-              printf '  - %s\n' "${empty_artifacts[@]}"
-            fi
-
-            echo "Downloaded artifacts:"
-            find coverage-artifacts -maxdepth 2 -type d -print 2>/dev/null | sort || true
-            exit 1
-          fi
-
-          printf 'Validated %s expected coverage artifacts.\n' "${#expected_artifacts[@]}"
+          python3 .github/scripts/validate_kover_artifacts.py \
+            coverage-artifacts "${expected_artifacts[@]}"
 
       - name: Aggregate Kover coverage summary
         run: python3 .github/scripts/aggregate-kover-coverage.py coverage-artifacts

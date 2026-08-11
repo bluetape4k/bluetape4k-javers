@@ -9,6 +9,11 @@ JaVers 스냅샷을 기존 Redis 운영 환경에서 읽고 써야 할 때 선�
 
 두 구현 모두 GlobalId별 스냅샷을 최신순으로 읽고 커밋 순서를 별도 구조에 보관합니다. 저장소를 다시 만들면 저장된 순서 값에서 최신 커밋을 복원합니다. 구현은 [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)와 [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)에 있습니다.
 
+`LettuceCdoSnapshotRepository.close()`는 terminal lifecycle입니다. repository가 연
+connection만 닫고 이후 read/write operation을 `IllegalStateException`으로 거부하며,
+호출자가 소유한 `RedisClient`는 종료하지 않습니다. 애플리케이션 종료 시에는 client보다
+repository를 먼저 닫으세요.
+
 서비스가 Lettuce 클라이언트의 수명을 이미 관리한다면 Lettuce를, Redisson 분산 객체가 운영 표준이라면 Redisson을 고르세요. 두 구현의 저장 구조가 같다고 가정해 같은 네임스페이스를 공유하면 안 됩니다.
 
 Redis 오류는 호출자에게 전달되지만 일부만 갱신될 가능성은 남습니다. 디코딩에 실패한 값은 조회에서 빠질 수 있고, 넓은 JQL 조회는 키와 스냅샷을 프로세스 메모리에 올립니다. 커밋 ID와 스냅샷 버전으로 재시도 결과를 확인하고 키 수, 메모리, 조회 지연을 함께 감시하세요. 클라이언트와 토폴로지는 [Projects Redis 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-projects/1.11/modules/bluetape4k-redis/)로 이어집니다.

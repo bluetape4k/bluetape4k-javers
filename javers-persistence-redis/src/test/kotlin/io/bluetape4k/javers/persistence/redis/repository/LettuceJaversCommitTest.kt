@@ -6,6 +6,7 @@ import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeGreaterThan
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.assertFailsWith
+import io.bluetape4k.codec.Base58
 import io.bluetape4k.logging.KLogging
 import io.bluetape4k.testcontainers.storage.RedisServer
 import io.lettuce.core.RedisClient
@@ -13,6 +14,7 @@ import io.lettuce.core.api.StatefulRedisConnection
 import io.lettuce.core.api.sync.RedisCommands
 import io.lettuce.core.codec.RedisCodec
 import org.javers.core.commit.CommitId
+import org.javers.core.metamodel.`object`.CdoSnapshot
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -82,6 +84,34 @@ class LettuceJaversCommitTest: AbstractRedisCdoSnapshotRepositoryParityTest() {
         verify(exactly = 1) { readConnection.close() }
         verify(exactly = 1) { writeConnection.close() }
         verify(exactly = 0) { client.shutdown() }
+    }
+
+    @Test
+    fun `close before first use rejects read without reopening a connection`() {
+        val repository = LettuceCdoSnapshotRepository(
+            "lifecycle-close-before-read-${Base58.randomString(8)}",
+            lettuceClient,
+        )
+
+        repository.close()
+
+        assertFailsWith<IllegalStateException> {
+            repository.getHeadId()
+        }
+    }
+
+    @Test
+    fun `close before first use rejects write without reopening a connection`() {
+        val repository = LettuceCdoSnapshotRepository(
+            "lifecycle-close-before-write-${Base58.randomString(8)}",
+            lettuceClient,
+        )
+
+        repository.close()
+
+        assertFailsWith<IllegalStateException> {
+            repository.saveSnapshot(mockk<CdoSnapshot>(relaxed = true))
+        }
     }
 
     @Test
