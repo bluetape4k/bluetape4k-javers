@@ -55,6 +55,13 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
+## 생명주기
+
+`LettuceCdoSnapshotRepository.close()`는 terminal lifecycle입니다. repository가
+연 read/write connection만 닫고, 이후 모든 read/write operation은
+`IllegalStateException`으로 거부합니다. 호출자가 소유한 `RedisClient`는 종료하지
+않으므로 repository를 먼저 닫은 뒤 client를 shutdown하세요.
+
 Redis를 audit snapshot store로 사용할 때 이 모듈을 사용하세요. CQRS read model은
 JaVers snapshot data와 분리된 application projection으로 유지하는 편이 좋습니다.
 

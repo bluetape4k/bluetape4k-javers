@@ -36,6 +36,8 @@ import kotlin.concurrent.withLock
  * - 기본 codec은 [JaversCodecs.LZ4Fory](LZ4 + Fory serialization)입니다.
  * - caller가 [client]를 소유합니다. 이 repository는 해당 client에서 연 read/write connection만 소유하며
  *   [close]에서 닫습니다.
+ * - [close]는 terminal lifecycle입니다. close 이후 모든 read/write operation은
+ *   `IllegalStateException`으로 거부하며 connection을 다시 열지 않습니다.
  *
  * ```kotlin
  * val repo = LettuceCdoSnapshotRepository("user", redisClient)
@@ -75,7 +77,8 @@ class LettuceCdoSnapshotRepository(
 
     // 이 repository가 소유하는 read-only connection입니다.
     private val readConnection = lazy { client.connect(redisCodec) }
-    private val commands by lazy { readConnection.value.sync() }
+    private val readCommands by lazy { readConnection.value.sync() }
+    private val commands get() = openResource { readCommands }
 
     // saveSnapshot의 MULTI/EXEC에만 사용하는 전용 connection입니다.
     // `commands`와 분리해 read-path command(lrange, hget 등)가 같은 Lettuce connection의
@@ -83,9 +86,11 @@ class LettuceCdoSnapshotRepository(
     // `transactionLock`은 이 connection의 concurrent saveSnapshot 호출을 직렬화합니다.
     private val transactionLock = ReentrantLock()
     private val closeLock = ReentrantLock()
+    @Volatile
     private var closed = false
     private val writeConnection = lazy { client.connect(redisCodec) }
-    private val writeCommands by lazy { writeConnection.value.sync() }
+    private val writeCommandDelegate by lazy { writeConnection.value.sync() }
+    private val writeCommands get() = openResource { writeCommandDelegate }
 
     override fun getKeys(): Set<String> {
         return commands.hkeys(cacheSetKey).sorted().toSet()
@@ -131,6 +136,7 @@ class LettuceCdoSnapshotRepository(
     }
 
     override fun saveSnapshot(snapshot: CdoSnapshot) {
+        ensureOpen()
         val value = encode(snapshot)
         transactionLock.withLock {
             try {
@@ -147,6 +153,7 @@ class LettuceCdoSnapshotRepository(
     }
 
     override fun persistCommit(commit: Commit, sequence: Long) {
+        ensureOpen()
         val encodedSnapshots = commit.snapshots.map { snapshot -> snapshot to encode(snapshot) }
         transactionLock.withLock {
             try {
@@ -166,6 +173,7 @@ class LettuceCdoSnapshotRepository(
     }
 
     override fun persistProjectedSnapshot(snapshot: CdoSnapshot, sequence: Long) {
+        ensureOpen()
         val value = encode(snapshot)
         transactionLock.withLock {
             try {
@@ -212,10 +220,19 @@ class LettuceCdoSnapshotRepository(
                 return
             }
 
+            closed = true
             closeConnection("write", writeConnection)
             closeConnection("read", readConnection)
-            closed = true
         }
+    }
+
+    private inline fun <T> openResource(resource: () -> T): T {
+        ensureOpen()
+        return resource()
+    }
+
+    private fun ensureOpen() {
+        check(!closed) { "Lettuce repository is already closed. name=$name" }
     }
 
     private fun closeConnection(

@@ -57,6 +57,13 @@ val javers = JaversBuilder.javers()
     .build()
 ```
 
+## Lifecycle
+
+`LettuceCdoSnapshotRepository.close()` is terminal. It closes only the read/write
+connections opened by the repository; every read/write operation after close fails
+with `IllegalStateException`, and the caller-owned `RedisClient` remains running.
+Close the repository before shutting down the client.
+
 Use this module when Redis is the audit snapshot store. For query-side CQRS read
 models, keep application projections separate from the JaVers snapshot data.
 
