@@ -24,6 +24,8 @@ import java.util.Properties
  * - 각 payload를 [JaversCodecs.String]과 [jsonConverter]로 decode합니다.
  * - commit metadata를 추적하는 repository가 head 및 sequence state를 복원할 수 있도록
  *   decode된 snapshot을 [projectionRepository]로 project합니다.
+ * - source repository sequence가 현재 Kafka wire value에 포함되지 않으므로,
+ *   전역 head 정합성을 위해 topic이 정확히 하나의 partition을 갖는지 첫 poll 전에 검증합니다.
  * - [KafkaCdoSnapshotProjectionOptions.skipExistingSnapshots]가 `true`이면 이미 project된 snapshot을 건너뜁니다.
  * - [KafkaCdoSnapshotProjectionOptions.commitOffsetsAfterProjection]이 `true`이면
  *   poll된 전체 batch가 project된 뒤에만 Kafka offset을 commit합니다.
@@ -128,6 +130,7 @@ class KafkaCdoSnapshotProjector private constructor(
      * Kafka를 한 번 poll하고 반환된 모든 snapshot record를 project합니다.
      */
     fun projectOnce(): KafkaCdoSnapshotProjectionResult {
+        validateTopicTopology()
         val records = consumer.poll(options.pollTimeout)
         var projected = 0
         var skipped = 0
@@ -156,6 +159,14 @@ class KafkaCdoSnapshotProjector private constructor(
             projectedSnapshots = projected,
             skippedSnapshots = skipped,
         )
+    }
+
+    private fun validateTopicTopology() {
+        val partitionCount = consumer.partitionsFor(options.topic).size
+        check(partitionCount == 1) {
+            "Kafka snapshot projection requires a single-partition topic. " +
+                "topic=${options.topic}, partitions=$partitionCount"
+        }
     }
 
     /**

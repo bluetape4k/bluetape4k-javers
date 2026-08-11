@@ -206,10 +206,16 @@ add replay, retry, transaction, or outbox coordination.
 `KafkaCdoSnapshotProjector` consumes the current Kafka wire value: the encoded
 JaVers snapshot payload. It does not require a metadata envelope or headers.
 
-Each polled batch is applied in deterministic `partition, offset` order. Kafka
-provides a total audit order only when the topic topology does so, for example a
-single-partition audit topic or a partitioning strategy that keeps each
-aggregate on one partition.
+The projector requires the snapshot topic to have exactly one partition. It
+validates the topic topology before the first poll and throws
+`IllegalStateException` for a multi-partition topic. The current wire value does
+not carry the source repository sequence, so projecting records from multiple
+partitions would assign target-local sequences in poll order and could silently
+change the global JaVers head. A future multi-partition projector must define a
+wire-visible monotonic sequence before this restriction can be relaxed.
+
+Within the single-partition topic, each polled batch is applied in deterministic
+`partition, offset` order.
 
 By default the projector checks the target repository for an existing snapshot
 with the same GlobalId, commit id, and version before saving. This makes replay
