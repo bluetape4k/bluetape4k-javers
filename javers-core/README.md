@@ -58,6 +58,10 @@ restart or be queried by SQL, use the Exposed adapter as the primary repository.
 Prefer `JaversCodecs.String` for durable JSON storage. Use Kryo or Fory codecs
 only for trusted binary payloads where the storage boundary is controlled.
 
+The `JaversCodec.decode` contract returns `null` when a codec cannot restore a
+`JsonObject`, including malformed compressed payloads. Repository callers can
+therefore skip unreadable snapshots without logging or exposing the raw payload.
+
 The JDK-serialization aliases `JaversCodecs.Jdk`, `DeflateJdk`, `GZipJdk`,
 `LZ4Jdk`, `SnappyJdk`, and `ZstdJdk` are obsolete compatibility bridges. They
 are error-level deprecated because Java deserialization is unsafe for untrusted
