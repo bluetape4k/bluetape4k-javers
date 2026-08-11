@@ -12,6 +12,8 @@ dependencies {
 
     testImplementation(project(":javers-exposed"))
     testImplementation(bt4k.bluetape4k.junit5)
+    testImplementation(bt4k.bluetape4k.testcontainers)
     testImplementation(bt4k.h2.v2)
     testImplementation(bt4k.mockk)
+    testImplementation(libs.testcontainers.kafka)
 }
