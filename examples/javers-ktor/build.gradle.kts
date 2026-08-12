@@ -25,7 +25,10 @@ dependencies {
     runtimeOnly(bt4k.logback)
 
     testImplementation(bt4k.bluetape4k.junit5)
+    testImplementation(bt4k.bluetape4k.testcontainers)
     testImplementation("io.github.bluetape4k:bluetape4k-ktor-testing")
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation(bt4k.h2.v2)
+    testImplementation(libs.testcontainers.postgresql)
+    testRuntimeOnly(bt4k.postgresql)
 }

@@ -32,6 +32,10 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
@@ -52,17 +56,27 @@ private val DatabaseNamePattern = Regex("[A-Za-z0-9_-]+")
  * ## 계약
  * 이 module은 Exposed JDBC, JaVers, Ktor route를 명시적으로 연결합니다. 예제
  * 내부 설정이며 production auto-configuration을 제공하지 않습니다.
+ * [database]를 생략하면 module이 H2 데이터베이스를 생성하며, 전달한 데이터베이스는
+ * 호출자가 소유합니다. 동기 JDBC와 JaVers 호출은 [blockingDispatcher]에서 실행합니다.
+ *
+ * @param databaseName H2 기본 데이터베이스 이름입니다.
+ * @param eventPublisher 저장과 JaVers commit 뒤에 호출할 동기 domain-event publisher입니다.
+ * @param clock command handler가 사용할 시계입니다.
+ * @param database 호출자가 소유한 JDBC 데이터베이스입니다. 생략하면 H2를 생성합니다.
+ * @param blockingDispatcher JDBC와 JaVers blocking 호출에 사용할 dispatcher입니다.
  */
 fun Application.javersKtorModule(
     databaseName: String = "javers-ktor",
     eventPublisher: DomainEventPublisher = NoopDomainEventPublisher,
     clock: Clock = Clock.systemUTC(),
+    database: Database? = null,
+    blockingDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    val services = createExampleServices(databaseName, eventPublisher, clock)
+    val services = createExampleServices(databaseName, database, eventPublisher, clock)
 
     installBluetape4kKtorCore()
     routing {
-        orderRoutes(services.handler, services.repository)
+        orderRoutes(services.handler, services.repository, blockingDispatcher)
     }
 }
 
@@ -74,22 +88,23 @@ fun main() {
 
 private fun createExampleServices(
     databaseName: String,
+    database: Database?,
     eventPublisher: DomainEventPublisher,
     clock: Clock,
 ): ExampleServices {
     databaseName.requireSafeDatabaseName()
-    val database = Database.connect(
+    val resolvedDatabase = database ?: Database.connect(
         url = "jdbc:h2:mem:$databaseName;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
-    transaction(database) {
+    transaction(resolvedDatabase) {
         SchemaUtils.create(CommitTable, CdoSnapshotTable, OrdersTable)
     }
     val javers = JaversBuilder.javers()
-        .registerJaversRepository(ExposedCdoSnapshotRepository(database))
+        .registerJaversRepository(ExposedCdoSnapshotRepository(resolvedDatabase))
         .registerEntity(Order::class.java)
         .build()
-    val repository = OrderRepository(database, javers, eventPublisher)
+    val repository = OrderRepository(resolvedDatabase, javers, eventPublisher)
     return ExampleServices(
         repository = repository,
         handler = OrderCommandHandler(repository, clock),
@@ -104,11 +119,14 @@ private class ExampleServices(
 internal fun Routing.orderRoutes(
     handler: OrderCommandHandler,
     repository: OrderRepository,
+    blockingDispatcher: CoroutineDispatcher,
 ) {
     route("/orders") {
         post {
             val request = call.receive<PlaceOrderRequest>()
-            val saved = handler.handle(request.toCommand())
+            val saved = withBlockingDispatcher(blockingDispatcher) {
+                handler.handle(request.toCommand())
+            }
             call.respond(HttpStatusCode.Created, saved.toResponse())
         }
 
@@ -116,7 +134,10 @@ internal fun Routing.orderRoutes(
             val orderId = call.requiredPathParameter("orderId")
             val request = call.receive<MarkOrderPaidRequest>()
             val id = OrderId(orderId)
-            if (repository.load(id) == null) {
+            val existing = withBlockingDispatcher(blockingDispatcher) {
+                repository.load(id)
+            }
+            if (existing == null) {
                 call.respondOrderNotFound(orderId)
                 return@post
             }
@@ -124,13 +145,17 @@ internal fun Routing.orderRoutes(
                 orderId = id,
                 author = request.author.requireNotBlank("author"),
             )
-            val paid = handler.handle(command)
+            val paid = withBlockingDispatcher(blockingDispatcher) {
+                handler.handle(command)
+            }
             call.respond(paid.toResponse())
         }
 
         get("/{orderId}") {
             val orderId = call.requiredPathParameter("orderId")
-            val order = repository.load(OrderId(orderId))
+            val order = withBlockingDispatcher(blockingDispatcher) {
+                repository.load(OrderId(orderId))
+            }
             if (order == null) {
                 call.respondOrderNotFound(orderId)
                 return@get
@@ -140,7 +165,9 @@ internal fun Routing.orderRoutes(
 
         get("/{orderId}/history") {
             val orderId = call.requiredPathParameter("orderId")
-            val history = repository.loadHistory(OrderId(orderId))
+            val history = withBlockingDispatcher(blockingDispatcher) {
+                repository.loadHistory(OrderId(orderId))
+            }
             if (history.isEmpty()) {
                 call.respondOrderHistoryNotFound(orderId)
                 return@get
@@ -168,6 +195,18 @@ internal fun Routing.orderRoutes(
             )
         }
     }
+}
+
+/** 동기 JDBC와 JaVers 호출을 호출자가 제공한 blocking dispatcher에서 실행합니다. */
+internal suspend fun <T> withBlockingDispatcher(
+    blockingDispatcher: CoroutineDispatcher,
+    block: () -> T,
+): T = try {
+    withContext(blockingDispatcher) {
+        block()
+    }
+} catch (e: CancellationException) {
+    throw e
 }
 
 private suspend fun ApplicationCall.respondOrderNotFound(orderId: String) {

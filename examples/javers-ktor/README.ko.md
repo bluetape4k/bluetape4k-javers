@@ -30,6 +30,7 @@ table을 읽고, audit history 조회는 JaVers snapshot을 읽습니다.
 - `bluetape4k-ktor-core` JSON error, health, readiness route
 - 주문 생성, 결제 처리, 조회, audit history Ktor endpoint
 - H2 기반 Ktor `testApplication` 통합 테스트
+- `bluetape4k-testcontainers`를 사용한 PostgreSQL 기반 Ktor 통합 검증
 
 ## Endpoint
 
@@ -52,8 +53,16 @@ Gradle project 이름은 `:examples-javers-ktor`입니다. 나중에 publishing 
 `examples-javers-*` prefix로 예제 project를 제외할 수 있게 하기 위한 이름입니다.
 
 이 예제는 현재 JaVers Exposed repository가 JDBC 기반이므로 synchronous Exposed
-JDBC를 사용합니다. 고동시성 production Ktor 배포에서는 worker dispatcher 격리,
-virtual-thread runtime 전략, 또는 future R2DBC 경로를 검토해야 합니다.
+JDBC를 사용합니다. 요청 경로의 JDBC와 JaVers 호출은 호출자가 제공한
+`blockingDispatcher` 안에서 실행하며 기본값은 `Dispatchers.IO`입니다. 선택적
+`database` 인수는 호출자가 소유하고, 생략하면 기존 H2 예제 기본값을 유지합니다.
+고동시성 production Ktor 배포에서는 애플리케이션이 소유한 JDBC database와 적절히
+제한한 blocking dispatcher를 제공하거나, virtual-thread runtime 전략 또는 future
+R2DBC 경로를 검토해야 합니다.
+
+테스트는 빠른 H2 검증을 유지하면서 `PostgreSQLServer.Launcher.postgres`를 통한 실제
+PostgreSQL 경로도 실행합니다. 이 검증은 H2 호환 모드로 대체하지 않고 JDBC driver와
+database engine을 포함한 schema 생성, command state 저장, JaVers history를 확인합니다.
 
 ## 실행
 
