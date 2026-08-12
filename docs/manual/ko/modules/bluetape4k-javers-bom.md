@@ -1,6 +1,6 @@
 # Javers BOM
 
-`bluetape4k-javers-bom`은 이 저장소가 배포하는 라이브러리 아티팩트 다섯 개의 버전을 맞춥니다. 일반 애플리케이션이라면 `bluetape4k-dependencies` 생태계 버전 하나를 가져오는 편이 낫습니다. 이 BOM은 나머지 bluetape4k 라이브러리와의 호환성을 빌드에서 직접 관리해야 할 때만 선택하세요.
+`bluetape4k-javers-bom`은 이 저장소가 배포하는 라이브러리 아티팩트 여섯 개의 버전을 맞춥니다. 일반 애플리케이션이라면 `bluetape4k-dependencies` 생태계 버전 하나를 가져오는 편이 낫습니다. 이 BOM은 나머지 bluetape4k 라이브러리와의 호환성을 빌드에서 직접 관리해야 할 때만 선택하세요.
 
 ## 배포본 의존성 구조
 
@@ -22,7 +22,13 @@ dependencies {
 
 ## 맞춰 주는 범위
 
-BOM이 맞추는 배포 모듈은 `javers-core`, `javers-ddd`, `javers-exposed`, `javers-persistence-redis`, `javers-persistence-kafka`입니다. 릴리스 소스는 `examples/javers-exposed-ddd` 제약도 만들지만 이 예제는 Maven에 배포하지 않습니다. 의존성 좌표로 쓰지 말고 실행 가능한 소스로 참고하세요. BOM은 영속 저장 방식을 골라 주거나 Lettuce, Redisson, Spring Kafka, NATS 같은 선택 의존성을 자동으로 넣지 않습니다.
+BOM이 맞추는 배포 모듈은 `javers-core`, `javers-ddd`, `javers-exposed`, `javers-persistence-kafka`, `javers-persistence-redis`, `javers-spring-boot4-autoconfigure`입니다.
+
+<!-- BOM_PUBLISHED_MODULES:START -->
+`javers-core`, `javers-ddd`, `javers-exposed`, `javers-persistence-kafka`, `javers-persistence-redis`, `javers-spring-boot4-autoconfigure`
+<!-- BOM_PUBLISHED_MODULES:END -->
+
+BOM builder는 `examples/**`와 `benchmark/**` 아래의 프로젝트를 모두 제외합니다. 이 프로젝트들은 실행 가능한 예제나 측정 소스이며 배포 dependency coordinate가 아닙니다. BOM은 영속 저장 방식을 골라 주거나 Lettuce, Redisson, Spring Kafka, NATS 같은 선택 의존성을 자동으로 넣지 않습니다.
 
 다른 bluetape4k 저장소의 버전도 이 BOM의 범위 밖입니다. Projects, Exposed, Javers, Redis, Kafka 연동을 함께 쓴다면 [시작하기](../getting-started.md)의 생태계 플랫폼을 권합니다.
 
@@ -33,7 +39,11 @@ BOM이 맞추는 배포 모듈은 `javers-core`, `javers-ddd`, `javers-exposed`,
 ## 테스트
 
 ```bash
-./gradlew :bluetape4k-javers-bom:dependencies
+./gradlew :bluetape4k-javers-bom:generatePomFileForBluetapeJaversPublication
+ruby scripts/publication/bom_contract.rb \
+  bom/build/publications/BluetapeJavers/pom-default.xml \
+  docs/manual/en/modules/bluetape4k-javers-bom.md \
+  docs/manual/ko/modules/bluetape4k-javers-bom.md
 ./gradlew :javers-core:test :javers-exposed:test
 ```
 
