@@ -55,8 +55,12 @@ class OrderRepository(javers: Javers) :
 
 val repository = OrderRepository(javers)
 repository.save(Order(1, "PLACED"), "system", OrderPlaced(1))
-val history = repository.loadHistory(1)
+val history = repository.loadHistory(1, limit = 20)
 ```
+
+`loadHistory`는 snapshot을 최신순으로 반환하고 양수인 `limit`을 JaVers query에
+전달합니다. 생략하면 기본 limit 100을 사용하며, API 요청에서 더 작은 history
+window를 노출할 때 bounded overload를 사용하세요.
 
 Aggregate id에는 JaVers `@Id`를 붙이고, `Javers`를 만들 때 aggregate type을
 entity로 등록하세요:

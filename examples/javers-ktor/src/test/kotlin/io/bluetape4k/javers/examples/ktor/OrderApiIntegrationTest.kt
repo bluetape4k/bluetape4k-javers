@@ -79,6 +79,13 @@ class OrderApiIntegrationTest {
         lookup shouldHaveStatus HttpStatusCode.OK
         lookup.decodeJsonBody<OrderResponse>().status shouldBeEqualTo "PAID"
 
+        val boundedHistory = client.get("/orders/$orderId/history?limit=1")
+        boundedHistory shouldHaveStatus HttpStatusCode.OK
+        val boundedHistoryBody = boundedHistory.decodeJsonBody<OrderHistoryResponse>()
+        boundedHistoryBody.limit shouldBeEqualTo 1
+        boundedHistoryBody.snapshots shouldHaveSize 1
+        boundedHistoryBody.snapshots.single().state["status"] shouldBeEqualTo "PAID"
+
         val history = client.get("/orders/$orderId/history?limit=200")
         history shouldHaveStatus HttpStatusCode.OK
         val historyBody = history.decodeJsonBody<OrderHistoryResponse>()

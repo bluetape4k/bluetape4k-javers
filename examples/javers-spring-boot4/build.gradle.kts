@@ -20,7 +20,10 @@ dependencies {
     runtimeOnly(bt4k.h2.v2)
 
     testImplementation(bt4k.bluetape4k.junit5)
+    testImplementation(bt4k.bluetape4k.testcontainers)
     testImplementation(bt4k.h2.v2)
+    testImplementation(libs.testcontainers.postgresql)
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testRuntimeOnly(bt4k.postgresql)
 }

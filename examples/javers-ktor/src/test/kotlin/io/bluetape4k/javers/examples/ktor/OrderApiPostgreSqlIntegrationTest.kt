@@ -62,12 +62,21 @@ class OrderApiPostgreSqlIntegrationTest {
         placed.orderId shouldBeEqualTo orderId
         placed.status shouldBeEqualTo "PLACED"
 
-        val history = client.get("/orders/$orderId/history")
+        val paid = client.post("/orders/$orderId/paid") {
+            setBody(MarkOrderPaidRequest(author = "postgresql-test"))
+        }.shouldHaveStatus(HttpStatusCode.OK)
+            .decodeJsonBody<OrderResponse>()
+
+        paid.status shouldBeEqualTo "PAID"
+
+        val history = client.get("/orders/$orderId/history?limit=1")
             .shouldHaveStatus(HttpStatusCode.OK)
             .decodeJsonBody<OrderHistoryResponse>()
 
         history.orderId shouldBeEqualTo orderId
+        history.limit shouldBeEqualTo 1
         history.snapshots shouldHaveSize 1
+        history.snapshots.single().state["status"] shouldBeEqualTo "PAID"
     }
 
     private companion object {
