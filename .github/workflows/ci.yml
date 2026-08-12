@@ -203,6 +203,10 @@ jobs:
           ./gradlew generatePomFileForBluetapeJaversPublication -PsnapshotVersion=-SNAPSHOT \
             --no-daemon --no-configuration-cache --no-build-cache
           ruby scripts/publication/validate_poms.rb
+          ruby scripts/publication/bom_contract.rb \
+            bom/build/publications/BluetapeJavers/pom-default.xml \
+            docs/manual/en/modules/bluetape4k-javers-bom.md \
+            docs/manual/ko/modules/bluetape4k-javers-bom.md
 
   # 4. benchmark-javers-exposed-benchmark smoke (PostgreSQL Testcontainers)
   benchmark-javers-exposed:

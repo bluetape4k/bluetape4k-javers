@@ -1,6 +1,6 @@
 # Javers BOM
 
-`bluetape4k-javers-bom` aligns the five published library artifacts from this repository. Most applications should import one `bluetape4k-dependencies` ecosystem version instead; use this narrower BOM only when the application deliberately manages compatibility with the rest of bluetape4k.
+`bluetape4k-javers-bom` aligns the six published library artifacts from this repository. Most applications should import one `bluetape4k-dependencies` ecosystem version instead; use this narrower BOM only when the application deliberately manages compatibility with the rest of bluetape4k.
 
 ## Released dependency structure
 
@@ -22,7 +22,13 @@ Choose the BOM when a standalone build consumes two or more Javers modules and c
 
 ## What it aligns
 
-The published modules aligned by the BOM are `javers-core`, `javers-ddd`, `javers-exposed`, `javers-persistence-redis`, and `javers-persistence-kafka`. The release source also generates a constraint for `examples/javers-exposed-ddd`, but that example is not published to Maven; use it as runnable source, not as a dependency coordinate. The BOM does not select a persistence adapter or add optional Lettuce, Redisson, Spring Kafka, or NATS runtime dependencies.
+The published modules aligned by the BOM are `javers-core`, `javers-ddd`, `javers-exposed`, `javers-persistence-kafka`, `javers-persistence-redis`, and `javers-spring-boot4-autoconfigure`.
+
+<!-- BOM_PUBLISHED_MODULES:START -->
+`javers-core`, `javers-ddd`, `javers-exposed`, `javers-persistence-kafka`, `javers-persistence-redis`, `javers-spring-boot4-autoconfigure`
+<!-- BOM_PUBLISHED_MODULES:END -->
+
+The BOM builder excludes every project under `examples/**` and `benchmark/**`; those projects are runnable or measurement sources, not published dependency coordinates. The BOM does not select a persistence adapter or add optional Lettuce, Redisson, Spring Kafka, or NATS runtime dependencies.
 
 The repository BOM also does not coordinate other bluetape4k repositories. If the service combines Projects, Exposed, Javers, Redis, and Kafka integrations, prefer the ecosystem platform shown in [getting started](../getting-started.md).
 
@@ -33,7 +39,11 @@ A platform import can prevent accidental module-version drift, but it cannot pro
 ## Testing
 
 ```bash
-./gradlew :bluetape4k-javers-bom:dependencies
+./gradlew :bluetape4k-javers-bom:generatePomFileForBluetapeJaversPublication
+ruby scripts/publication/bom_contract.rb \
+  bom/build/publications/BluetapeJavers/pom-default.xml \
+  docs/manual/en/modules/bluetape4k-javers-bom.md \
+  docs/manual/ko/modules/bluetape4k-javers-bom.md
 ./gradlew :javers-core:test :javers-exposed:test
 ```
 
