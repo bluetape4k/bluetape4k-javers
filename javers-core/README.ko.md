@@ -57,6 +57,11 @@ JaVers helper API나 local cache-backed snapshot storage만 필요하면
 durable JSON storage에는 `JaversCodecs.String`을 우선 사용하세요. Kryo/Fory
 codec은 storage boundary가 통제된 trusted binary payload에만 사용합니다.
 
+`JaversCodec.decode` 계약은 codec이 `JsonObject`를 복원할 수 없으면 `null`을
+반환합니다. malformed compressed payload도 같은 계약을 따르므로 repository
+caller는 raw payload를 로그에 노출하지 않고 읽을 수 없는 snapshot을 건너뛸 수
+있습니다.
+
 JDK serialization alias인 `JaversCodecs.Jdk`, `DeflateJdk`, `GZipJdk`,
 `LZ4Jdk`, `SnappyJdk`, `ZstdJdk`는 obsolete compatibility bridge입니다. Java
 deserialization은 untrusted bytes에 안전하지 않기 때문에 error-level

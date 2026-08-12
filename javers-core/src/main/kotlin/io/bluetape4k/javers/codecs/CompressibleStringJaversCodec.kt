@@ -3,13 +3,14 @@ package io.bluetape4k.javers.codecs
 import com.google.gson.JsonObject
 import io.bluetape4k.io.compressor.Compressor
 import io.bluetape4k.io.compressor.Compressors
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * [StringJaversCodec]의 출력값을 [Compressor]로 압축하는 string codec입니다.
  *
  * ## 동작 / 계약
  * - encode: innerCodec으로 문자열화한 뒤 압축합니다.
- * - decode: 압축을 해제한 뒤 innerCodec으로 parse합니다.
+ * - decode: 압축을 해제한 뒤 innerCodec으로 parse하며, malformed payload는 `null`을 반환합니다.
  *
  * ```kotlin
  * val codec = CompressibleStringJaversCodec(
@@ -33,6 +34,12 @@ class CompressibleStringJaversCodec(
     }
 
     override fun decode(encodedData: String): JsonObject? {
-        return innerCodec.decode(compressor.decompress(encodedData))
+        return try {
+            innerCodec.decode(compressor.decompress(encodedData))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            null
+        }
     }
 }
