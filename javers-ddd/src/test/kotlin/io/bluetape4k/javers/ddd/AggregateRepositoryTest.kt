@@ -1,15 +1,21 @@
 package io.bluetape4k.javers.ddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.assertFailsWith
+import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.javers.core.metamodel.annotation.Id
+import org.javers.repository.jql.JqlQuery
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -71,6 +77,27 @@ class AggregateRepositoryTest {
         loaded.id shouldBeEqualTo aggregate.id
         loaded.status shouldBeEqualTo "PAID"
         repository.loadHistory(aggregate.id) shouldHaveSize 2
+    }
+
+    @Test
+    fun `loadHistory pushes requested limit into JaVers query`() {
+        val query = slot<JqlQuery>()
+        val javers = mockk<Javers>()
+        every { javers.findSnapshots(capture(query)) } returns emptyList()
+        val repository = OrderRepository(javers)
+
+        repository.loadHistory(id = 3L, limit = 2)
+
+        query.captured.toString() shouldContain "limit: '2'"
+    }
+
+    @Test
+    fun `loadHistory rejects a non positive limit`() {
+        val repository = OrderRepository(mockk())
+
+        assertFailsWith<IllegalArgumentException> {
+            repository.loadHistory(id = 3L, limit = 0)
+        }
     }
 
     data class Order(

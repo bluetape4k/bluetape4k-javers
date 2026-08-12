@@ -165,15 +165,15 @@ internal fun Routing.orderRoutes(
 
         get("/{orderId}/history") {
             val orderId = call.requiredPathParameter("orderId")
+            val boundedLimit = call.historyLimit()
             val history = withBlockingDispatcher(blockingDispatcher) {
-                repository.loadHistory(OrderId(orderId))
+                repository.loadHistory(OrderId(orderId), boundedLimit)
             }
             if (history.isEmpty()) {
                 call.respondOrderHistoryNotFound(orderId)
                 return@get
             }
-            val boundedLimit = call.historyLimit()
-            val snapshots = history.take(boundedLimit).map { snapshot ->
+            val snapshots = history.map { snapshot ->
                 OrderSnapshotResponse(
                     version = snapshot.version,
                     commitId = snapshot.commitId.value(),

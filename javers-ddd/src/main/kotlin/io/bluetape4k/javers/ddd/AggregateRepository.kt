@@ -1,8 +1,11 @@
 package io.bluetape4k.javers.ddd
 
+import io.bluetape4k.support.requirePositiveNumber
 import org.javers.core.Javers
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.javers.repository.jql.QueryBuilder
+
+private const val DEFAULT_HISTORY_LIMIT = 100
 
 /**
  * aggregate persistence와 JaVers auditing을 결합하는 base repository입니다.
@@ -58,10 +61,17 @@ abstract class AggregateRepository<T: AggregateRoot<ID>, ID: Any>(
     }
 
     /**
-     * aggregate id의 JaVers snapshot을 역시간순으로 load합니다.
+     * aggregate id의 JaVers snapshot을 역시간순으로 [limit]개까지 load합니다.
+     *
+     * [limit]은 JaVers query에 전달되므로 저장소에서 불필요한 snapshot을
+     * materialize하지 않습니다. 기본값은 JaVers의 기본 history limit과 동일한 100입니다.
      */
-    fun loadHistory(id: ID): List<CdoSnapshot> {
-        return javers.findSnapshots(QueryBuilder.byInstanceId(id, aggregateType).build())
+    fun loadHistory(id: ID, limit: Int = DEFAULT_HISTORY_LIMIT): List<CdoSnapshot> {
+        val boundedLimit = limit.requirePositiveNumber("limit")
+        val query = QueryBuilder.byInstanceId(id, aggregateType)
+            .limit(boundedLimit)
+            .build()
+        return javers.findSnapshots(query)
     }
 
     /**

@@ -18,6 +18,7 @@ Runtime 요청은 Ktor route에서 command handler로 들어갑니다. 주문 �
 `example_order` table에 저장되고, 이후 `AggregateRepository`가 domain-event
 metadata와 함께 JaVers snapshot을 commit합니다. 현재 주문 조회는 command
 table을 읽고, audit history 조회는 JaVers snapshot을 읽습니다.
+요청의 `limit`은 JaVers query 단계로 전달되어 필요한 snapshot만 조회합니다.
 
 ![examples-javers-ktor request audit flow](../../docs/images/readme-diagrams/examples-javers-ktor-request-audit-flow-01.png)
 
@@ -39,7 +40,7 @@ table을 읽고, audit history 조회는 JaVers snapshot을 읽습니다.
 | `POST` | `/orders` | 주문을 생성하고 첫 JaVers snapshot을 commit합니다. |
 | `POST` | `/orders/{orderId}/paid` | 주문을 결제 완료로 변경하고 두 번째 snapshot을 commit합니다. |
 | `GET` | `/orders/{orderId}` | 현재 command-side 주문 상태를 반환합니다. |
-| `GET` | `/orders/{orderId}/history?limit=20` | 최신순 JaVers snapshot metadata를 반환합니다. |
+| `GET` | `/orders/{orderId}/history?limit=20` | limit을 query에 push down한 최신순 JaVers snapshot metadata를 반환합니다. |
 | `GET` | `/healthz` | bluetape4k Ktor health response를 반환합니다. |
 | `GET` | `/readyz` | bluetape4k Ktor readiness response를 반환합니다. |
 

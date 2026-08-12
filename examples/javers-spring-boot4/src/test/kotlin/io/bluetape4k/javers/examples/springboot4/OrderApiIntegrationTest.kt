@@ -66,6 +66,13 @@ class OrderApiIntegrationTest {
         lookup.response.status shouldBeEqualTo 200
         lookup.readBody<OrderResponse>().status shouldBeEqualTo "PAID"
 
+        val boundedHistory = mockMvc.perform(get("/orders/$orderId/history?limit=1")).andReturn()
+        boundedHistory.response.status shouldBeEqualTo 200
+        val boundedHistoryBody = boundedHistory.readBody<OrderHistoryResponse>()
+        boundedHistoryBody.limit shouldBeEqualTo 1
+        boundedHistoryBody.snapshots shouldHaveSize 1
+        boundedHistoryBody.snapshots.single().state["status"] shouldBeEqualTo "PAID"
+
         val history = mockMvc.perform(get("/orders/$orderId/history?limit=200")).andReturn()
         history.response.status shouldBeEqualTo 200
         val historyBody = history.readBody<OrderHistoryResponse>()

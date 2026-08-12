@@ -76,11 +76,11 @@ class OrderController(
         @RequestParam(defaultValue = "20") limit: Int,
     ): OrderHistoryResponse {
         val boundedLimit = limit.coerceIn(1, MAX_HISTORY_LIMIT)
-        val history = repository.loadHistory(OrderId(orderId))
+        val history = repository.loadHistory(OrderId(orderId), boundedLimit)
         if (history.isEmpty()) {
             throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order history not found: $orderId")
         }
-        val snapshots = history.take(boundedLimit)
+        val snapshots = history
             .map { snapshot ->
                 OrderSnapshotResponse(
                     version = snapshot.version,

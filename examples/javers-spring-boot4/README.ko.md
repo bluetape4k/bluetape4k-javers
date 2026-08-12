@@ -19,7 +19,7 @@ Runtime 요청은 `OrderController`로 들어갑니다. Write endpoint는
 `OrderCommandHandler`를 통해 aggregate를 전이하고, repository는 source-of-truth
 주문 row를 저장한 뒤 domain-event metadata와 함께 JaVers snapshot을 commit합니다.
 현재 주문 조회는 command table을 읽고, audit history 조회는 JaVers snapshot을
-읽습니다.
+읽으며 요청한 `limit`을 JaVers query 단계로 push down합니다.
 
 ![examples-javers-spring-boot4 request audit flow](../../docs/images/readme-diagrams/examples-javers-spring-boot4-request-audit-flow-01.png)
 
@@ -31,6 +31,7 @@ Runtime 요청은 `OrderController`로 들어갑니다. Write endpoint는
 - `javers-ddd` aggregate repository와 domain-event commit metadata
 - 주문 생성, 결제 처리, 조회, audit history REST endpoint
 - H2 기반 Spring MVC `MockMvc` 통합 테스트
+- `bluetape4k-testcontainers`를 사용한 PostgreSQL 기반 Spring MVC 검증
 
 ## Endpoint
 
@@ -39,7 +40,7 @@ Runtime 요청은 `OrderController`로 들어갑니다. Write endpoint는
 | `POST` | `/orders` | 주문을 생성하고 첫 JaVers snapshot을 commit합니다. |
 | `POST` | `/orders/{orderId}/paid` | 주문을 결제 완료로 변경하고 두 번째 snapshot을 commit합니다. |
 | `GET` | `/orders/{orderId}` | 현재 command-side 주문 상태를 반환합니다. |
-| `GET` | `/orders/{orderId}/history?limit=20` | 최신순 JaVers snapshot metadata를 반환합니다. |
+| `GET` | `/orders/{orderId}/history?limit=20` | limit을 query에 push down한 최신순 JaVers snapshot metadata를 반환합니다. |
 
 ## 범위
 
@@ -55,3 +56,8 @@ rule에서 `examples-javers-*` prefix로 예제 project를 제외할 수 있게 
 ```bash
 ./gradlew :examples-javers-spring-boot4:test
 ```
+
+명시적 database bean은 H2를 기본값으로 유지하면서
+`javers.example.database.url`, `.driver`, `.username`, `.password` override를
+받습니다. 통합 테스트는 `PostgreSQLServer.Launcher.postgres`를 사용해 같은
+bounded-history contract를 PostgreSQL에서도 검증합니다.

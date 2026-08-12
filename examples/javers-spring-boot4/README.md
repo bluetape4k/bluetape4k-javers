@@ -17,7 +17,8 @@ and wires the order repository, command handler, and REST controller.
 Runtime requests enter through `OrderController`. Write endpoints transition the
 aggregate through `OrderCommandHandler`; the repository stores the source-of-
 truth order row and then commits a JaVers snapshot with domain-event metadata.
-Current reads use the command table, while history reads use JaVers snapshots.
+Current reads use the command table, while history reads use JaVers snapshots
+with the requested `limit` pushed into the JaVers query.
 
 ![examples-javers-spring-boot4 request audit flow](../../docs/images/readme-diagrams/examples-javers-spring-boot4-request-audit-flow-01.png)
 
@@ -29,6 +30,7 @@ Current reads use the command table, while history reads use JaVers snapshots.
 - `javers-ddd` aggregate repository and domain-event commit metadata.
 - REST endpoints for order creation, payment, lookup, and audit history.
 - H2-backed Spring MVC integration tests with `MockMvc`.
+- PostgreSQL-backed Spring MVC verification through `bluetape4k-testcontainers`.
 
 ## Endpoints
 
@@ -37,7 +39,7 @@ Current reads use the command table, while history reads use JaVers snapshots.
 | `POST` | `/orders` | Places an order and commits the first JaVers snapshot. |
 | `POST` | `/orders/{orderId}/paid` | Marks an order as paid and commits a second snapshot. |
 | `GET` | `/orders/{orderId}` | Returns current command-side order state. |
-| `GET` | `/orders/{orderId}/history?limit=20` | Returns newest-first JaVers snapshot metadata. |
+| `GET` | `/orders/{orderId}/history?limit=20` | Returns newest-first JaVers snapshot metadata after pushing the limit into the query. |
 
 ## Scope
 
@@ -53,3 +55,8 @@ rules can exclude example projects by prefix.
 ```bash
 ./gradlew :examples-javers-spring-boot4:test
 ```
+
+The explicit database bean keeps H2 as the default and accepts
+`javers.example.database.url`, `.driver`, `.username`, and `.password` overrides.
+The integration suite uses `PostgreSQLServer.Launcher.postgres` to verify the same
+bounded-history contract against PostgreSQL.

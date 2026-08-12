@@ -17,6 +17,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import java.time.Clock
 
 /**
@@ -31,11 +32,23 @@ import java.time.Clock
 class JaversExampleConfiguration {
 
     @Bean
-    fun exampleDatabase(): Database {
-        return Database.connect(
-            url = "jdbc:h2:mem:javers-spring-boot4;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
-            driver = "org.h2.Driver",
-        )
+    fun exampleDatabase(environment: Environment): Database {
+        val url = environment.getProperty("javers.example.database.url")
+            ?: "jdbc:h2:mem:javers-spring-boot4;MODE=PostgreSQL;DB_CLOSE_DELAY=-1"
+        val driver = environment.getProperty("javers.example.database.driver") ?: "org.h2.Driver"
+        val username = environment.getProperty("javers.example.database.username")
+        val password = environment.getProperty("javers.example.database.password")
+
+        return if (username.isNullOrBlank() && password.isNullOrBlank()) {
+            Database.connect(url = url, driver = driver)
+        } else {
+            Database.connect(
+                url = url,
+                driver = driver,
+                user = username.orEmpty(),
+                password = password.orEmpty(),
+            )
+        }
     }
 
     @Bean

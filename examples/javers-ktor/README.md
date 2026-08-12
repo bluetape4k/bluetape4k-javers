@@ -15,7 +15,8 @@ Exposed `Database`, creates the command-side and JaVers tables, registers
 Runtime requests go through Ktor routes into the command handler. Order state is
 stored in the `example_order` table first, then `AggregateRepository` commits a
 JaVers snapshot with domain-event metadata. History reads come from JaVers
-snapshots, while current order reads come from the command table.
+snapshots with the requested `limit` pushed into the JaVers query, while current
+order reads come from the command table.
 
 ![examples-javers-ktor request audit flow](../../docs/images/readme-diagrams/examples-javers-ktor-request-audit-flow-01.png)
 
@@ -37,7 +38,7 @@ snapshots, while current order reads come from the command table.
 | `POST` | `/orders` | Places an order and commits the first JaVers snapshot. |
 | `POST` | `/orders/{orderId}/paid` | Marks an order as paid and commits a second snapshot. |
 | `GET` | `/orders/{orderId}` | Returns current command-side order state. |
-| `GET` | `/orders/{orderId}/history?limit=20` | Returns newest-first JaVers snapshot metadata. |
+| `GET` | `/orders/{orderId}/history?limit=20` | Returns newest-first JaVers snapshot metadata after pushing the limit into the query. |
 | `GET` | `/healthz` | Returns the bluetape4k Ktor health response. |
 | `GET` | `/readyz` | Returns the bluetape4k Ktor readiness response. |
 

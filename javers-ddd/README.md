@@ -55,8 +55,12 @@ class OrderRepository(javers: Javers) :
 
 val repository = OrderRepository(javers)
 repository.save(Order(1, "PLACED"), "system", OrderPlaced(1))
-val history = repository.loadHistory(1)
+val history = repository.loadHistory(1, limit = 20)
 ```
+
+`loadHistory` returns snapshots newest-first and forwards the positive `limit`
+to the JaVers query. Omitting it keeps the default limit of 100; use the
+bounded overload when an API request exposes a smaller history window.
 
 Annotate the aggregate id with JaVers `@Id`, then register aggregate types as
 JaVers entities when building `Javers`:
