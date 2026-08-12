@@ -28,6 +28,7 @@ snapshots, while current order reads come from the command table.
 - `bluetape4k-ktor-core` JSON error, health, and readiness routes.
 - Ktor endpoints for order creation, payment, lookup, and audit history.
 - H2-backed Ktor `testApplication` integration tests.
+- PostgreSQL-backed Ktor integration verification through `bluetape4k-testcontainers`.
 
 ## Endpoints
 
@@ -50,9 +51,18 @@ The Gradle project is named `:examples-javers-ktor` so future publishing rules
 can exclude example projects by prefix.
 
 The example uses synchronous Exposed JDBC because the current JaVers Exposed
-repository is JDBC-backed. For high-concurrency production Ktor deployments,
-evaluate worker-dispatcher isolation, a virtual-thread runtime strategy, or a
-future R2DBC path.
+repository is JDBC-backed. Every request-side JDBC and JaVers call runs inside
+the caller-provided `blockingDispatcher`, which defaults to `Dispatchers.IO`.
+The optional `database` parameter is caller-owned; omitting it keeps the
+H2-backed example default. For high-concurrency production Ktor deployments,
+provide an application-owned JDBC database and an appropriately bounded
+blocking dispatcher, or evaluate a virtual-thread runtime strategy or future
+R2DBC path.
+
+The test suite keeps fast H2 coverage and also runs a real PostgreSQL path with
+`PostgreSQLServer.Launcher.postgres`. The latter proves schema creation, command
+state persistence, and JaVers history against the JDBC driver and database
+engine; it is not replaced by H2 compatibility mode.
 
 ## Run
 
