@@ -9,10 +9,12 @@ JaVers 스냅샷을 기존 Redis 운영 환경에서 읽고 써야 할 때 선�
 
 두 구현 모두 GlobalId별 스냅샷을 최신순으로 읽고 커밋 순서를 별도 구조에 보관합니다. 저장소를 다시 만들면 저장된 순서 값에서 최신 커밋을 복원합니다. 구현은 [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)와 [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt)에 있습니다.
 
-`LettuceCdoSnapshotRepository.close()`는 terminal lifecycle입니다. repository가 연
-connection만 닫고 이후 read/write operation을 `IllegalStateException`으로 거부하며,
-호출자가 소유한 `RedisClient`는 종료하지 않습니다. 애플리케이션 종료 시에는 client보다
-repository를 먼저 닫으세요.
+이 매뉴얼은 `0.3.0` 릴리스 소스에 고정돼 있습니다. 해당 릴리스에는 terminal
+close guard가 없으므로 아직 초기화하지 않은 lazy connection은 `close()` 이후
+operation에서 다시 열릴 수 있습니다. terminal lifecycle 계약은 `0.3.0` 이후에
+수정됐으므로 `0.4.0` 개발선을 사용할 때는 current module README를 확인하세요.
+
+## 선택과 복구
 
 서비스가 Lettuce 클라이언트의 수명을 이미 관리한다면 Lettuce를, Redisson 분산 객체가 운영 표준이라면 Redisson을 고르세요. 두 구현의 저장 구조가 같다고 가정해 같은 네임스페이스를 공유하면 안 됩니다.
 
