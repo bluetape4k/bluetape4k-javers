@@ -9,10 +9,11 @@ Release 0.3.0 provides two repositories:
 
 Both store encoded snapshots newest first per GlobalId, keep commit sequence data separately, and restore the latest head after repository reconstruction. They implement JaVers reads; unlike the Kafka adapter, they can load snapshot history and shadows. Their exact structures are in [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt) and [`RedissonCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository.kt).
 
-`LettuceCdoSnapshotRepository.close()` is terminal: it closes only the connections
-opened by the repository, rejects later read/write operations with
-`IllegalStateException`, and leaves the caller-owned `RedisClient` running. Close
-the repository before shutting down the client.
+This manual is pinned to the `0.3.0` release source. That release does not
+provide a terminal close guard: an operation after `close()` can reopen a lazy
+connection that was never initialized. The terminal lifecycle contract was
+fixed after `0.3.0`; use the current module README when targeting the `0.4.0`
+development line.
 
 ## Selection and recovery
 

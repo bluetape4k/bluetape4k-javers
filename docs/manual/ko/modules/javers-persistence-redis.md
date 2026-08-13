@@ -25,8 +25,8 @@ import org.javers.core.metamodel.annotation.Id
 data class Order(@Id val id: Long, val status: String)
 
 val redisClient = RedisClient.create("redis://localhost:6379")
+val repository = LettuceCdoSnapshotRepository("orders", redisClient)
 try {
-    val repository = LettuceCdoSnapshotRepository("orders", redisClient)
     val javers = JaversBuilder.javers()
         .registerJaversRepository(repository)
         .registerEntity(Order::class.java)
@@ -34,9 +34,15 @@ try {
 
     javers.commit("order-service", Order(1, "PLACED"))
 } finally {
+    repository.close()
     redisClient.shutdown()
 }
 ```
+
+이 매뉴얼은 `0.3.0` 릴리스 소스에 고정돼 있습니다. 해당 릴리스에는 terminal
+close guard가 없으므로 아직 초기화하지 않은 lazy connection은 `close()` 이후
+operation에서 다시 열릴 수 있습니다. terminal lifecycle 계약은 `0.3.0` 이후에
+수정됐으므로 `0.4.0` 개발선을 사용할 때는 current module README를 확인하세요.
 
 Lettuce는 최신 스냅샷이 앞에 오도록 `javers:{name}:snapshot:{globalId}` 목록에 바이트 배열을 저장합니다. GlobalId 색인은 `javers:{name}:globalId:set`, 커밋 순서는 `javers:{name}:sequence:set`에 둡니다. 스냅샷 목록 추가와 GlobalId 색인 갱신은 Redis 트랜잭션 하나로 묶지만, 상위 저장 흐름이 나중에 수행하는 순서 갱신은 별도입니다. 정확한 동작은 [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt)에 있습니다.
 

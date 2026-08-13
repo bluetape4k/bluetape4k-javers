@@ -25,8 +25,8 @@ import org.javers.core.metamodel.annotation.Id
 data class Order(@Id val id: Long, val status: String)
 
 val redisClient = RedisClient.create("redis://localhost:6379")
+val repository = LettuceCdoSnapshotRepository("orders", redisClient)
 try {
-    val repository = LettuceCdoSnapshotRepository("orders", redisClient)
     val javers = JaversBuilder.javers()
         .registerJaversRepository(repository)
         .registerEntity(Order::class.java)
@@ -34,9 +34,16 @@ try {
 
     javers.commit("order-service", Order(1, "PLACED"))
 } finally {
+    repository.close()
     redisClient.shutdown()
 }
 ```
+
+This manual is pinned to the `0.3.0` release source. That release does not
+provide a terminal close guard: an operation after `close()` can reopen a lazy
+connection that was never initialized. The terminal lifecycle contract was
+fixed after `0.3.0`; use the current module README when targeting the `0.4.0`
+development line.
 
 Lettuce stores newest-first snapshot bytes in `javers:{name}:snapshot:{globalId}`, a GlobalId index in `javers:{name}:globalId:set`, and commit sequences in `javers:{name}:sequence:set`. The snapshot list push and GlobalId index update share one Redis transaction. The later sequence update from the inherited persist loop is separate. See [`LettuceCdoSnapshotRepository.kt`](https://github.com/bluetape4k/bluetape4k-javers/blob/978d0490fc438570e7520643aed50e20614772d1/javers-persistence-redis/src/main/kotlin/io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository.kt).
 
