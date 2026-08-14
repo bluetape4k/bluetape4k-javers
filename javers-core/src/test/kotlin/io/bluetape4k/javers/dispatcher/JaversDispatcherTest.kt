@@ -1,5 +1,9 @@
 package io.bluetape4k.javers.dispatcher
 
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.read.ListAppender
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldHaveSize
@@ -110,6 +114,39 @@ class JaversDispatcherTest {
         dispatcher.sendSaved("saved-entity")
         dispatcher.sendDeleted("deleted-entity")
         dispatcher.sendDeletedById("id-1", Person::class.java)
+    }
+
+    @Test
+    fun `slf4j dispatcher does not expose payload or identifier values`() {
+        val logger = LoggerFactory.getLogger("javers-dispatcher-redaction-test") as Logger
+        val previousLevel = logger.level
+        val appender = ListAppender<ILoggingEvent>().apply { start() }
+        val payload = SensitivePayload(token = "secret-token")
+        val sensitiveId = "secret-id-42"
+        logger.level = Level.INFO
+        logger.addAppender(appender)
+
+        try {
+            val dispatcher = Slf4jDispatcher(logger)
+
+            dispatcher.sendSaved(payload)
+            dispatcher.sendDeleted(payload)
+            dispatcher.sendDeletedById(sensitiveId, SensitivePayload::class.java)
+
+            val messages = appender.list.map { it.formattedMessage }
+            messages shouldHaveSize 3
+            messages[0] shouldContain "Send saved domain object. type=SensitivePayload"
+            messages[1] shouldContain "Send deleted domain object. type=SensitivePayload"
+            messages[2] shouldContain "Send deleted domain object by id. type=SensitivePayload"
+            messages.forEach { message ->
+                message shouldNotContain payload.token
+                message shouldNotContain sensitiveId
+            }
+        } finally {
+            logger.detachAppender(appender)
+            logger.level = previousLevel
+            appender.stop()
+        }
     }
 
     private class RecordingDispatcher: JaversDispatcher {
