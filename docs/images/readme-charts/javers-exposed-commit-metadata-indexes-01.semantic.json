@@ -1,0 +1,27 @@
+{
+  "kind": "chart",
+  "source": {
+    "question": "How do the four benchmark-only index variants compare across insert, author-query, and date-range throughput on the JDK 25 smoke run?",
+    "revision": "b308520d01d91f8ae770e5c367fe1fc21f03ea75",
+    "paths": [
+      "docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json",
+      "benchmark/javers-exposed-benchmark/README.md",
+      "README.md"
+    ]
+  },
+  "nodes": [
+    {"id":"benchmark-series","label":"JDK 25 commit metadata benchmark","source":"docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json"},
+    {"id":"baseline","label":"Baseline","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"},
+    {"id":"author-index","label":"Author index","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"},
+    {"id":"commit-date-index","label":"commit_date index","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"},
+    {"id":"both-indexes","label":"Author + commit_date indexes","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"}
+  ],
+  "edges": [
+    {"id":"series-baseline","from":"benchmark-series","to":"baseline","kind":"series","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"},
+    {"id":"series-author-index","from":"benchmark-series","to":"author-index","kind":"series","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"},
+    {"id":"series-commit-date-index","from":"benchmark-series","to":"commit-date-index","kind":"series","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"},
+    {"id":"series-both-indexes","from":"benchmark-series","to":"both-indexes","kind":"series","source":"docs/lessons/2026-08-14-issue-312-benchmark-provenance.md"}
+  ],
+  "behavior": {"branches": 0, "loops": 0},
+  "repairs": []
+}

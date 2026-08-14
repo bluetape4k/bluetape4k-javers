@@ -71,6 +71,10 @@ Testcontainers PostgreSQL 18-alpine과 HikariCP를 사용하고, 전용
 `bluetape4k-exposed-jdbc`, `bluetape4k-exposed-jdbc-tests`를 재사용합니다.
 이 benchmark는 production schema 기본값을 변경하지 않습니다.
 
+연결된 snapshot은 `2026-08-14T05:43:21Z`에 JDK 25.0.4(GraalVM JDK 25,
+macOS aarch64)에서 warmup 1회, 측정 1회로 다시 생성했습니다. 제한된 smoke
+evidence이며 release 전체 성능 주장이 아닙니다.
+
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
   --no-configuration-cache --no-build-cache --no-parallel --console=plain
@@ -83,10 +87,10 @@ Raw artifact:
 
 | Variant | Insert ops/s | Author query ops/s | Date-range query ops/s |
 |---|---:|---:|---:|
-| Baseline | 481.4 | 917.5 | 916.5 |
-| Author index | 488.6 | 907.1 | 904.7 |
-| `commit_date` index | 499.3 | 931.2 | 923.2 |
-| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 |
+| Baseline | 461.8 | 862.9 | 1316.6 |
+| Author index | 372.0 | 406.2 | 930.4 |
+| `commit_date` index | 244.8 | 328.7 | 972.3 |
+| Author + `commit_date` indexes | 342.9 | 543.0 | 1184.2 |
 
 ## 실행
 

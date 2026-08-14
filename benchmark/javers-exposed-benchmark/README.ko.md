@@ -60,8 +60,11 @@ PostgreSQL 컨테이너는 benchmark JVM 종료 후에도 실행 상태를 유�
 
 ## 결과 Snapshot
 
-커밋된 snapshot은 JDK 21.0.11에서 warmup 1회, 측정 1회로 생성했습니다.
-점수는 초당 처리량이며 높을수록 좋습니다.
+커밋된 snapshot은 `2026-08-14T05:43:21Z`에 JDK 25.0.4(GraalVM JDK 25,
+macOS aarch64)에서 warmup 1회, 측정 1회로 다시 생성했습니다. 점수는 초당
+처리량이며 높을수록 좋습니다. 커밋한 JMH 각 row에는 `generatedAt`과
+`sourceCommand` provenance 필드도 포함합니다. 실행 parameter는
+`threads=1`, `forks=1`, warmup 1초, 측정 1초입니다.
 
 Raw artifact:
 [`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](../../docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
@@ -70,10 +73,10 @@ Raw artifact:
 
 | Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
 |---|---:|---:|---:|---|
-| Baseline | 481.4 | 917.5 | 916.5 | 현재 production schema의 안정 기준선입니다. |
-| Author index | 488.6 | 907.1 | 904.7 | 이 smoke run에서는 author query 이점이 없습니다. |
-| `commit_date` index | 499.3 | 931.2 | 923.2 | read throughput이 약간 높지만 bounded evidence입니다. |
-| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | author query는 가장 높지만 date-range throughput은 낮습니다. |
+| Baseline | 461.8 | 862.9 | 1316.6 | 현재 production schema의 기준선이며 smoke evidence로만 봅니다. |
+| Author index | 372.0 | 406.2 | 930.4 | JDK 25의 이번 제한된 실행에서는 모든 경로의 처리량이 낮았습니다. |
+| `commit_date` index | 244.8 | 328.7 | 972.3 | 짧은 실행만으로 기본 인덱스를 권고하지 않습니다. |
+| Author + `commit_date` indexes | 342.9 | 543.0 | 1184.2 | read throughput은 일부 회복되지만 insert throughput은 낮습니다. |
 
 이 결과는 로컬 smoke evidence이며 release-wide 성능 주장이 아닙니다. production
 schema를 바꾸려면 더 넓은 workload benchmark가 필요합니다.
