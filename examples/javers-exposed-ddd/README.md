@@ -70,6 +70,10 @@ PostgreSQL 18-alpine via Testcontainers and HikariCP. It lives in the dedicated
 `bluetape4k-exposed-jdbc`, and `bluetape4k-exposed-jdbc-tests`. Production
 schema defaults remain unchanged by this benchmark.
 
+The linked snapshot was regenerated at `2026-08-14T05:43:21Z` on JDK 25.0.4
+(GraalVM JDK 25, macOS aarch64) with one warmup iteration and one measured
+iteration. It is bounded smoke evidence, not a release-wide performance claim.
+
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
   --no-configuration-cache --no-build-cache --no-parallel --console=plain
@@ -82,10 +86,10 @@ Raw artifact:
 
 | Variant | Insert ops/s | Author query ops/s | Date-range query ops/s |
 |---|---:|---:|---:|
-| Baseline | 481.4 | 917.5 | 916.5 |
-| Author index | 488.6 | 907.1 | 904.7 |
-| `commit_date` index | 499.3 | 931.2 | 923.2 |
-| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 |
+| Baseline | 461.8 | 862.9 | 1316.6 |
+| Author index | 372.0 | 406.2 | 930.4 |
+| `commit_date` index | 244.8 | 328.7 | 972.3 |
+| Author + `commit_date` indexes | 342.9 | 543.0 | 1184.2 |
 
 ## Run
 

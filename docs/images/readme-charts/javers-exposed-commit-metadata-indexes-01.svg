@@ -24,7 +24,7 @@
   <rect class="canvas" width="1500" height="640"/>
   <rect class="frame" x="34" y="28" width="1432" height="584" rx="26"/>
   <text class="title" x="72" y="84">JaVers Exposed commit metadata index evaluation</text>
-  <text class="subtitle" x="76" y="116">2026-06-08 kotlinx-benchmark / JMH smoke, PostgreSQL + HikariCP, throughput ops/s, higher is better.</text>
+  <text class="subtitle" x="76" y="116">2026-08-14 JDK 25.0.4 kotlinx-benchmark / JMH smoke, PostgreSQL + HikariCP, throughput ops/s, higher is better.</text>
 
   <g transform="translate(76,138)">
     <rect x="0" y="0" width="1348" height="70" rx="18" fill="#F3F7FB" stroke="#D7E2EC" stroke-width="2"/>
@@ -53,57 +53,57 @@
       <line class="tick" x1="420" y1="34" x2="420" y2="354"/>
       <text class="tick-label" x="420" y="380" text-anchor="middle">0</text>
       <line class="tick" x1="645" y1="34" x2="645" y2="354"/>
-      <text class="tick-label" x="645" y="380" text-anchor="middle">250</text>
+      <text class="tick-label" x="645" y="380" text-anchor="middle">375</text>
       <line class="tick" x1="870" y1="34" x2="870" y2="354"/>
-      <text class="tick-label" x="870" y="380" text-anchor="middle">500</text>
+      <text class="tick-label" x="870" y="380" text-anchor="middle">750</text>
       <line class="tick" x1="1095" y1="34" x2="1095" y2="354"/>
-      <text class="tick-label" x="1095" y="380" text-anchor="middle">750</text>
+      <text class="tick-label" x="1095" y="380" text-anchor="middle">1125</text>
       <line class="tick" x1="1320" y1="34" x2="1320" y2="354"/>
-      <text class="tick-label" x="1320" y="380" text-anchor="middle">1000</text>
+      <text class="tick-label" x="1320" y="380" text-anchor="middle">1500</text>
     </g>
 
     <text class="scenario" x="42" y="58">insert</text>
     <text class="label" x="212" y="45">Baseline</text>
-    <rect x="420" y="30" width="433" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="865" y="44">481.4</text>
+    <rect x="420" y="30" width="277" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="709" y="44">461.8</text>
     <text class="label" x="212" y="69">Author index</text>
-    <rect x="420" y="54" width="440" height="18" rx="5" fill="#54A66B"/>
-    <text class="value" x="872" y="68">488.6</text>
+    <rect x="420" y="54" width="223" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="655" y="68">372.0</text>
     <text class="label" x="212" y="93">commit_date index</text>
-    <rect x="420" y="78" width="449" height="18" rx="5" fill="#C76093"/>
-    <text class="value" x="881" y="92">499.3</text>
+    <rect x="420" y="78" width="147" height="18" rx="5" fill="#C76093"/>
+    <text class="value" x="579" y="92">244.8</text>
     <text class="label" x="212" y="117">Both indexes</text>
-    <rect x="420" y="102" width="467" height="18" rx="5" fill="#D6A63F"/>
-    <text class="value" x="899" y="116">518.6</text>
+    <rect x="420" y="102" width="206" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="638" y="116">342.9</text>
 
     <text class="scenario" x="42" y="170">author-query</text>
     <text class="label" x="212" y="157">Baseline</text>
-    <rect x="420" y="142" width="826" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="1258" y="156">917.5</text>
+    <rect x="420" y="142" width="518" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="950" y="156">862.9</text>
     <text class="label" x="212" y="181">Author index</text>
-    <rect x="420" y="166" width="816" height="18" rx="5" fill="#54A66B"/>
-    <text class="value" x="1248" y="180">907.1</text>
+    <rect x="420" y="166" width="244" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="676" y="180">406.2</text>
     <text class="label" x="212" y="205">commit_date index</text>
-    <rect x="420" y="190" width="838" height="18" rx="5" fill="#C76093"/>
-    <text class="value" x="1270" y="204">931.2</text>
+    <rect x="420" y="190" width="197" height="18" rx="5" fill="#C76093"/>
+    <text class="value" x="629" y="204">328.7</text>
     <text class="label" x="212" y="229">Both indexes</text>
-    <rect x="420" y="214" width="851" height="18" rx="5" fill="#D6A63F"/>
-    <text class="value" x="1283" y="228">945.9</text>
+    <rect x="420" y="214" width="326" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="758" y="228">543.0</text>
 
     <text class="scenario" x="42" y="282">date-range</text>
     <text class="label" x="212" y="269">Baseline</text>
-    <rect x="420" y="254" width="825" height="18" rx="5" fill="#4A90E2"/>
-    <text class="value" x="1257" y="268">916.5</text>
+    <rect x="420" y="254" width="790" height="18" rx="5" fill="#4A90E2"/>
+    <text class="value" x="1222" y="268">1316.6</text>
     <text class="label" x="212" y="293">Author index</text>
-    <rect x="420" y="278" width="814" height="18" rx="5" fill="#54A66B"/>
-    <text class="value" x="1246" y="292">904.7</text>
+    <rect x="420" y="278" width="558" height="18" rx="5" fill="#54A66B"/>
+    <text class="value" x="990" y="292">930.4</text>
     <text class="label" x="212" y="317">commit_date index</text>
-    <rect x="420" y="302" width="831" height="18" rx="5" fill="#C76093"/>
-    <text class="value" x="1263" y="316">923.2</text>
+    <rect x="420" y="302" width="583" height="18" rx="5" fill="#C76093"/>
+    <text class="value" x="1015" y="316">972.3</text>
     <text class="label" x="212" y="341">Both indexes</text>
-    <rect x="420" y="326" width="786" height="18" rx="5" fill="#D6A63F"/>
-    <text class="value" x="1218" y="340">873.8</text>
+    <rect x="420" y="326" width="710" height="18" rx="5" fill="#D6A63F"/>
+    <text class="value" x="1142" y="340">1184.2</text>
 
-    <text class="note" x="750" y="402" text-anchor="middle">Candidate indexes are benchmark-only; smoke results are mixed, so production schema defaults remain unchanged.</text>
+    <text class="note" x="750" y="388" text-anchor="middle">Candidate indexes are benchmark-only; smoke results are mixed, so production schema defaults remain unchanged.</text>
   </g>
 </svg>

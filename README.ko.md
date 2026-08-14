@@ -68,6 +68,7 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 | `examples-javers-exposed-ddd` | example module | Exposed persistence와 JaVers DDD helper를 사용하는 CQRS command-side 예제 |
 | `examples-javers-ktor` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Ktor REST 예제 |
 | `examples-javers-spring-boot4` | example module | 명시적 Exposed/JaVers wiring을 사용하는 Spring Boot 4 REST 예제 |
+| `benchmark-javers-exposed-benchmark` | 배포하지 않는 benchmark module | JaVers Exposed commit-metadata index evidence를 위한 제한된 JMH/Testcontainers benchmark |
 | `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Exposed, Redis, Kafka JaVers repository를 위한 Spring Boot 4 조건부 auto-configuration |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
 
@@ -174,7 +175,8 @@ endpoint 뒤에서 보여주며, bluetape4k Ktor JSON/health helper를 재사용
 ## 벤치마크 스냅샷
 
 아래 비교는 문서용으로 범위를 제한한 benchmark이며 release-wide 성능 주장이
-아닙니다.
+아닙니다. 아래 Envers snapshot은 JDK 21에서 측정한 historical evidence이므로
+신선한 JDK 25 commit-metadata 실행과 직접 비교하지 않습니다.
 새 실행은 전용 benchmark module 명령
 `./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain`
 을 사용합니다. 아래 committed snapshot은 scenario마다 warmup 5회와 측정 40회를
@@ -207,6 +209,11 @@ HikariCP, `bluetape4k-jdbc`, `bluetape4k-exposed-jdbc`,
 `bluetape4k-exposed-jdbc-tests`를 사용합니다. 점수 단위는 초당 처리량
 operations per second이며, 높을수록 좋습니다.
 
+커밋된 snapshot은 `2026-08-14T05:43:21Z`에 JDK 25.0.4(GraalVM JDK 25,
+macOS aarch64)에서 warmup 1회, 측정 1회로 다시 생성했습니다. JSON row에는
+`generatedAt`과 `sourceCommand` provenance 필드가 남아 있습니다. 실행
+parameter는 `threads=1`, `forks=1`, warmup 1초, 측정 1초입니다.
+
 명령:
 
 ```bash
@@ -220,10 +227,10 @@ Raw artifact:
 
 | Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
 |---|---:|---:|---:|---|
-| Baseline | 481.4 | 917.5 | 916.5 | 현재 production schema의 안정 기준선입니다. |
-| Author index | 488.6 | 907.1 | 904.7 | 이 smoke run에서는 author query 이점이 없습니다. |
-| `commit_date` index | 499.3 | 931.2 | 923.2 | read throughput이 약간 높지만 bounded evidence입니다. |
-| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | author query는 가장 높지만 date-range throughput은 낮습니다. |
+| Baseline | 461.8 | 862.9 | 1316.6 | 현재 production schema의 기준선이며 smoke evidence로만 봅니다. |
+| Author index | 372.0 | 406.2 | 930.4 | JDK 25의 이번 제한된 실행에서는 모든 경로의 처리량이 낮았습니다. |
+| `commit_date` index | 244.8 | 328.7 | 972.3 | 짧은 실행만으로 기본 인덱스를 권고하지 않습니다. |
+| Author + `commit_date` indexes | 342.9 | 543.0 | 1184.2 | read throughput은 일부 회복되지만 insert throughput은 낮습니다. |
 
 후보 인덱스는 benchmark schema 안에서만 생성합니다. 더 넓은 workload
 benchmark가 DDL 및 write-amplification 비용을 정당화하기 전까지 production

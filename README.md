@@ -75,6 +75,7 @@ not be treated as interchangeable stores.
 | `examples-javers-exposed-ddd` | example module | CQRS command-side example using Exposed persistence and JaVers DDD helpers |
 | `examples-javers-ktor` | example module | Ktor REST example using explicit Exposed and JaVers wiring |
 | `examples-javers-spring-boot4` | example module | Spring Boot 4 REST example using explicit Exposed and JaVers wiring |
+| `benchmark-javers-exposed-benchmark` | non-publishable benchmark module | Bounded JMH/Testcontainers benchmark for JaVers Exposed commit-metadata index evidence |
 | `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Spring Boot 4 conditional auto-configuration for Exposed, Redis, and Kafka JaVers repositories |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
 
@@ -186,8 +187,10 @@ helpers.
 The comparison below is a bounded documentation benchmark, not a release-wide
 performance claim. Fresh runs use the dedicated benchmark module:
 `./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain`.
-The committed snapshot below was generated with 5 warmup operations and 40
-measured operations per scenario. Lower milliseconds per operation is better.
+The committed Envers snapshot below is historical JDK 21 evidence and is not
+comparable to the fresh JDK 25 commit-metadata run. It was generated with 5
+warmup operations and 40 measured operations per scenario. Lower milliseconds
+per operation is better.
 
 Environment: PostgreSQL 18-alpine via Testcontainers, HikariCP, JDK 21.0.11,
 macOS aarch64. Raw artifact:
@@ -216,6 +219,12 @@ harness that uses PostgreSQL 18-alpine via Testcontainers, HikariCP,
 `bluetape4k-exposed-jdbc-tests`. Scores are throughput in operations per second;
 higher values are better.
 
+The committed snapshot was regenerated at `2026-08-14T05:43:21Z` on JDK
+25.0.4 (GraalVM JDK 25, macOS aarch64) with one warmup iteration and one
+measured iteration. The JSON rows retain `generatedAt` and `sourceCommand`
+provenance fields; the run used `threads=1`, `forks=1`, and one-second warmup
+and measurement windows.
+
 Command:
 
 ```bash
@@ -229,10 +238,10 @@ Raw artifact:
 
 | Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
 |---|---:|---:|---:|---|
-| Baseline | 481.4 | 917.5 | 916.5 | Stable reference for the current production schema. |
-| Author index | 488.6 | 907.1 | 904.7 | No author-query benefit in this smoke run. |
-| `commit_date` index | 499.3 | 931.2 | 923.2 | Slight read throughput gain, but bounded evidence only. |
-| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | Best author-query throughput, but weaker date-range throughput. |
+| Baseline | 461.8 | 862.9 | 1316.6 | Stable reference for the current production schema; smoke evidence only. |
+| Author index | 372.0 | 406.2 | 930.4 | Lower throughput across these bounded lanes in the JDK 25 run. |
+| `commit_date` index | 244.8 | 328.7 | 972.3 | No default-index recommendation from this short run. |
+| Author + `commit_date` indexes | 342.9 | 543.0 | 1184.2 | Read throughput recovers partially, while insert throughput remains lower. |
 
 The candidate indexes are created only inside the benchmark schema. Production
 JaVers Exposed defaults remain unchanged because this short smoke run is mixed;

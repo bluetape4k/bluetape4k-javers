@@ -60,9 +60,12 @@ its benchmark JVM exits.
 
 ## Result Snapshot
 
-The committed snapshot was produced with one warmup iteration and one measured
-iteration on JDK 21.0.11. Scores are throughput in operations per second;
-higher is better.
+The committed snapshot was regenerated at `2026-08-14T05:43:21Z` with one
+warmup iteration and one measured iteration on JDK 25.0.4 (GraalVM JDK 25,
+macOS aarch64). Scores are throughput in operations per second; higher is
+better. The committed JMH rows also carry `generatedAt` and `sourceCommand`
+provenance fields. The run used `threads=1`, `forks=1`, and one-second warmup
+and measurement windows.
 
 Raw artifact:
 [`docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json`](../../docs/benchmark/2026-06-08-javers-exposed-commit-metadata-indexes.json).
@@ -71,10 +74,10 @@ Raw artifact:
 
 | Variant | Insert ops/s | Author query ops/s | Date-range query ops/s | Decision signal |
 |---|---:|---:|---:|---|
-| Baseline | 481.4 | 917.5 | 916.5 | Stable reference for the current production schema. |
-| Author index | 488.6 | 907.1 | 904.7 | No author-query benefit in this smoke run. |
-| `commit_date` index | 499.3 | 931.2 | 923.2 | Slight read throughput gain, but bounded evidence only. |
-| Author + `commit_date` indexes | 518.6 | 945.9 | 873.8 | Best author-query throughput, but weaker date-range throughput. |
+| Baseline | 461.8 | 862.9 | 1316.6 | Stable reference for the current production schema; smoke evidence only. |
+| Author index | 372.0 | 406.2 | 930.4 | Lower throughput across these bounded lanes in the JDK 25 run. |
+| `commit_date` index | 244.8 | 328.7 | 972.3 | No default-index recommendation from this short run. |
+| Author + `commit_date` indexes | 342.9 | 543.0 | 1184.2 | Read throughput recovers partially, while insert throughput remains lower. |
 
 The results are local smoke evidence, not a release-wide performance claim. A
 broader workload must justify production index defaults before the schema is
