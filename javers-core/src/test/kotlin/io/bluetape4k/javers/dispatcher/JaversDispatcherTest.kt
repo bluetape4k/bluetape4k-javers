@@ -3,6 +3,7 @@ package io.bluetape4k.javers.dispatcher
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldNotContain
 import io.bluetape4k.javers.dispatcher.internal.CompositeDispatcher
 import io.bluetape4k.javers.dispatcher.internal.ConsoleDispatcher
 import io.bluetape4k.javers.dispatcher.internal.DebugDispatcher
@@ -71,9 +72,35 @@ class JaversDispatcherTest {
         }
 
         val output = out.toString()
-        output shouldContain "Send saved domain object. saved-entity"
-        output shouldContain "Send deleted domain object. deleted-entity"
-        output shouldContain "Send deleted domain object by id. id=id-1"
+        output shouldContain "Send saved domain object. type=String"
+        output shouldContain "Send deleted domain object. type=String"
+        output shouldContain "Send deleted domain object by id. type=Person"
+    }
+
+    @Test
+    fun `console dispatcher does not expose payload or identifier values`() {
+        val out = ByteArrayOutputStream()
+        val originalOut = System.out
+        val dispatcher = ConsoleDispatcher()
+        val payload = SensitivePayload(token = "secret-token")
+        val sensitiveId = "secret-id-42"
+
+        try {
+            System.setOut(PrintStream(out))
+
+            dispatcher.sendSaved(payload)
+            dispatcher.sendDeleted(payload)
+            dispatcher.sendDeletedById(sensitiveId, SensitivePayload::class.java)
+        } finally {
+            System.setOut(originalOut)
+        }
+
+        val output = out.toString()
+        output shouldContain "Send saved domain object. type=SensitivePayload"
+        output shouldContain "Send deleted domain object. type=SensitivePayload"
+        output shouldContain "Send deleted domain object by id. type=SensitivePayload"
+        output shouldNotContain payload.token
+        output shouldNotContain sensitiveId
     }
 
     @Test
@@ -113,5 +140,9 @@ class JaversDispatcherTest {
         override fun sendDeletedById(domainObjectId: Any, domainType: Class<*>) {
             error("delete-by-id failure")
         }
+    }
+
+    private data class SensitivePayload(val token: String) {
+        override fun toString(): String = "SensitivePayload(token=$token)"
     }
 }
