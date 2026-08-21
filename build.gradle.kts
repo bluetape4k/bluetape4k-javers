@@ -1,5 +1,5 @@
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.report.ReportMergeTask
 import groovy.json.JsonOutput
 import nmcp.NmcpAggregationExtension
 import nmcp.NmcpExtension
@@ -19,7 +19,7 @@ plugins {
     alias(bt4k.plugins.kotlin.noarg) apply false
     alias(bt4k.plugins.kotlinx.atomicfu)
 
-    alias(bt4k.plugins.detekt.legacy)
+    alias(bt4k.plugins.detekt.dev)
     alias(bt4k.plugins.dependency.management)
 
     alias(bt4k.plugins.dokka)
@@ -207,8 +207,9 @@ subprojects {
             output.set(rootProject.layout.buildDirectory.file("reports/detekt/merged.xml"))
         }
         withType<Detekt>().configureEach detekt@{
+            reports.checkstyle.required.set(true)
             finalizedBy(reportMerge)
-            reportMerge.configure { input.from(this@detekt.xmlReportFile) }
+            reportMerge.configure { input.from(this@detekt.reports.checkstyle.outputLocation) }
         }
 
         jar {
