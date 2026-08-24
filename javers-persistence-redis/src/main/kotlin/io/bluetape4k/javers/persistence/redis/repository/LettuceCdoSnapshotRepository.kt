@@ -105,7 +105,12 @@ class LettuceCdoSnapshotRepository(
     }
 
     override fun getSeq(commitId: CommitId): Long {
-        val seq = commands.hget(sequenceSetKey, commitId.value())?.asLongOrNull() ?: 0L
+        val sequenceText = commands.hget(sequenceSetKey, commitId.value())
+        val seq = when {
+            sequenceText == null -> 0L
+            else -> sequenceText.asLongOrNull()
+                ?: corruptedMetadata("sequence", sequenceText.toString())
+        }
         log.trace { "get seq. ${RedisIdentifierDiagnostics.format(commitId.value(), "commitId")}, seq=$seq" }
         return seq
     }

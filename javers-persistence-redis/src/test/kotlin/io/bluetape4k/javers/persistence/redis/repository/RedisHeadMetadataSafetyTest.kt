@@ -8,11 +8,13 @@ import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.redis.AbstractJaversTest
 import io.bluetape4k.redis.lettuce.codec.LettuceBinaryCodecs
 import org.javers.core.JaversBuilder
+import org.javers.core.commit.CommitId
 import org.javers.core.model.SnapshotEntity
 import org.junit.jupiter.api.Test
 import org.redisson.client.codec.LongCodec
 import org.redisson.client.codec.StringCodec
 import org.redisson.codec.CompositeCodec
+import java.lang.reflect.InvocationTargetException
 
 class RedisHeadMetadataSafetyTest: AbstractJaversTest() {
 
@@ -66,6 +68,12 @@ class RedisHeadMetadataSafetyTest: AbstractJaversTest() {
         }
         failure.message shouldContain "type=sequence"
         failure.message.shouldNotContain("not-a-sequence")
+
+        val sequenceFailure = assertFailsWith<IllegalStateException> {
+            LettuceCdoSnapshotRepository(repositoryName, lettuceClient).sequenceOf(commit.id)
+        }
+        sequenceFailure.message shouldContain "type=sequence"
+        sequenceFailure.message.shouldNotContain("not-a-sequence")
     }
 
     @Test
@@ -91,5 +99,18 @@ class RedisHeadMetadataSafetyTest: AbstractJaversTest() {
         }
         failure.message shouldContain "type=commitId"
         failure.message.shouldNotContain(corruptCommitId)
+    }
+
+    private fun LettuceCdoSnapshotRepository.sequenceOf(commitId: CommitId): Long {
+        val method = LettuceCdoSnapshotRepository::class.java.getDeclaredMethod(
+            "getSeq",
+            CommitId::class.java,
+        )
+        method.isAccessible = true
+        return try {
+            method.invoke(this, commitId) as Long
+        } catch (e: InvocationTargetException) {
+            throw e.targetException
+        }
     }
 }
