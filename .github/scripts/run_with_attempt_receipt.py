@@ -30,7 +30,7 @@ INFRASTRUCTURE_PATTERNS = tuple(
         r"(?:could not pull image|failed to pull image).*(?:timeout|connection|\b5\d\d\b)",
         r"error response from daemon:.*(?:timeout|temporarily unavailable|connection|\b5\d\d\b)",
         r"gradle daemon.*disappeared",
-        r"(?:could not|failed to) (?:get|head) https?://\S+.*\b(?:429|5\d\d)\b",
+        r"(?:could not|failed to) (?:get|head)\s+['\"]?https?://\S+.*\b(?:429|5\d\d)\b",
         r"resource temporarily unavailable",
         r"too many open files",
     )
