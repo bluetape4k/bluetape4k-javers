@@ -109,6 +109,7 @@ class RunWithAttemptReceiptTest(unittest.TestCase):
             ("Caused by: java.net.SocketTimeoutException: Read timed out", "infrastructure_retry"),
             ("AssertionError: product returned connection refused", "test_failure"),
             ("AssertionError: product returned read timed out", "test_failure"),
+            ("AssertionError: product returned\nconnection refused", "test_failure"),
         ):
             command = [sys.executable, "-c", f"print({output!r}); raise SystemExit(1)"]
             result, receipt, _ = self.run_helper(command, max_attempts=1)

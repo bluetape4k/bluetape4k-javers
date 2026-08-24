@@ -20,8 +20,8 @@ INFRASTRUCTURE_PATTERNS = tuple(
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
         r"NoSuchFileException:.*(?:in-progress-results|results-generic\.bin)",
-        r"(?mi)^\s*(?:caused by:\s*)?(?:[a-z0-9_$]+\.)*(?:connectexception|socketexception|sockettimeoutexception|unknownhostexception)\b.*$",
-        r"(?mi)^\s*(?:connection refused|connection reset|connect timed out|read timed out|network is unreachable|temporary failure in name resolution)\s*$",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?(?:[a-z0-9_$]+\.)*(?:connectexception|socketexception|sockettimeoutexception|unknownhostexception)\b.*$",
+        r"(?mi)^[ \t]*(?:connection refused|connection reset|connect timed out|read timed out|network is unreachable|temporary failure in name resolution)[ \t]*$",
         r"cannot connect to the docker daemon",
         r"docker daemon is not running",
         r"could not connect to ryuk",
@@ -35,10 +35,19 @@ INFRASTRUCTURE_PATTERNS = tuple(
     )
 )
 
+PRODUCT_FAILURE_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"(?m)^[ \t]*(?:assertionerror|assertion failed)\b",
+    )
+)
+
 
 def classify(exit_code: int, output: str) -> str:
     if exit_code == 0:
         return "passed"
+    if any(pattern.search(output) for pattern in PRODUCT_FAILURE_PATTERNS):
+        return "test_failure"
     if any(pattern.search(output) for pattern in INFRASTRUCTURE_PATTERNS):
         return "infrastructure_retry"
     return "test_failure"
