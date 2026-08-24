@@ -20,9 +20,8 @@ INFRASTRUCTURE_PATTERNS = tuple(
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
         r"NoSuchFileException:.*(?:in-progress-results|results-generic\.bin)",
-        r"(?:connection refused|connection reset|connect timed out|read timed out)",
-        r"(?:sockettimeoutexception|unknownhostexception|network is unreachable)",
-        r"temporary failure in name resolution",
+        r"(?mi)^\s*(?:caused by:\s*)?(?:[a-z0-9_$]+\.)*(?:connectexception|socketexception|sockettimeoutexception|unknownhostexception)\b.*$",
+        r"(?mi)^\s*(?:connection refused|connection reset|connect timed out|read timed out|network is unreachable|temporary failure in name resolution)\s*$",
         r"cannot connect to the docker daemon",
         r"docker daemon is not running",
         r"could not connect to ryuk",

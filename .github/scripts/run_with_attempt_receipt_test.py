@@ -103,6 +103,19 @@ class RunWithAttemptReceiptTest(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(receipt["firstAttempt"]["classification"], expected)
 
+    def test_retries_explicit_network_exception_but_not_product_message(self):
+        for output, expected in (
+            ("java.net.ConnectException: Connection refused", "infrastructure_retry"),
+            ("Caused by: java.net.SocketTimeoutException: Read timed out", "infrastructure_retry"),
+            ("AssertionError: product returned connection refused", "test_failure"),
+            ("AssertionError: product returned read timed out", "test_failure"),
+        ):
+            command = [sys.executable, "-c", f"print({output!r}); raise SystemExit(1)"]
+            result, receipt, _ = self.run_helper(command, max_attempts=1)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(receipt["firstAttempt"]["classification"], expected)
+
 
 if __name__ == "__main__":
     unittest.main()
