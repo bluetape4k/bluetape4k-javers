@@ -70,6 +70,20 @@ enum class JaversRepositoryType {
 
 /**
  * Exposed JDBC repository properties입니다.
+ *
+ * ## Schema ownership
+ *
+ * - `initializeSchema=false`, `createSchemaOnEnsure=false` (기본값):
+ *   Flyway/Liquibase/Exposed migration이 schema를 소유하며 auto-configuration은
+ *   DDL을 실행하지 않습니다.
+ * - `initializeSchema=false`, `createSchemaOnEnsure=true`: repository의
+ *   `ensureSchema()`를 호출하는 application code가 DDL 실행을 opt-in합니다.
+ * - `initializeSchema=true`, `createSchemaOnEnsure=true`: repository bean 생성 시
+ *   auto-configuration이 `ensureSchema()`를 호출해 시작 시 table을 생성합니다.
+ * - `initializeSchema=true`, `createSchemaOnEnsure=false`는 모순된 설정이므로
+ *   선택된 Exposed backend가 시작될 때 fail-fast 합니다. `ensureSchema()`가
+ *   no-op인 상태에서 initialize를 켜도 external migration을 대신할 수 없기
+ *   때문입니다.
  */
 data class JaversExposedProperties(
     val initializeSchema: Boolean = false,
@@ -80,6 +94,14 @@ data class JaversExposedProperties(
 
     companion object {
         private const val serialVersionUID: Long = 1L
+    }
+
+    /** 선택된 schema ownership 조합이 실제 동작과 일치하는지 검증합니다. */
+    internal fun validate() {
+        require(!initializeSchema || createSchemaOnEnsure) {
+            "bluetape4k.javers.exposed.initialize-schema=true requires " +
+                "bluetape4k.javers.exposed.create-schema-on-ensure=true"
+        }
     }
 }
 
