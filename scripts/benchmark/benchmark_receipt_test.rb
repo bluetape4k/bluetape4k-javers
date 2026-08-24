@@ -24,6 +24,19 @@ class BenchmarkReceiptTest < Minitest::Test
     end
   end
 
+  def test_rejects_duplicate_matrix_rows_from_a_stale_attempt
+    with_receipts do |root|
+      path = File.join(root, "commit.json")
+      records = JSON.parse(File.read(path))
+      records << records.first
+      File.write(path, JSON.pretty_generate(records))
+
+      result = BenchmarkReceipts::Validator.new(root).validate
+
+      assert result.errors.any? { |error| error.include?("duplicate commit-metadata receipt") }
+    end
+  end
+
   def test_rejects_empty_receipt_file
     with_receipts do |root|
       File.write(File.join(root, "empty.json"), "[]\n")

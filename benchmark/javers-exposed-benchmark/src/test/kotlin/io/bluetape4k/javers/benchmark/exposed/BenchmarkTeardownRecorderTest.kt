@@ -3,6 +3,7 @@ package io.bluetape4k.javers.benchmark.exposed
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldNotContain
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
@@ -22,7 +23,7 @@ class BenchmarkTeardownRecorderTest {
                 owner = "fixture",
                 CleanupAction("schema") {
                     events += "schema"
-                    error("drop failed")
+                    error("drop\u0000failed\u000B")
                 },
                 CleanupAction("datasource") {
                     events += "datasource"
@@ -34,7 +35,8 @@ class BenchmarkTeardownRecorderTest {
             receipt.toJsonLines() shouldHaveSize 1
             receipt.toJsonLines().single() shouldContain "\"owner\":\"fixture\""
             receipt.toJsonLines().single() shouldContain "\"resource\":\"schema\""
-            receipt.toJsonLines().single() shouldContain "drop failed"
+            receipt.toJsonLines().single() shouldContain "\"message\":\"drop\\u0000failed\\u000b\""
+            receipt.toJsonLines().single().shouldNotContain("\u0000")
         } finally {
             if (previousReportDirectory == null) {
                 System.clearProperty(BenchmarkTeardownRecorder.REPORT_DIRECTORY_PROPERTY)

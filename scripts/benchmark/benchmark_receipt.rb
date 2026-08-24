@@ -97,17 +97,30 @@ module BenchmarkReceipts
         keys << [record.dig("params", "variantName"), record["benchmark"].to_s.delete_prefix(COMMIT_BENCHMARK + ".")]
       end
       expected_commit_keys = COMMIT_VARIANTS.product(COMMIT_SCENARIOS)
-      (expected_commit_keys - commit_keys).each do |variant, scenario|
-        errors << "missing commit-metadata receipt: variant=#{variant}, scenario=#{scenario}"
-      end
+      validate_matrix(commit_keys, expected_commit_keys, "commit-metadata", errors)
 
       envers_keys = records.each_with_object([]) do |record, keys|
         next unless record["benchmark"].to_s.start_with?(ENVERS_BENCHMARK + ".")
         keys << [record.dig("params", "implementationName"), record["benchmark"].to_s.delete_prefix(ENVERS_BENCHMARK + ".")]
       end
       expected_envers_keys = ENVERS_VARIANTS.product(ENVERS_SCENARIOS)
-      (expected_envers_keys - envers_keys).each do |variant, scenario|
-        errors << "missing Envers receipt: implementation=#{variant}, scenario=#{scenario}"
+      validate_matrix(envers_keys, expected_envers_keys, "Envers", errors)
+    end
+
+    def validate_matrix(actual, expected, label, errors)
+      counts = actual.each_with_object(Hash.new(0)) { |key, tally| tally[key] += 1 }
+      counts.each do |key, count|
+        next unless count > 1
+
+        errors << "duplicate #{label} receipt: #{key.join("/")} (count=#{count})"
+      end
+
+      (actual.uniq - expected).each do |first, second|
+        errors << "unexpected #{label} receipt: #{first}/#{second}"
+      end
+
+      (expected - actual.uniq).each do |first, second|
+        errors << "missing #{label} receipt: #{first}/#{second}"
       end
     end
 

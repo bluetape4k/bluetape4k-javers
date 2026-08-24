@@ -232,6 +232,7 @@ jobs:
       - name: Run javers-exposed benchmark smoke
         run: |
           for attempt in 1 2 3; do
+            rm -rf benchmark/javers-exposed-benchmark/build/reports/benchmarks
             ./gradlew \
               :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
               :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark \

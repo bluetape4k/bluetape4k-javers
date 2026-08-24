@@ -88,9 +88,13 @@ internal object BenchmarkTeardownRecorder: KLogging() {
                 when (character) {
                     '\\' -> append("\\\\")
                     '"' -> append("\\\"")
+                    '\b' -> append("\\b")
+                    '\u000C' -> append("\\f")
                     '\n' -> append("\\n")
                     '\r' -> append("\\r")
                     '\t' -> append("\\t")
+                    in '\u0000'..'\u001F' -> append("\\u")
+                        .append(character.code.toString(16).padStart(4, '0'))
                     else -> append(character)
                 }
             }
