@@ -276,14 +276,15 @@ private fun String.requireSafeDatabaseName(): String {
     return this
 }
 
-private fun String.requirePositiveBigDecimal(parameterName: String): BigDecimal {
+internal fun String.requirePositiveBigDecimal(parameterName: String): BigDecimal {
     requireNotBlank(parameterName)
     val value = try {
         BigDecimal(this)
     } catch (e: NumberFormatException) {
         throw IllegalArgumentException("$parameterName must be a decimal number", e)
     }
-    return value.requirePositiveNumber(parameterName)
+    require(value.signum() > 0) { "$parameterName must be positive" }
+    return value
 }
 
 /**
