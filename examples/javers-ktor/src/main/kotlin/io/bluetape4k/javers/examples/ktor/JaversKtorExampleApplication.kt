@@ -19,6 +19,8 @@ import io.bluetape4k.ktor.core.installBluetape4kKtorCore
 import io.bluetape4k.ktor.core.requiredPathParameter
 import io.bluetape4k.ktor.core.respondApiError
 import io.bluetape4k.support.requireNotBlank
+import io.bluetape4k.support.requireNotEmpty
+import io.bluetape4k.support.requirePositiveNumber
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
@@ -240,7 +242,7 @@ private fun PlaceOrderRequest.toCommand(): PlaceOrderCommand {
         items = items.requireNotEmpty("items").map { item ->
             OrderItem(
                 sku = item.sku.requireNotBlank("sku"),
-                quantity = item.quantity.requirePositiveQuantity(),
+                quantity = item.quantity.requirePositiveNumber("quantity"),
                 unitPrice = item.unitPrice.requirePositiveBigDecimal("unitPrice"),
             )
         },
@@ -266,21 +268,11 @@ private fun Order.toResponse(): OrderResponse {
     )
 }
 
-private fun <T> List<T>.requireNotEmpty(parameterName: String): List<T> {
-    require(isNotEmpty()) { "$parameterName must not be empty" }
-    return this
-}
-
 private fun String.requireSafeDatabaseName(): String {
     requireNotBlank("databaseName")
     require(DatabaseNamePattern.matches(this)) {
         "databaseName must contain only letters, numbers, underscore, or hyphen"
     }
-    return this
-}
-
-private fun Int.requirePositiveQuantity(): Int {
-    require(this > 0) { "quantity must be positive" }
     return this
 }
 
@@ -291,8 +283,7 @@ private fun String.requirePositiveBigDecimal(parameterName: String): BigDecimal 
     } catch (e: NumberFormatException) {
         throw IllegalArgumentException("$parameterName must be a decimal number", e)
     }
-    require(value > BigDecimal.ZERO) { "$parameterName must be positive" }
-    return value
+    return value.requirePositiveNumber(parameterName)
 }
 
 /**

@@ -13,9 +13,9 @@ dependencies {
     implementation(project(":javers-ddd"))
     implementation(project(":javers-exposed"))
 
-    implementation(platform("io.ktor:ktor-bom:${bt4k.versions.ktor.get()}"))
+    implementation(platform(bt4k.ktor.bom))
     implementation(platform(bt4k.exposed.bom))
-    implementation("io.github.bluetape4k:bluetape4k-ktor-core")
+    implementation(bt4k.bluetape4k.ktor.core)
     implementation(bt4k.exposed.core)
     implementation(bt4k.exposed.jdbc)
     implementation(bt4k.exposed.java.time)
@@ -26,7 +26,7 @@ dependencies {
 
     testImplementation(bt4k.bluetape4k.junit5)
     testImplementation(bt4k.bluetape4k.testcontainers)
-    testImplementation("io.github.bluetape4k:bluetape4k-ktor-testing")
+    testImplementation(bt4k.bluetape4k.ktor.testing)
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation(bt4k.h2.v2)
     testImplementation(libs.testcontainers.postgresql)
