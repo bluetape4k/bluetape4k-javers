@@ -1,6 +1,7 @@
 public final class io/bluetape4k/javers/CdoExtensionsKt {
 	public static final fun getWrappedOrNull (Lorg/javers/core/graph/Cdo;)Ljava/lang/Object;
 }
+
 public final class io/bluetape4k/javers/JaversExtensionsKt {
 	public static final fun findShadowsAndSequence (Lorg/javers/core/Javers;Lorg/javers/repository/jql/JqlQuery;)Lkotlin/sequences/Sequence;
 	public static final fun getShadow (Lorg/javers/core/Javers;Lorg/javers/core/metamodel/object/CdoSnapshot;)Lorg/javers/shadow/Shadow;
@@ -502,3 +503,4 @@ public final class io/bluetape4k/javers/repository/jql/QueryBuilderExtensionsKt 
 	public static final fun queryByClassesCollection (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Lorg/javers/repository/jql/JqlQuery;
 	public static synthetic fun queryByClassesCollection$default (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/javers/repository/jql/JqlQuery;
 }
+

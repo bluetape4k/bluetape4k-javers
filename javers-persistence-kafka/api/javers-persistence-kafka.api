@@ -16,6 +16,7 @@ public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSna
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
+
 public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions$Companion {
 	public final fun invoke (Ljava/lang/String;Ljava/time/Duration;ZZZZ)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;
 	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions$Companion;Ljava/lang/String;Ljava/time/Duration;ZZZZILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;
@@ -123,3 +124,4 @@ public final class io/bluetape4k/javers/persistence/kafka/repository/VanillaKafk
 	public fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;)V
 	public final fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;Ljava/lang/String;)V
 }
+

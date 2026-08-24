@@ -83,15 +83,30 @@ jobs:
           VERSION: ${{ needs.resolve-version.outputs.version }}
         run: |
           set -euo pipefail
+          MANUAL_VERSION="${VERSION%%-*}"
           if [[ -f scripts/manual/current_manual_contract_test.rb && -f docs/manual/current/manifest.yaml ]]; then
-            MANUAL_VERSION="${VERSION%%-*}"
             ruby scripts/manual/current_manual_contract_test.rb
+            ruby scripts/manual/release_workflow_contract_test.rb
             ruby scripts/manual/current_manual_contract.rb --version "$MANUAL_VERSION"
             ruby scripts/manual/export_manifest.rb --check \
               docs/manual/current/manifest.yaml \
               docs/manual/current/generated/manifest.json
+          elif [[ "$MANUAL_VERSION" == "0.3.0" ]]; then
+            echo "::notice::Using the legacy manual validator for immutable release tag $VERSION."
+            LEGACY_SHA="$(git rev-parse "${VERSION}^{commit}")"
+            LEGACY_INPUT="$RUNNER_TEMP/release-manual-inventory-input.json"
+            ruby -rjson -e '
+              manifest = JSON.parse(File.read("docs/manual/generated/manifest.json"))
+              File.write(ARGV.fetch(0), JSON.pretty_generate(manifest.fetch("modules")) + "\n")
+            ' "$LEGACY_INPUT"
+            ruby scripts/manual/release_inventory.rb \
+              "$VERSION" "$LEGACY_SHA" "$LEGACY_INPUT" \
+              build/manual/release-module-inventory.json 7
+            ruby scripts/manual/validate_release_manuals.rb \
+              "$VERSION" "$LEGACY_SHA" build/manual/release-module-inventory.json
           else
-            echo "Current manual contract is unavailable at this immutable release tag; preserving the legacy manual validation path."
+            echo "::error::No supported manual validation contract is available for immutable release tag $VERSION."
+            exit 1
           fi
           git diff --check
 
@@ -297,8 +312,8 @@ jobs:
           ' CHANGELOG.md > "$NOTES_FILE"
 
           if [[ ! -s "$NOTES_FILE" ]]; then
-            echo "::warning::No CHANGELOG section found for $VERSION. Using fallback notes."
-            printf "Release %s\n\nSee [CHANGELOG.md](./CHANGELOG.md) for details.\n\n" "$VERSION" > "$NOTES_FILE"
+            echo "::error::CHANGELOG.md must contain an exact section for [$VERSION]."
+            exit 1
           fi
 
           if [[ -n "$PREV_TAG" ]]; then
@@ -334,7 +349,7 @@ jobs:
         run: |
           set -euo pipefail
           PRERELEASE_FLAG=""
-          if [[ "$VERSION" =~ -(RC|Beta|Alpha|M) ]]; then
+          if [[ "$VERSION" =~ -[A-Za-z0-9.]+$ ]]; then
             PRERELEASE_FLAG="--prerelease"
           fi
 

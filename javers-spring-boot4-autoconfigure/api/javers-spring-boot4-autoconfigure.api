@@ -2,6 +2,7 @@ public class io/bluetape4k/javers/autoconfigure/JaversAutoConfiguration {
 	public fun <init> ()V
 	public fun javers (Lorg/javers/repository/api/JaversRepository;Lorg/springframework/beans/factory/ObjectProvider;)Lorg/javers/core/Javers;
 }
+
 public final class io/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties : java/io/Serializable {
 	public static final field Companion Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties$Companion;
 	public static final field PREFIX Ljava/lang/String;
@@ -157,3 +158,4 @@ public class io/bluetape4k/javers/autoconfigure/JaversVanillaKafkaRepositoryAuto
 	public fun <init> ()V
 	public fun javersVanillaKafkaCdoSnapshotRepository (Lorg/apache/kafka/clients/producer/Producer;Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;)Lorg/javers/repository/api/JaversRepository;
 }
+

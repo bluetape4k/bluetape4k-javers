@@ -188,6 +188,8 @@ jobs:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - name: Test CI attempt receipt helper
         run: python3 .github/scripts/run_with_attempt_receipt_test.py
+      - name: Validate release workflow contract
+        run: ruby scripts/manual/release_workflow_contract_test.rb
       - name: Build (compile only)
         run: >-
           python3 .github/scripts/run_with_attempt_receipt.py
