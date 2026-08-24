@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.exposed.repository
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeZero
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.assertions.shouldNotBeNull
@@ -165,8 +166,8 @@ class ExposedCdoSnapshotRepositoryH2Test: AbstractJaversCommitTest() {
         }
 
         transaction(database) {
-            CdoSnapshotTable.selectAll().count() shouldBeEqualTo 0L
-            CommitTable.selectAll().count() shouldBeEqualTo 0L
+            CdoSnapshotTable.selectAll().count().shouldBeZero()
+            CommitTable.selectAll().count().shouldBeZero()
         }
         repository.getHeadId().shouldBeNull()
     }

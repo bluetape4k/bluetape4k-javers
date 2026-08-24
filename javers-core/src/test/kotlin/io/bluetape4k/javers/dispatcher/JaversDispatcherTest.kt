@@ -5,6 +5,8 @@ import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeFalse
+import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.shouldNotContain
@@ -47,16 +49,16 @@ class JaversDispatcherTest {
         dispatcher.sendDeleted(person)
         dispatcher.sendDeletedById<Person>("alice")
 
-        dispatcher.isSaved(person) shouldBeEqualTo true
-        dispatcher.isDeleted(person) shouldBeEqualTo true
-        dispatcher.isDeletedById("alice", Person::class.java) shouldBeEqualTo true
+        dispatcher.isSaved(person).shouldBeTrue()
+        dispatcher.isDeleted(person).shouldBeTrue()
+        dispatcher.isDeletedById("alice", Person::class.java).shouldBeTrue()
         recorder.events shouldHaveSize 3
 
         dispatcher.clear()
 
-        dispatcher.isSaved(person) shouldBeEqualTo false
-        dispatcher.isDeleted(person) shouldBeEqualTo false
-        dispatcher.isDeletedById("alice", Person::class.java) shouldBeEqualTo false
+        dispatcher.isSaved(person).shouldBeFalse()
+        dispatcher.isDeleted(person).shouldBeFalse()
+        dispatcher.isDeletedById("alice", Person::class.java).shouldBeFalse()
     }
 
     @Test

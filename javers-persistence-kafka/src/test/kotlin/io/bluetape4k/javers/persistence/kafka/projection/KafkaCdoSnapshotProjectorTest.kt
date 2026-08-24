@@ -3,6 +3,7 @@ package io.bluetape4k.javers.persistence.kafka.projection
 import com.google.gson.JsonObject
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.codecs.JaversCodecs
@@ -66,7 +67,7 @@ class KafkaCdoSnapshotProjectorTest {
             "Kafka snapshot projection requires a single-partition topic. topic=audit.snapshots, partitions=2"
         verify(exactly = 0) { consumer.poll(any<Duration>()) }
         verify(exactly = 0) { consumer.commitSync() }
-        targetRepository.getHeadId() shouldBeEqualTo null
+        targetRepository.getHeadId().shouldBeNull()
     }
 
     @Test
