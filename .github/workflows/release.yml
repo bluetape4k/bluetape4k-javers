@@ -93,17 +93,30 @@ jobs:
               docs/manual/current/generated/manifest.json
           elif [[ "$MANUAL_VERSION" == "0.3.0" ]]; then
             echo "::notice::Using the legacy manual validator for immutable release tag $VERSION."
-            LEGACY_SHA="$(git rev-parse "${VERSION}^{commit}")"
+            TARGET_SHA="$(git rev-parse "${VERSION}^{commit}")"
+            LEGACY_MANUAL_METADATA="$(ruby -ryaml -e '
+              manifest = YAML.safe_load(File.read("docs/manual/manifest.yaml"))
+              release_tag = manifest.fetch("releaseTag")
+              release_commit = manifest.fetch("releaseCommit")
+              abort("legacy manual manifest must pin releaseTag and releaseCommit") if
+                [release_tag, release_commit].any? { |value| !value.is_a?(String) || value.empty? }
+              puts [release_tag, release_commit].join("\t")
+            ')"
+            IFS=$'\t' read -r LEGACY_MANUAL_TAG LEGACY_MANUAL_SHA <<< "$LEGACY_MANUAL_METADATA"
+            if [[ -z "$LEGACY_MANUAL_TAG" || -z "$LEGACY_MANUAL_SHA" ]]; then
+              echo "::error::Legacy manual manifest did not provide pinned release coordinates."
+              exit 1
+            fi
             LEGACY_INPUT="$RUNNER_TEMP/release-manual-inventory-input.json"
             ruby -rjson -e '
               manifest = JSON.parse(File.read("docs/manual/generated/manifest.json"))
               File.write(ARGV.fetch(0), JSON.pretty_generate(manifest.fetch("modules")) + "\n")
             ' "$LEGACY_INPUT"
             ruby scripts/manual/release_inventory.rb \
-              "$VERSION" "$LEGACY_SHA" "$LEGACY_INPUT" \
+              "$VERSION" "$TARGET_SHA" "$LEGACY_INPUT" \
               build/manual/release-module-inventory.json 7
             ruby scripts/manual/validate_release_manuals.rb \
-              "$VERSION" "$LEGACY_SHA" build/manual/release-module-inventory.json
+              "$LEGACY_MANUAL_TAG" "$LEGACY_MANUAL_SHA" build/manual/release-module-inventory.json
           else
             echo "::error::No supported manual validation contract is available for immutable release tag $VERSION."
             exit 1
