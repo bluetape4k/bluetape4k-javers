@@ -2,6 +2,7 @@ package io.bluetape4k.javers.base
 
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeNull
+import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.javers.examples.Person
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
@@ -56,12 +57,14 @@ class EntityEnvelopeTest {
     @Test
     fun `headers stay outside structural identity but survive java serialization`() {
         val envelope = EntityEnvelope(Person("bob", "Bob")).apply { addHeader("traceId", "trace-1") }
+        val entity = envelope.entity.shouldNotBeNull()
+        val expected = EntityEnvelope(entity)
 
         val copied = envelope.copy()
         copied.headers shouldBeEqualTo emptyMap()
-        copied shouldBeEqualTo EntityEnvelope(envelope.entity, envelope.entityType)
-        envelope.hashCode() shouldBeEqualTo EntityEnvelope(envelope.entity, envelope.entityType).hashCode()
-        envelope.toString() shouldBeEqualTo EntityEnvelope(envelope.entity, envelope.entityType).toString()
+        copied shouldBeEqualTo expected
+        envelope.hashCode() shouldBeEqualTo expected.hashCode()
+        envelope.toString() shouldBeEqualTo expected.toString()
 
         val bytes = ByteArrayOutputStream().also { output ->
             ObjectOutputStream(output).use { it.writeObject(envelope) }
