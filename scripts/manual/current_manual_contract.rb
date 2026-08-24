@@ -34,6 +34,12 @@ module CurrentManual
     LOCALES = %w[en ko].freeze
     REQUIRED_MODULE_FIELDS = %w[id title gradlePath projectName sourceDir kind group artifact status sourcePaths en ko].freeze
     CURRENT_KINDS = %w[library bom example benchmark].freeze
+    LINK_PATTERNS = [
+      /!?\[[^\]]*\]\(([^)]+)\)/,
+      /^[ \t]{0,3}\[[^\]]+\]:[ \t]*(?:<([^>\r\n]+)>|([^ \t\r\n]+))/,
+      /<(?:a|img)\b[^>]*(?:href|src)=["']([^"']+)["']/i,
+      /<((?:https?:\/\/)[^ >]+)>/i,
+    ].freeze
 
     attr_reader :errors
 
@@ -41,7 +47,7 @@ module CurrentManual
       @repository_root = Pathname.new(repository_root).realpath
       @current_root = @repository_root.join("docs/manual/current")
       @manifest_path = @repository_root.join(manifest_path)
-      @expected_version = expected_version || base_version
+      @expected_version = normalize_version(expected_version || base_version)
       @errors = validate.sort
     end
 
@@ -143,7 +149,10 @@ module CurrentManual
         next unless route.is_a?(String) && !route.empty?
 
         errors << "#{id}: unsafe #{locale} route" unless safe_route?(route, locale)
-        errors << "#{id}: missing #{locale} document #{route}" unless @current_root.join(route).file?
+        errors << "#{id}: missing or unsafe #{locale} document #{route}" unless safe_document?(route, locale)
+      end
+      if entry["en"].is_a?(String) && entry["ko"].is_a?(String)
+        errors << "#{id}: English/Korean route differs" unless entry["en"].delete_prefix("en/") == entry["ko"].delete_prefix("ko/")
       end
       errors
     end
@@ -178,7 +187,7 @@ module CurrentManual
         end
         paths.each do |path|
           errors << "current manual overview unsafe #{locale} document #{path}" unless safe_route?(path, locale)
-          errors << "current manual overview missing #{locale} document #{path}" unless @current_root.join(path).file?
+          errors << "current manual overview missing or unsafe #{locale} document #{path}" unless safe_document?(path, locale)
         end
       end
       en_routes = Array(documents["en"]).map { |path| path.delete_prefix("en/") }
@@ -199,6 +208,9 @@ module CurrentManual
         actual = Dir.glob(@current_root.join(locale, "**/*.md").to_s).map do |path|
           Pathname.new(path).relative_path_from(@current_root).to_s
         end.sort
+        actual.each do |path|
+          errors << "unsafe current manual document #{path}" unless safe_document?(path, locale)
+        end
         errors.concat((actual - registered.fetch(locale)).map { |path| "unregistered current manual document #{path}" })
         errors.concat((registered.fetch(locale) - actual).map { |path| "registered current manual document not found #{path}" })
       end
@@ -212,7 +224,7 @@ module CurrentManual
         file = @current_root.join(relative)
         next [] unless file.file?
 
-        file.read.scan(/!?(?:\[[^\]]*\])\(([^)]+)\)/).flatten.each_with_object([]) do |target, failures|
+        extract_links(file.read).each_with_object([]) do |target, failures|
           target = target.strip.split(/\s+['"]/, 2).first.delete_prefix("<").delete_suffix(">").split(/[?#]/, 2).first
           next if target.empty? || target.start_with?("#", "/") || target.match?(%r{\A[a-z][a-z0-9+.-]*:}i)
 
@@ -262,6 +274,31 @@ module CurrentManual
 
     def safe_route?(path, locale)
       path.is_a?(String) && path.start_with?("#{locale}/") && !Pathname.new(path).absolute? && Pathname.new(path).each_filename.none? { |part| part == ".." }
+    end
+
+    def safe_document?(path, locale)
+      return false unless safe_route?(path, locale)
+
+      document = @current_root.join(path)
+      document.file? && within_current_root?(document.realpath)
+    rescue Errno::ENOENT, Errno::EACCES
+      false
+    end
+
+    def within_current_root?(path)
+      root = @current_root.realpath.to_s
+      candidate = path.to_s
+      candidate == root || candidate.start_with?(root + File::SEPARATOR)
+    end
+
+    def extract_links(content)
+      LINK_PATTERNS.flat_map do |pattern|
+        content.to_enum(:scan, pattern).map { Regexp.last_match.captures.compact.first }
+      end.uniq
+    end
+
+    def normalize_version(version)
+      version.to_s.sub(/-[A-Za-z0-9.]+\z/, "")
     end
 
     def blank?(value)

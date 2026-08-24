@@ -24,13 +24,53 @@ class CurrentManualContractTest < Minitest::Test
     assert_includes validator.errors, "current manual version must be 9.9.9"
   end
 
+  def test_accepts_prerelease_tag_against_the_stable_current_manual
+    validator = CurrentManual::Validator.new(
+      repository_root: File.expand_path("../..", __dir__),
+      expected_version: "1.0.0-rc1",
+    )
+
+    assert_empty validator.errors
+  end
+
   def test_rejects_missing_locale_document
     with_fixture do |root|
       FileUtils.rm(root.join("docs/manual/current/ko/modules/javers-core.md"))
 
       validator = CurrentManual::Validator.new(repository_root: root.to_s)
 
-      assert validator.errors.any? { |error| error.include?("missing ko document") }
+      assert validator.errors.any? { |error| error.include?("missing or unsafe ko document") }
+    end
+  end
+
+  def test_rejects_locale_document_symlink_outside_current_manual
+    with_fixture do |root|
+      outside = root.join("outside.md")
+      outside.write("outside\n")
+      document = root.join("docs/manual/current/ko/modules/javers-core.md")
+      document.delete
+      File.symlink(outside, document)
+
+      validator = CurrentManual::Validator.new(repository_root: root.to_s)
+
+      assert validator.errors.any? { |error| error.include?("missing or unsafe ko document") }
+    end
+  end
+
+  def test_rejects_reference_and_html_links_to_missing_documents
+    with_fixture do |root|
+      index = root.join("docs/manual/current/en/index.md")
+      index.write(<<~MARKDOWN)
+        [reference][missing-reference]
+
+        [missing-reference]: modules/missing-reference.md
+        <a href="modules/missing-html.md">missing</a>
+      MARKDOWN
+
+      validator = CurrentManual::Validator.new(repository_root: root.to_s)
+
+      assert validator.errors.any? { |error| error.include?("missing-reference.md") }
+      assert validator.errors.any? { |error| error.include?("missing-html.md") }
     end
   end
 

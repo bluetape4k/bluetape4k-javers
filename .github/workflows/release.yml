@@ -82,11 +82,17 @@ jobs:
         env:
           VERSION: ${{ needs.resolve-version.outputs.version }}
         run: |
-          ruby scripts/manual/current_manual_contract_test.rb
-          ruby scripts/manual/current_manual_contract.rb --version "$VERSION"
-          ruby scripts/manual/export_manifest.rb --check \
-            docs/manual/current/manifest.yaml \
-            docs/manual/current/generated/manifest.json
+          set -euo pipefail
+          if [[ -f scripts/manual/current_manual_contract_test.rb && -f docs/manual/current/manifest.yaml ]]; then
+            MANUAL_VERSION="${VERSION%%-*}"
+            ruby scripts/manual/current_manual_contract_test.rb
+            ruby scripts/manual/current_manual_contract.rb --version "$MANUAL_VERSION"
+            ruby scripts/manual/export_manifest.rb --check \
+              docs/manual/current/manifest.yaml \
+              docs/manual/current/generated/manifest.json
+          else
+            echo "Current manual contract is unavailable at this immutable release tag; preserving the legacy manual validation path."
+          fi
           git diff --check
 
       - name: Resolve dependencies catalog ref
@@ -165,9 +171,10 @@ jobs:
           set -euo pipefail
           BASE=$(grep -E '^baseVersion=' gradle.properties | cut -d= -f2)
           SNAP=$(grep -E '^snapshotVersion=' gradle.properties | cut -d= -f2 || echo "")
-          echo "tag=$VERSION baseVersion=$BASE snapshotVersion='$SNAP'"
-          if [[ "$BASE" != "$VERSION" ]]; then
-            echo "::error::gradle.properties baseVersion ($BASE) does not match tag ($VERSION)"
+          RELEASE_VERSION="${VERSION%%-*}"
+          echo "tag=$VERSION releaseVersion=$RELEASE_VERSION baseVersion=$BASE snapshotVersion='$SNAP'"
+          if [[ "$BASE" != "$RELEASE_VERSION" ]]; then
+            echo "::error::gradle.properties baseVersion ($BASE) does not match stable release version ($RELEASE_VERSION)"
             exit 1
           fi
           if [[ -n "$SNAP" ]]; then
