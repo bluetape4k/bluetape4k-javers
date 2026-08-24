@@ -19,26 +19,26 @@ from typing import Any, Sequence
 INFRASTRUCTURE_PATTERNS = tuple(
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
-        r"NoSuchFileException:.*(?:in-progress-results|results-generic\.bin)",
-        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?(?:[a-z0-9_$]+\.)*(?:connectexception|socketexception|sockettimeoutexception|unknownhostexception)\b.*$",
-        r"(?mi)^[ \t]*(?:connection refused|connection reset|connect timed out|read timed out|network is unreachable|temporary failure in name resolution)[ \t]*$",
-        r"cannot connect to the docker daemon",
-        r"docker daemon is not running",
-        r"could not connect to ryuk",
-        r"containerlaunchexception:.*(?:timed out|could not start)",
-        r"(?:could not pull image|failed to pull image).*(?:timeout|connection|\b5\d\d\b)",
-        r"error response from daemon:.*(?:timeout|temporarily unavailable|connection|\b5\d\d\b)",
-        r"gradle daemon.*disappeared",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?(?:[a-z_$][\w$]*\.)*nosuchfileexception:[^\r\n]*(?:in-progress-results|results-generic\.bin)\b[^\r\n]*$",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?java\.net\.(?:connectexception|socketexception|sockettimeoutexception|unknownhostexception):[^\r\n]*(?:connection refused|connection reset|connect timed out|read timed out|network is unreachable|temporary failure in name resolution)[ \t]*$",
+        r"(?mi)^[ \t]*(?:error:[ \t]*)?cannot connect to the docker daemon\b[^\r\n]*$",
+        r"(?mi)^[ \t]*docker daemon is not running\b[^\r\n]*$",
+        r"(?mi)^[ \t]*could not connect to ryuk\b[^\r\n]*$",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?(?:org\.testcontainers\.containers\.)?containerlaunchexception:[^\r\n]*(?:timed out|could not start)\b[^\r\n]*$",
+        r"(?mi)^[ \t]*(?:could not|failed to) pull image\b[^\r\n]*(?:timeout|connection|\b5\d\d\b)[^\r\n]*$",
+        r"(?mi)^[ \t]*error response from daemon:[^\r\n]*(?:timeout|temporarily unavailable|connection|\b5\d\d\b)[^\r\n]*$",
+        r"(?mi)^[ \t]*(?:gradle daemon\b|the message received from the daemon indicates that the daemon has)\b[^\r\n]*disappeared[^\r\n]*$",
         r"(?mi)^[ \t]*(?:>\s*)?(?:could not|failed to) (?:get|head)[ \t]+['\"]?https?://\S+.*\b(?:429|5\d\d)\b.*$",
-        r"(?mi)^[ \t]*(?:resource temporarily unavailable|(?:java|org|io|bash|sh)[^\r\n]*resource temporarily unavailable)[ \t]*$",
-        r"(?mi)^[ \t]*(?:too many open files|(?:java|org|io|bash|sh)[^\r\n]*too many open files)[ \t]*$",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?java\.io\.(?:ioexception|filenotfoundexception):[^\r\n]*resource temporarily unavailable[ \t]*$",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?java\.io\.(?:ioexception|filenotfoundexception):[^\r\n]*too many open files[ \t]*$",
+        r"(?mi)^[ \t]*(?:bash|sh):[^\r\n]*(?:resource temporarily unavailable|too many open files)[ \t]*$",
     )
 )
 
 PRODUCT_FAILURE_PATTERNS = tuple(
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
-        r"(?m)^[ \t]*(?:assertionerror|assertion failed)\b",
+        r"(?mi)^[ \t]*(?:caused by:[ \t]*)?(?:[a-z_$][\w$]*\.)*(?:assertionerror|assertionfailederror)\b",
     )
 )
 
