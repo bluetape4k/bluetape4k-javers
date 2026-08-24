@@ -1,0 +1,506 @@
+public final class io/bluetape4k/javers/CdoExtensionsKt {
+	public static final fun getWrappedOrNull (Lorg/javers/core/graph/Cdo;)Ljava/lang/Object;
+}
+
+public final class io/bluetape4k/javers/JaversExtensionsKt {
+	public static final fun findShadowsAndSequence (Lorg/javers/core/Javers;Lorg/javers/repository/jql/JqlQuery;)Lkotlin/sequences/Sequence;
+	public static final fun getShadow (Lorg/javers/core/Javers;Lorg/javers/core/metamodel/object/CdoSnapshot;)Lorg/javers/shadow/Shadow;
+	public static final fun getShadowFactory (Lorg/javers/core/Javers;)Lorg/javers/shadow/ShadowFactory;
+	public static final fun latestSnapshotOrNull (Lorg/javers/core/Javers;Ljava/lang/Object;Lkotlin/reflect/KClass;)Lorg/javers/core/metamodel/object/CdoSnapshot;
+}
+
+public final class io/bluetape4k/javers/QueryParamsExtensionsKt {
+	public static final fun isDateInRange (Lorg/javers/repository/api/QueryParams;Ljava/time/LocalDateTime;)Z
+}
+
+public final class io/bluetape4k/javers/ShadowProvider : io/bluetape4k/logging/KLogging {
+	public static final field INSTANCE Lio/bluetape4k/javers/ShadowProvider;
+	public final fun getShadowFactory (Lorg/javers/core/Javers;)Lorg/javers/shadow/ShadowFactory;
+}
+
+public final class io/bluetape4k/javers/base/EntityEnvelope : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/base/EntityEnvelope$Companion;
+	public fun <init> (Ljava/lang/Object;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Class;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Class;Lio/bluetape4k/javers/base/EntityEventType;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Class;Lio/bluetape4k/javers/base/EntityEventType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun addHeader (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Object;
+	public final fun component3 ()Ljava/lang/Class;
+	public final fun component4 ()Lio/bluetape4k/javers/base/EntityEventType;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Class;Lio/bluetape4k/javers/base/EntityEventType;)Lio/bluetape4k/javers/base/EntityEnvelope;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/base/EntityEnvelope;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Class;Lio/bluetape4k/javers/base/EntityEventType;ILjava/lang/Object;)Lio/bluetape4k/javers/base/EntityEnvelope;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEntity ()Ljava/lang/Object;
+	public final fun getEntityId ()Ljava/lang/Object;
+	public final fun getEntityType ()Ljava/lang/Class;
+	public final fun getEventType ()Lio/bluetape4k/javers/base/EntityEventType;
+	public final fun getHeader (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getHeaders ()Ljava/util/Map;
+	public fun hashCode ()I
+	public final fun isDeletedEntity ()Z
+	public final fun isSavedEntity ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/base/EntityEnvelope$Companion {
+}
+
+public final class io/bluetape4k/javers/base/EntityEventType : java/lang/Enum {
+	public static final field Companion Lio/bluetape4k/javers/base/EntityEventType$Companion;
+	public static final field DELETED Lio/bluetape4k/javers/base/EntityEventType;
+	public static final field SAVED Lio/bluetape4k/javers/base/EntityEventType;
+	public static final field UNKNOWN Lio/bluetape4k/javers/base/EntityEventType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getStatus ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/base/EntityEventType;
+	public static fun values ()[Lio/bluetape4k/javers/base/EntityEventType;
+}
+
+public final class io/bluetape4k/javers/base/EntityEventType$Companion {
+	public final fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/base/EntityEventType;
+}
+
+public final class io/bluetape4k/javers/codecs/BinaryJaversCodec : io/bluetape4k/javers/codecs/JaversCodec {
+	public static final field Companion Lio/bluetape4k/javers/codecs/BinaryJaversCodec$Companion;
+	public fun <init> (Lio/bluetape4k/io/serializer/BinarySerializer;)V
+	public synthetic fun decode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	public fun decode ([B)Lcom/google/gson/JsonObject;
+	public synthetic fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+	public fun encode (Lcom/google/gson/JsonObject;)[B
+}
+
+public final class io/bluetape4k/javers/codecs/BinaryJaversCodec$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec : io/bluetape4k/javers/codecs/JaversCodec {
+	public fun <init> (Lio/bluetape4k/javers/codecs/BinaryJaversCodec;Lio/bluetape4k/io/compressor/Compressor;)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/codecs/BinaryJaversCodec;Lio/bluetape4k/io/compressor/Compressor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun decode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	public fun decode ([B)Lcom/google/gson/JsonObject;
+	public synthetic fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+	public fun encode (Lcom/google/gson/JsonObject;)[B
+}
+
+public final class io/bluetape4k/javers/codecs/CompressibleStringJaversCodec : io/bluetape4k/javers/codecs/JaversCodec {
+	public fun <init> (Lio/bluetape4k/javers/codecs/StringJaversCodec;Lio/bluetape4k/io/compressor/Compressor;)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/codecs/StringJaversCodec;Lio/bluetape4k/io/compressor/Compressor;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun decode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	public fun decode (Ljava/lang/String;)Lcom/google/gson/JsonObject;
+	public synthetic fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+	public fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/String;
+}
+
+public abstract interface class io/bluetape4k/javers/codecs/JaversCodec {
+	public abstract fun decode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	public abstract fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+}
+
+public final class io/bluetape4k/javers/codecs/JaversCodecs {
+	public static final field INSTANCE Lio/bluetape4k/javers/codecs/JaversCodecs;
+	public final fun getDefault ()Lio/bluetape4k/javers/codecs/StringJaversCodec;
+	public final fun getDeflateFory ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getDeflateJdk ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getDeflateKryo ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getDeflateString ()Lio/bluetape4k/javers/codecs/CompressibleStringJaversCodec;
+	public final fun getFory ()Lio/bluetape4k/javers/codecs/BinaryJaversCodec;
+	public final fun getGZipFory ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getGZipJdk ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getGZipKryo ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getGZipString ()Lio/bluetape4k/javers/codecs/CompressibleStringJaversCodec;
+	public final fun getJdk ()Lio/bluetape4k/javers/codecs/BinaryJaversCodec;
+	public final fun getKryo ()Lio/bluetape4k/javers/codecs/BinaryJaversCodec;
+	public final fun getLZ4Fory ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getLZ4Jdk ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getLZ4Kryo ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getLZ4String ()Lio/bluetape4k/javers/codecs/CompressibleStringJaversCodec;
+	public final fun getMap ()Lio/bluetape4k/javers/codecs/MapJaversCodec;
+	public final fun getSnappyFory ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getSnappyJdk ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getSnappyKryo ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getSnappyString ()Lio/bluetape4k/javers/codecs/CompressibleStringJaversCodec;
+	public final fun getString ()Lio/bluetape4k/javers/codecs/StringJaversCodec;
+	public final fun getZstdFory ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getZstdJdk ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getZstdKryo ()Lio/bluetape4k/javers/codecs/CompressibleBinaryJaversCodec;
+	public final fun getZstdString ()Lio/bluetape4k/javers/codecs/CompressibleStringJaversCodec;
+}
+
+public final class io/bluetape4k/javers/codecs/MapJaversCodec : io/bluetape4k/javers/codecs/JaversCodec {
+	public fun <init> ()V
+	public synthetic fun decode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	public fun decode (Ljava/util/Map;)Lcom/google/gson/JsonObject;
+	public synthetic fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+	public fun encode (Lcom/google/gson/JsonObject;)Ljava/util/Map;
+}
+
+public class io/bluetape4k/javers/codecs/StringJaversCodec : io/bluetape4k/javers/codecs/JaversCodec {
+	public fun <init> ()V
+	public synthetic fun decode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	public fun decode (Ljava/lang/String;)Lcom/google/gson/JsonObject;
+	public synthetic fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+	public fun encode (Lcom/google/gson/JsonObject;)Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/commit/CommitMetadataExtensionsKt {
+	public static final fun compareTo (Lorg/javers/core/commit/CommitMetadata;Lorg/javers/core/commit/CommitMetadata;)I
+	public static final fun getCommitTimestamp (Lorg/javers/core/commit/CommitMetadata;)J
+	public static final fun getVersion (Lorg/javers/core/commit/CommitId;)Lkotlin/Pair;
+}
+
+public final class io/bluetape4k/javers/commit/SnowflakeCommitIdGenerator : java/util/function/Supplier {
+	public fun <init> ()V
+	public fun <init> (Lio/bluetape4k/idgenerators/snowflake/Snowflake;)V
+	public synthetic fun <init> (Lio/bluetape4k/idgenerators/snowflake/Snowflake;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun get ()Ljava/lang/Object;
+	public fun get ()Lorg/javers/core/commit/CommitId;
+	public final fun getSeq (Lorg/javers/core/commit/CommitId;)I
+}
+
+public final class io/bluetape4k/javers/diff/ChangeExtensionsKt {
+	public static final fun isArrayChange (Lorg/javers/core/diff/Change;)Z
+	public static final fun isListChange (Lorg/javers/core/diff/Change;)Z
+	public static final fun isMapChange (Lorg/javers/core/diff/Change;)Z
+	public static final fun isNewObject (Lorg/javers/core/diff/Change;)Z
+	public static final fun isObjectRemoved (Lorg/javers/core/diff/Change;)Z
+	public static final fun isReferenceChange (Lorg/javers/core/diff/Change;)Z
+	public static final fun isSetChange (Lorg/javers/core/diff/Change;)Z
+	public static final fun isValueChange (Lorg/javers/core/diff/Change;)Z
+}
+
+public abstract interface class io/bluetape4k/javers/dispatcher/JaversDispatcher {
+	public abstract fun sendDeleted (Ljava/lang/Object;)V
+	public abstract fun sendDeletedById (Ljava/lang/Object;Ljava/lang/Class;)V
+	public abstract fun sendSaved (Ljava/lang/Object;)V
+}
+
+public class io/bluetape4k/javers/dispatcher/internal/CompositeDispatcher : io/bluetape4k/javers/dispatcher/JaversDispatcher {
+	public fun <init> (Ljava/util/Collection;)V
+	public final fun getDispatchers ()Ljava/util/Collection;
+	public fun sendDeleted (Ljava/lang/Object;)V
+	public fun sendDeletedById (Ljava/lang/Object;Ljava/lang/Class;)V
+	public fun sendSaved (Ljava/lang/Object;)V
+}
+
+public final class io/bluetape4k/javers/dispatcher/internal/ConsoleDispatcher : io/bluetape4k/javers/dispatcher/JaversDispatcher {
+	public fun <init> ()V
+	public fun sendDeleted (Ljava/lang/Object;)V
+	public fun sendDeletedById (Ljava/lang/Object;Ljava/lang/Class;)V
+	public fun sendSaved (Ljava/lang/Object;)V
+}
+
+public final class io/bluetape4k/javers/dispatcher/internal/DebugDispatcher : io/bluetape4k/javers/dispatcher/internal/CompositeDispatcher {
+	public fun <init> (Ljava/util/Collection;)V
+	public final fun clear ()V
+	public final fun isDeleted (Ljava/lang/Object;)Z
+	public final fun isDeletedById (Ljava/lang/Object;Ljava/lang/Class;)Z
+	public final fun isSaved (Ljava/lang/Object;)Z
+	public fun sendDeleted (Ljava/lang/Object;)V
+	public fun sendDeletedById (Ljava/lang/Object;Ljava/lang/Class;)V
+	public fun sendSaved (Ljava/lang/Object;)V
+}
+
+public final class io/bluetape4k/javers/dispatcher/internal/DebugDispatcher$DeletedById {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Class;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ljava/lang/Class;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Class;)Lio/bluetape4k/javers/dispatcher/internal/DebugDispatcher$DeletedById;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/dispatcher/internal/DebugDispatcher$DeletedById;Ljava/lang/Object;Ljava/lang/Class;ILjava/lang/Object;)Lio/bluetape4k/javers/dispatcher/internal/DebugDispatcher$DeletedById;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDomainType ()Ljava/lang/Class;
+	public final fun getId ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/dispatcher/internal/Slf4jDispatcher : io/bluetape4k/javers/dispatcher/JaversDispatcher {
+	public fun <init> (Lorg/slf4j/Logger;)V
+	public fun sendDeleted (Ljava/lang/Object;)V
+	public fun sendDeletedById (Ljava/lang/Object;Ljava/lang/Class;)V
+	public fun sendSaved (Ljava/lang/Object;)V
+}
+
+public final class io/bluetape4k/javers/metamodel/CdoSnapshotSupportKt {
+	public static final fun filterByAuthor (Lkotlin/sequences/Sequence;Ljava/lang/String;)Lkotlin/sequences/Sequence;
+	public static final fun filterByChangedPropertyName (Lkotlin/sequences/Sequence;Ljava/lang/String;)Lkotlin/sequences/Sequence;
+	public static final fun filterByChangedPropertyNames (Lkotlin/sequences/Sequence;Ljava/util/Set;)Lkotlin/sequences/Sequence;
+	public static final fun filterByCommitDate (Lkotlin/sequences/Sequence;Lorg/javers/repository/api/QueryParams;)Lkotlin/sequences/Sequence;
+	public static final fun filterByCommitIds (Lkotlin/sequences/Sequence;Ljava/util/Collection;)Lkotlin/sequences/Sequence;
+	public static final fun filterByCommitProperties (Lkotlin/sequences/Sequence;Ljava/util/Map;)Lkotlin/sequences/Sequence;
+	public static final fun filterByToCommitId (Lkotlin/sequences/Sequence;Lorg/javers/core/commit/CommitId;)Lkotlin/sequences/Sequence;
+	public static final fun filterByType (Lkotlin/sequences/Sequence;Lorg/javers/core/metamodel/object/SnapshotType;)Lkotlin/sequences/Sequence;
+	public static final fun filterByVersion (Lkotlin/sequences/Sequence;J)Lkotlin/sequences/Sequence;
+	public static final fun forEachProperties (Lorg/javers/core/metamodel/object/CdoSnapshot;Lkotlin/jvm/functions/Function2;)V
+	public static final fun mapProperties (Lorg/javers/core/metamodel/object/CdoSnapshot;Lkotlin/jvm/functions/Function2;)Ljava/util/List;
+	public static final fun trimToRequestedSlice (Lkotlin/sequences/Sequence;II)Ljava/util/List;
+}
+
+public final class io/bluetape4k/javers/metamodel/GlobalIdExtensionsKt {
+	public static final fun isChild (Lorg/javers/core/metamodel/object/GlobalId;Lorg/javers/core/metamodel/type/ManagedType;)Z
+	public static final fun isParent (Lorg/javers/core/metamodel/object/GlobalId;Lorg/javers/core/metamodel/object/GlobalId;)Z
+}
+
+public abstract class io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository : io/bluetape4k/javers/repository/CdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/repository/AbstractCdoSnapshotRepository$Companion;
+	public fun <init> (Lio/bluetape4k/javers/codecs/JaversCodec;Lio/bluetape4k/idgenerators/snowflake/Snowflake;)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/codecs/JaversCodec;Lio/bluetape4k/idgenerators/snowflake/Snowflake;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected abstract fun contains (Ljava/lang/String;)Z
+	protected final fun contains (Lorg/javers/core/metamodel/object/GlobalId;)Z
+	protected final fun decode (Ljava/lang/Object;)Lorg/javers/core/metamodel/object/CdoSnapshot;
+	protected final fun doDecode (Ljava/lang/Object;)Lcom/google/gson/JsonObject;
+	protected final fun doEncode (Lcom/google/gson/JsonObject;)Ljava/lang/Object;
+	protected final fun encode (Lorg/javers/core/metamodel/object/CdoSnapshot;)Ljava/lang/Object;
+	public fun ensureSchema ()V
+	protected final fun getAll ()Ljava/util/List;
+	protected final fun getCodec ()Lio/bluetape4k/javers/codecs/JaversCodec;
+	protected final fun getCommitIdSupplier ()Lio/bluetape4k/idgenerators/snowflake/Snowflake;
+	protected final fun getHead ()Lorg/javers/core/commit/CommitId;
+	public fun getHeadId ()Lorg/javers/core/commit/CommitId;
+	public final fun getJsonConverter ()Lorg/javers/core/json/JsonConverter;
+	protected abstract fun getKeys ()Ljava/util/Set;
+	public fun getLatest (Ljava/util/Collection;)Ljava/util/List;
+	public fun getLatest (Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/Optional;
+	protected abstract fun getSeq (Lorg/javers/core/commit/CommitId;)J
+	protected abstract fun getSnapshotSize (Ljava/lang/String;)I
+	protected final fun getSnapshotSize (Lorg/javers/core/metamodel/object/GlobalId;)I
+	public fun getSnapshots (Ljava/util/Collection;)Ljava/util/List;
+	public fun getSnapshots (Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getStateHistory (Ljava/util/Set;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getStateHistory (Lorg/javers/core/metamodel/object/GlobalId;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getValueObjectStateHistory (Lorg/javers/core/metamodel/type/EntityType;Ljava/lang/String;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	protected fun loadHeadId ()Lorg/javers/core/commit/CommitId;
+	public fun loadSnapshots (Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/List;
+	public fun persist (Lorg/javers/core/commit/Commit;)V
+	protected fun persistCommit (Lorg/javers/core/commit/Commit;J)V
+	protected fun persistProjectedSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;J)V
+	public fun projectSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+	protected final fun setHead (Lorg/javers/core/commit/CommitId;)V
+	public fun setJsonConverter (Lorg/javers/core/json/JsonConverter;)V
+	protected abstract fun updateCommitId (Lorg/javers/core/commit/CommitId;J)V
+}
+
+public final class io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public abstract interface class io/bluetape4k/javers/repository/CdoSnapshotRepository : org/javers/repository/api/JaversRepository {
+	public abstract fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun loadSnapshots (Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/List;
+	public fun projectSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+	public abstract fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/repository/CdoSnapshotRepository$DefaultImpls {
+	public static fun loadSnapshots (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/List;
+	public static fun projectSnapshot (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/repository/cache2k/Cache2KCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/repository/cache2k/Cache2KCdoSnapshotRepository$Companion;
+	public fun <init> ()V
+	public fun <init> (Lio/bluetape4k/javers/codecs/JaversCodec;)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/codecs/JaversCodec;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/repository/cache2k/Cache2KCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/repository/caffeine/CaffeineCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/repository/caffeine/CaffeineCdoSnapshotRepository$Companion;
+	public fun <init> ()V
+	public fun <init> (Lio/bluetape4k/javers/codecs/JaversCodec;)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/codecs/JaversCodec;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/repository/caffeine/CaffeineCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind : java/lang/Enum {
+	public static final field PRIMARY Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;
+	public static final field SECONDARY Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;
+	public static fun values ()[Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotException : java/lang/RuntimeException {
+	public static final field Companion Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotException$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public final fun getFailures ()Ljava/util/List;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotException$Companion {
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy : java/lang/Enum {
+	public static final field BEST_EFFORT Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public static final field FAIL_FAST Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public static fun values ()[Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository : io/bluetape4k/javers/repository/CdoSnapshotRepository, java/lang/AutoCloseable {
+	public static final field Companion Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository$Companion;
+	public fun close ()V
+	public fun ensureSchema ()V
+	public fun getHeadId ()Lorg/javers/core/commit/CommitId;
+	public fun getLatest (Ljava/util/Collection;)Ljava/util/List;
+	public fun getLatest (Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/Optional;
+	public final fun getOptions ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;
+	public final fun getPrimary ()Lio/bluetape4k/javers/repository/CdoSnapshotRepository;
+	public final fun getSecondaryRepositories ()Ljava/util/List;
+	public fun getSnapshots (Ljava/util/Collection;)Ljava/util/List;
+	public fun getSnapshots (Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getStateHistory (Ljava/util/Set;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getStateHistory (Lorg/javers/core/metamodel/object/GlobalId;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getValueObjectStateHistory (Lorg/javers/core/metamodel/type/EntityType;Ljava/lang/String;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun loadSnapshots (Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/List;
+	public fun persist (Lorg/javers/core/commit/Commit;)V
+	public fun projectSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+	public fun setJsonConverter (Lorg/javers/core/json/JsonConverter;)V
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository$Companion {
+	public final fun invoke (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Ljava/util/Collection;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository;
+	public final fun invoke (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;[Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository$Companion;Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Ljava/util/Collection;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;ILjava/lang/Object;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository$Companion;Lio/bluetape4k/javers/repository/CdoSnapshotRepository;[Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;ILjava/lang/Object;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions$Companion;
+	public final fun component1 ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public final fun component2 ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public final fun component3 ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCloseFailurePolicy ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public final fun getEnsureSchemaFailurePolicy ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public final fun getWriteFailurePolicy ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions$Companion {
+	public final fun getDefault ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;
+	public final fun invoke (Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions$Companion;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotFailurePolicy;ILjava/lang/Object;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepositoryOptions;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotWriteFailure : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotWriteFailure$Companion;
+	public final fun component1 ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/Throwable;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public final fun getDelegateClassName ()Ljava/lang/String;
+	public final fun getDelegateIndex ()I
+	public final fun getDelegateKind ()Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;
+	public final fun getOperation ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotWriteFailure$Companion {
+	public final fun invoke (Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotDelegateKind;ILjava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)Lio/bluetape4k/javers/repository/composite/CompositeCdoSnapshotWriteFailure;
+}
+
+public final class io/bluetape4k/javers/repository/event/CdoSnapshotEvent : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent$Companion;
+	public final fun component1 ()Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata;
+	public final fun component2 ()Ljava/lang/Object;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMetadata ()Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata;
+	public final fun getPayload ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/repository/event/CdoSnapshotEvent$Companion {
+	public final fun invoke (Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata;Ljava/lang/Object;)Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;
+}
+
+public final class io/bluetape4k/javers/repository/event/CdoSnapshotEventCodecIds {
+	public static final field INSTANCE Lio/bluetape4k/javers/repository/event/CdoSnapshotEventCodecIds;
+	public static final field JSON_STRING Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata$Companion;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()J
+	public final fun component4 ()I
+	public final fun component5 ()Ljava/lang/Long;
+	public final fun component6 ()J
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/time/Instant;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAuthor ()Ljava/lang/String;
+	public final fun getCodecId ()Ljava/lang/String;
+	public final fun getCommitId ()Ljava/lang/String;
+	public final fun getCommitMajorId ()J
+	public final fun getCommitMinorId ()I
+	public final fun getCommitTimestamp ()Ljava/time/Instant;
+	public final fun getGlobalIdValue ()Ljava/lang/String;
+	public final fun getIdempotencyKey ()Ljava/lang/String;
+	public final fun getRepositorySequence ()Ljava/lang/Long;
+	public final fun getSnapshotType ()Ljava/lang/String;
+	public final fun getSnapshotVersion ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata$Companion {
+	public final fun defaultIdempotencyKey (Lorg/javers/core/metamodel/object/CdoSnapshot;)Ljava/lang/String;
+	public final fun from (Lorg/javers/core/metamodel/object/CdoSnapshot;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/String;)Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata;
+	public static synthetic fun from$default (Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata$Companion;Lorg/javers/core/metamodel/object/CdoSnapshot;Ljava/lang/String;Ljava/lang/Long;Ljava/lang/String;ILjava/lang/Object;)Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata;
+	public final fun invoke (Ljava/lang/String;Ljava/lang/String;JILjava/lang/Long;JLjava/lang/String;Ljava/lang/String;Ljava/time/Instant;Ljava/lang/String;Ljava/lang/String;)Lio/bluetape4k/javers/repository/event/CdoSnapshotEventMetadata;
+}
+
+public abstract interface class io/bluetape4k/javers/repository/event/CdoSnapshotEventPublisher {
+	public abstract fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;)V
+}
+
+public final class io/bluetape4k/javers/repository/jcache/JCacheCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/repository/jcache/JCacheCdoSnapshotRepository$Companion;
+	public fun <init> (Ljava/lang/String;Ljavax/cache/CacheManager;Lio/bluetape4k/javers/codecs/JaversCodec;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljavax/cache/CacheManager;Lio/bluetape4k/javers/codecs/JaversCodec;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/repository/jcache/JCacheCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/repository/jql/JqlQueryExtensionsKt {
+	public static final fun findChanges (Lorg/javers/repository/jql/JqlQuery;Lorg/javers/core/Javers;)Lorg/javers/core/Changes;
+	public static final fun findSnapshots (Lorg/javers/repository/jql/JqlQuery;Lorg/javers/core/Javers;)Ljava/util/List;
+}
+
+public final class io/bluetape4k/javers/repository/jql/QueryBuilderExtensionsKt {
+	public static final fun queryAnyDomainObject (Lkotlin/jvm/functions/Function1;)Lorg/javers/repository/jql/JqlQuery;
+	public static synthetic fun queryAnyDomainObject$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/javers/repository/jql/JqlQuery;
+	public static final fun queryByClasses (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Lorg/javers/repository/jql/JqlQuery;
+	public static final fun queryByClasses ([Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Lorg/javers/repository/jql/JqlQuery;
+	public static synthetic fun queryByClasses$default (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/javers/repository/jql/JqlQuery;
+	public static synthetic fun queryByClasses$default ([Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/javers/repository/jql/JqlQuery;
+	public static final fun queryByClassesArray ([Ljava/lang/Class;Lkotlin/jvm/functions/Function1;)Lorg/javers/repository/jql/JqlQuery;
+	public static synthetic fun queryByClassesArray$default ([Ljava/lang/Class;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/javers/repository/jql/JqlQuery;
+	public static final fun queryByClassesCollection (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Lorg/javers/repository/jql/JqlQuery;
+	public static synthetic fun queryByClassesCollection$default (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/javers/repository/jql/JqlQuery;
+}
+

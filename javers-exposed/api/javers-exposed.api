@@ -1,0 +1,141 @@
+public final class io/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookMapping {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookMapping$Companion;
+	public fun <init> (Lorg/jetbrains/exposed/v1/dao/EntityClass;Ljava/lang/Class;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/jetbrains/exposed/v1/dao/EntityClass;Ljava/lang/Class;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAuditType ()Ljava/lang/Class;
+	public final fun getEntityClass ()Lorg/jetbrains/exposed/v1/dao/EntityClass;
+	public final fun getToAuditId ()Lkotlin/jvm/functions/Function1;
+	public final fun getToAuditObject ()Lkotlin/jvm/functions/Function1;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookMapping$Companion {
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookSubscription : java/lang/AutoCloseable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookSubscription$Companion;
+	public fun close ()V
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookSubscription$Companion {
+	public final fun subscribe (Lorg/javers/core/Javers;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lio/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookSubscription;
+	public static synthetic fun subscribe$default (Lio/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookSubscription$Companion;Lorg/javers/core/Javers;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookSubscription;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository$Companion;
+	public fun <init> ()V
+	public fun <init> (Lorg/jetbrains/exposed/v1/jdbc/Database;Lio/bluetape4k/javers/codecs/JaversCodec;Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions;)V
+	public synthetic fun <init> (Lorg/jetbrains/exposed/v1/jdbc/Database;Lio/bluetape4k/javers/codecs/JaversCodec;Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun ensureSchema ()V
+	public fun getSnapshots (Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getStateHistory (Ljava/util/Set;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun getStateHistory (Lorg/javers/core/metamodel/object/GlobalId;Lorg/javers/repository/api/QueryParams;)Ljava/util/List;
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions$Companion;
+	public fun <init> ()V
+	public fun <init> (Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;Z)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
+	public final fun component2 ()Z
+	public final fun copy (Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;Z)Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions;Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;ZILjava/lang/Object;)Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCreateSchemaOnEnsure ()Z
+	public final fun getTableNames ()Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
+	public fun hashCode ()I
+	public final fun newSchema ()Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversSchema;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions$Companion {
+	public final fun getDefault ()Lio/bluetape4k/javers/persistence/exposed/repository/ExposedCdoSnapshotRepositoryOptions;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTable : io/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTableMapping {
+	public static final field GLOBAL_ID_VERSION_INDEX Ljava/lang/String;
+	public static final field INSTANCE Lio/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTable;
+}
+
+public class io/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTableMapping : org/jetbrains/exposed/v1/core/Table {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTableMapping$Companion;
+	public static final field DEFAULT_GLOBAL_ID_VERSION_INDEX Ljava/lang/String;
+	public static final field DEFAULT_TABLE_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getChangedProperties ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getCommitId ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getGlobalId ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getManagedType ()Lorg/jetbrains/exposed/v1/core/Column;
+	public fun getPrimaryKey ()Lorg/jetbrains/exposed/v1/core/Table$PrimaryKey;
+	public final fun getState ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getType ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getVersion ()Lorg/jetbrains/exposed/v1/core/Column;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTableMapping$Companion {
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/CommitTable : io/bluetape4k/javers/persistence/exposed/schema/CommitTableMapping {
+	public static final field COMMIT_ID_INDEX Ljava/lang/String;
+	public static final field INSTANCE Lio/bluetape4k/javers/persistence/exposed/schema/CommitTable;
+	public static final field SEQUENCE_INDEX Ljava/lang/String;
+}
+
+public class io/bluetape4k/javers/persistence/exposed/schema/CommitTableMapping : org/jetbrains/exposed/v1/core/Table {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/schema/CommitTableMapping$Companion;
+	public static final field DEFAULT_COMMIT_ID_INDEX Ljava/lang/String;
+	public static final field DEFAULT_SEQUENCE_INDEX Ljava/lang/String;
+	public static final field DEFAULT_TABLE_NAME Ljava/lang/String;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAuthor ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getCommitDate ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getCommitDateInstant ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getCommitId ()Lorg/jetbrains/exposed/v1/core/Column;
+	public fun getPrimaryKey ()Lorg/jetbrains/exposed/v1/core/Table$PrimaryKey;
+	public final fun getProperties ()Lorg/jetbrains/exposed/v1/core/Column;
+	public final fun getSequence ()Lorg/jetbrains/exposed/v1/core/Column;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/CommitTableMapping$Companion {
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/ExposedJaversSchema {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversSchema$Companion;
+	public fun <init> (Lio/bluetape4k/javers/persistence/exposed/schema/CommitTableMapping;Lio/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTableMapping;)V
+	public final fun getCommitTable ()Lio/bluetape4k/javers/persistence/exposed/schema/CommitTableMapping;
+	public final fun getSnapshotTable ()Lio/bluetape4k/javers/persistence/exposed/schema/CdoSnapshotTableMapping;
+	public final fun getTables ()[Lorg/jetbrains/exposed/v1/core/Table;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/ExposedJaversSchema$Companion {
+	public final fun from (Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;)Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversSchema;
+	public final fun getDefault ()Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversSchema;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames$Companion;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCommitTableName ()Ljava/lang/String;
+	public final fun getSnapshotTableName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames$Companion {
+	public final fun getDefault ()Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
+	public final fun invoke (Ljava/lang/String;Ljava/lang/String;)Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames$Companion;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
+}
+

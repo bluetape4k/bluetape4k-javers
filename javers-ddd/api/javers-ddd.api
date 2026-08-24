@@ -1,0 +1,91 @@
+public abstract class io/bluetape4k/javers/ddd/AggregateRepository {
+	public fun <init> (Ljava/lang/Class;Lorg/javers/core/Javers;Lio/bluetape4k/javers/ddd/DomainEventPublisher;)V
+	public synthetic fun <init> (Ljava/lang/Class;Lorg/javers/core/Javers;Lio/bluetape4k/javers/ddd/DomainEventPublisher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected abstract fun findById (Ljava/lang/Object;)Lio/bluetape4k/javers/ddd/AggregateRoot;
+	public final fun load (Ljava/lang/Object;)Lio/bluetape4k/javers/ddd/AggregateRoot;
+	public final fun loadHistory (Ljava/lang/Object;I)Ljava/util/List;
+	public static synthetic fun loadHistory$default (Lio/bluetape4k/javers/ddd/AggregateRepository;Ljava/lang/Object;IILjava/lang/Object;)Ljava/util/List;
+	protected abstract fun persist (Lio/bluetape4k/javers/ddd/AggregateRoot;)Lio/bluetape4k/javers/ddd/AggregateRoot;
+	public final fun save (Lio/bluetape4k/javers/ddd/AggregateRoot;Ljava/lang/String;)Lio/bluetape4k/javers/ddd/AggregateRoot;
+	public final fun save (Lio/bluetape4k/javers/ddd/AggregateRoot;Ljava/lang/String;Lio/bluetape4k/javers/ddd/DomainEvent;)Lio/bluetape4k/javers/ddd/AggregateRoot;
+	public final fun save (Lio/bluetape4k/javers/ddd/AggregateRoot;Ljava/lang/String;Ljava/util/Collection;)Lio/bluetape4k/javers/ddd/AggregateRoot;
+	protected fun saveAuditBoundary (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public abstract interface class io/bluetape4k/javers/ddd/AggregateRoot {
+	public abstract fun getId ()Ljava/lang/Object;
+}
+
+public final class io/bluetape4k/javers/ddd/CompositeDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public fun <init> (Ljava/util/List;)V
+	public fun <init> ([Lio/bluetape4k/javers/ddd/DomainEventPublisher;)V
+	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+
+public abstract interface class io/bluetape4k/javers/ddd/DomainEvent {
+	public abstract fun getAggregateId ()Ljava/lang/Object;
+	public fun getAttributes ()Ljava/util/Map;
+	public abstract fun getOccurredOn ()Ljava/time/Instant;
+}
+
+public final class io/bluetape4k/javers/ddd/DomainEvent$DefaultImpls {
+	public static fun getAttributes (Lio/bluetape4k/javers/ddd/DomainEvent;)Ljava/util/Map;
+}
+
+public final class io/bluetape4k/javers/ddd/DomainEventKt {
+	public static final field DOMAIN_EVENT_AGGREGATE_ID_PROPERTY Ljava/lang/String;
+	public static final field DOMAIN_EVENT_ATTRIBUTE_PREFIX Ljava/lang/String;
+	public static final field DOMAIN_EVENT_COUNT_PROPERTY Ljava/lang/String;
+	public static final field DOMAIN_EVENT_OCCURRED_ON_PROPERTY Ljava/lang/String;
+	public static final field DOMAIN_EVENT_TYPES_PROPERTY Ljava/lang/String;
+	public static final field DOMAIN_EVENT_TYPE_PROPERTY Ljava/lang/String;
+	public static final fun toJaversProperties (Lio/bluetape4k/javers/ddd/DomainEvent;)Ljava/util/Map;
+}
+
+public abstract interface class io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public abstract fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+
+public final class io/bluetape4k/javers/ddd/DomainEventPublisher$DefaultImpls {
+	public static fun publishAll (Lio/bluetape4k/javers/ddd/DomainEventPublisher;Ljava/lang/Iterable;)V
+}
+
+public final class io/bluetape4k/javers/ddd/FunctionDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+
+public final class io/bluetape4k/javers/ddd/NoopDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public static final field INSTANCE Lio/bluetape4k/javers/ddd/NoopDomainEventPublisher;
+	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+
+public final class io/bluetape4k/javers/ddd/kafka/KafkaDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public static final field Companion Lio/bluetape4k/javers/ddd/kafka/KafkaDomainEventPublisher$Companion;
+	public fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Lkotlin/jvm/functions/Function1;Ljava/time/Duration;)V
+	public fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/time/Duration;)V
+	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+
+public final class io/bluetape4k/javers/ddd/kafka/KafkaDomainEventPublisher$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/ddd/nats/NatsDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public fun <init> (Lio/nats/client/Connection;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+
+public final class io/bluetape4k/javers/ddd/spring/SpringApplicationEventDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
+	public fun <init> (Lorg/springframework/context/ApplicationEventPublisher;)V
+	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
+	public fun publishAll (Ljava/lang/Iterable;)V
+}
+

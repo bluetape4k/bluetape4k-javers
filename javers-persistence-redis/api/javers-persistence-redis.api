@@ -1,0 +1,25 @@
+public final class io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository, java/lang/AutoCloseable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository$Companion;
+	public fun <init> (Ljava/lang/String;Lio/lettuce/core/RedisClient;Lio/bluetape4k/javers/codecs/JaversCodec;)V
+	public synthetic fun <init> (Ljava/lang/String;Lio/lettuce/core/RedisClient;Lio/bluetape4k/javers/codecs/JaversCodec;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public final fun getName ()Ljava/lang/String;
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/redisson/api/RedissonClient;Lio/bluetape4k/javers/codecs/JaversCodec;)V
+	public synthetic fun <init> (Ljava/lang/String;Lorg/redisson/api/RedissonClient;Lio/bluetape4k/javers/codecs/JaversCodec;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getName ()Ljava/lang/String;
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+

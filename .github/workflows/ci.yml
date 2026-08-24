@@ -195,6 +195,10 @@ jobs:
           done
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+      - name: Verify Kotlin public ABI
+        run: |
+          ./gradlew checkKotlinAbi --no-daemon --no-configuration-cache --no-build-cache --no-parallel
+          ruby scripts/compatibility/public_abi_fixture_test.rb
 
       - name: Validate publication POMs
         run: |
