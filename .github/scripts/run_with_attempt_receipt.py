@@ -97,6 +97,7 @@ def run(name: str, max_attempts: int, sleep_seconds: int, receipt_path: Path, co
     attempts: list[dict[str, Any]] = []
     command_text = shlex.join(command)
     final_status = "failed"
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
 
     for attempt_number in range(1, max_attempts + 1):
         started_at = utc_now()
