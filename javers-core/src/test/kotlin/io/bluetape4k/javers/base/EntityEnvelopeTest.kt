@@ -4,6 +4,10 @@ import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeNull
 import io.bluetape4k.javers.examples.Person
 import org.junit.jupiter.api.Test
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 class EntityEnvelopeTest {
 
@@ -47,5 +51,22 @@ class EntityEnvelopeTest {
         EntityEventType.Companion.valueOf("SAVED") shouldBeEqualTo EntityEventType.SAVED
         EntityEventType.Companion.valueOf("DELETED") shouldBeEqualTo EntityEventType.DELETED
         EntityEventType.Companion.valueOf("unknown").shouldBeNull()
+    }
+
+    @Test
+    fun `headers stay outside structural identity but survive java serialization`() {
+        val envelope = EntityEnvelope(Person("bob", "Bob")).apply { addHeader("traceId", "trace-1") }
+
+        val copied = envelope.copy()
+        copied.headers shouldBeEqualTo emptyMap()
+        copied shouldBeEqualTo EntityEnvelope(envelope.entity, envelope.entityType)
+        envelope.hashCode() shouldBeEqualTo EntityEnvelope(envelope.entity, envelope.entityType).hashCode()
+        envelope.toString() shouldBeEqualTo EntityEnvelope(envelope.entity, envelope.entityType).toString()
+
+        val bytes = ByteArrayOutputStream().also { output ->
+            ObjectOutputStream(output).use { it.writeObject(envelope) }
+        }.toByteArray()
+        val restored = ObjectInputStream(ByteArrayInputStream(bytes)).use { it.readObject() as EntityEnvelope }
+        restored.headers shouldBeEqualTo mapOf("traceId" to "trace-1")
     }
 }

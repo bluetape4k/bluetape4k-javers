@@ -3,6 +3,7 @@ package io.bluetape4k.javers.codecs
 import com.google.gson.JsonObject
 import io.bluetape4k.io.serializer.BinarySerializer
 import io.bluetape4k.logging.KLogging
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * [BinarySerializer]를 사용해 [JsonObject]를 byte array로 직렬화하는 codec입니다.
@@ -33,8 +34,12 @@ class BinaryJaversCodec(
     }
 
     override fun decode(encodedData: ByteArray): JsonObject? {
-        return serializer.deserialize<Map<String, Any?>>(encodedData)?.let {
-            mapCodec.decode(it)
+        return try {
+            serializer.deserialize<Map<String, Any?>>(encodedData)?.let(mapCodec::decode)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            null
         }
     }
 }
