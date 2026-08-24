@@ -30,6 +30,14 @@ data class Order private constructor(
     val totalAmount: BigDecimal
         get() = items.fold(BigDecimal.ZERO) { acc, item -> acc + item.lineTotal }
 
+    /**
+     * 주문을 결제 완료 상태로 전이합니다.
+     *
+     * 상태 전이는 현재 aggregate 상태의 불변식입니다. 기존 호출자와의
+     * 예외 호환성을 위해 `IllegalArgumentException` 계약은 유지합니다.
+     *
+     * @throws IllegalArgumentException 주문이 [OrderStatus.PLACED]가 아닌 경우
+     */
     fun markPaid(now: Instant): Order {
         require(status == OrderStatus.PLACED) { "Only placed orders can be marked paid" }
         return copy(status = OrderStatus.PAID, updatedAt = now)
