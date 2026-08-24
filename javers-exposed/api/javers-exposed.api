@@ -7,7 +7,6 @@ public final class io/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEn
 	public final fun getToAuditId ()Lkotlin/jvm/functions/Function1;
 	public final fun getToAuditObject ()Lkotlin/jvm/functions/Function1;
 }
-
 public final class io/bluetape4k/javers/persistence/exposed/hook/ExposedJaversEntityHookMapping$Companion {
 }
 
@@ -138,4 +137,3 @@ public final class io/bluetape4k/javers/persistence/exposed/schema/ExposedJavers
 	public final fun invoke (Ljava/lang/String;Ljava/lang/String;)Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
 	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames$Companion;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/exposed/schema/ExposedJaversTableNames;
 }
-

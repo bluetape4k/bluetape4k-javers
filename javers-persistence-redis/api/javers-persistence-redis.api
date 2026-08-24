@@ -7,7 +7,6 @@ public final class io/bluetape4k/javers/persistence/redis/repository/LettuceCdoS
 	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
 	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 }
-
 public final class io/bluetape4k/javers/persistence/redis/repository/LettuceCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
 }
 
@@ -22,4 +21,3 @@ public final class io/bluetape4k/javers/persistence/redis/repository/RedissonCdo
 
 public final class io/bluetape4k/javers/persistence/redis/repository/RedissonCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
 }
-

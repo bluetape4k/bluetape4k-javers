@@ -11,7 +11,6 @@ public abstract class io/bluetape4k/javers/ddd/AggregateRepository {
 	public final fun save (Lio/bluetape4k/javers/ddd/AggregateRoot;Ljava/lang/String;Ljava/util/Collection;)Lio/bluetape4k/javers/ddd/AggregateRoot;
 	protected fun saveAuditBoundary (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
-
 public abstract interface class io/bluetape4k/javers/ddd/AggregateRoot {
 	public abstract fun getId ()Ljava/lang/Object;
 }
@@ -88,4 +87,3 @@ public final class io/bluetape4k/javers/ddd/spring/SpringApplicationEventDomainE
 	public fun publish (Lio/bluetape4k/javers/ddd/DomainEvent;)V
 	public fun publishAll (Ljava/lang/Iterable;)V
 }
-
