@@ -12,10 +12,10 @@ SCRIPT = Path(__file__).with_name("run_with_attempt_receipt.py")
 
 
 class RunWithAttemptReceiptTest(unittest.TestCase):
-    def run_helper(self, command, max_attempts=3):
+    def run_helper(self, command, max_attempts=3, receipt_relative_path="receipt.json"):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            receipt = root / "receipt.json"
+            receipt = root / receipt_relative_path
             result = subprocess.run(
                 [
                     sys.executable,
@@ -71,6 +71,14 @@ class RunWithAttemptReceiptTest(unittest.TestCase):
         self.assertEqual(receipt["retryCount"], 0)
         self.assertEqual(receipt["firstAttempt"]["classification"], "test_failure")
         self.assertEqual(len(receipt["attempts"]), 1)
+
+    def test_creates_nested_receipt_and_log_directories(self):
+        command = [sys.executable, "-c", "print('ok')"]
+        result, receipt, logs = self.run_helper(command, max_attempts=1, receipt_relative_path="build/reports/ci-attempts/receipt.json")
+
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(receipt["finalStatus"], "passed")
+        self.assertEqual(logs[1], "ok\n")
 
     def test_stops_on_missing_dependency_without_retry(self):
         command = [

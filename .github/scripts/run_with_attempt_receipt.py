@@ -104,6 +104,7 @@ def run(name: str, max_attempts: int, sleep_seconds: int, receipt_path: Path, co
         sys.stdout.flush()
 
         log_path = receipt_path.parent / f"{name}-attempt-{attempt_number}.log"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
         log_path.write_text(output, encoding="utf-8")
         classification = classify(completed.returncode, output)
         attempts.append(
