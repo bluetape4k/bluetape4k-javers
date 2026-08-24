@@ -7,6 +7,44 @@
 
 ## [미공개]
 
+### 추가
+
+- `javers-spring-boot4-autoconfigure`의 schema ownership과 상충 flag 조합을
+  fail-fast로 검증하고 현재 module inventory와 Spring Boot 4 예제를 정렬했다
+  ([#338](https://github.com/bluetape4k/bluetape4k-javers/issues/338),
+  [PR #349](https://github.com/bluetape4k/bluetape4k-javers/pull/349)).
+- benchmark teardown과 CI 첫 시도 실패를 재현 가능한 JSON receipt로 남기는
+  fail-closed evidence 경로를 추가했다
+  ([#339](https://github.com/bluetape4k/bluetape4k-javers/issues/339),
+  [PR #352](https://github.com/bluetape4k/bluetape4k-javers/pull/352),
+  [#342](https://github.com/bluetape4k/bluetape4k-javers/issues/342),
+  [PR #353](https://github.com/bluetape4k/bluetape4k-javers/pull/353)).
+
+### 변경
+
+- Redis repository head가 손상되거나 되감긴 경우 audit history를 조용히
+  축소하지 않도록 fail-closed 검증을 적용했다
+  ([#334](https://github.com/bluetape4k/bluetape4k-javers/issues/334),
+  [PR #345](https://github.com/bluetape4k/bluetape4k-javers/pull/345)).
+- 배포 library의 Kotlin public ABI baseline을 Kotlin Gradle Plugin built-in
+  validator로 고정했다
+  ([#341](https://github.com/bluetape4k/bluetape4k-javers/issues/341),
+  [PR #346](https://github.com/bluetape4k/bluetape4k-javers/pull/346)).
+- core codec cancellation, weak-key cache lifecycle, projection commit 경계와
+  Ktor/Spring 예제의 bluetape4k 공용 helper 사용을 정리했다
+  ([#333](https://github.com/bluetape4k/bluetape4k-javers/issues/333),
+  [PR #347](https://github.com/bluetape4k/bluetape4k-javers/pull/347),
+  [#335](https://github.com/bluetape4k/bluetape4k-javers/issues/335),
+  [PR #348](https://github.com/bluetape4k/bluetape4k-javers/pull/348),
+  [#336](https://github.com/bluetape4k/bluetape4k-javers/issues/336),
+  [PR #350](https://github.com/bluetape4k/bluetape4k-javers/pull/350),
+  [#337](https://github.com/bluetape4k/bluetape4k-javers/issues/337),
+  [PR #351](https://github.com/bluetape4k/bluetape4k-javers/pull/351)).
+- 테스트 assertion을 `bluetape4k-assertions`의 의도 중심 matcher로 교체하고
+  예외·collection·null 계약을 직접 표현했다
+  ([#340](https://github.com/bluetape4k/bluetape4k-javers/issues/340),
+  [PR #354](https://github.com/bluetape4k/bluetape4k-javers/pull/354)).
+
 ## [0.3.0] - 2026-08-06
 
 ### 추가

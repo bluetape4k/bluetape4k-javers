@@ -174,6 +174,19 @@ class ReleaseContractTest < Minitest::Test
     end
   end
 
+  def test_excludes_current_manual_from_the_immutable_release_contract
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir_p(File.join(root, "docs/manual/current/en"))
+      File.write(File.join(root, "docs/manual/current/en/index.md"), "[module](modules/javers-core.md)\n")
+      contract = ManualDocs::ReleaseContract.new(
+        repository_root: root, tag: "0.3.0", expected_sha: SHA,
+        git_runner: runner(tree: []),
+      )
+
+      assert_empty contract.errors
+    end
+  end
+
   def test_final_validation_requires_complete_content
     with_release_fixture(content_status: "planned") do |validator|
       assert validator.errors.any? { |error| error.include?("contentStatus must be complete") }

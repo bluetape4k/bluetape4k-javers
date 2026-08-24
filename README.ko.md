@@ -72,6 +72,13 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 | `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Exposed, Redis, Kafka JaVers repository를 위한 Spring Boot 4 조건부 auto-configuration |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | JaVers artifact 정렬용 consumer BOM |
 
+## 매뉴얼
+
+- [현재 1.0.0 매뉴얼](docs/manual/current/ko/index.md)은
+  `settings.gradle.kts`에 등록된 모든 모듈과 예제·benchmark 근거를 다룹니다.
+- [릴리스 고정 0.3.0 매뉴얼](docs/manual/ko/index.md)은 immutable 상태로
+  보존하며 해당 릴리스에서 제공한 모듈만 설명합니다.
+
 ## bluetape4k-exposed와의 경계
 
 `bluetape4k-javers`는 JaVers audit와 history 의미를 담당합니다. 객체 diff, CDO

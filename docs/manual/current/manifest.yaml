@@ -1,0 +1,183 @@
+---
+schemaVersion: 1
+repository: bluetape4k-javers
+version: 1.0.0
+publication:
+  manualVersion: '1.0'
+  sourceRoot: docs/manual/current
+  locales:
+  - en
+  - ko
+  contentStatus: complete
+overview:
+  documents:
+    en:
+    - en/index.md
+    ko:
+    - ko/index.md
+modules:
+- id: benchmark-javers-exposed-benchmark
+  title:
+    en: JaVers Exposed benchmark
+    ko: JaVers Exposed 벤치마크
+  gradlePath: ":benchmark-javers-exposed-benchmark"
+  projectName: benchmark-javers-exposed-benchmark
+  sourceDir: benchmark/javers-exposed-benchmark
+  kind: benchmark
+  group: benchmarks
+  artifact:
+  status: current
+  sourcePaths:
+  - benchmark/javers-exposed-benchmark
+  en: en/modules/benchmark-javers-exposed-benchmark.md
+  ko: ko/modules/benchmark-javers-exposed-benchmark.md
+- id: bluetape4k-javers-bom
+  title:
+    en: Javers BOM
+    ko: Javers BOM
+  gradlePath: ":bluetape4k-javers-bom"
+  projectName: bluetape4k-javers-bom
+  sourceDir: bom
+  kind: bom
+  group: foundation
+  artifact: io.github.bluetape4k.javers:bluetape4k-javers-bom
+  status: current
+  sourcePaths:
+  - bom
+  en: en/modules/bluetape4k-javers-bom.md
+  ko: ko/modules/bluetape4k-javers-bom.md
+- id: examples-javers-exposed-ddd
+  title:
+    en: JaVers Exposed DDD example
+    ko: JaVers Exposed DDD 예제
+  gradlePath: ":examples-javers-exposed-ddd"
+  projectName: examples-javers-exposed-ddd
+  sourceDir: examples/javers-exposed-ddd
+  kind: example
+  group: examples
+  artifact:
+  status: current
+  sourcePaths:
+  - examples/javers-exposed-ddd
+  en: en/modules/examples-javers-exposed-ddd.md
+  ko: ko/modules/examples-javers-exposed-ddd.md
+- id: examples-javers-ktor
+  title:
+    en: JaVers Ktor example
+    ko: JaVers Ktor 예제
+  gradlePath: ":examples-javers-ktor"
+  projectName: examples-javers-ktor
+  sourceDir: examples/javers-ktor
+  kind: example
+  group: examples
+  artifact:
+  status: current
+  sourcePaths:
+  - examples/javers-ktor
+  en: en/modules/examples-javers-ktor.md
+  ko: ko/modules/examples-javers-ktor.md
+- id: examples-javers-spring-boot4
+  title:
+    en: JaVers Spring Boot 4 example
+    ko: JaVers Spring Boot 4 예제
+  gradlePath: ":examples-javers-spring-boot4"
+  projectName: examples-javers-spring-boot4
+  sourceDir: examples/javers-spring-boot4
+  kind: example
+  group: examples
+  artifact:
+  status: current
+  sourcePaths:
+  - examples/javers-spring-boot4
+  en: en/modules/examples-javers-spring-boot4.md
+  ko: ko/modules/examples-javers-spring-boot4.md
+- id: javers-core
+  title:
+    en: JaVers core library
+    ko: JaVers 핵심 라이브러리
+  gradlePath: ":javers-core"
+  projectName: javers-core
+  sourceDir: javers-core
+  kind: library
+  group: foundation
+  artifact: io.github.bluetape4k.javers:javers-core
+  status: current
+  sourcePaths:
+  - javers-core
+  en: en/modules/javers-core.md
+  ko: ko/modules/javers-core.md
+- id: javers-ddd
+  title:
+    en: JaVers DDD library
+    ko: JaVers DDD 라이브러리
+  gradlePath: ":javers-ddd"
+  projectName: javers-ddd
+  sourceDir: javers-ddd
+  kind: library
+  group: foundation
+  artifact: io.github.bluetape4k.javers:javers-ddd
+  status: current
+  sourcePaths:
+  - javers-ddd
+  en: en/modules/javers-ddd.md
+  ko: ko/modules/javers-ddd.md
+- id: javers-exposed
+  title:
+    en: JaVers Exposed persistence
+    ko: JaVers Exposed 영속성
+  gradlePath: ":javers-exposed"
+  projectName: javers-exposed
+  sourceDir: javers-exposed
+  kind: library
+  group: persistence
+  artifact: io.github.bluetape4k.javers:javers-exposed
+  status: current
+  sourcePaths:
+  - javers-exposed
+  en: en/modules/javers-exposed.md
+  ko: ko/modules/javers-exposed.md
+- id: javers-persistence-kafka
+  title:
+    en: JaVers Kafka persistence
+    ko: JaVers Kafka 영속성
+  gradlePath: ":javers-persistence-kafka"
+  projectName: javers-persistence-kafka
+  sourceDir: javers-persistence-kafka
+  kind: library
+  group: persistence
+  artifact: io.github.bluetape4k.javers:javers-persistence-kafka
+  status: current
+  sourcePaths:
+  - javers-persistence-kafka
+  en: en/modules/javers-persistence-kafka.md
+  ko: ko/modules/javers-persistence-kafka.md
+- id: javers-persistence-redis
+  title:
+    en: JaVers Redis persistence
+    ko: JaVers Redis 영속성
+  gradlePath: ":javers-persistence-redis"
+  projectName: javers-persistence-redis
+  sourceDir: javers-persistence-redis
+  kind: library
+  group: persistence
+  artifact: io.github.bluetape4k.javers:javers-persistence-redis
+  status: current
+  sourcePaths:
+  - javers-persistence-redis
+  en: en/modules/javers-persistence-redis.md
+  ko: ko/modules/javers-persistence-redis.md
+- id: javers-spring-boot4-autoconfigure
+  title:
+    en: JaVers Spring Boot 4 auto-configuration
+    ko: JaVers Spring Boot 4 자동 구성
+  gradlePath: ":javers-spring-boot4-autoconfigure"
+  projectName: javers-spring-boot4-autoconfigure
+  sourceDir: javers-spring-boot4-autoconfigure
+  kind: library
+  group: frameworks
+  artifact: io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure
+  status: current
+  sourcePaths:
+  - javers-spring-boot4-autoconfigure
+  en: en/modules/javers-spring-boot4-autoconfigure.md
+  ko: ko/modules/javers-spring-boot4-autoconfigure.md

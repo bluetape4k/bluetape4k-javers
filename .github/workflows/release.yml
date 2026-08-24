@@ -78,6 +78,17 @@ jobs:
           ref: ${{ needs.resolve-version.outputs.ref }}
           fetch-depth: 0
 
+      - name: Validate current manual and module inventory
+        env:
+          VERSION: ${{ needs.resolve-version.outputs.version }}
+        run: |
+          ruby scripts/manual/current_manual_contract_test.rb
+          ruby scripts/manual/current_manual_contract.rb --version "$VERSION"
+          ruby scripts/manual/export_manifest.rb --check \
+            docs/manual/current/manifest.yaml \
+            docs/manual/current/generated/manifest.json
+          git diff --check
+
       - name: Resolve dependencies catalog ref
         id: catalog
         shell: bash
