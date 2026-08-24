@@ -107,9 +107,15 @@ class RunWithAttemptReceiptTest(unittest.TestCase):
         for output, expected in (
             ("java.net.ConnectException: Connection refused", "infrastructure_retry"),
             ("Caused by: java.net.SocketTimeoutException: Read timed out", "infrastructure_retry"),
+            ("java.io.IOException: Resource temporarily unavailable", "infrastructure_retry"),
+            ("java.io.FileNotFoundException: Too many open files", "infrastructure_retry"),
             ("AssertionError: product returned connection refused", "test_failure"),
             ("AssertionError: product returned read timed out", "test_failure"),
             ("AssertionError: product returned\nconnection refused", "test_failure"),
+            ("AssertionError: Could not GET 'https://repo.example.test/artifact' (status code 503)", "test_failure"),
+            ("RuntimeError: product returned Could not GET 'https://repo.example.test/artifact' (status code 503)", "test_failure"),
+            ("RuntimeError: product returned resource temporarily unavailable", "test_failure"),
+            ("RuntimeError: product returned too many open files", "test_failure"),
         ):
             command = [sys.executable, "-c", f"print({output!r}); raise SystemExit(1)"]
             result, receipt, _ = self.run_helper(command, max_attempts=1)
