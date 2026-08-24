@@ -72,6 +72,29 @@ class RunWithAttemptReceiptTest(unittest.TestCase):
         self.assertEqual(receipt["firstAttempt"]["classification"], "test_failure")
         self.assertEqual(len(receipt["attempts"]), 1)
 
+    def test_stops_on_missing_dependency_without_retry(self):
+        command = [
+            sys.executable,
+            "-c",
+            "print('Could not resolve all files for configuration :runtimeClasspath'); raise SystemExit(1)",
+        ]
+        result, receipt, _ = self.run_helper(command)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(receipt["retryCount"], 0)
+        self.assertEqual(receipt["firstAttempt"]["classification"], "test_failure")
+
+    def test_retries_http_server_failure_but_not_not_found(self):
+        for output, expected in (
+            ("Could not GET 'https://repo.example.test/artifact' (status code 503)", "infrastructure_retry"),
+            ("Could not GET 'https://repo.example.test/artifact' (status code 404)", "test_failure"),
+        ):
+            command = [sys.executable, "-c", f"print({output!r}); raise SystemExit(1)"]
+            result, receipt, _ = self.run_helper(command, max_attempts=1)
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(receipt["firstAttempt"]["classification"], expected)
+
 
 if __name__ == "__main__":
     unittest.main()
