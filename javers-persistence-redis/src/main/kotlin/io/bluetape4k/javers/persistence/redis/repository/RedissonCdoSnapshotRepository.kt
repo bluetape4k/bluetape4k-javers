@@ -7,6 +7,7 @@ import io.bluetape4k.logging.KLogging
 import io.bluetape4k.logging.debug
 import io.bluetape4k.logging.trace
 import io.bluetape4k.redis.redisson.codec.RedissonCodecs
+import org.javers.common.exception.JaversException
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
 import org.redisson.api.RListMultimap
@@ -80,7 +81,7 @@ class RedissonCdoSnapshotRepository(
 
     override fun getSeq(commitId: CommitId): Long {
         val seq = commitIdSequences.getOrDefault(commitId.value(), 0L)
-        log.trace { "get seq. commitId=${commitId.value()}, seq=$seq" }
+        log.trace { "get seq. ${RedisIdentifierDiagnostics.format(commitId.value(), "commitId")}, seq=$seq" }
         return seq
     }
 
@@ -91,16 +92,22 @@ class RedissonCdoSnapshotRepository(
     override fun loadHeadId(): CommitId? {
         val latestCommitId = commitIdSequences.readAllEntrySet()
             .asSequence()
-            .mapNotNull { entry ->
-                val commitId = runCatching { CommitId.valueOf(entry.key) }.getOrNull()
-                    ?: return@mapNotNull null
+            .map { entry ->
+                val commitId = parseCommitId(entry.key)
+                    ?: corruptedMetadata("commitId", entry.key)
                 commitId to entry.value
             }
             .maxByOrNull { (_, sequence) -> sequence }
             ?.first
 
         return latestCommitId
-            .also { log.trace { "Loaded head commitId=$it" } }
+            .also { commitId ->
+                log.trace {
+                    "Loaded head metadata. " +
+                        (commitId?.let { RedisIdentifierDiagnostics.format(it.value(), "commitId") }
+                            ?: "present=false")
+                }
+            }
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int {
@@ -111,7 +118,11 @@ class RedissonCdoSnapshotRepository(
         val key = snapshot.globalId.value()
         val value = encode(snapshot)
         val saved = snapshots.put(key, value)
-        log.trace { "Save snapshot [$saved]. key=[$key], version=[${snapshot.version}]" }
+        log.trace {
+            "Save snapshot [$saved]. " +
+                RedisIdentifierDiagnostics.format(key, "globalId") +
+                ", version=${snapshot.version}"
+        }
     }
 
     override fun loadSnapshots(globalIdValue: String): List<CdoSnapshot> {
@@ -122,7 +133,23 @@ class RedissonCdoSnapshotRepository(
                 if (value.isNotEmpty()) decode(value) else null
             }
             .reversed()
-        log.trace { "Load snapshots. globalId=$globalIdValue, size=${loaded.size}" }
+        log.trace {
+            "Load snapshots. " +
+                RedisIdentifierDiagnostics.format(globalIdValue, "globalId") +
+                ", size=${loaded.size}"
+        }
         return loaded
+    }
+
+    private fun parseCommitId(value: String): CommitId? = try {
+        CommitId.valueOf(value)
+    } catch (_: JaversException) {
+        null
+    } catch (_: NumberFormatException) {
+        null
+    }
+
+    private fun corruptedMetadata(type: String, value: String): Nothing {
+        error("Corrupted Redis head metadata. ${RedisIdentifierDiagnostics.format(value, type)}")
     }
 }
