@@ -2,6 +2,7 @@ package io.bluetape4k.javers.persistence.exposed.hook
 
 import io.bluetape4k.assertions.assertFailsWith
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldBeZero
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.codec.Base58
@@ -170,8 +171,8 @@ class ExposedJaversEntityHookSubscriptionH2Test {
 
         snapshots(javers, id) shouldHaveSize 0
         transaction(database) {
-            CdoSnapshotTable.selectAll().count() shouldBeEqualTo 0L
-            CommitTable.selectAll().count() shouldBeEqualTo 0L
+            CdoSnapshotTable.selectAll().count().shouldBeZero()
+            CommitTable.selectAll().count().shouldBeZero()
         }
     }
 
