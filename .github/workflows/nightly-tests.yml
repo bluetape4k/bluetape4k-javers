@@ -51,23 +51,37 @@ jobs:
         with:
           gradle-version: wrapper
 
+      - name: Test CI attempt receipt helper
+        run: python3 .github/scripts/run_with_attempt_receipt_test.py
+
       - name: Build (compile only)
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew build -x test --parallel --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-build
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-build.json
+          --
+          ./gradlew build -x test --parallel --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
       - name: Detekt static analysis
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew detekt --parallel --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-detekt
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-detekt.json
+          --
+          ./gradlew detekt --parallel --no-configuration-cache
+
+      - name: Upload build attempt receipts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nightly-ci-attempts-build
+          path: build/reports/ci-attempts/
+          if-no-files-found: warn
+          retention-days: 14
 
       - name: Upload detekt report
         if: always()
@@ -99,16 +113,13 @@ jobs:
           cache-read-only: true
 
       - name: Run javers-exposed benchmark smoke
-        run: |
-          for attempt in 1 2 3; do
-            rm -rf benchmark/javers-exposed-benchmark/build/reports/benchmarks
-            ./gradlew \
-              :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
-              :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark \
-              --no-daemon --no-configuration-cache --no-build-cache --no-parallel && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 3 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-benchmark-smoke
+          --max-attempts 3
+          --receipt benchmark/javers-exposed-benchmark/build/reports/ci-attempts/nightly-benchmark-smoke.json
+          --
+          bash -c 'rm -rf benchmark/javers-exposed-benchmark/build/reports/benchmarks && exec ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel'
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -130,7 +141,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: benchmark-results-javers-exposed
-          path: benchmark/javers-exposed-benchmark/build/reports/benchmarks/
+          path: |
+            benchmark/javers-exposed-benchmark/build/reports/benchmarks/
+            benchmark/javers-exposed-benchmark/build/reports/ci-attempts/
           if-no-files-found: error
           retention-days: 14
 
@@ -154,12 +167,13 @@ jobs:
           cache-read-only: true
 
       - name: Test javers-core
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :javers-core:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-javers-core-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-javers-core-test.json
+          --
+          ./gradlew :javers-core:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
@@ -172,7 +186,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-core
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -204,12 +220,13 @@ jobs:
           cache-read-only: true
 
       - name: Test javers-ddd
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :javers-ddd:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-javers-ddd-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-javers-ddd-test.json
+          --
+          ./gradlew :javers-ddd:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
@@ -222,7 +239,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-ddd
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -254,12 +273,13 @@ jobs:
           cache-read-only: true
 
       - name: Test examples-javers-exposed-ddd
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :examples-javers-exposed-ddd:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-examples-javers-exposed-ddd-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-examples-javers-exposed-ddd-test.json
+          --
+          ./gradlew :examples-javers-exposed-ddd:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
@@ -272,7 +292,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-examples-javers-exposed-ddd
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -304,12 +326,13 @@ jobs:
           cache-read-only: true
 
       - name: Test examples-javers-ktor
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :examples-javers-ktor:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-examples-javers-ktor-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-examples-javers-ktor-test.json
+          --
+          ./gradlew :examples-javers-ktor:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
@@ -322,7 +345,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-examples-javers-ktor
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -354,12 +379,13 @@ jobs:
           cache-read-only: true
 
       - name: Test examples-javers-spring-boot4
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :examples-javers-spring-boot4:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-examples-javers-spring-boot4-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-examples-javers-spring-boot4-test.json
+          --
+          ./gradlew :examples-javers-spring-boot4:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
@@ -372,7 +398,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-examples-javers-spring-boot4
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -406,12 +434,13 @@ jobs:
           cache-read-only: true
 
       - name: Test javers-exposed
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :javers-exposed:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-javers-exposed-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-javers-exposed-test.json
+          --
+          ./gradlew :javers-exposed:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -426,7 +455,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-exposed
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -460,12 +491,13 @@ jobs:
           cache-read-only: true
 
       - name: Test javers-persistence-redis
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :javers-persistence-redis:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-javers-persistence-redis-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-javers-persistence-redis-test.json
+          --
+          ./gradlew :javers-persistence-redis:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -480,7 +512,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-persistence-redis
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -514,12 +548,13 @@ jobs:
           cache-read-only: true
 
       - name: Test javers-persistence-kafka
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :javers-persistence-kafka:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-javers-persistence-kafka-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-javers-persistence-kafka-test.json
+          --
+          ./gradlew :javers-persistence-kafka:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -534,7 +569,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-persistence-kafka
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
@@ -566,12 +603,13 @@ jobs:
           cache-read-only: true
 
       - name: Test javers-spring-boot4-autoconfigure
-        run: |
-          for attempt in 1 2 3 4 5; do
-            ./gradlew :javers-spring-boot4-autoconfigure:test --no-daemon --no-configuration-cache && break
-            echo "Attempt $attempt failed"
-            [ $attempt -lt 5 ] && sleep 30 || exit 1
-          done
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name nightly-javers-spring-boot4-autoconfigure-test
+          --max-attempts 5
+          --receipt build/reports/ci-attempts/nightly-javers-spring-boot4-autoconfigure-test.json
+          --
+          ./gradlew :javers-spring-boot4-autoconfigure:test --no-daemon --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
 
@@ -584,7 +622,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: test-results-javers-spring-boot4-autoconfigure
-          path: '**/build/test-results/test/*.xml'
+          path: |
+            **/build/test-results/test/*.xml
+            **/build/reports/ci-attempts/**
           retention-days: 14
 
       - name: Upload coverage report
