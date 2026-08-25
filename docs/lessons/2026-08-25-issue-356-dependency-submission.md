@@ -23,6 +23,8 @@ Epic #344의 최종 cumulative head `0c91c600e5225df41e847bb5e770bd8d8d3ddfd2`�
 - manual dispatch에서 feature branch를 선택해도 capability 판정만 read 권한으로 수행하고,
   write 권한이 필요한 제출 job은 `develop` push 또는 `develop` manual dispatch에서만
   실행한다.
+- feature branch에서 capability가 `enabled`여도 summary를 preflight-only로 기록해 실제
+  제출 job skip과 receipt가 어긋나지 않도록 한다.
 - status 필드가 누락된 경우에는 SBOM endpoint가 HTTP 404인지 확인한 뒤에만 `disabled`로
   판정한다. 다른 응답은 실패시켜 API schema나 권한 drift를 숨기지 않는다.
 - 예상하지 못한 상태는 조용히 건너뛰지 않고 workflow를 실패시켜 설정 drift를 드러낸다.

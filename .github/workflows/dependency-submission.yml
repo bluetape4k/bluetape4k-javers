@@ -40,10 +40,19 @@ jobs:
           case "$status" in
             enabled)
               echo "enabled=true" >> "$GITHUB_OUTPUT"
-              {
-                echo "## Dependency Submission"
-                echo "Dependency Graph is enabled; the dependency snapshot will be submitted."
-              } >> "$GITHUB_STEP_SUMMARY"
+              if [[ "$GITHUB_REF" == "refs/heads/develop" ]]; then
+                {
+                  echo "## Dependency Submission"
+                  echo "Dependency Graph is enabled; the dependency snapshot will be submitted."
+                } >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "::notice::Dependency Graph is enabled, but this ref is preflight-only; skipping Dependency Submission."
+                {
+                  echo "## Dependency Submission"
+                  echo "Dependency Graph is enabled, but this ref is not trusted for submission."
+                  echo "Capability preflight completed; dependency snapshot generation and submission were skipped."
+                } >> "$GITHUB_STEP_SUMMARY"
+              fi
               ;;
             disabled)
               echo "enabled=false" >> "$GITHUB_OUTPUT"
