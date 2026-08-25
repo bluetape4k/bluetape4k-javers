@@ -1,0 +1,161 @@
+public class io/bluetape4k/javers/autoconfigure/JaversAutoConfiguration {
+	public fun <init> ()V
+	public fun javers (Lorg/javers/repository/api/JaversRepository;Lorg/springframework/beans/factory/ObjectProvider;)Lorg/javers/core/Javers;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties$Companion;
+	public static final field PREFIX Ljava/lang/String;
+	public fun <init> ()V
+	public fun <init> (ZLio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;)V
+	public synthetic fun <init> (ZLio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;
+	public final fun component3 ()Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;
+	public final fun component4 ()Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;
+	public final fun component5 ()Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;
+	public final fun copy (ZLio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;)Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;ZLio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;ILjava/lang/Object;)Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnabled ()Z
+	public final fun getExposed ()Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;
+	public final fun getKafka ()Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;
+	public final fun getRedis ()Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;
+	public final fun getRepository ()Lio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties$Companion {
+}
+
+public abstract interface class io/bluetape4k/javers/autoconfigure/JaversBuilderCustomizer {
+	public abstract fun customize (Lorg/javers/core/JaversBuilder;)V
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversExposedProperties : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties$Companion;
+	public fun <init> ()V
+	public fun <init> (ZZLjava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (ZZLjava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (ZZLjava/lang/String;Ljava/lang/String;)Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;ZZLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/bluetape4k/javers/autoconfigure/JaversExposedProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCommitTableName ()Ljava/lang/String;
+	public final fun getCreateSchemaOnEnsure ()Z
+	public final fun getInitializeSchema ()Z
+	public final fun getSnapshotTableName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversExposedProperties$Companion {
+}
+
+public class io/bluetape4k/javers/autoconfigure/JaversExposedRepositoryAutoConfiguration {
+	public fun <init> ()V
+	public fun javersExposedCdoSnapshotRepository (Lorg/jetbrains/exposed/v1/jdbc/Database;Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;)Lorg/javers/repository/api/JaversRepository;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversKafkaProperties : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/time/Duration;Ljava/lang/String;ZZ)V
+	public synthetic fun <init> (Ljava/time/Duration;Ljava/lang/String;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/time/Duration;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun copy (Ljava/time/Duration;Ljava/lang/String;ZZ)Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;Ljava/time/Duration;Ljava/lang/String;ZZILjava/lang/Object;)Lio/bluetape4k/javers/autoconfigure/JaversKafkaProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCloseProducerOnClose ()Z
+	public final fun getFlushAfterSend ()Z
+	public final fun getPublishTimeout ()Ljava/time/Duration;
+	public final fun getTopic ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversKafkaProperties$Companion {
+}
+
+public class io/bluetape4k/javers/autoconfigure/JaversLettuceRepositoryAutoConfiguration {
+	public fun <init> ()V
+	public fun javersLettuceCdoSnapshotRepository (Lio/lettuce/core/RedisClient;Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;)Lorg/javers/repository/api/JaversRepository;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversRedisCodec : java/lang/Enum {
+	public static final field LZ4_FORY Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;
+	public static fun values ()[Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversRedisProperties : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;)V
+	public synthetic fun <init> (Ljava/lang/String;Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;
+	public final fun copy (Ljava/lang/String;Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;)Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;Ljava/lang/String;Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;ILjava/lang/Object;)Lio/bluetape4k/javers/autoconfigure/JaversRedisProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCodec ()Lio/bluetape4k/javers/autoconfigure/JaversRedisCodec;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversRedisProperties$Companion {
+}
+
+public class io/bluetape4k/javers/autoconfigure/JaversRedissonRepositoryAutoConfiguration {
+	public fun <init> ()V
+	public fun javersRedissonCdoSnapshotRepository (Lorg/redisson/api/RedissonClient;Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;)Lorg/javers/repository/api/JaversRepository;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversRepositoryProperties : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties$Companion;
+	public fun <init> ()V
+	public fun <init> (Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;)V
+	public synthetic fun <init> (Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public final fun copy (Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;)Lio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;
+	public static synthetic fun copy$default (Lio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;ILjava/lang/Object;)Lio/bluetape4k/javers/autoconfigure/JaversRepositoryProperties;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversRepositoryProperties$Companion {
+}
+
+public final class io/bluetape4k/javers/autoconfigure/JaversRepositoryType : java/lang/Enum {
+	public static final field EXPOSED Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static final field LETTUCE Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static final field NONE Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static final field REDISSON Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static final field SPRING_KAFKA Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static final field VANILLA_KAFKA Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+	public static fun values ()[Lio/bluetape4k/javers/autoconfigure/JaversRepositoryType;
+}
+
+public class io/bluetape4k/javers/autoconfigure/JaversSpringKafkaRepositoryAutoConfiguration {
+	public fun <init> ()V
+	public fun javersSpringKafkaCdoSnapshotRepository (Lorg/springframework/kafka/core/KafkaTemplate;Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;)Lorg/javers/repository/api/JaversRepository;
+}
+
+public class io/bluetape4k/javers/autoconfigure/JaversVanillaKafkaRepositoryAutoConfiguration {
+	public fun <init> ()V
+	public fun javersVanillaKafkaCdoSnapshotRepository (Lorg/apache/kafka/clients/producer/Producer;Lio/bluetape4k/javers/autoconfigure/JaversAutoConfigurationProperties;)Lorg/javers/repository/api/JaversRepository;
+}
+

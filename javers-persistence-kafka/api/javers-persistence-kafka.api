@@ -1,0 +1,127 @@
+public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions$Companion;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/time/Duration;
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCloseConsumerOnClose ()Z
+	public final fun getCommitOffsetsAfterProjection ()Z
+	public final fun getPollTimeout ()Ljava/time/Duration;
+	public final fun getSkipExistingSnapshots ()Z
+	public final fun getSubscribeOnStart ()Z
+	public final fun getTopic ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions$Companion {
+	public final fun invoke (Ljava/lang/String;Ljava/time/Duration;ZZZZ)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions$Companion;Ljava/lang/String;Ljava/time/Duration;ZZZZILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult$Companion;
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPolledRecords ()I
+	public final fun getProjectedSnapshots ()I
+	public final fun getSkippedSnapshots ()I
+	public fun hashCode ()I
+	public final fun plus (Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult$Companion {
+	public final fun invoke (III)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult$Companion;IIIILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector : java/lang/AutoCloseable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector$Companion;
+	public fun close ()V
+	public final fun projectOnce ()Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;
+	public final fun replayUntilIdle (I)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;
+	public static synthetic fun replayUntilIdle$default (Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector;IILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionResult;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector$Companion : io/bluetape4k/logging/KLogging {
+	public final fun invoke (Ljava/util/Map;Lorg/javers/core/json/JsonConverter;Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector;
+	public final fun invoke (Ljava/util/Properties;Lorg/javers/core/json/JsonConverter;Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector;
+	public final fun invoke (Lorg/apache/kafka/clients/consumer/Consumer;Lorg/javers/core/json/JsonConverter;Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjectionOptions;)Lio/bluetape4k/javers/persistence/kafka/projection/KafkaCdoSnapshotProjector;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository$Companion;
+	public fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Ljava/time/Duration;)V
+	public synthetic fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Ljava/time/Duration;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Ljava/time/Duration;Ljava/lang/String;)V
+	public synthetic fun <init> (Lorg/springframework/kafka/core/KafkaTemplate;Ljava/time/Duration;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/KafkaCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher : io/bluetape4k/javers/repository/event/CdoSnapshotEventPublisher {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher$Companion;
+	public fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;)V
+	public final fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;Ljava/lang/String;)V
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher$Companion {
+	public final fun invoke (Lorg/springframework/kafka/core/KafkaTemplate;Ljava/time/Duration;Lkotlin/jvm/functions/Function1;)Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher$Companion;Lorg/springframework/kafka/core/KafkaTemplate;Ljava/time/Duration;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher;
+	public final fun withTopic (Lorg/springframework/kafka/core/KafkaTemplate;Ljava/lang/String;Ljava/time/Duration;Lkotlin/jvm/functions/Function1;)Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher;
+	public static synthetic fun withTopic$default (Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher$Companion;Lorg/springframework/kafka/core/KafkaTemplate;Ljava/lang/String;Ljava/time/Duration;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/repository/KafkaSnapshotEventPublisher;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository, java/lang/AutoCloseable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository$Companion;
+	public fun close ()V
+	public fun loadSnapshots (Ljava/lang/String;)Ljava/util/List;
+	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
+	public final fun invoke (Ljava/util/Map;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository;
+	public final fun invoke (Ljava/util/Properties;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository;
+	public final fun invoke (Lorg/apache/kafka/clients/producer/Producer;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository$Companion;Ljava/util/Map;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository$Companion;Ljava/util/Properties;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository$Companion;Lorg/apache/kafka/clients/producer/Producer;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepository;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions : java/io/Serializable {
+	public static final field Companion Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions$Companion;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/time/Duration;
+	public final fun component3 ()Z
+	public final fun component4 ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCloseProducerOnClose ()Z
+	public final fun getFlushAfterSend ()Z
+	public final fun getPublishTimeout ()Ljava/time/Duration;
+	public final fun getTopic ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions$Companion {
+	public final fun invoke (Ljava/lang/String;Ljava/time/Duration;ZZ)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;
+	public static synthetic fun invoke$default (Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions$Companion;Ljava/lang/String;Ljava/time/Duration;ZZILjava/lang/Object;)Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;
+}
+
+public final class io/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaSnapshotEventPublisher : io/bluetape4k/javers/repository/event/CdoSnapshotEventPublisher, java/lang/AutoCloseable {
+	public fun <init> (Lorg/apache/kafka/clients/producer/Producer;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/apache/kafka/clients/producer/Producer;Lio/bluetape4k/javers/persistence/kafka/repository/VanillaKafkaCdoSnapshotRepositoryOptions;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun close ()V
+	public fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;)V
+	public final fun publish (Lio/bluetape4k/javers/repository/event/CdoSnapshotEvent;Ljava/lang/String;)V
+}
+
