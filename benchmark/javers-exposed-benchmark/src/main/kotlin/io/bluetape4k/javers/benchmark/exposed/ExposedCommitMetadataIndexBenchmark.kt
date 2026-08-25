@@ -104,16 +104,21 @@ open class ExposedCommitMetadataIndexBenchmark {
 
     @TearDown(Level.Trial)
     fun tearDown() {
-        if (::database.isInitialized && ::options.isInitialized) {
-            runCatching {
-                transaction(database) {
-                    SchemaUtils.drop(*options.newSchema().tables)
+        BenchmarkTeardownRecorder.cleanup(
+            owner = "ExposedCommitMetadataIndexBenchmark",
+            CleanupAction("schema") {
+                if (::database.isInitialized && ::options.isInitialized) {
+                    transaction(database) {
+                        SchemaUtils.drop(*options.newSchema().tables)
+                    }
                 }
-            }
-        }
-        if (::dataSource.isInitialized) {
-            dataSource.close()
-        }
+            },
+            CleanupAction("datasource") {
+                if (::dataSource.isInitialized) {
+                    dataSource.close()
+                }
+            },
+        )
     }
 
     @Benchmark

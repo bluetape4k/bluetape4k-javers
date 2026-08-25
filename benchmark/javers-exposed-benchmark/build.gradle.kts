@@ -6,6 +6,13 @@ plugins {
 val bt4kCatalog = extensions.getByType<org.gradle.api.artifacts.VersionCatalogsExtension>().named("bt4k")
 fun bt4kLibrary(alias: String) = bt4kCatalog.findLibrary(alias).get()
 
+tasks.withType<JavaExec>().configureEach {
+    if (name.endsWith("Benchmark")) {
+        val reportDirectory = layout.buildDirectory.dir("reports/benchmarks").get().asFile
+        jvmArgs("-Dbluetape4k.benchmark.report-directory=$reportDirectory")
+    }
+}
+
 allOpen {
     annotation("kotlinx.benchmark.State")
     annotation("org.openjdk.jmh.annotations.State")

@@ -82,3 +82,8 @@ Raw artifact:
 The results are local smoke evidence, not a release-wide performance claim. A
 broader workload must justify production index defaults before the schema is
 changed.
+
+The hosted receipt contract is documented in
+[`docs/benchmark/benchmark-receipt-schema.md`](../../docs/benchmark/benchmark-receipt-schema.md).
+The CI gate requires every expected scenario/variant row and rejects teardown
+failure receipts.

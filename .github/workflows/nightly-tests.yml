@@ -101,6 +101,7 @@ jobs:
       - name: Run javers-exposed benchmark smoke
         run: |
           for attempt in 1 2 3; do
+            rm -rf benchmark/javers-exposed-benchmark/build/reports/benchmarks
             ./gradlew \
               :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark \
               :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark \
@@ -113,13 +114,24 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
 
+      - name: Enrich benchmark receipts
+        run: >-
+          ruby scripts/benchmark/enrich_benchmark_receipts.rb
+          benchmark/javers-exposed-benchmark/build/reports/benchmarks
+          "./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark
+          :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark
+          --no-daemon --no-configuration-cache --no-build-cache --no-parallel"
+
+      - name: Validate benchmark receipts
+        run: ruby scripts/benchmark/benchmark_receipt.rb benchmark/javers-exposed-benchmark/build/reports/benchmarks
+
       - name: Upload benchmark reports
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: benchmark-results-javers-exposed
-          path: benchmark/javers-exposed-benchmark/build/reports/benchmarks/**/*.json
-          if-no-files-found: warn
+          path: benchmark/javers-exposed-benchmark/build/reports/benchmarks/
+          if-no-files-found: error
           retention-days: 14
 
   # ── 3. javers-core (Docker 불필요) ────────────────────────────────────────
