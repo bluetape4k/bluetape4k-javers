@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: dependency-submission-${{ github.ref }}
@@ -18,16 +18,93 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
-  dependency-submission:
-    name: Dependency Submission
-    if: github.event_name == 'push' || github.ref == 'refs/heads/develop'
+  detect-dependency-graph:
+    name: Detect Dependency Graph capability
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      enabled: ${{ steps.dependency-graph-capability.outputs.enabled }}
+    steps:
+      - name: Detect Dependency Graph capability
+        id: dependency-graph-capability
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          status="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.security_and_analysis.dependency_graph.status // empty')"
+          case "$status" in
+            enabled)
+              echo "enabled=true" >> "$GITHUB_OUTPUT"
+              if [[ "$GITHUB_REF" == "refs/heads/develop" ]]; then
+                {
+                  echo "## Dependency Submission"
+                  echo "Dependency Graph is enabled; the dependency snapshot will be submitted."
+                } >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "::notice::Dependency Graph is enabled, but this ref is preflight-only; skipping Dependency Submission."
+                {
+                  echo "## Dependency Submission"
+                  echo "Dependency Graph is enabled, but this ref is not trusted for submission."
+                  echo "Capability preflight completed; dependency snapshot generation and submission were skipped."
+                } >> "$GITHUB_STEP_SUMMARY"
+              fi
+              ;;
+            disabled)
+              echo "enabled=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Dependency Graph is disabled; skipping Dependency Submission."
+              {
+                echo "## Dependency Submission"
+                echo "Dependency Graph is disabled for this repository."
+                echo "Dependency snapshot generation and submission were skipped by policy."
+              } >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            '')
+              sbom_response="$(gh api --include "repos/${GITHUB_REPOSITORY}/dependency-graph/sbom" 2>&1 || true)"
+              if [[ "$sbom_response" =~ HTTP/[0-9.]+[[:space:]]404([[:space:]]|$) ]]; then
+                echo "enabled=false" >> "$GITHUB_OUTPUT"
+                echo "::notice::Dependency Graph is disabled; the SBOM endpoint returned HTTP 404, so Dependency Submission is skipped."
+                {
+                  echo "## Dependency Submission"
+                  echo "Dependency Graph status is not exposed by the repository API."
+                  echo "The SBOM endpoint returned HTTP 404, confirming that Dependency Graph is disabled."
+                  echo "Dependency snapshot generation and submission were skipped by policy."
+                } >> "$GITHUB_STEP_SUMMARY"
+              else
+                echo "::error::Dependency Graph status is missing and the SBOM endpoint did not return HTTP 404."
+                exit 1
+              fi
+              ;;
+            *)
+              echo "::error::Unexpected Dependency Graph status: $status"
+              exit 1
+              ;;
+          esac
+
+  dependency-submission:
+    name: Dependency Submission
+    needs: detect-dependency-graph
+    if: >-
+      ${{
+        needs.detect-dependency-graph.outputs.enabled == 'true' &&
+        (
+          github.event_name == 'push' ||
+          (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')
+        )
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - name: Checkout sources
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: refs/heads/develop
+          ref: ${{ github.sha }}
 
       - name: Setup Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
