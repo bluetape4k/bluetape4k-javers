@@ -62,6 +62,7 @@ class JaversExposedRepositoryAutoConfiguration {
         properties: JaversAutoConfigurationProperties,
     ): JaversRepository {
         val exposed = properties.exposed
+        exposed.validate()
         val repository = ExposedCdoSnapshotRepository(
             database = database,
             codec = JaversCodecs.String,

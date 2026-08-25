@@ -67,6 +67,21 @@ Spring Boot가 두 bean을 등록합니다.
 Schema 생성은 opt-in입니다. Schema ownership이 migration에 있다면
 `initialize-schema`와 `create-schema-on-ensure`를 끈 상태로 유지하세요.
 
+### Exposed schema flag 조합
+
+두 flag는 schema 생성 시점과 ownership을 분리합니다.
+
+| `initialize-schema` | `create-schema-on-ensure` | 의미 |
+|---:|---:|---|
+| `false` | `false` | 기본값. Flyway/Liquibase/Exposed migration이 table을 만들며 auto-configuration은 DDL을 실행하지 않습니다. |
+| `false` | `true` | application code가 repository `ensureSchema()`를 호출할 때만 DDL을 허용합니다. |
+| `true` | `true` | repository bean 생성 시 auto-configuration이 `ensureSchema()`를 호출해 시작 시 table을 만듭니다. |
+| `true` | `false` | 모순된 조합입니다. Exposed backend 시작 시 fail-fast합니다. `ensureSchema()`가 no-op이기 때문에 initialize를 보장할 수 없습니다. |
+
+`initialize-schema=true`를 사용하려면 반드시
+`create-schema-on-ensure=true`도 함께 설정하세요. 운영 schema는 migration이
+소유하는 기본 조합을 권장합니다.
+
 ## Redis 예제
 
 ```yaml
@@ -132,7 +147,7 @@ fun orderAuditCustomizer(): JaversBuilderCustomizer =
 |---|---|---|
 | `bluetape4k.javers.enabled` | `true` | 전체 auto-configuration phase를 켭니다. |
 | `bluetape4k.javers.repository.type` | `none` | 생성할 repository backend입니다. |
-| `bluetape4k.javers.exposed.initialize-schema` | `false` | 명시적으로 켜면 Exposed repository 생성 후 `ensureSchema()`를 호출합니다. |
+| `bluetape4k.javers.exposed.initialize-schema` | `false` | 명시적으로 켜면 Exposed repository 생성 후 `ensureSchema()`를 호출합니다. `create-schema-on-ensure=true`가 필수입니다. |
 | `bluetape4k.javers.exposed.create-schema-on-ensure` | `false` | 명시적으로 켜면 `ensureSchema()`가 누락 table을 만들 수 있게 합니다. |
 | `bluetape4k.javers.exposed.commit-table-name` | `javers_commit` | Exposed repository commit table 이름입니다. |
 | `bluetape4k.javers.exposed.snapshot-table-name` | `javers_snapshot` | Exposed repository snapshot table 이름입니다. |

@@ -67,6 +67,20 @@ unless the application already provides them.
 Schema creation is opt-in. Keep `initialize-schema` and
 `create-schema-on-ensure` disabled when schema ownership belongs to migrations.
 
+### Exposed schema flag combinations
+
+The two flags separate schema ownership from creation timing:
+
+| `initialize-schema` | `create-schema-on-ensure` | Meaning |
+|---:|---:|---|
+| `false` | `false` | Default. Flyway, Liquibase, or Exposed migrations own the tables; auto-configuration runs no DDL. |
+| `false` | `true` | DDL is allowed only when application code calls repository `ensureSchema()`. |
+| `true` | `true` | Auto-configuration calls `ensureSchema()` while creating the repository bean, so tables are created at startup. |
+| `true` | `false` | Contradictory. The Exposed backend fails fast because `ensureSchema()` is a no-op and cannot satisfy initialization. |
+
+`initialize-schema=true` requires `create-schema-on-ensure=true`. Keep both
+disabled for production schemas owned by migration tooling.
+
 ## Redis Example
 
 ```yaml
@@ -132,7 +146,7 @@ fun orderAuditCustomizer(): JaversBuilderCustomizer =
 |---|---|---|
 | `bluetape4k.javers.enabled` | `true` | Enables all auto-configuration phases. |
 | `bluetape4k.javers.repository.type` | `none` | Repository backend to create. |
-| `bluetape4k.javers.exposed.initialize-schema` | `false` | Calls `ensureSchema()` after creating the Exposed repository when explicitly enabled. |
+| `bluetape4k.javers.exposed.initialize-schema` | `false` | Calls `ensureSchema()` after creating the Exposed repository when explicitly enabled; requires `create-schema-on-ensure=true`. |
 | `bluetape4k.javers.exposed.create-schema-on-ensure` | `false` | Allows `ensureSchema()` to create missing tables when explicitly enabled. |
 | `bluetape4k.javers.exposed.commit-table-name` | `javers_commit` | Commit table name for the Exposed repository. |
 | `bluetape4k.javers.exposed.snapshot-table-name` | `javers_snapshot` | Snapshot table name for the Exposed repository. |

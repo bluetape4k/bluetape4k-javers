@@ -1,0 +1,23 @@
+{
+  "groups": [
+    {
+      "name": "bluetape4k.javers.exposed",
+      "type": "io.bluetape4k.javers.autoconfigure.JaversExposedProperties",
+      "description": "Exposed JaVers schema ownership and initialization settings."
+    }
+  ],
+  "properties": [
+    {
+      "name": "bluetape4k.javers.exposed.initialize-schema",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Calls ensureSchema while creating the Exposed repository. Requires create-schema-on-ensure=true."
+    },
+    {
+      "name": "bluetape4k.javers.exposed.create-schema-on-ensure",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Allows ensureSchema to create the JaVers Exposed tables."
+    }
+  ]
+}

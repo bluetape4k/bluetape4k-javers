@@ -1,12 +1,16 @@
 package io.bluetape4k.javers.autoconfigure
 
+import io.bluetape4k.assertions.assertFailsWith
+import io.bluetape4k.assertions.shouldContain
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldBeFalse
 import io.bluetape4k.assertions.shouldBeInstanceOf
 import io.bluetape4k.assertions.shouldBeTrue
 import io.bluetape4k.assertions.shouldHaveSize
+import io.bluetape4k.assertions.shouldNotBeNull
 import io.bluetape4k.codec.Base58
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
+import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
 import io.bluetape4k.javers.persistence.kafka.repository.KafkaCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.kafka.repository.VanillaKafkaCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.redis.repository.LettuceCdoSnapshotRepository
@@ -22,6 +26,8 @@ import org.apache.kafka.clients.producer.Producer
 import org.javers.core.Javers
 import org.javers.repository.api.JaversRepository
 import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.Test
 import org.redisson.api.RListMultimap
 import org.redisson.api.RMap
@@ -89,6 +95,57 @@ class JaversAutoConfigurationTest {
 
                 properties.exposed.initializeSchema.shouldBeFalse()
                 properties.exposed.createSchemaOnEnsure.shouldBeFalse()
+            }
+    }
+
+    @Test
+    fun `external migration ownership leaves tables untouched`() {
+        val database = newDatabase()
+
+        contextRunner
+            .withPropertyValues("bluetape4k.javers.repository.type=exposed")
+            .withBean(Database::class.java, { database })
+            .run { context ->
+                context.getBean("javersExposedCdoSnapshotRepository", ExposedCdoSnapshotRepository::class.java)
+                    .ensureSchema()
+
+                assertFailsWith<Exception> {
+                    transaction(database) { CommitTable.selectAll().count() }
+                }
+            }
+    }
+
+    @Test
+    fun `initialize schema creates tables while repository bean starts`() {
+        val database = newDatabase()
+
+        contextRunner
+            .withPropertyValues(
+                "bluetape4k.javers.repository.type=exposed",
+                "bluetape4k.javers.exposed.initialize-schema=true",
+                "bluetape4k.javers.exposed.create-schema-on-ensure=true",
+            )
+            .withBean(Database::class.java, { database })
+            .run { context ->
+                context.getBean("javersExposedCdoSnapshotRepository", ExposedCdoSnapshotRepository::class.java)
+                transaction(database) { CommitTable.selectAll().count() shouldBeEqualTo 0L }
+            }
+    }
+
+    @Test
+    fun `initialize schema without creation fails fast`() {
+        val database = newDatabase()
+
+        contextRunner
+            .withPropertyValues(
+                "bluetape4k.javers.repository.type=exposed",
+                "bluetape4k.javers.exposed.initialize-schema=true",
+                "bluetape4k.javers.exposed.create-schema-on-ensure=false",
+            )
+            .withBean(Database::class.java, { database })
+            .run { context ->
+                val failure = context.startupFailure.shouldNotBeNull()
+                failure.toString() shouldContain "initialize-schema=true"
             }
     }
 
@@ -383,4 +440,9 @@ class JaversAutoConfigurationTest {
             private const val serialVersionUID: Long = 1L
         }
     }
+
+    private fun newDatabase(): Database = Database.connect(
+        url = "jdbc:h2:mem:javers-auto-config-schema-${Base58.randomString(8)};MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+        driver = "org.h2.Driver",
+    )
 }
