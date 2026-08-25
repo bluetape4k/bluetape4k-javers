@@ -30,6 +30,18 @@ JaVers snapshot을 조회하지 않습니다.
 - `OrderQueryService` read-side 조회 API
 - H2 command handler 테스트와 Kafka/Redis Testcontainers projection flow
 
+## Projection consumer lifecycle과 전달 의미
+
+`OrderProjectionEventConsumer`는 projection 반영이 끝난 뒤에만 Kafka
+offset을 명시적으로 `commitSync`합니다. batch 안에서 하나라도 실패하면
+offset을 commit하지 않고 예외를 호출자에게 전달하므로, 프로세스가
+재시작되거나 consumer가 재할당된 뒤 동일한 event가 다시 전달될 수 있습니다.
+따라서 이 예제의 read model은 **at-least-once** 전달 의미를 가지며 projection
+반영은 같은 event를 다시 적용해도 안전하도록 설계해야 합니다. 주입된 Kafka
+consumer lifecycle은 `OrderProjectionEventConsumer`가 소유하고 `use` 또는
+`close`로 닫습니다. Redis client lifecycle은 projection을 만든 caller가
+별도로 닫습니다.
+
 ## Benchmark
 
 Envers 비교 benchmark는 로컬 문서화용 benchmark이며, release 전체 성능
