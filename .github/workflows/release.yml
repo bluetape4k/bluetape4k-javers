@@ -78,6 +78,51 @@ jobs:
           ref: ${{ needs.resolve-version.outputs.ref }}
           fetch-depth: 0
 
+      - name: Validate current manual and module inventory
+        env:
+          VERSION: ${{ needs.resolve-version.outputs.version }}
+        run: |
+          set -euo pipefail
+          MANUAL_VERSION="${VERSION%%-*}"
+          if [[ -f scripts/manual/current_manual_contract_test.rb && -f docs/manual/current/manifest.yaml ]]; then
+            ruby scripts/manual/current_manual_contract_test.rb
+            ruby scripts/manual/release_workflow_contract_test.rb
+            ruby scripts/manual/current_manual_contract.rb --version "$MANUAL_VERSION"
+            ruby scripts/manual/export_manifest.rb --check \
+              docs/manual/current/manifest.yaml \
+              docs/manual/current/generated/manifest.json
+          elif [[ "$MANUAL_VERSION" == "0.3.0" ]]; then
+            echo "::notice::Using the legacy manual validator for immutable release tag $VERSION."
+            TARGET_SHA="$(git rev-parse "${VERSION}^{commit}")"
+            LEGACY_MANUAL_METADATA="$(ruby -ryaml -e '
+              manifest = YAML.safe_load(File.read("docs/manual/manifest.yaml"))
+              release_tag = manifest.fetch("releaseTag")
+              release_commit = manifest.fetch("releaseCommit")
+              abort("legacy manual manifest must pin releaseTag and releaseCommit") if
+                [release_tag, release_commit].any? { |value| !value.is_a?(String) || value.empty? }
+              puts [release_tag, release_commit].join("\t")
+            ')"
+            IFS=$'\t' read -r LEGACY_MANUAL_TAG LEGACY_MANUAL_SHA <<< "$LEGACY_MANUAL_METADATA"
+            if [[ -z "$LEGACY_MANUAL_TAG" || -z "$LEGACY_MANUAL_SHA" ]]; then
+              echo "::error::Legacy manual manifest did not provide pinned release coordinates."
+              exit 1
+            fi
+            LEGACY_INPUT="$RUNNER_TEMP/release-manual-inventory-input.json"
+            ruby -rjson -e '
+              manifest = JSON.parse(File.read("docs/manual/generated/manifest.json"))
+              File.write(ARGV.fetch(0), JSON.pretty_generate(manifest.fetch("modules")) + "\n")
+            ' "$LEGACY_INPUT"
+            ruby scripts/manual/release_inventory.rb \
+              "$VERSION" "$TARGET_SHA" "$LEGACY_INPUT" \
+              build/manual/release-module-inventory.json 7
+            ruby scripts/manual/validate_release_manuals.rb \
+              "$LEGACY_MANUAL_TAG" "$LEGACY_MANUAL_SHA" build/manual/release-module-inventory.json
+          else
+            echo "::error::No supported manual validation contract is available for immutable release tag $VERSION."
+            exit 1
+          fi
+          git diff --check
+
       - name: Resolve dependencies catalog ref
         id: catalog
         shell: bash
@@ -154,9 +199,10 @@ jobs:
           set -euo pipefail
           BASE=$(grep -E '^baseVersion=' gradle.properties | cut -d= -f2)
           SNAP=$(grep -E '^snapshotVersion=' gradle.properties | cut -d= -f2 || echo "")
-          echo "tag=$VERSION baseVersion=$BASE snapshotVersion='$SNAP'"
-          if [[ "$BASE" != "$VERSION" ]]; then
-            echo "::error::gradle.properties baseVersion ($BASE) does not match tag ($VERSION)"
+          RELEASE_VERSION="${VERSION%%-*}"
+          echo "tag=$VERSION releaseVersion=$RELEASE_VERSION baseVersion=$BASE snapshotVersion='$SNAP'"
+          if [[ "$BASE" != "$RELEASE_VERSION" ]]; then
+            echo "::error::gradle.properties baseVersion ($BASE) does not match stable release version ($RELEASE_VERSION)"
             exit 1
           fi
           if [[ -n "$SNAP" ]]; then
@@ -279,8 +325,8 @@ jobs:
           ' CHANGELOG.md > "$NOTES_FILE"
 
           if [[ ! -s "$NOTES_FILE" ]]; then
-            echo "::warning::No CHANGELOG section found for $VERSION. Using fallback notes."
-            printf "Release %s\n\nSee [CHANGELOG.md](./CHANGELOG.md) for details.\n\n" "$VERSION" > "$NOTES_FILE"
+            echo "::error::CHANGELOG.md must contain an exact section for [$VERSION]."
+            exit 1
           fi
 
           if [[ -n "$PREV_TAG" ]]; then
@@ -316,7 +362,7 @@ jobs:
         run: |
           set -euo pipefail
           PRERELEASE_FLAG=""
-          if [[ "$VERSION" =~ -(RC|Beta|Alpha|M) ]]; then
+          if [[ "$VERSION" =~ -[A-Za-z0-9.]+$ ]]; then
             PRERELEASE_FLAG="--prerelease"
           fi
 

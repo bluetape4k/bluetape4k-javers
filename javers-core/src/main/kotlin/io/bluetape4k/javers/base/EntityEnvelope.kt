@@ -9,6 +9,9 @@ import java.io.Serializable
  * - [entity] 기반 constructor는 기본적으로 SAVED event를 설정합니다.
  * - [entityId] + [entityType] constructor는 event를 DELETED로 설정합니다.
  * - 사용자 정의 metadata는 [addHeader] / [getHeader]로 관리합니다.
+ * - headers는 envelope payload의 보조 metadata이므로 data class의 구조적 identity에 포함되지 않습니다.
+ *   따라서 generated `copy`, `equals`, `hashCode`, `toString`은 headers를 무시하며 `copy` 결과는 빈 headers로 시작합니다.
+ * - Java serialization은 headers를 포함한 전체 object state를 보존합니다.
  *
  * ```kotlin
  * val saved = EntityEnvelope(myEntity)
@@ -39,7 +42,7 @@ data class EntityEnvelope(
 
     private val _headers: MutableMap<String, String> = hashMapOf()
 
-    /** 이 envelope에 붙은 사용자 정의 header의 read-only view입니다. */
+    /** 구조적 identity와 별도로 보존되는 사용자 정의 header의 read-only view입니다. */
     val headers: Map<String, String> get() = _headers
 
     /**

@@ -76,9 +76,14 @@ open class EnversComparisonBenchmark {
 
     @TearDown(Level.Trial)
     fun tearDown() {
-        if (::implementation.isInitialized) {
-            implementation.close()
-        }
+        BenchmarkTeardownRecorder.cleanup(
+            owner = "EnversComparisonBenchmark",
+            CleanupAction("implementation") {
+                if (::implementation.isInitialized) {
+                    implementation.close()
+                }
+            },
+        )
     }
 
     @Setup(Level.Invocation)
@@ -170,8 +175,15 @@ open class EnversComparisonBenchmark {
         }
 
         override fun close() {
-            sessionFactory.close()
-            dataSource.close()
+            BenchmarkTeardownRecorder.cleanup(
+                owner = "EnversComparisonBenchmark.EnversImplementation",
+                CleanupAction("sessionFactory") {
+                    sessionFactory.close()
+                },
+                CleanupAction("datasource") {
+                    dataSource.close()
+                },
+            )
         }
     }
 
@@ -234,12 +246,17 @@ open class EnversComparisonBenchmark {
         }
 
         override fun close() {
-            runCatching {
-                transaction(database) {
-                    SchemaUtils.drop(*options.newSchema().tables)
-                }
-            }
-            dataSource.close()
+            BenchmarkTeardownRecorder.cleanup(
+                owner = "EnversComparisonBenchmark.JaversExposedRepositoryImplementation",
+                CleanupAction("schema") {
+                    transaction(database) {
+                        SchemaUtils.drop(*options.newSchema().tables)
+                    }
+                },
+                CleanupAction("datasource") {
+                    dataSource.close()
+                },
+            )
         }
     }
 
@@ -292,13 +309,18 @@ open class EnversComparisonBenchmark {
         }
 
         override fun close() {
-            runCatching {
-                transaction(database) {
-                    SchemaUtils.drop(OrdersTable)
-                    SchemaUtils.drop(*options.newSchema().tables)
-                }
-            }
-            dataSource.close()
+            BenchmarkTeardownRecorder.cleanup(
+                owner = "EnversComparisonBenchmark.JaversExposedDddImplementation",
+                CleanupAction("schema") {
+                    transaction(database) {
+                        SchemaUtils.drop(OrdersTable)
+                        SchemaUtils.drop(*options.newSchema().tables)
+                    }
+                },
+                CleanupAction("datasource") {
+                    dataSource.close()
+                },
+            )
         }
     }
 

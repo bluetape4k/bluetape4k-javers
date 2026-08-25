@@ -1,0 +1,235 @@
+{
+  "modules": [
+    {
+      "artifact": null,
+      "en": "en/modules/benchmark-javers-exposed-benchmark.md",
+      "gradlePath": ":benchmark-javers-exposed-benchmark",
+      "group": "benchmarks",
+      "id": "benchmark-javers-exposed-benchmark",
+      "kind": "benchmark",
+      "ko": "ko/modules/benchmark-javers-exposed-benchmark.md",
+      "projectName": "benchmark-javers-exposed-benchmark",
+      "sourceDir": "benchmark/javers-exposed-benchmark",
+      "sourcePaths": [
+        "benchmark/javers-exposed-benchmark"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Exposed benchmark",
+        "ko": "JaVers Exposed 벤치마크"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:bluetape4k-javers-bom",
+      "en": "en/modules/bluetape4k-javers-bom.md",
+      "gradlePath": ":bluetape4k-javers-bom",
+      "group": "foundation",
+      "id": "bluetape4k-javers-bom",
+      "kind": "bom",
+      "ko": "ko/modules/bluetape4k-javers-bom.md",
+      "projectName": "bluetape4k-javers-bom",
+      "sourceDir": "bom",
+      "sourcePaths": [
+        "bom"
+      ],
+      "status": "current",
+      "title": {
+        "en": "Javers BOM",
+        "ko": "Javers BOM"
+      }
+    },
+    {
+      "artifact": null,
+      "en": "en/modules/examples-javers-exposed-ddd.md",
+      "gradlePath": ":examples-javers-exposed-ddd",
+      "group": "examples",
+      "id": "examples-javers-exposed-ddd",
+      "kind": "example",
+      "ko": "ko/modules/examples-javers-exposed-ddd.md",
+      "projectName": "examples-javers-exposed-ddd",
+      "sourceDir": "examples/javers-exposed-ddd",
+      "sourcePaths": [
+        "examples/javers-exposed-ddd"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Exposed DDD example",
+        "ko": "JaVers Exposed DDD 예제"
+      }
+    },
+    {
+      "artifact": null,
+      "en": "en/modules/examples-javers-ktor.md",
+      "gradlePath": ":examples-javers-ktor",
+      "group": "examples",
+      "id": "examples-javers-ktor",
+      "kind": "example",
+      "ko": "ko/modules/examples-javers-ktor.md",
+      "projectName": "examples-javers-ktor",
+      "sourceDir": "examples/javers-ktor",
+      "sourcePaths": [
+        "examples/javers-ktor"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Ktor example",
+        "ko": "JaVers Ktor 예제"
+      }
+    },
+    {
+      "artifact": null,
+      "en": "en/modules/examples-javers-spring-boot4.md",
+      "gradlePath": ":examples-javers-spring-boot4",
+      "group": "examples",
+      "id": "examples-javers-spring-boot4",
+      "kind": "example",
+      "ko": "ko/modules/examples-javers-spring-boot4.md",
+      "projectName": "examples-javers-spring-boot4",
+      "sourceDir": "examples/javers-spring-boot4",
+      "sourcePaths": [
+        "examples/javers-spring-boot4"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Spring Boot 4 example",
+        "ko": "JaVers Spring Boot 4 예제"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:javers-core",
+      "en": "en/modules/javers-core.md",
+      "gradlePath": ":javers-core",
+      "group": "foundation",
+      "id": "javers-core",
+      "kind": "library",
+      "ko": "ko/modules/javers-core.md",
+      "projectName": "javers-core",
+      "sourceDir": "javers-core",
+      "sourcePaths": [
+        "javers-core"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers core library",
+        "ko": "JaVers 핵심 라이브러리"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:javers-ddd",
+      "en": "en/modules/javers-ddd.md",
+      "gradlePath": ":javers-ddd",
+      "group": "foundation",
+      "id": "javers-ddd",
+      "kind": "library",
+      "ko": "ko/modules/javers-ddd.md",
+      "projectName": "javers-ddd",
+      "sourceDir": "javers-ddd",
+      "sourcePaths": [
+        "javers-ddd"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers DDD library",
+        "ko": "JaVers DDD 라이브러리"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:javers-exposed",
+      "en": "en/modules/javers-exposed.md",
+      "gradlePath": ":javers-exposed",
+      "group": "persistence",
+      "id": "javers-exposed",
+      "kind": "library",
+      "ko": "ko/modules/javers-exposed.md",
+      "projectName": "javers-exposed",
+      "sourceDir": "javers-exposed",
+      "sourcePaths": [
+        "javers-exposed"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Exposed persistence",
+        "ko": "JaVers Exposed 영속성"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:javers-persistence-kafka",
+      "en": "en/modules/javers-persistence-kafka.md",
+      "gradlePath": ":javers-persistence-kafka",
+      "group": "persistence",
+      "id": "javers-persistence-kafka",
+      "kind": "library",
+      "ko": "ko/modules/javers-persistence-kafka.md",
+      "projectName": "javers-persistence-kafka",
+      "sourceDir": "javers-persistence-kafka",
+      "sourcePaths": [
+        "javers-persistence-kafka"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Kafka persistence",
+        "ko": "JaVers Kafka 영속성"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:javers-persistence-redis",
+      "en": "en/modules/javers-persistence-redis.md",
+      "gradlePath": ":javers-persistence-redis",
+      "group": "persistence",
+      "id": "javers-persistence-redis",
+      "kind": "library",
+      "ko": "ko/modules/javers-persistence-redis.md",
+      "projectName": "javers-persistence-redis",
+      "sourceDir": "javers-persistence-redis",
+      "sourcePaths": [
+        "javers-persistence-redis"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Redis persistence",
+        "ko": "JaVers Redis 영속성"
+      }
+    },
+    {
+      "artifact": "io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure",
+      "en": "en/modules/javers-spring-boot4-autoconfigure.md",
+      "gradlePath": ":javers-spring-boot4-autoconfigure",
+      "group": "frameworks",
+      "id": "javers-spring-boot4-autoconfigure",
+      "kind": "library",
+      "ko": "ko/modules/javers-spring-boot4-autoconfigure.md",
+      "projectName": "javers-spring-boot4-autoconfigure",
+      "sourceDir": "javers-spring-boot4-autoconfigure",
+      "sourcePaths": [
+        "javers-spring-boot4-autoconfigure"
+      ],
+      "status": "current",
+      "title": {
+        "en": "JaVers Spring Boot 4 auto-configuration",
+        "ko": "JaVers Spring Boot 4 자동 구성"
+      }
+    }
+  ],
+  "overview": {
+    "documents": {
+      "en": [
+        "en/index.md"
+      ],
+      "ko": [
+        "ko/index.md"
+      ]
+    }
+  },
+  "publication": {
+    "contentStatus": "complete",
+    "locales": [
+      "en",
+      "ko"
+    ],
+    "manualVersion": "1.0",
+    "sourceRoot": "docs/manual/current"
+  },
+  "repository": "bluetape4k-javers",
+  "schemaVersion": 1,
+  "version": "1.0.0"
+}

@@ -80,3 +80,8 @@ Raw artifact:
 
 이 결과는 로컬 smoke evidence이며 release-wide 성능 주장이 아닙니다. production
 schema를 바꾸려면 더 넓은 workload benchmark가 필요합니다.
+
+Hosted receipt 계약은
+[`docs/benchmark/benchmark-receipt-schema.md`](../../docs/benchmark/benchmark-receipt-schema.md)에
+정의되어 있습니다. CI gate는 모든 scenario/variant row를 요구하고 teardown
+failure receipt가 남으면 실패합니다.

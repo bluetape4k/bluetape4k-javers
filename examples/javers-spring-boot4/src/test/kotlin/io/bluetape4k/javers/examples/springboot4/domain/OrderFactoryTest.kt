@@ -1,6 +1,7 @@
 package io.bluetape4k.javers.examples.springboot4.domain
 
 import io.bluetape4k.assertions.assertFailsWith
+import io.bluetape4k.assertions.shouldBeEqualTo
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.Instant
@@ -40,5 +41,21 @@ class OrderFactoryTest {
                 now = now,
             )
         }
+    }
+
+    @Test
+    fun `paid order cannot be marked paid twice`() {
+        val placed = Order.place(
+            id = OrderId("order-4"),
+            customerId = CustomerId("customer-1"),
+            items = listOf(OrderItem("sku-1", quantity = 1, unitPrice = BigDecimal("12.50"))),
+            now = now,
+        )
+
+        val exception = assertFailsWith<IllegalArgumentException> {
+            placed.markPaid(now.plusSeconds(1)).markPaid(now.plusSeconds(2))
+        }
+
+        exception.message shouldBeEqualTo "Only placed orders can be marked paid"
     }
 }

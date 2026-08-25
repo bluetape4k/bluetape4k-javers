@@ -6,6 +6,7 @@ import nmcp.NmcpExtension
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import java.util.concurrent.TimeUnit
 
 plugins {
@@ -128,6 +129,10 @@ subprojects {
     pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
         kotlin {
             jvmToolchain(25)
+            if (!isExampleProject()) {
+                @OptIn(ExperimentalAbiValidation::class)
+                abiValidation()
+            }
             compilerOptions {
                 languageVersion.set(KotlinVersion.KOTLIN_2_4)
                 apiVersion.set(KotlinVersion.KOTLIN_2_4)

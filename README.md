@@ -79,6 +79,13 @@ not be treated as interchangeable stores.
 | `javers-spring-boot4-autoconfigure` | `io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure` | Spring Boot 4 conditional auto-configuration for Exposed, Redis, and Kafka JaVers repositories |
 | `bluetape4k-javers-bom` | `io.github.bluetape4k.javers:bluetape4k-javers-bom` | Consumer BOM for aligned JaVers artifacts |
 
+## Manuals
+
+- [Current 1.0.0 manual](docs/manual/current/en/index.md) covers every module
+  registered in `settings.gradle.kts`, including examples and benchmark evidence.
+- The [release-pinned 0.3.0 manual](docs/manual/en/index.md) remains immutable
+  and documents only the modules available at that release.
+
 ## Boundary with bluetape4k-exposed
 
 `bluetape4k-javers` owns JaVers audit and history semantics. Use it when an

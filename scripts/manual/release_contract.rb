@@ -55,7 +55,7 @@ module ManualDocs
     private
 
     def repository_links
-      Dir.glob(File.join(@repository_root, "docs/manual/**/*.md")).sort.flat_map do |path|
+      stable_manual_documents.flat_map do |path|
         file = Pathname.new(path).relative_path_from(Pathname.new(@repository_root)).to_s
         content = File.read(path)
         extracted_links(content).each_with_object([]) do |(line, target), links|
@@ -66,7 +66,7 @@ module ManualDocs
     end
 
     def validate_github_release_links(tree)
-      links = Dir.glob(File.join(@repository_root, "docs/manual/**/*.md")).sort.flat_map do |path|
+      links = stable_manual_documents.flat_map do |path|
         file = Pathname.new(path).relative_path_from(Pathname.new(@repository_root)).to_s
         content = File.read(path)
         extracted_links(content).each_with_object([]) do |(line, target), found_links|
@@ -80,6 +80,13 @@ module ManualDocs
         found_errors << "#{file}:#{line}: release path not found: #{path}" unless tree.include?(path)
       end
       [errors, links.length]
+    end
+
+    # The 0.3.0 release contract intentionally excludes the current manual.
+    # Its source tree is newer than the immutable release tree and is checked
+    # by current_manual_contract.rb during the release workflow instead.
+    def stable_manual_documents
+      %w[en ko].flat_map { |locale| Dir.glob(File.join(@repository_root, "docs/manual/#{locale}/**/*.md")) }.sort
     end
 
     def validate_manifest_paths(tree)

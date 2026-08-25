@@ -1,6 +1,7 @@
 package io.bluetape4k.javers.ddd
 
 import io.bluetape4k.assertions.shouldBeEqualTo
+import io.bluetape4k.assertions.shouldHaveSize
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
@@ -34,7 +35,7 @@ class DomainEventTest {
         properties[DOMAIN_EVENT_TYPE_PROPERTY] shouldBeEqualTo OrderPlaced::class.qualifiedName
         properties[DOMAIN_EVENT_AGGREGATE_ID_PROPERTY] shouldBeEqualTo "43"
         properties[DOMAIN_EVENT_OCCURRED_ON_PROPERTY] shouldBeEqualTo occurredOn.toString()
-        properties.size shouldBeEqualTo 3
+        properties shouldHaveSize 3
     }
 
     @Test
