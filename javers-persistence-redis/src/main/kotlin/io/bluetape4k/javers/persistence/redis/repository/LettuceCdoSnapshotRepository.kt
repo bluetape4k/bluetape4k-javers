@@ -14,6 +14,7 @@ import io.bluetape4k.support.asInt
 import io.bluetape4k.support.asLongOrNull
 import io.lettuce.core.RedisClient
 import io.lettuce.core.api.StatefulRedisConnection
+import org.javers.common.exception.JaversException
 import org.javers.core.commit.Commit
 import org.javers.core.commit.CommitId
 import org.javers.core.metamodel.`object`.CdoSnapshot
@@ -104,8 +105,13 @@ class LettuceCdoSnapshotRepository(
     }
 
     override fun getSeq(commitId: CommitId): Long {
-        val seq = commands.hget(sequenceSetKey, commitId.value())?.asLongOrNull() ?: 0L
-        log.trace { "get seq. commitId=${commitId.value()}, seq=$seq" }
+        val sequenceText = commands.hget(sequenceSetKey, commitId.value())
+        val seq = when {
+            sequenceText == null -> 0L
+            else -> sequenceText.asLongOrNull()
+                ?: corruptedMetadata("sequence", sequenceText.toString())
+        }
+        log.trace { "get seq. ${RedisIdentifierDiagnostics.format(commitId.value(), "commitId")}, seq=$seq" }
         return seq
     }
 
@@ -116,22 +122,32 @@ class LettuceCdoSnapshotRepository(
     override fun loadHeadId(): CommitId? {
         val latestCommitId = commands.hgetall(sequenceSetKey)
             .asSequence()
-            .mapNotNull { (commitIdValue, sequenceValue) ->
-                val sequence = sequenceValue.asLongOrNull() ?: return@mapNotNull null
-                val commitId = runCatching { CommitId.valueOf(commitIdValue) }.getOrNull()
-                    ?: return@mapNotNull null
+            .map { (commitIdValue, sequenceValue) ->
+                val sequenceText = sequenceValue.toString()
+                val sequence = sequenceValue.asLongOrNull()
+                    ?: corruptedMetadata("sequence", sequenceText)
+                val commitId = parseCommitId(commitIdValue)
+                    ?: corruptedMetadata("commitId", commitIdValue)
                 commitId to sequence
             }
             .maxByOrNull { (_, sequence) -> sequence }
             ?.first
 
         return latestCommitId
-            .also { log.trace { "Loaded head commitId=$it" } }
+            .also { commitId ->
+                log.trace {
+                    "Loaded head metadata. " +
+                        (commitId?.let { RedisIdentifierDiagnostics.format(it.value(), "commitId") }
+                            ?: "present=false")
+                }
+            }
     }
 
     override fun getSnapshotSize(globalIdValue: String): Int {
         val snapshotSize = commands.llen(makeSnapshotKey(globalIdValue)).asInt()
-        log.trace { "Get snapshot size=${snapshotSize}, globalId=$globalIdValue" }
+        log.trace {
+            "Get snapshot size=$snapshotSize, ${RedisIdentifierDiagnostics.format(globalIdValue, "globalId")}"
+        }
         return snapshotSize
     }
 
@@ -143,11 +159,19 @@ class LettuceCdoSnapshotRepository(
                 writeCommands.multi()
                 queueSaveSnapshot(snapshot, value)
                 writeCommands.exec()
-                log.debug { "Saved snapshot key=${makeSnapshotKey(snapshot.globalId.value())}, version=${snapshot.version}" }
+                log.debug {
+                    "Saved snapshot. " +
+                        RedisIdentifierDiagnostics.format(snapshot.globalId.value(), "globalId") +
+                        ", version=${snapshot.version}"
+                }
             } catch (e: Exception) {
                 runCatching { writeCommands.discard() }
                     .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
-                throw RuntimeException("Failed to save snapshot. globalId=${snapshot.globalId.value()}", e)
+                throw RuntimeException(
+                    "Failed to save snapshot. " +
+                        RedisIdentifierDiagnostics.format(snapshot.globalId.value(), "globalId"),
+                    e,
+                )
             }
         }
     }
@@ -163,11 +187,19 @@ class LettuceCdoSnapshotRepository(
                 }
                 writeCommands.hset(sequenceSetKey, commit.id.value(), sequence.toString())
                 writeCommands.exec()
-                log.debug { "Persisted Redis snapshot commit. commitId=${commit.id.value()}, snapshots=${encodedSnapshots.size}" }
+                log.debug {
+                    "Persisted Redis snapshot commit. " +
+                        RedisIdentifierDiagnostics.format(commit.id.value(), "commitId") +
+                        ", snapshots=${encodedSnapshots.size}"
+                }
             } catch (e: Exception) {
                 runCatching { writeCommands.discard() }
                     .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
-                throw RuntimeException("Failed to persist snapshot commit. commitId=${commit.id.value()}", e)
+                throw RuntimeException(
+                    "Failed to persist snapshot commit. " +
+                        RedisIdentifierDiagnostics.format(commit.id.value(), "commitId"),
+                    e,
+                )
             }
         }
     }
@@ -181,11 +213,19 @@ class LettuceCdoSnapshotRepository(
                 queueSaveSnapshot(snapshot, value)
                 writeCommands.hset(sequenceSetKey, snapshot.commitMetadata.id.value(), sequence.toString())
                 writeCommands.exec()
-                log.debug { "Projected Redis snapshot. commitId=${snapshot.commitMetadata.id.value()}, version=${snapshot.version}" }
+                log.debug {
+                    "Projected Redis snapshot. " +
+                        RedisIdentifierDiagnostics.format(snapshot.commitMetadata.id.value(), "commitId") +
+                        ", version=${snapshot.version}"
+                }
             } catch (e: Exception) {
                 runCatching { writeCommands.discard() }
                     .onFailure { discardEx -> log.error(discardEx) { "discard() also failed" } }
-                throw RuntimeException("Failed to project snapshot. globalId=${snapshot.globalId.value()}", e)
+                throw RuntimeException(
+                    "Failed to project snapshot. " +
+                        RedisIdentifierDiagnostics.format(snapshot.globalId.value(), "globalId"),
+                    e,
+                )
             }
         }
     }
@@ -200,7 +240,11 @@ class LettuceCdoSnapshotRepository(
         val snapshots = commands
             .lrange(makeSnapshotKey(globalIdValue), 0, -1)
             .mapNotNull { decode(it.asByteArray()) }
-        log.trace { "Load snapshots. globalId=$globalIdValue, size=${snapshots.size}" }
+        log.trace {
+            "Load snapshots. " +
+                RedisIdentifierDiagnostics.format(globalIdValue, "globalId") +
+                ", size=${snapshots.size}"
+        }
         return snapshots
     }
 
@@ -232,7 +276,22 @@ class LettuceCdoSnapshotRepository(
     }
 
     private fun ensureOpen() {
-        check(!closed) { "Lettuce repository is already closed. name=$name" }
+        check(!closed) {
+            "Lettuce repository is already closed. " +
+                RedisIdentifierDiagnostics.format(name, "repository")
+        }
+    }
+
+    private fun parseCommitId(value: String): CommitId? = try {
+        CommitId.valueOf(value)
+    } catch (_: JaversException) {
+        null
+    } catch (_: NumberFormatException) {
+        null
+    }
+
+    private fun corruptedMetadata(type: String, value: String): Nothing {
+        error("Corrupted Redis head metadata. ${RedisIdentifierDiagnostics.format(value, type)}")
     }
 
     private fun closeConnection(
@@ -244,6 +303,11 @@ class LettuceCdoSnapshotRepository(
         }
 
         runCatching { connection.value.close() }
-            .onFailure { e -> log.warn(e) { "Failed to close $role Lettuce connection for repository name=$name" } }
+            .onFailure { e ->
+                log.warn(e) {
+                    "Failed to close $role Lettuce connection. " +
+                        RedisIdentifierDiagnostics.format(name, "repository")
+                }
+            }
     }
 }
