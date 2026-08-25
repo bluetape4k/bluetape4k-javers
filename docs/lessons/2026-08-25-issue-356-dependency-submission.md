@@ -52,11 +52,11 @@ graph를 활성화하면 `develop` push 또는 `develop` manual dispatch에서�
   검증했다.
 - `actionlint .github/workflows/dependency-submission.yml`
 - workflow YAML/static contract assertions와 `git diff --check`
-- hosted exact-head `workflow_dispatch` [run 32802541964](https://github.com/bluetape4k/bluetape4k-javers/actions/runs/32802541964)는
-  head `eb0ee96b04440509a7c208d7c979737d875d42aa`에서 성공했다. capability job은
+- hosted exact-head `workflow_dispatch` [run 32803489725](https://github.com/bluetape4k/bluetape4k-javers/actions/runs/32803489725)는
+  workflow implementation parent head `f9461b1062bda01a9cf86dc9906823b8a147b496`에서 성공했다. capability job은
   `contents: read`로 SBOM HTTP 404 notice와 summary를 기록했고, feature branch의
   write 권한 `Dependency Submission` job은 skip되었다.
-- 같은 exact head의 수동 PR CI [run 32802543980](https://github.com/bluetape4k/bluetape4k-javers/actions/runs/32802543980)도
+- 같은 exact parent head의 수동 PR CI [run 32803491392](https://github.com/bluetape4k/bluetape4k-javers/actions/runs/32803491392)도
   최종 성공했다. Build, Central Catalog Governance, Detect changed modules, Secret Scan,
   Validate Gradle Wrapper, 9개 module test, benchmark, CI Status가 성공했고 Coverage Report는
   변경 경로가 없어 의도적으로 skip되었다. 이 run은 workflow dispatch에서 전체 module test와
