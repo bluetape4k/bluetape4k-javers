@@ -81,9 +81,9 @@ not be treated as interchangeable stores.
 
 ## Manuals
 
-- [Current 1.0.0 manual](docs/manual/current/en/index.md) covers every module
+- [Current 1.0.0 manual](https://github.com/bluetape4k/bluetape4k.github.io/blob/develop/docs/manual/bluetape4k-javers/current/en/index.md) covers every module
   registered in `settings.gradle.kts`, including examples and benchmark evidence.
-- The [release-pinned 0.3.0 manual](docs/manual/en/index.md) remains immutable
+- The [release-pinned 0.3.0 manual](https://bluetape4k.github.io/manual/bluetape4k-javers/0.3/) remains immutable
   and documents only the modules available at that release.
 
 ## Boundary with bluetape4k-exposed
