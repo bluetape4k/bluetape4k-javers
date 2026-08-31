@@ -78,24 +78,43 @@ jobs:
           ref: ${{ needs.resolve-version.outputs.ref }}
           fetch-depth: 0
 
+      - name: Checkout central manual site
+        uses: actions/checkout@v7
+        with:
+          repository: bluetape4k/bluetape4k.github.io
+          ref: develop
+          path: .manual-site
+          fetch-depth: 1
+
       - name: Validate current manual and module inventory
         env:
           VERSION: ${{ needs.resolve-version.outputs.version }}
         run: |
           set -euo pipefail
           MANUAL_VERSION="${VERSION%%-*}"
-          if [[ -f scripts/manual/current_manual_contract_test.rb && -f docs/manual/current/manifest.yaml ]]; then
-            ruby scripts/manual/current_manual_contract_test.rb
-            ruby scripts/manual/release_workflow_contract_test.rb
-            ruby scripts/manual/current_manual_contract.rb --version "$MANUAL_VERSION"
-            ruby scripts/manual/export_manifest.rb --check \
-              docs/manual/current/manifest.yaml \
-              docs/manual/current/generated/manifest.json
+          SITE_ROOT="$GITHUB_WORKSPACE/.manual-site"
+          TOOL_ROOT="$SITE_ROOT/scripts/manual/repositories/bluetape4k-javers"
+          MANUAL_ROOT="$SITE_ROOT/docs/manual/bluetape4k-javers"
+          CURRENT_ROOT="$MANUAL_ROOT/current"
+          if [[ -f "$TOOL_ROOT/current_manual_contract_test.rb" && -f "$CURRENT_ROOT/manifest.yaml" ]]; then
+            BLUETAPE4K_JAVERS_ROOT="$GITHUB_WORKSPACE" \
+            BLUETAPE4K_JAVERS_CURRENT_ROOT="$CURRENT_ROOT" \
+            BLUETAPE4K_JAVERS_CURRENT_MANIFEST="$CURRENT_ROOT/manifest.yaml" \
+              ruby -I "$TOOL_ROOT" "$TOOL_ROOT/current_manual_contract_test.rb"
+            BLUETAPE4K_JAVERS_RELEASE_WORKFLOW="$GITHUB_WORKSPACE/.github/workflows/release.yml" \
+              ruby -I "$TOOL_ROOT" "$TOOL_ROOT/release_workflow_contract_test.rb"
+            ruby "$TOOL_ROOT/current_manual_contract.rb" \
+              --version "$MANUAL_VERSION" \
+              --manual-root "$CURRENT_ROOT" \
+              --manifest "$CURRENT_ROOT/manifest.yaml"
+            ruby "$TOOL_ROOT/export_manifest.rb" --check \
+              "$CURRENT_ROOT/manifest.yaml" \
+              "$CURRENT_ROOT/generated/manifest.json"
           elif [[ "$MANUAL_VERSION" == "0.3.0" ]]; then
             echo "::notice::Using the legacy manual validator for immutable release tag $VERSION."
             TARGET_SHA="$(git rev-parse "${VERSION}^{commit}")"
             LEGACY_MANUAL_METADATA="$(ruby -ryaml -e '
-              manifest = YAML.safe_load(File.read("docs/manual/manifest.yaml"))
+              manifest = YAML.safe_load(File.read(".manual-site/docs/manual/bluetape4k-javers/manifest.yaml"))
               release_tag = manifest.fetch("releaseTag")
               release_commit = manifest.fetch("releaseCommit")
               abort("legacy manual manifest must pin releaseTag and releaseCommit") if
@@ -109,14 +128,19 @@ jobs:
             fi
             LEGACY_INPUT="$RUNNER_TEMP/release-manual-inventory-input.json"
             ruby -rjson -e '
-              manifest = JSON.parse(File.read("docs/manual/generated/manifest.json"))
+              manifest = JSON.parse(File.read(".manual-site/docs/manual/bluetape4k-javers/generated/manifest.json"))
               File.write(ARGV.fetch(0), JSON.pretty_generate(manifest.fetch("modules")) + "\n")
             ' "$LEGACY_INPUT"
-            ruby scripts/manual/release_inventory.rb \
+            ruby "$TOOL_ROOT/release_inventory.rb" \
               "$VERSION" "$TARGET_SHA" "$LEGACY_INPUT" \
               build/manual/release-module-inventory.json 7
-            ruby scripts/manual/validate_release_manuals.rb \
-              "$LEGACY_MANUAL_TAG" "$LEGACY_MANUAL_SHA" build/manual/release-module-inventory.json
+            ruby "$TOOL_ROOT/validate_release_manuals.rb" \
+              --code-root "$GITHUB_WORKSPACE" \
+              --manual-root "$MANUAL_ROOT" \
+              --manifest "$MANUAL_ROOT/manifest.yaml" \
+              --inventory "$GITHUB_WORKSPACE/build/manual/release-module-inventory.json" \
+              --tag "$LEGACY_MANUAL_TAG" \
+              --sha "$LEGACY_MANUAL_SHA"
           else
             echo "::error::No supported manual validation contract is available for immutable release tag $VERSION."
             exit 1

@@ -74,9 +74,9 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 
 ## 매뉴얼
 
-- [현재 1.0.0 매뉴얼](docs/manual/current/ko/index.md)은
+- [현재 1.0.0 매뉴얼](https://github.com/bluetape4k/bluetape4k.github.io/blob/develop/docs/manual/bluetape4k-javers/current/ko/index.md)은
   `settings.gradle.kts`에 등록된 모든 모듈과 예제·benchmark 근거를 다룹니다.
-- [릴리스 고정 0.3.0 매뉴얼](docs/manual/ko/index.md)은 immutable 상태로
+- [릴리스 고정 0.3.0 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-javers/0.3/)은 immutable 상태로
   보존하며 해당 릴리스에서 제공한 모듈만 설명합니다.
 
 ## bluetape4k-exposed와의 경계
