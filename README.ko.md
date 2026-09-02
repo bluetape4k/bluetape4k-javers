@@ -7,6 +7,10 @@
 
 [English](./README.md) | 한국어
 
+현재 안정 버전: `1.0.0`
+
+현재 개발선: `develop`의 `1.1.0-SNAPSHOT`
+
 ![bluetape4k JaVers 감사 작업대 일러스트](./docs/assets/javers-workbench.png)
 
 [JaVers](https://javers.org) 객체 감사(audit)와 diff를 위한 Kotlin/JVM 통합
@@ -74,9 +78,9 @@ event delivery 경로입니다. 함께 쓸 수는 있지만 서로 대체 가능
 
 ## 매뉴얼
 
-- [현재 1.0.0 매뉴얼](https://github.com/bluetape4k/bluetape4k.github.io/blob/develop/docs/manual/bluetape4k-javers/current/ko/index.md)은
+- [현재 1.1.0 개발 매뉴얼](https://github.com/bluetape4k/bluetape4k.github.io/blob/develop/docs/manual/bluetape4k-javers/current/ko/index.md)은
   `settings.gradle.kts`에 등록된 모든 모듈과 예제·benchmark 근거를 다룹니다.
-- [릴리스 고정 0.3.0 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-javers/0.3/)은 immutable 상태로
+- [릴리스 고정 1.0.0 매뉴얼](https://bluetape4k.github.io/ko/manual/bluetape4k-javers/1.0/)은 immutable 상태로
   보존하며 해당 릴리스에서 제공한 모듈만 설명합니다.
 
 ## bluetape4k-exposed와의 경계
@@ -104,7 +108,7 @@ repository가 replay, invalidation, failure semantics를 명시적으로 소유�
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.0.0"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
     implementation("io.github.bluetape4k.javers:javers-ddd")
