@@ -7,6 +7,8 @@
 
 ## [미공개]
 
+## [1.0.0] - 2026-09-02
+
 ### 추가
 
 - `javers-spring-boot4-autoconfigure`의 schema ownership과 상충 flag 조합을
@@ -22,6 +24,9 @@
 
 ### 변경
 
+- 중앙 catalog ref를 `8efed120b91c4e1b1cfbfe1269321df325b08aef`로 고정해
+  Projects 2.0.0과 Exposed 2.0.0 안정 버전을 사용하는 1.0.0 배포 경계를
+  확정했다 ([#363](https://github.com/bluetape4k/bluetape4k-javers/issues/363)).
 - Redis repository head가 손상되거나 되감긴 경우 audit history를 조용히
   축소하지 않도록 fail-closed 검증을 적용했다
   ([#334](https://github.com/bluetape4k/bluetape4k-javers/issues/334),
