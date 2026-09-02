@@ -1,31 +1,24 @@
 # WIP - bluetape4k-javers
 
-스냅숏: 2026-08-01 KST
-범위: `debop`에게 할당된 열린 GitHub issue.
-열린 issue 수: 1개.
+스냅숏: 2026-09-02 KST
+범위: 1.0.0 release-prep와 별도 backlog.
+열린 issue 수: 2개 (#363, backlog #119).
 
 ## 현재 방향
 
-`0.2.1`은 2026-06-27에 게시된 최신 안정 Javers 릴리스이며,
-`bluetape4k-dependencies` `1.3.1` 릴리스가 소비하는 버전이다.
+`0.3.0`은 2026-08-06에 게시된 최신 안정 Javers 릴리스다. 현재 개발선은
+`baseVersion=1.0.0`, 빈 `snapshotVersion`을 사용하며, 1.0.0 release-prep #363만
+배포 blocker로 남아 있다. 중앙 catalog는 Projects/Exposed 안정 버전이 승격된
+immutable SHA `8efed120b91c4e1b1cfbfe1269321df325b08aef`를 사용한다.
 
-`0.2.1` 패치 라인에는 열린 GitHub issue가 없고 릴리스/태그가 완료됐다.
-다음 안정 Javers 릴리스는 `0.3.0` 개발 라인의 작업과 별도로
-정한다.
-
-`0.3.0` 라인에서는 개발이 열려 있으며, 워크플로가 주입하는 스냅숏 게시를
-위해 `snapshotVersion=`은 비워 둔다. train이 명시적으로 retarget되지 않는 한
-`0.3.0`은 다음 dependencies release train의 안정 Javers 입력이 아니다.
-현재 `0.3.0`에서 `debop`에게 할당된 열린 issue는 없다. #289 한국어 `Fixed`
-terminology follow-up은 PR #290으로 완료됐다.
+backlog #119의 R2DBC persistence research는 1.0.0 배포와 분리해 유지한다.
 
 ## Milestone 현황
 
 | Milestone | Open | Closed | 비고 |
 |---|---:|---:|---|
-| `0.2.1` | 0 | 29 | `bluetape4k-dependencies` `1.3.1`이 소비하는 published patch release. |
-| `0.3.0` | 0 | 133 | #289 한국어 changelog terminology follow-up이 PR #290으로 완료됐다. |
-| `backlog` | 1 | 6 | 향후 R2DBC persistence research이며 `0.3.0` blocker가 아니다. |
+| `1.0.0` | 1 | 58 | #363 release-prep만 남아 있다. |
+| `backlog` | 1 | 7 | 향후 R2DBC persistence research이며 `1.0.0` blocker가 아니다. |
 
 열린 PR: 없음.
 
@@ -33,7 +26,8 @@ terminology follow-up은 PR #290으로 완료됐다.
 
 | 우선순위 | Issue | Milestone | 비고 |
 |---|---|---|---|
-| P3 | [#119](https://github.com/bluetape4k/bluetape4k-javers/issues/119) research: evaluate R2DBC persistence support for JaVers snapshots | backlog | `0.3.0`과 분리해 유지하며, 구현 전에 backend feasibility research가 필요하다. |
+| P1 | [#363](https://github.com/bluetape4k/bluetape4k-javers/issues/363) 1.0.0 정식 배포 경계 준비 | 1.0.0 | catalog SHA·문서·exact-head CI·Full Nightly·공개 아티팩트 검증 |
+| P3 | [#119](https://github.com/bluetape4k/bluetape4k-javers/issues/119) JaVers snapshot의 R2DBC persistence 지원 평가 | backlog | `1.0.0`과 분리해 유지하며, 구현 전에 backend feasibility research가 필요하다. |
 
 ## 최근 완료
 
@@ -96,6 +90,11 @@ terminology follow-up은 PR #290으로 완료됐다.
 
 ## 검증 증거
 
+- 2026-09-02 KST에 live GitHub state를 확인했다. `1.0.0` milestone은 #363 한 건만
+  열려 있고 58건이 닫혔으며, `backlog`는 #119 한 건만 열려 있다.
+- 같은 시각 최신 안정 GitHub Release는 `0.3.0`, 열린 PR은 0건임을 확인했다.
+- 1.0.0 release-prep는 중앙 catalog exact SHA
+  `8efed120b91c4e1b1cfbfe1269321df325b08aef`를 사용한다.
 - 2026-08-01 KST에 PR #290 merge 후 live GitHub issue를 확인했다:
   `debop`에게 할당된 열린 issue는 #119 (`backlog`) 1개이며 #289는 닫혔다.
 - 같은 시각 milestone을 확인했다: `0.2.1`은 0 open / 29 closed,
