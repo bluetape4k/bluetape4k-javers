@@ -47,7 +47,11 @@ jobs:
 
       - name: Build with Gradle
         if: matrix.language == 'java-kotlin'
-        run: ./gradlew build -x test --no-daemon --no-build-cache
+        run: >-
+          ./gradlew build -x test
+          -x :benchmark-javers-exposed-benchmark:build
+          -x :benchmark-javers-exposed-benchmark:koverGenerateArtifact
+          --no-daemon --no-build-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
