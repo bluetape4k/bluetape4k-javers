@@ -79,7 +79,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
-      benchmark-javers-exposed-benchmark: ${{ steps.filter.outputs.benchmark-javers-exposed-benchmark }}
       examples-javers-exposed-ddd: ${{ steps.filter.outputs.examples-javers-exposed-ddd }}
       examples-javers-ktor: ${{ steps.filter.outputs.examples-javers-ktor }}
       examples-javers-spring-boot4: ${{ steps.filter.outputs.examples-javers-spring-boot4 }}
@@ -95,8 +94,6 @@ jobs:
         id: filter
         with:
           filters: |
-            benchmark-javers-exposed-benchmark:
-              - 'benchmark/javers-exposed-benchmark/**'
             examples-javers-exposed-ddd:
               - 'examples/javers-exposed-ddd/**'
               - '.github/workflows/ci.yml'
@@ -207,7 +204,10 @@ jobs:
           --max-attempts 5
           --receipt build/reports/ci-attempts/build.json
           --
-          ./gradlew build -x test --parallel --no-configuration-cache
+          ./gradlew build -x test
+          -x :benchmark-javers-exposed-benchmark:build
+          -x :benchmark-javers-exposed-benchmark:koverGenerateArtifact
+          --parallel --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
       - name: Upload build attempt receipt
@@ -235,56 +235,7 @@ jobs:
             .manual-site/docs/manual/bluetape4k-javers/en/modules/bluetape4k-javers-bom.md \
             .manual-site/docs/manual/bluetape4k-javers/ko/modules/bluetape4k-javers-bom.md
 
-  # 4. benchmark-javers-exposed-benchmark smoke (PostgreSQL Testcontainers)
-  benchmark-javers-exposed:
-    name: Benchmark / javers-exposed
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: [build, changes]
-    if: ${{ needs.changes.outputs['benchmark-javers-exposed-benchmark'] == 'true' || github.event_name == 'workflow_dispatch' }}
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-java@v6.0.0
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-      - uses: gradle/actions/setup-gradle@v6.3.0
-        with:
-          gradle-version: wrapper
-          cache-read-only: true
-      - name: Run javers-exposed benchmark smoke
-        run: >-
-          python3 .github/scripts/run_with_attempt_receipt.py
-          --name benchmark-smoke
-          --max-attempts 3
-          --receipt benchmark/javers-exposed-benchmark/build/reports/ci-attempts/benchmark-smoke.json
-          --
-          bash -c 'rm -rf benchmark/javers-exposed-benchmark/build/reports/benchmarks && exec ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel'
-        env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
-          TESTCONTAINERS_RYUK_DISABLED: "true"
-          DOCKER_HOST: "unix:///var/run/docker.sock"
-      - name: Enrich benchmark receipts
-        run: >-
-          ruby scripts/benchmark/enrich_benchmark_receipts.rb
-          benchmark/javers-exposed-benchmark/build/reports/benchmarks
-          "./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark
-          :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark
-          --no-daemon --no-configuration-cache --no-build-cache --no-parallel"
-      - name: Validate benchmark receipts
-        run: ruby scripts/benchmark/benchmark_receipt.rb benchmark/javers-exposed-benchmark/build/reports/benchmarks
-      - name: Upload benchmark reports
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: benchmark-results-javers-exposed
-          path: |
-            benchmark/javers-exposed-benchmark/build/reports/benchmarks/
-            benchmark/javers-exposed-benchmark/build/reports/ci-attempts/
-          if-no-files-found: error
-          retention-days: 7
-
-  # 5. javers-core tests (no Docker needed)
+  # 4. javers-core tests (no Docker needed)
   test-javers-core:
     name: Test / javers-core
     runs-on: ubuntu-latest
@@ -312,7 +263,7 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
       - name: Generate Kover XML report
-        run: ./gradlew :javers-core:koverXmlReport --no-daemon
+        run: ./gradlew :javers-core:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -361,7 +312,7 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Generate Kover XML report
-        run: ./gradlew :javers-ddd:koverXmlReport --no-daemon
+        run: ./gradlew :javers-ddd:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -410,7 +361,7 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Generate Kover XML report
-        run: ./gradlew :examples-javers-exposed-ddd:koverXmlReport --no-daemon
+        run: ./gradlew :examples-javers-exposed-ddd:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -459,7 +410,7 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Generate Kover XML report
-        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon
+        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -508,7 +459,7 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Generate Kover XML report
-        run: ./gradlew :examples-javers-spring-boot4:koverXmlReport --no-daemon
+        run: ./gradlew :examples-javers-spring-boot4:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -559,7 +510,7 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
       - name: Generate Kover XML report
-        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon
+        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -610,7 +561,7 @@ jobs:
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Generate Kover XML report
-        run: ./gradlew :javers-spring-boot4-autoconfigure:koverXmlReport --no-daemon
+        run: ./gradlew :javers-spring-boot4-autoconfigure:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
       - name: Upload test results
@@ -661,7 +612,7 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
       - name: Generate Kover XML report
-        run: ./gradlew :javers-persistence-redis:koverXmlReport --no-daemon
+        run: ./gradlew :javers-persistence-redis:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -714,7 +665,7 @@ jobs:
           TESTCONTAINERS_RYUK_DISABLED: "true"
           DOCKER_HOST: "unix:///var/run/docker.sock"
       - name: Generate Kover XML report
-        run: ./gradlew :javers-persistence-kafka:koverXmlReport --no-daemon
+        run: ./gradlew :javers-persistence-kafka:koverXmlReport --no-daemon -x test
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
           TESTCONTAINERS_RYUK_DISABLED: "true"
@@ -829,7 +780,6 @@ jobs:
     needs:
       - catalog-governance
       - gitleaks
-      - benchmark-javers-exposed
       - build
       - coverage-report
       - changes

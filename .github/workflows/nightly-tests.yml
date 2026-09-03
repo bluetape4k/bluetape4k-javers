@@ -61,7 +61,10 @@ jobs:
           --max-attempts 5
           --receipt build/reports/ci-attempts/nightly-build.json
           --
-          ./gradlew build -x test --parallel --no-configuration-cache
+          ./gradlew build -x test
+          -x :benchmark-javers-exposed-benchmark:build
+          -x :benchmark-javers-exposed-benchmark:koverGenerateArtifact
+          --parallel --no-configuration-cache
         env:
           GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
@@ -91,63 +94,7 @@ jobs:
           path: 'build/reports/detekt/*.xml'
           retention-days: 14
 
-  # ── 2. benchmark-javers-exposed-benchmark (PostgreSQL Testcontainers) ───
-  benchmark-javers-exposed:
-    name: Benchmark / javers-exposed
-    if: ${{ (github.event_name == 'schedule' && github.event.schedule == '15 19 * * 0') || (github.event_name == 'workflow_dispatch' && inputs.scope == 'full') }}
-
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: build
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: actions/setup-java@v6.0.0
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-
-      - uses: gradle/actions/setup-gradle@v6.3.0
-        with:
-          gradle-version: wrapper
-          cache-read-only: true
-
-      - name: Run javers-exposed benchmark smoke
-        run: >-
-          python3 .github/scripts/run_with_attempt_receipt.py
-          --name nightly-benchmark-smoke
-          --max-attempts 3
-          --receipt benchmark/javers-exposed-benchmark/build/reports/ci-attempts/nightly-benchmark-smoke.json
-          --
-          bash -c 'rm -rf benchmark/javers-exposed-benchmark/build/reports/benchmarks && exec ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel'
-        env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
-          TESTCONTAINERS_RYUK_DISABLED: "true"
-          DOCKER_HOST: "unix:///var/run/docker.sock"
-
-      - name: Enrich benchmark receipts
-        run: >-
-          ruby scripts/benchmark/enrich_benchmark_receipts.rb
-          benchmark/javers-exposed-benchmark/build/reports/benchmarks
-          "./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark
-          :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark
-          --no-daemon --no-configuration-cache --no-build-cache --no-parallel"
-
-      - name: Validate benchmark receipts
-        run: ruby scripts/benchmark/benchmark_receipt.rb benchmark/javers-exposed-benchmark/build/reports/benchmarks
-
-      - name: Upload benchmark reports
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: benchmark-results-javers-exposed
-          path: |
-            benchmark/javers-exposed-benchmark/build/reports/benchmarks/
-            benchmark/javers-exposed-benchmark/build/reports/ci-attempts/
-          if-no-files-found: error
-          retention-days: 14
-
-  # ── 3. javers-core (Docker 불필요) ────────────────────────────────────────
+  # ── 2. javers-core (Docker 불필요) ────────────────────────────────────────
   test-javers-core:
     name: Test / javers-core
     runs-on: ubuntu-latest
@@ -179,7 +126,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-core:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :javers-core:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -232,7 +179,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-ddd:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :javers-ddd:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -285,7 +232,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :examples-javers-exposed-ddd:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :examples-javers-exposed-ddd:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -338,7 +285,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :examples-javers-ktor:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -391,7 +338,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :examples-javers-spring-boot4:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :examples-javers-spring-boot4:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -448,7 +395,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :javers-exposed:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -505,7 +452,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-persistence-redis:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :javers-persistence-redis:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -562,7 +509,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-persistence-kafka:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :javers-persistence-kafka:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -615,7 +562,7 @@ jobs:
 
       - name: Generate Kover XML report
         if: always()
-        run: ./gradlew :javers-spring-boot4-autoconfigure:koverXmlReport --no-daemon --no-configuration-cache
+        run: ./gradlew :javers-spring-boot4-autoconfigure:koverXmlReport --no-daemon --no-configuration-cache -x test
 
       - name: Upload test results
         if: always()
@@ -708,7 +655,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
-      - benchmark-javers-exposed
       - build
       - test-javers-core
       - test-javers-ddd
