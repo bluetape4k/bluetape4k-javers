@@ -9,9 +9,9 @@ REST 예제입니다.
 
 이 예제는 auto-configuration 대신 명시적인 Spring bean wiring을 사용합니다.
 `JaversExampleConfiguration`이 H2 기반 Exposed `Database`를 만들고,
-command-side table과 JaVers table을 초기화한 뒤
-`ExposedCdoSnapshotRepository`, order repository, command handler, REST
-controller를 연결합니다.
+`ExposedCdoSnapshotRepositoryOptions`를 적용한 repository의 `ensureSchema()`로
+JaVers table을 초기화한 뒤 애플리케이션 소유 `OrdersTable`, order repository,
+command handler, REST controller를 연결합니다.
 
 ![examples-javers-spring-boot4 wiring](../../docs/images/readme-diagrams/examples-javers-spring-boot4-wiring-01.png)
 
@@ -59,5 +59,8 @@ rule에서 `examples-javers-*` prefix로 예제 project를 제외할 수 있게 
 
 명시적 database bean은 H2를 기본값으로 유지하면서
 `javers.example.database.url`, `.driver`, `.username`, `.password` override를
-받습니다. 통합 테스트는 `PostgreSQLServer.Launcher.postgres`를 사용해 같은
-bounded-history contract를 PostgreSQL에서도 검증합니다.
+받습니다. JaVers options는 `javers.example.repository.commit-table-name`,
+`.snapshot-table-name`, `.create-schema-on-ensure`로 설정합니다. 마지막 값을
+`false`로 두면 migration이 JaVers table을 소유하고 예제의 `ensureSchema()`는
+DDL을 실행하지 않습니다. 통합 테스트는 `PostgreSQLServer.Launcher.postgres`를 사용해
+같은 bounded-history contract를 PostgreSQL에서도 검증합니다.

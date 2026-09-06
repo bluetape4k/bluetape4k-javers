@@ -17,6 +17,12 @@ The command handler saves aggregate state before the Kafka event is projected.
 The read API intentionally reads the Redis projection only; it does not query
 `OrdersTable` or JaVers snapshots.
 
+Command-side fixtures use `ExposedCdoSnapshotRepositoryOptions` and
+`ensureSchema()` for JaVers tables, while the application-owned `OrdersTable` is
+created separately. When migrations own the audit schema, set
+`createSchemaOnEnsure=false`; Kafka consumer and Redis client lifecycles remain
+caller-owned as before.
+
 ![javers-exposed-ddd command and projection sequence](../../docs/images/readme-diagrams/examples-javers-exposed-ddd-sequence-01.png)
 
 ## What This Example Covers

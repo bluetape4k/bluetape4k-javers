@@ -22,8 +22,7 @@ import io.bluetape4k.javers.examples.exposedddd.persistence.OrderRepository
 import io.bluetape4k.javers.examples.exposedddd.persistence.OrdersTable
 import io.bluetape4k.javers.examples.exposedddd.service.OrderCommandHandler
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
-import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
-import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryOptions
 import io.mockk.every
 import io.mockk.mockk
 import org.javers.core.Javers
@@ -48,6 +47,7 @@ class OrderCommandHandlerTest {
     )
 
     private val clock: Clock = Clock.fixed(Instant.parse("2026-05-26T00:00:00Z"), ZoneOffset.UTC)
+    private val snapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions.Default
 
     private lateinit var javers: Javers
     private lateinit var repository: OrderRepository
@@ -56,12 +56,19 @@ class OrderCommandHandlerTest {
 
     @BeforeEach
     fun beforeEach() {
+        val schema = snapshotRepositoryOptions.newSchema()
         transaction(database) {
-            SchemaUtils.drop(OrdersTable, CdoSnapshotTable, CommitTable)
-            SchemaUtils.create(CommitTable, CdoSnapshotTable, OrdersTable)
+            SchemaUtils.drop(OrdersTable, *schema.tables)
         }
 
-        val snapshotRepository = ExposedCdoSnapshotRepository(database)
+        val snapshotRepository = ExposedCdoSnapshotRepository(
+            database = database,
+            options = snapshotRepositoryOptions,
+        )
+        snapshotRepository.ensureSchema()
+        transaction(database) {
+            SchemaUtils.create(OrdersTable)
+        }
         javers = JaversBuilder.javers()
             .registerJaversRepository(snapshotRepository)
             .registerEntity(Order::class.java)

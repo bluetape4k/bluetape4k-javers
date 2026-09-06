@@ -9,8 +9,9 @@ Exposed JDBC command persistence와 JaVers audit을 함께 사용하는 Ktor RES
 
 이 예제는 auto-configuration을 사용하지 않고 필요한 객체를 명시적으로
 wiring합니다. Ktor module이 H2 기반 Exposed `Database`를 만들고,
-command-side table과 JaVers table을 생성한 뒤 `ExposedCdoSnapshotRepository`,
-`OrderRepository`, order API route를 연결합니다.
+`ExposedCdoSnapshotRepositoryOptions`를 적용한 repository의 `ensureSchema()`로
+JaVers table을 초기화한 뒤 애플리케이션 소유 `OrdersTable`, `OrderRepository`,
+order API route를 연결합니다.
 
 ![examples-javers-ktor wiring](../../docs/images/readme-diagrams/examples-javers-ktor-wiring-01.png)
 
@@ -57,6 +58,20 @@ Gradle project 이름은 `:examples-javers-ktor`입니다. 나중에 publishing 
 JDBC를 사용합니다. 요청 경로의 JDBC와 JaVers 호출은 호출자가 제공한
 `blockingDispatcher` 안에서 실행하며 기본값은 `Dispatchers.IO`입니다. 선택적
 `database` 인수는 호출자가 소유하고, 생략하면 기존 H2 예제 기본값을 유지합니다.
+JaVers table 이름과 migration 소유권은 `snapshotRepositoryOptions`로 호출자가
+정합니다. `createSchemaOnEnsure=false`를 선택하면 호출자가 migration으로 JaVers
+table을 먼저 만들고, 예제는 `ensureSchema()`에서 DDL을 실행하지 않습니다.
+
+```kotlin
+javersKtorModule(
+    database = applicationDatabase,
+    snapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions(
+        tableNames = ExposedJaversTableNames("audit_commit", "audit_snapshot"),
+        createSchemaOnEnsure = false,
+    ),
+)
+```
+
 고동시성 production Ktor 배포에서는 애플리케이션이 소유한 JDBC database와 적절히
 제한한 blocking dispatcher를 제공하거나, virtual-thread runtime 전략 또는 future
 R2DBC 경로를 검토해야 합니다.

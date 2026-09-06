@@ -7,8 +7,8 @@ import io.bluetape4k.javers.examples.springboot4.persistence.OrderRepository
 import io.bluetape4k.javers.examples.springboot4.persistence.OrdersTable
 import io.bluetape4k.javers.examples.springboot4.service.OrderCommandHandler
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
-import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
-import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryOptions
+import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import org.javers.core.Javers
 import org.javers.core.JaversBuilder
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -52,18 +52,48 @@ class JaversExampleConfiguration {
     }
 
     @Bean
-    fun exampleSchemaInitializer(database: Database): InitializingBean {
+    fun exampleSnapshotRepositoryOptions(environment: Environment): ExposedCdoSnapshotRepositoryOptions {
+        return ExposedCdoSnapshotRepositoryOptions(
+            tableNames = ExposedJaversTableNames(
+                commitTableName = environment.getProperty("javers.example.repository.commit-table-name")
+                    ?: ExposedJaversTableNames.Default.commitTableName,
+                snapshotTableName = environment.getProperty("javers.example.repository.snapshot-table-name")
+                    ?: ExposedJaversTableNames.Default.snapshotTableName,
+            ),
+            createSchemaOnEnsure = environment.getProperty("javers.example.repository.create-schema-on-ensure")
+                ?.let { value ->
+                    value.toBooleanStrictOrNull()
+                        ?: error("javers.example.repository.create-schema-on-ensure must be true or false")
+                }
+                ?: true,
+        )
+    }
+
+    @Bean
+    fun exampleSnapshotRepository(
+        database: Database,
+        options: ExposedCdoSnapshotRepositoryOptions,
+    ): ExposedCdoSnapshotRepository {
+        return ExposedCdoSnapshotRepository(database = database, options = options)
+    }
+
+    @Bean
+    fun exampleSchemaInitializer(
+        database: Database,
+        snapshotRepository: ExposedCdoSnapshotRepository,
+    ): InitializingBean {
         return InitializingBean {
+            snapshotRepository.ensureSchema()
             transaction(database) {
-                SchemaUtils.create(CommitTable, CdoSnapshotTable, OrdersTable)
+                SchemaUtils.create(OrdersTable)
             }
         }
     }
 
     @Bean
-    fun exampleJavers(database: Database): Javers {
+    fun exampleJavers(snapshotRepository: ExposedCdoSnapshotRepository): Javers {
         return JaversBuilder.javers()
-            .registerJaversRepository(ExposedCdoSnapshotRepository(database))
+            .registerJaversRepository(snapshotRepository)
             .registerEntity(Order::class.java)
             .build()
     }
