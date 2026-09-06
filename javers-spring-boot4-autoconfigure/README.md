@@ -27,9 +27,15 @@ off when the codec classes are missing.
 
 ## Dependency
 
+The dependency example is pinned to the current stable BOM declared in the
+repository root README (`1.0.0`). Consumers following the `develop` line should
+use the versionless catalog/project dependency policy instead of copying a
+release-pinned snippet. A documentation contract test keeps both locale copies
+aligned with the stable release train.
+
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.0.0"))
     implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
 
     // Add only the backend module and client stack your application uses.

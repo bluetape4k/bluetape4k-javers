@@ -192,6 +192,8 @@ jobs:
           cache-read-only: ${{ github.event_name == 'pull_request' }}
       - name: Test CI attempt receipt helper
         run: python3 .github/scripts/run_with_attempt_receipt_test.py
+      - name: Validate child README BOM version
+        run: ruby scripts/publication/bom_readme_version_test.rb
       - name: Validate release workflow contract
         run: |
           BLUETAPE4K_JAVERS_RELEASE_WORKFLOW="$GITHUB_WORKSPACE/.github/workflows/release.yml" \
