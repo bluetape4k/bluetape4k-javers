@@ -13,8 +13,7 @@ import io.bluetape4k.javers.examples.ktor.persistence.OrderRepository
 import io.bluetape4k.javers.examples.ktor.persistence.OrdersTable
 import io.bluetape4k.javers.examples.ktor.service.OrderCommandHandler
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
-import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
-import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryOptions
 import io.bluetape4k.ktor.core.installBluetape4kKtorCore
 import io.bluetape4k.ktor.core.requiredPathParameter
 import io.bluetape4k.ktor.core.respondApiError
@@ -66,6 +65,7 @@ private val DatabaseNamePattern = Regex("[A-Za-z0-9_-]+")
  * @param clock command handler가 사용할 시계입니다.
  * @param database 호출자가 소유한 JDBC 데이터베이스입니다. 생략하면 H2를 생성합니다.
  * @param blockingDispatcher JDBC와 JaVers blocking 호출에 사용할 dispatcher입니다.
+ * @param snapshotRepositoryOptions JaVers table mapping과 schema initialization ownership입니다.
  */
 fun Application.javersKtorModule(
     databaseName: String = "javers-ktor",
@@ -73,8 +73,15 @@ fun Application.javersKtorModule(
     clock: Clock = Clock.systemUTC(),
     database: Database? = null,
     blockingDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    snapshotRepositoryOptions: ExposedCdoSnapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions.Default,
 ) {
-    val services = createExampleServices(databaseName, database, eventPublisher, clock)
+    val services = createExampleServices(
+        databaseName = databaseName,
+        database = database,
+        eventPublisher = eventPublisher,
+        clock = clock,
+        snapshotRepositoryOptions = snapshotRepositoryOptions,
+    )
 
     installBluetape4kKtorCore()
     routing {
@@ -93,17 +100,23 @@ private fun createExampleServices(
     database: Database?,
     eventPublisher: DomainEventPublisher,
     clock: Clock,
+    snapshotRepositoryOptions: ExposedCdoSnapshotRepositoryOptions,
 ): ExampleServices {
     databaseName.requireSafeDatabaseName()
     val resolvedDatabase = database ?: Database.connect(
         url = "jdbc:h2:mem:$databaseName;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
         driver = "org.h2.Driver",
     )
+    val snapshotRepository = ExposedCdoSnapshotRepository(
+        database = resolvedDatabase,
+        options = snapshotRepositoryOptions,
+    )
+    snapshotRepository.ensureSchema()
     transaction(resolvedDatabase) {
-        SchemaUtils.create(CommitTable, CdoSnapshotTable, OrdersTable)
+        SchemaUtils.create(OrdersTable)
     }
     val javers = JaversBuilder.javers()
-        .registerJaversRepository(ExposedCdoSnapshotRepository(resolvedDatabase))
+        .registerJaversRepository(snapshotRepository)
         .registerEntity(Order::class.java)
         .build()
     val repository = OrderRepository(resolvedDatabase, javers, eventPublisher)

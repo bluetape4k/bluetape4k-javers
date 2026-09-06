@@ -9,8 +9,9 @@ persistence.
 
 This example uses explicit Spring beans instead of auto-configuration.
 `JaversExampleConfiguration` creates the H2-backed Exposed `Database`, initializes
-the command-side and JaVers tables, registers `ExposedCdoSnapshotRepository`,
-and wires the order repository, command handler, and REST controller.
+JaVers tables through `ExposedCdoSnapshotRepositoryOptions` and the repository's
+`ensureSchema()`, creates the application-owned `OrdersTable`, and wires the order
+repository, command handler, and REST controller.
 
 ![examples-javers-spring-boot4 wiring](../../docs/images/readme-diagrams/examples-javers-spring-boot4-wiring-01.png)
 
@@ -58,5 +59,9 @@ rules can exclude example projects by prefix.
 
 The explicit database bean keeps H2 as the default and accepts
 `javers.example.database.url`, `.driver`, `.username`, and `.password` overrides.
-The integration suite uses `PostgreSQLServer.Launcher.postgres` to verify the same
-bounded-history contract against PostgreSQL.
+JaVers options use `javers.example.repository.commit-table-name`,
+`.snapshot-table-name`, and `.create-schema-on-ensure`. Set the last property to
+`false` when migrations own the JaVers tables; the example then skips DDL in
+`ensureSchema()` and expects those tables to exist before startup. The integration
+suite uses `PostgreSQLServer.Launcher.postgres` to verify the same bounded-history
+contract against PostgreSQL.

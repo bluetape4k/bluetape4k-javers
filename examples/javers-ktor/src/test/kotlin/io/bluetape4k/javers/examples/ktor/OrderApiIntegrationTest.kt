@@ -3,6 +3,8 @@ package io.bluetape4k.javers.examples.ktor
 import io.bluetape4k.assertions.shouldBeEqualTo
 import io.bluetape4k.assertions.shouldHaveSize
 import io.bluetape4k.javers.examples.ktor.domain.OrderPlaced
+import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryOptions
+import io.bluetape4k.javers.persistence.exposed.schema.ExposedJaversTableNames
 import io.bluetape4k.ktor.core.HealthResponse
 import io.bluetape4k.ktor.testing.bluetape4kJsonClient
 import io.bluetape4k.ktor.testing.decodeJsonBody
@@ -51,6 +53,36 @@ class OrderApiIntegrationTest {
         historyBody.snapshots shouldHaveSize 1
         historyBody.snapshots.single().domainEventType shouldBeEqualTo
             OrderPlaced::class.qualifiedName
+    }
+
+    @Test
+    fun `custom JaVers table names flow through Ktor repository wiring`() = testApplication {
+        application {
+            javersKtorModule(
+                databaseName = newDatabaseName(),
+                snapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions(
+                    tableNames = ExposedJaversTableNames(
+                        commitTableName = "audit_commit_${Sequence.incrementAndGet()}",
+                        snapshotTableName = "audit_snapshot_${Sequence.incrementAndGet()}",
+                    ),
+                ),
+            )
+        }
+        val client = bluetape4kJsonClient {
+            defaultRequest {
+                contentType(ContentType.Application.Json)
+            }
+        }
+        val orderId = newOrderId()
+
+        client.post("/orders") {
+            setBody(placeOrderRequest(orderId))
+        } shouldHaveStatus HttpStatusCode.Created
+
+        val history = client.get("/orders/$orderId/history")
+
+        history shouldHaveStatus HttpStatusCode.OK
+        history.decodeJsonBody<OrderHistoryResponse>().snapshots shouldHaveSize 1
     }
 
     @Test

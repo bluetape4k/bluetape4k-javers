@@ -17,6 +17,12 @@ Command handler는 Kafka event projection 전에 aggregate state를 먼저
 저장합니다. Read API는 의도적으로 Redis projection만 읽으며, `OrdersTable`이나
 JaVers snapshot을 조회하지 않습니다.
 
+Command-side fixture는 `ExposedCdoSnapshotRepositoryOptions`와
+`ensureSchema()`로 JaVers table을 초기화하고, 애플리케이션 소유
+`OrdersTable`을 별도로 생성합니다. 실제 migration을 사용하는 경우에는
+`createSchemaOnEnsure=false`로 DDL 소유권을 migration에 두고, Kafka consumer와
+Redis client lifecycle은 기존처럼 호출자가 관리합니다.
+
 ![javers-exposed-ddd command and projection sequence](../../docs/images/readme-diagrams/examples-javers-exposed-ddd-sequence-01.png)
 
 ## 포함 범위

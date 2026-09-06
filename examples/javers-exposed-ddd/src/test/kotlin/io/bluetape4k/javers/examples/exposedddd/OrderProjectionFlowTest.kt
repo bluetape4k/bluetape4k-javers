@@ -19,8 +19,7 @@ import io.bluetape4k.javers.examples.exposedddd.projection.RedisOrderSummaryProj
 import io.bluetape4k.javers.examples.exposedddd.service.OrderCommandHandler
 import io.bluetape4k.javers.examples.exposedddd.service.OrderQueryService
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
-import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
-import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepositoryOptions
 import io.bluetape4k.testcontainers.mq.KafkaServer
 import io.bluetape4k.testcontainers.storage.RedisServer
 import org.javers.core.JaversBuilder
@@ -45,12 +44,21 @@ class OrderProjectionFlowTest {
     )
 
     private val clock: Clock = Clock.fixed(Instant.parse("2026-05-27T00:00:00Z"), ZoneOffset.UTC)
+    private val snapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions.Default
 
     @BeforeEach
     fun beforeEach() {
+        val schema = snapshotRepositoryOptions.newSchema()
         transaction(database) {
-            SchemaUtils.drop(OrdersTable, CdoSnapshotTable, CommitTable)
-            SchemaUtils.create(CommitTable, CdoSnapshotTable, OrdersTable)
+            SchemaUtils.drop(OrdersTable, *schema.tables)
+        }
+        val snapshotRepository = ExposedCdoSnapshotRepository(
+            database = database,
+            options = snapshotRepositoryOptions,
+        )
+        snapshotRepository.ensureSchema()
+        transaction(database) {
+            SchemaUtils.create(OrdersTable)
         }
     }
 
@@ -99,7 +107,10 @@ class OrderProjectionFlowTest {
     }
 
     private fun newCommandHandler(eventPublisher: DomainEventPublisher): OrderCommandHandler {
-        val snapshotRepository = ExposedCdoSnapshotRepository(database)
+        val snapshotRepository = ExposedCdoSnapshotRepository(
+            database = database,
+            options = snapshotRepositoryOptions,
+        )
         val javers = JaversBuilder.javers()
             .registerJaversRepository(snapshotRepository)
             .registerEntity(Order::class.java)
