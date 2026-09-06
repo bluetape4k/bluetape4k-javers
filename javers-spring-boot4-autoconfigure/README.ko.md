@@ -27,9 +27,14 @@ Redis auto-configuration은 안전한 `lz4-fory` codec 경로만 노출하며, c
 
 ## 의존성
 
+아래 의존성 예제는 저장소 루트 README에 선언된 현재 안정 BOM(`1.0.0`)에
+고정되어 있습니다. `develop` 개발선을 사용하는 소비자는 release 고정 snippet을
+복사하지 말고 versionless catalog/project dependency 정책을 사용하세요. 두 locale
+README가 안정 release train과 계속 정렬되도록 문서 계약 테스트가 이를 검증합니다.
+
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:0.3.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.0.0"))
     implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
 
     // 애플리케이션이 실제로 쓰는 backend module과 client stack만 추가하세요.
