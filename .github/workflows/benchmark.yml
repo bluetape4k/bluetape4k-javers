@@ -1,0 +1,158 @@
+name: Benchmark
+
+on:
+  schedule:
+    - cron: '15 19 * * 1-6'  # Daily smoke, UTC 19:15 (KST 04:15) Mon-Sat
+    - cron: '15 19 * * 0'    # Weekly full, UTC 19:15 (KST 04:15) Sunday
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Benchmark scope to run'
+        required: true
+        type: choice
+        default: smoke
+        options:
+          - smoke
+          - full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JAVA_VERSION: '25'
+  JAVA_DISTRIBUTION: 'temurin'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  BENCHMARK_REPORT_DIR: benchmark/javers-exposed-benchmark/build/reports/benchmarks
+  BENCHMARK_ATTEMPT_DIR: benchmark/javers-exposed-benchmark/build/reports/ci-attempts
+
+jobs:
+  validate-wrapper:
+    name: Validate Gradle Wrapper
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: gradle/actions/wrapper-validation@v6.3.0
+
+  benchmark:
+    name: Benchmark / javers-exposed
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: validate-wrapper
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6.0.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - uses: gradle/actions/setup-gradle@v6.3.0
+        with:
+          gradle-version: wrapper
+          cache-read-only: true
+
+      - name: Test CI attempt receipt helper
+        run: python3 .github/scripts/run_with_attempt_receipt_test.py
+
+      - name: Test benchmark receipt validator
+        run: ruby scripts/benchmark/benchmark_receipt_test.rb
+
+      - name: Validate benchmark task contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          task_output="$(./gradlew :benchmark-javers-exposed-benchmark:tasks --all --no-daemon --no-configuration-cache --no-build-cache --no-parallel --console=plain)"
+          for task in mainBenchmark mainCommitMetadataSmokeBenchmark mainEnversComparisonSmokeBenchmark; do
+            grep -Eq "^[[:space:]]*${task}([[:space:]]|$)" <<<"$task_output"
+          done
+          mkdir -p "$BENCHMARK_REPORT_DIR" "$BENCHMARK_ATTEMPT_DIR"
+
+      - name: Resolve benchmark scope and command
+        id: scope
+        shell: bash
+        env:
+          DISPATCH_SCOPE: ${{ github.event.inputs.scope || 'smoke' }}
+          SCHEDULE_CRON: ${{ github.event.schedule || '' }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" ]]; then
+            if [[ "$SCHEDULE_CRON" == "15 19 * * 0" ]]; then
+              scope=full
+            else
+              scope=smoke
+            fi
+          else
+            scope="$DISPATCH_SCOPE"
+          fi
+
+          case "$scope" in
+            smoke)
+              command='./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel --console=plain'
+              ;;
+            full)
+              command='./gradlew :benchmark-javers-exposed-benchmark:mainBenchmark --no-daemon --no-configuration-cache --no-build-cache --no-parallel --console=plain'
+              ;;
+            *)
+              echo "Unsupported benchmark scope: $scope" >&2
+              exit 1
+              ;;
+          esac
+
+          echo "scope=$scope" >> "$GITHUB_OUTPUT"
+          {
+            echo "BENCHMARK_SCOPE=$scope"
+            echo "BENCHMARK_COMMAND=$command"
+          } >> "$GITHUB_ENV"
+
+      - name: Run bounded benchmark
+        run: >-
+          python3 .github/scripts/run_with_attempt_receipt.py
+          --name benchmark-${{ steps.scope.outputs.scope }}
+          --max-attempts 3
+          --receipt ${{ env.BENCHMARK_ATTEMPT_DIR }}/benchmark-${{ steps.scope.outputs.scope }}.json
+          --
+          bash -c "set -euo pipefail; rm -rf \"\$BENCHMARK_REPORT_DIR\"; mkdir -p \"\$BENCHMARK_REPORT_DIR\"; exec bash -c \"\$BENCHMARK_COMMAND\""
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false"
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
+          DOCKER_HOST: unix:///var/run/docker.sock
+
+      - name: Enrich benchmark receipts
+        if: success()
+        run: ruby scripts/benchmark/enrich_benchmark_receipts.rb "$BENCHMARK_REPORT_DIR" "$BENCHMARK_COMMAND"
+
+      - name: Validate benchmark receipts
+        if: always()
+        run: ruby scripts/benchmark/benchmark_receipt.rb "$BENCHMARK_REPORT_DIR"
+
+      - name: Publish benchmark summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## JaVers Exposed benchmark"
+            echo "- Scope: \`${BENCHMARK_SCOPE:-unresolved}\`"
+            echo "- Commit SHA: \`${GITHUB_SHA}\`"
+            echo "- Command: \`${BENCHMARK_COMMAND:-unresolved}\`"
+            echo "- Report directory: \`${BENCHMARK_REPORT_DIR}\`"
+            echo "- Metric: throughput in operations per second; higher is better."
+            echo "- This bounded run is drift evidence, not a release-wide performance claim."
+            echo "- Environment:"
+            java -version 2>&1 | sed 's/^/  - /'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload benchmark reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-results-javers-exposed-${{ steps.scope.outputs.scope }}
+          path: |
+            ${{ env.BENCHMARK_REPORT_DIR }}/
+            ${{ env.BENCHMARK_ATTEMPT_DIR }}/
+          if-no-files-found: error
+          retention-days: 30

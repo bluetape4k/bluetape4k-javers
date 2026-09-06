@@ -4,7 +4,8 @@ English | [한국어](README.ko.md)
 
 This module contains bounded `kotlinx-benchmark`/JMH smoke benchmarks for
 JaVers Exposed persistence. The benchmark code runs outside normal example
-tests so release and CI jobs can validate benchmark drift intentionally.
+tests so the dedicated Benchmark workflow can validate benchmark drift
+intentionally without adding a heavy measurement to every pull request.
 
 ## Scope
 
@@ -30,7 +31,15 @@ module.
 
 ## Run
 
-Smoke run used by CI and full Nightly:
+The hosted execution path is `.github/workflows/benchmark.yml`. It runs the
+bounded smoke scope daily (Mon-Sat, UTC 19:15), the full scope weekly (Sunday,
+UTC 19:15), and either scope through `workflow_dispatch`. General CI, Nightly,
+and Code Quality workflows intentionally exclude this module. Hosted runs use
+JDK 25 Temurin on `ubuntu-latest`, PostgreSQL Testcontainers, serial Gradle
+execution, and up to three infrastructure-only attempts; application secrets
+are not required.
+
+Smoke run used by the Benchmark workflow:
 
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
@@ -42,7 +51,7 @@ Envers comparison smoke run:
 ./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
-Full local benchmark target:
+Full benchmark target (weekly schedule or manual `full` scope):
 
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
@@ -85,5 +94,6 @@ changed.
 
 The hosted receipt contract is documented in
 [`docs/benchmark/benchmark-receipt-schema.md`](../../docs/benchmark/benchmark-receipt-schema.md).
-The CI gate requires every expected scenario/variant row and rejects teardown
-failure receipts.
+The Benchmark workflow gate requires every expected scenario/variant row and
+rejects teardown failure receipts. Scores are bounded drift evidence rather
+than a release-wide performance claim.
