@@ -4,8 +4,8 @@
 
 이 모듈은 JaVers Exposed persistence를 위한 제한된
 `kotlinx-benchmark`/JMH smoke benchmark를 담습니다. benchmark 코드는 일반
-example test와 분리되어 있어 CI와 full Nightly가 benchmark drift를 의도적으로
-검증할 수 있습니다.
+example test와 분리되어 있어 전용 Benchmark workflow가 모든 pull request에
+무거운 측정을 추가하지 않고 benchmark drift를 의도적으로 검증할 수 있습니다.
 
 ## 범위
 
@@ -30,7 +30,15 @@ benchmark는 trial마다 임시 PostgreSQL table을 만들고 tear-down에서 �
 
 ## 실행
 
-CI와 full Nightly에서 사용하는 smoke run:
+Hosted 실행 경로는 `.github/workflows/benchmark.yml`입니다. 매일(월-토,
+UTC 19:15) 제한된 smoke scope를 실행하고, 매주 일요일(UTC 19:15) full scope를
+실행하며, `workflow_dispatch`에서 두 scope 중 하나를 선택할 수 있습니다. 일반
+CI, Nightly, Code Quality workflow는 의도적으로 이 모듈을 제외합니다. Hosted
+실행 환경은 `ubuntu-latest`의 JDK 25 Temurin과 PostgreSQL Testcontainers이며,
+Gradle task를 직렬로 실행하고 infrastructure-only 재시도를 최대 3회 수행합니다.
+application secret은 필요하지 않습니다.
+
+Benchmark workflow에서 사용하는 smoke run:
 
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainCommitMetadataSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
@@ -42,7 +50,7 @@ Envers 비교 smoke run:
 ./gradlew :benchmark-javers-exposed-benchmark:mainEnversComparisonSmokeBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
 ```
 
-로컬 full benchmark target:
+full benchmark target(주간 schedule 또는 수동 `full` scope):
 
 ```bash
 ./gradlew :benchmark-javers-exposed-benchmark:mainBenchmark --no-configuration-cache --no-build-cache --no-parallel --console=plain
@@ -83,5 +91,6 @@ schema를 바꾸려면 더 넓은 workload benchmark가 필요합니다.
 
 Hosted receipt 계약은
 [`docs/benchmark/benchmark-receipt-schema.md`](../../docs/benchmark/benchmark-receipt-schema.md)에
-정의되어 있습니다. CI gate는 모든 scenario/variant row를 요구하고 teardown
-failure receipt가 남으면 실패합니다.
+정의되어 있습니다. Benchmark workflow gate는 모든 scenario/variant row를 요구하고
+teardown failure receipt가 남으면 실패합니다. 점수는 release-wide 성능 주장이
+아니라 제한된 drift evidence로 해석합니다.

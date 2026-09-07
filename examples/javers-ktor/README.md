@@ -7,8 +7,9 @@ Ktor REST example for JaVers auditing with Exposed JDBC command persistence.
 ## Architecture
 
 This example is intentionally explicit. The Ktor module creates the H2-backed
-Exposed `Database`, creates the command-side and JaVers tables, registers
-`ExposedCdoSnapshotRepository`, and then wires a small order API.
+Exposed `Database`, applies `ExposedCdoSnapshotRepositoryOptions` through the
+repository's `ensureSchema()` for JaVers tables, creates the application-owned
+`OrdersTable`, and then wires a small order API.
 
 ![examples-javers-ktor wiring](../../docs/images/readme-diagrams/examples-javers-ktor-wiring-01.png)
 
@@ -55,7 +56,22 @@ The example uses synchronous Exposed JDBC because the current JaVers Exposed
 repository is JDBC-backed. Every request-side JDBC and JaVers call runs inside
 the caller-provided `blockingDispatcher`, which defaults to `Dispatchers.IO`.
 The optional `database` parameter is caller-owned; omitting it keeps the
-H2-backed example default. For high-concurrency production Ktor deployments,
+H2-backed example default. JaVers table names and migration ownership are
+selected through `snapshotRepositoryOptions`. With
+`createSchemaOnEnsure=false`, the caller must create JaVers tables through its
+migration system before starting the example; `ensureSchema()` performs no DDL.
+
+```kotlin
+javersKtorModule(
+    database = applicationDatabase,
+    snapshotRepositoryOptions = ExposedCdoSnapshotRepositoryOptions(
+        tableNames = ExposedJaversTableNames("audit_commit", "audit_snapshot"),
+        createSchemaOnEnsure = false,
+    ),
+)
+```
+
+For high-concurrency production Ktor deployments,
 provide an application-owned JDBC database and an appropriately bounded
 blocking dispatcher, or evaluate a virtual-thread runtime strategy or future
 R2DBC path.

@@ -32,6 +32,9 @@ benchmark resource 정리 실패는 JMH 결과를 덮어쓰지 않고
 포함됩니다. validator는 이 파일이 존재하거나 malformed line이 있으면
 실패하므로 schema drop/connection close 오류를 조용히 삼킬 수 없습니다.
 
-CI와 Nightly는 receipt validator를 실행한 뒤 `build/reports/benchmarks/`
-전체를 artifact로 업로드합니다. 따라서 benchmark 실행이 만든 결과와
-teardown 진단을 같은 hosted receipt로 재검증할 수 있습니다.
+전용 Benchmark workflow는 receipt validator를 실행한 뒤
+`build/reports/benchmarks/` 전체를 artifact로 업로드합니다. 이 workflow는
+매일 bounded smoke, 매주 bounded full, 수동 `workflow_dispatch` 실행을
+담당하며 일반 CI/Nightly/Code Quality 경로와 분리되어 있습니다. 따라서
+benchmark 실행이 만든 결과와 teardown 진단을 같은 hosted receipt로 재검증할
+수 있습니다.
