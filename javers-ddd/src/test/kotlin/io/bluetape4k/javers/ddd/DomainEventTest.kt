@@ -54,6 +54,24 @@ class DomainEventTest {
             "${OrderPlaced::class.qualifiedName},${OrderShipped::class.qualifiedName}"
     }
 
+    @Test
+    fun `다중 이벤트는 순서별 ID 시각과 충돌하는 사용자 속성을 보존한다`() {
+        val time = Instant.parse("2026-09-08T00:00:00Z")
+        val first = OrderPlaced(1L, time, mapOf("tenant" to "blue", "aggregateId" to "custom"))
+        val second = OrderPlaced(2L, time.plusSeconds(1), mapOf("tenant" to "green"))
+
+        val properties = listOf(first, second).toJaversProperties()
+
+        properties["events.0.aggregateId"] shouldBeEqualTo "1"
+        properties["events.0.occurredOn"] shouldBeEqualTo time.toString()
+        properties["events.0.event.tenant"] shouldBeEqualTo "blue"
+        properties["events.0.event.aggregateId"] shouldBeEqualTo "custom"
+        properties["events.1.aggregateId"] shouldBeEqualTo "2"
+        properties["events.1.occurredOn"] shouldBeEqualTo time.plusSeconds(1).toString()
+        properties["events.1.event.tenant"] shouldBeEqualTo "green"
+        properties[DOMAIN_EVENT_COUNT_PROPERTY] shouldBeEqualTo "2"
+    }
+
     data class OrderPlaced(
         override val aggregateId: Long,
         override val occurredOn: Instant,

@@ -55,13 +55,25 @@ fun DomainEvent.toJaversProperties(): Map<String, String> {
     return properties
 }
 
+/**
+ * 0개는 빈 metadata, 1개는 기존 키, 여러 개는 기존 요약과 `events.<index>.`별 metadata를 반환합니다.
+ * index는 입력 컬렉션의 순회 순서이며 사용자 속성은 각 이벤트의 `event.` 아래에 보존합니다.
+ * 크기 제한이나 자동 절단은 적용하지 않습니다. 호출자는 backend의 commit property 제한에 맞게
+ * 이벤트 수와 속성을 제한해야 하며, 큰 이벤트 본문은 별도의 event store에 저장합니다.
+ */
 internal fun Collection<DomainEvent>.toJaversProperties(): Map<String, String> = when (size) {
     0 -> emptyMap()
     1 -> first().toJaversProperties()
     else -> linkedMapOf(
         DOMAIN_EVENT_COUNT_PROPERTY to size.toString(),
         DOMAIN_EVENT_TYPES_PROPERTY to joinToString(",") { it.eventTypeName() },
-    )
+    ).apply {
+        this@toJaversProperties.forEachIndexed { index, event ->
+            event.toJaversProperties().forEach { (key, value) ->
+                put("events.$index.$key", value)
+            }
+        }
+    }
 }
 
 internal fun DomainEvent.eventTypeName(): String {
