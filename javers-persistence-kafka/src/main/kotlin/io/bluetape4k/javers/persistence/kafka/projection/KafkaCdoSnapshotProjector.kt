@@ -143,6 +143,7 @@ class KafkaCdoSnapshotProjector private constructor(
             .forEach { record ->
                 val snapshot = record.decodeSnapshot()
                 if (options.skipExistingSnapshots && projectionRepository.containsSnapshot(snapshot)) {
+                    projectionRepository.validateSnapshotMetadata(snapshot)
                     skipped++
                     log.debug { "Skip existing projected snapshot. ${record.recordDiagnostics()}" }
                     return@forEach

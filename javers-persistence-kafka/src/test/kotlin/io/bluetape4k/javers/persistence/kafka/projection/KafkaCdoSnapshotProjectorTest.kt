@@ -10,6 +10,8 @@ import io.bluetape4k.javers.codecs.JaversCodecs
 import io.bluetape4k.javers.persistence.exposed.repository.ExposedCdoSnapshotRepository
 import io.bluetape4k.javers.persistence.exposed.schema.CdoSnapshotTable
 import io.bluetape4k.javers.persistence.exposed.schema.CommitTable
+import io.bluetape4k.javers.persistence.redis.repository.LettuceCdoSnapshotRepository
+import io.bluetape4k.testcontainers.storage.RedisServer
 import io.bluetape4k.javers.repository.caffeine.CaffeineCdoSnapshotRepository
 import io.mockk.Runs
 import io.mockk.every
@@ -184,7 +186,7 @@ class KafkaCdoSnapshotProjectorTest {
         val source = snapshotFixture()
         val targetRepository = CaffeineCdoSnapshotRepository()
         val targetJavers = newJavers(targetRepository)
-        targetRepository.saveSnapshot(source.snapshot)
+        targetRepository.projectSnapshot(source.snapshot)
         val consumer = mockConsumer(records(source.encodedSnapshot))
         val projector = KafkaCdoSnapshotProjector(
             consumer = consumer,
@@ -199,7 +201,72 @@ class KafkaCdoSnapshotProjectorTest {
         result.projectedSnapshots shouldBeEqualTo 0
         result.skippedSnapshots shouldBeEqualTo 1
         targetRepository.loadSnapshots(source.globalIdValue) shouldHaveSize 1
+        targetRepository.getHeadId() shouldBeEqualTo source.snapshot.commitMetadata.id
         verify(exactly = 1) { consumer.commitSync() }
+    }
+
+    @Test
+    fun `불완전한 기존 snapshot은 offset commit 전에 거부한다`() {
+        val source = snapshotFixture()
+        val targetRepository = CaffeineCdoSnapshotRepository()
+        val targetJavers = newJavers(targetRepository)
+        targetRepository.saveSnapshot(source.snapshot)
+        val consumer = mockConsumer(records(source.encodedSnapshot))
+        val projector = KafkaCdoSnapshotProjector(
+            consumer = consumer,
+            jsonConverter = targetJavers.jsonConverter,
+            projectionRepository = targetRepository,
+            options = projectionOptions(),
+        )
+
+        assertFailsWith<IllegalStateException> { projector.projectOnce() }
+        targetRepository.loadSnapshots(source.globalIdValue) shouldHaveSize 1
+        targetRepository.getHeadId().shouldBeNull()
+        verify(exactly = 0) { consumer.commitSync() }
+    }
+
+    @Test
+    fun `Redis 부분 저장은 재시작 후에도 offset 확정 없이 거부된다`() {
+        val source = snapshotFixture()
+        val name = "partial-${Base58.randomString(8)}"
+        val client = RedisServer.Launcher.LettuceLib.getRedisClient()
+        val original = LettuceCdoSnapshotRepository(name, client)
+        JaversBuilder.javers().registerJaversRepository(original).build()
+        original.saveSnapshot(source.snapshot)
+        val restarted = LettuceCdoSnapshotRepository(name, client)
+        val javers = JaversBuilder.javers().registerJaversRepository(restarted).build()
+        val consumer = mockConsumer(records(source.encodedSnapshot))
+        val projector = KafkaCdoSnapshotProjector(
+            consumer = consumer,
+            jsonConverter = javers.jsonConverter,
+            projectionRepository = restarted,
+            options = projectionOptions(),
+        )
+
+        assertFailsWith<IllegalStateException> { projector.projectOnce() }
+        restarted.loadSnapshots(source.globalIdValue) shouldHaveSize 1
+        restarted.getHeadId().shouldBeNull()
+        verify(exactly = 0) { consumer.commitSync() }
+    }
+
+    @Test
+    fun `과거 snapshot을 건너뛰어도 최신 head와 row 수를 유지한다`() {
+        val source = snapshotStreamFixture()
+        val repository = CaffeineCdoSnapshotRepository()
+        val javers = newJavers(repository)
+        val consumer = mockConsumer(records(*source.encodedSnapshots.toTypedArray()))
+        val projector = KafkaCdoSnapshotProjector(
+            consumer = consumer,
+            jsonConverter = javers.jsonConverter,
+            projectionRepository = repository,
+            options = projectionOptions(),
+        )
+        projector.projectOnce()
+        val result = projector.projectOnce()
+
+        result.skippedSnapshots shouldBeEqualTo 2
+        repository.getHeadId() shouldBeEqualTo source.headCommitId
+        repository.loadSnapshots(source.globalIdValue) shouldHaveSize 2
     }
 
     @Test

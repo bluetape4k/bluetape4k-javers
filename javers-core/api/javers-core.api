@@ -279,6 +279,7 @@ public abstract class io/bluetape4k/javers/repository/AbstractCdoSnapshotReposit
 	protected final fun setHead (Lorg/javers/core/commit/CommitId;)V
 	public fun setJsonConverter (Lorg/javers/core/json/JsonConverter;)V
 	protected abstract fun updateCommitId (Lorg/javers/core/commit/CommitId;J)V
+	public fun validateSnapshotMetadata (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 }
 
 public final class io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository$Companion : io/bluetape4k/logging/KLogging {
@@ -289,11 +290,13 @@ public abstract interface class io/bluetape4k/javers/repository/CdoSnapshotRepos
 	public fun loadSnapshots (Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/List;
 	public fun projectSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 	public abstract fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+	public fun validateSnapshotMetadata (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 }
 
 public final class io/bluetape4k/javers/repository/CdoSnapshotRepository$DefaultImpls {
 	public static fun loadSnapshots (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lorg/javers/core/metamodel/object/GlobalId;)Ljava/util/List;
 	public static fun projectSnapshot (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lorg/javers/core/metamodel/object/CdoSnapshot;)V
+	public static fun validateSnapshotMetadata (Lio/bluetape4k/javers/repository/CdoSnapshotRepository;Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 }
 
 public final class io/bluetape4k/javers/repository/cache2k/Cache2KCdoSnapshotRepository : io/bluetape4k/javers/repository/AbstractCdoSnapshotRepository {
@@ -366,6 +369,7 @@ public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapsho
 	public fun projectSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 	public fun saveSnapshot (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 	public fun setJsonConverter (Lorg/javers/core/json/JsonConverter;)V
+	public fun validateSnapshotMetadata (Lorg/javers/core/metamodel/object/CdoSnapshot;)V
 }
 
 public final class io/bluetape4k/javers/repository/composite/CompositeCdoSnapshotRepository$Companion {

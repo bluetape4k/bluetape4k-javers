@@ -263,3 +263,13 @@ dependencies {
 
 - [JaVers](https://javers.org)
 - [Apache Kafka](https://kafka.apache.org/)
+
+### 기존 snapshot의 metadata 검증
+
+Projector는 기존 snapshot을 건너뛰기 전에 `validateSnapshotMetadata()`를 호출합니다.
+`AbstractCdoSnapshotRepository` 기반 저장소는 commit sequence가 없으면 offset 확정 전에
+`IllegalStateException`을 발생시킵니다. 불완전한 projection은 새 저장소에 순서대로 전체
+재생하여 복구합니다. 과거 row에 새 sequence를 배정하면 head 순서가 달라질 수 있습니다.
+완전한 중복은 기존 sequence를 유지하며 row를 추가하지 않습니다.
+metadata를 소유하지 않는 사용자 저장소는 기본 no-op을 사용할 수 있으며, metadata를
+관리하는 구현은 검증을 재정의해야 합니다. 외부 writer와의 동시 쓰기는 이 replay 계약 밖입니다.
