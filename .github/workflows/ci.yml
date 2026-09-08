@@ -95,17 +95,14 @@ jobs:
         with:
           filters: |
             examples-javers-exposed-ddd:
-              - 'examples/shared-test-contracts/**'
               - 'examples/javers-exposed-ddd/**'
               - '.github/workflows/ci.yml'
               - '.github/scripts/**'
             examples-javers-ktor:
-              - 'examples/shared-test-contracts/**'
               - 'examples/javers-ktor/**'
               - '.github/workflows/ci.yml'
               - '.github/scripts/**'
             examples-javers-spring-boot4:
-              - 'examples/shared-test-contracts/**'
               - 'examples/javers-spring-boot4/**'
               - '.github/workflows/ci.yml'
               - '.github/scripts/**'
