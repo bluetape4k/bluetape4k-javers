@@ -125,3 +125,10 @@ dependencies {
 ```bash
 ./gradlew :javers-core:test
 ```
+
+### Decimal precision
+
+Map and binary codecs preserve `BigDecimal` numeric values and scale, including nested
+arrays and objects. Fory/Kryo and their compressed variants use the existing ecosystem
+serializers. Existing Long/Double payloads remain readable; precision already lost by an
+older writer cannot be recovered. JSON numbers remain numbers rather than strings.
