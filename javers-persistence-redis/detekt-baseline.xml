@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>TooGenericExceptionCaught:LettuceCdoSnapshotRepository.kt:LettuceCdoSnapshotRepository$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:AbstractRedisCdoSnapshotRepositoryParityTest.kt:AbstractRedisCdoSnapshotRepositoryParityTest.FailingCodec$throw RuntimeException("codec encode failed")</ID>
+    <ID>TooGenericExceptionThrown:LettuceCdoSnapshotRepository.kt:LettuceCdoSnapshotRepository$throw RuntimeException( "Failed to persist snapshot commit. " + RedisIdentifierDiagnostics.format(commit.id.value(), "commitId"), e, )</ID>
+    <ID>TooGenericExceptionThrown:LettuceCdoSnapshotRepository.kt:LettuceCdoSnapshotRepository$throw RuntimeException( "Failed to project snapshot. " + RedisIdentifierDiagnostics.format(snapshot.globalId.value(), "globalId"), e, )</ID>
+    <ID>TooGenericExceptionThrown:LettuceCdoSnapshotRepository.kt:LettuceCdoSnapshotRepository$throw RuntimeException( "Failed to save snapshot. " + RedisIdentifierDiagnostics.format(snapshot.globalId.value(), "globalId"), e, )</ID>
+    <ID>TooManyFunctions:LettuceCdoSnapshotRepository.kt:LettuceCdoSnapshotRepository : AbstractCdoSnapshotRepositoryAutoCloseable</ID>
+  </CurrentIssues>
+</SmellBaseline>

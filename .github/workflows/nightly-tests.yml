@@ -77,6 +77,9 @@ jobs:
           --
           ./gradlew detekt --parallel --no-configuration-cache
 
+      - name: Verify analysis coverage
+        run: python3 .github/scripts/validate_detekt_reports.py
+
       - name: Upload build attempt receipts
         if: always()
         uses: actions/upload-artifact@v7
@@ -91,7 +94,10 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: detekt-report
-          path: 'build/reports/detekt/*.xml'
+          path: |
+            build/reports/detekt/*.xml
+            javers-*/build/reports/detekt/*
+          if-no-files-found: error
           retention-days: 14
 
   # ── 2. javers-core (Docker 불필요) ────────────────────────────────────────

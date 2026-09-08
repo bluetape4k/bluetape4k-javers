@@ -20,7 +20,7 @@ plugins {
     alias(bt4k.plugins.kotlin.noarg) apply false
     alias(bt4k.plugins.kotlinx.atomicfu)
 
-    alias(bt4k.plugins.detekt.dev)
+    alias(bt4k.plugins.detekt.dev) apply false
     alias(bt4k.plugins.dependency.management)
 
     alias(bt4k.plugins.dokka)
@@ -49,6 +49,16 @@ fun Project.isExampleProject(): Boolean {
         relativeProjectDir.startsWith("examples/") ||
         name.startsWith("benchmark-") ||
         relativeProjectDir.startsWith("benchmark/")
+}
+
+// 배포 모듈만 정적 분석합니다. 예제와 benchmark는 별도 검증 범위를 유지합니다.
+val detektReports = tasks.register<ReportMergeTask>("reportMerge") {
+    output.set(layout.buildDirectory.file("reports/detekt/merged.xml"))
+}
+val detektAll = tasks.register("detekt") {
+    group = "verification"
+    description = "배포 대상 Kotlin 모듈의 정적 분석과 보고서를 집계합니다."
+    dependsOn(detektReports)
 }
 
 val centralPublishing = resolveCentralPublishingConfig()
@@ -124,6 +134,20 @@ subprojects {
         plugin("io.spring.dependency-management")
         plugin("org.jetbrains.dokka")
         plugin("com.adarshr.test-logger")
+    }
+
+    if (!isExampleProject()) {
+        apply(plugin = "dev.detekt")
+        extensions.configure<dev.detekt.gradle.extensions.DetektExtension> {
+            baseline.set(layout.projectDirectory.file("detekt-baseline.xml"))
+        }
+        val moduleDetekt = tasks.named<Detekt>("detekt") {
+            reports.checkstyle.required.set(true)
+        }
+        detektReports.configure {
+            dependsOn(moduleDetekt)
+            input.from(moduleDetekt.flatMap { it.reports.checkstyle.outputLocation })
+        }
     }
 
     pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
@@ -208,14 +232,6 @@ subprojects {
             showFullStackTraces = true
         }
 
-        val reportMerge = register<ReportMergeTask>("reportMerge") {
-            output.set(rootProject.layout.buildDirectory.file("reports/detekt/merged.xml"))
-        }
-        withType<Detekt>().configureEach detekt@{
-            reports.checkstyle.required.set(true)
-            finalizedBy(reportMerge)
-            reportMerge.configure { input.from(this@detekt.reports.checkstyle.outputLocation) }
-        }
 
         jar {
             manifest.attributes["Specification-Title"] = project.name

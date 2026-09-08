@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MaxLineLength:ExposedCdoSnapshotRepositoryDatabaseSmokeTest.kt:ExposedCdoSnapshotRepositoryDatabaseSmokeTest$fun</ID>
+    <ID>ReturnCount:ExposedCdoSnapshotRepository.kt:ExposedCdoSnapshotRepository$override fun getStateHistory: MutableList&lt;CdoSnapshot></ID>
+    <ID>ReturnCount:ExposedJaversEntityHookSubscription.kt:ExposedJaversEntityHookSubscription$internal fun handle</ID>
+    <ID>TooGenericExceptionThrown:ExposedCdoSnapshotRepositoryH2Test.kt:ExposedCdoSnapshotRepositoryH2Test.FailAfterFirstEncodeCodec$throw RuntimeException("codec encode failed after first snapshot")</ID>
+    <ID>TooManyFunctions:ExposedCdoSnapshotRepository.kt:ExposedCdoSnapshotRepository : AbstractCdoSnapshotRepository</ID>
+  </CurrentIssues>
+</SmellBaseline>

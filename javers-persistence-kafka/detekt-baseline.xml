@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:KafkaCdoSnapshotRepositoryTest.kt:KafkaCdoSnapshotRepositoryTest${}</ID>
+    <ID>MagicNumber:KafkaCdoSnapshotRepository.kt:KafkaCdoSnapshotRepository$30</ID>
+    <ID>MagicNumber:KafkaSnapshotEventPublisher.kt:KafkaSnapshotEventPublisher$30</ID>
+    <ID>MagicNumber:KafkaSnapshotEventPublisher.kt:KafkaSnapshotEventPublisher.Companion$30</ID>
+    <ID>MagicNumber:VanillaKafkaCdoSnapshotRepository.kt:VanillaKafkaCdoSnapshotRepositoryOptions$30</ID>
+    <ID>MagicNumber:VanillaKafkaCdoSnapshotRepository.kt:VanillaKafkaCdoSnapshotRepositoryOptions.Companion$30</ID>
+    <ID>MaxLineLength:KafkaCdoSnapshotProjector.kt:KafkaCdoSnapshotProjector$.</ID>
+    <ID>MaxLineLength:KafkaCdoSnapshotProjectorTest.kt:KafkaCdoSnapshotProjectorTest$ConsumerRecord("audit.snapshots", partition, index.toLong(), "snapshot-key-$partition-$index", value)</ID>
+    <ID>MaxLineLength:VanillaKafkaCdoSnapshotRepository.kt:VanillaKafkaCdoSnapshotRepository.Companion$private</ID>
+    <ID>MaxLineLength:VanillaKafkaCdoSnapshotRepositoryTest.kt:VanillaKafkaCdoSnapshotRepositoryTest$every { producer.send(any()) } returns CompletableFuture.failedFuture(RuntimeException("Kafka broker unavailable"))</ID>
+    <ID>MaxLineLength:VanillaKafkaCdoSnapshotRepositoryTest.kt:VanillaKafkaCdoSnapshotRepositoryTest$val method = VanillaKafkaCdoSnapshotRepository::class.java.getDeclaredMethod("getSnapshotSize", String::class.java)</ID>
+    <ID>TooGenericExceptionCaught:KafkaSnapshotEventPublisher.kt:KafkaSnapshotEventPublisher$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:VanillaKafkaSnapshotEventPublisher.kt:VanillaKafkaSnapshotEventPublisher$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:KafkaSnapshotEventPublisher.kt:KafkaSnapshotEventPublisher$throw RuntimeException("Kafka publish failed for $keyDiagnostics", e)</ID>
+    <ID>TooGenericExceptionThrown:KafkaSnapshotEventPublisher.kt:KafkaSnapshotEventPublisher$throw RuntimeException("Kafka publish interrupted for $keyDiagnostics", e)</ID>
+    <ID>TooGenericExceptionThrown:VanillaKafkaSnapshotEventPublisher.kt:VanillaKafkaSnapshotEventPublisher$throw RuntimeException("Kafka publish failed for topic=${options.topic}, $keyDiagnostics", e)</ID>
+    <ID>TooGenericExceptionThrown:VanillaKafkaSnapshotEventPublisher.kt:VanillaKafkaSnapshotEventPublisher$throw RuntimeException("Kafka publish interrupted for topic=${options.topic}, $keyDiagnostics", e)</ID>
+  </CurrentIssues>
+</SmellBaseline>
