@@ -12,3 +12,5 @@ O(N) 계약과 호출자 timeout/횟수 제한을 명시하도록 보완했다. 
 RED에서는 API가 없어서 컴파일 실패했고 구현 후 원본 Exposed aggregate를 사용하는 신규 12개와 기존
 24개 테스트가 통과했다. 이는 DB와 외부 메시지의 분산 원자성을 증명하지 않는다. 각 저장소의 transaction
 참여와 at-least-once 소비자 멱등성은 계속 호출자 책임으로 남긴다.
+
+통합 Detekt가 callback 경계의 Throwable catch를 검출했다. 취소와 Error까지 registration을 종료하고 동일 객체를 재전파해야 하므로 해당 helper 한 곳만 이유를 적어 suppress한다. 일반 catch 확대나 baseline 추가로 숨기지 않는다.

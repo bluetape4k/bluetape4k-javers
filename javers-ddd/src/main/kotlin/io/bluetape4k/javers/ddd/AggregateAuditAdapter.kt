@@ -113,6 +113,8 @@ class AggregateAuditRegistration<A: Any, E: Any> internal constructor(
         }
     }
 
+    // 임의 callback의 Error와 취소까지 상태를 종료한 뒤 같은 객체로 다시 던집니다.
+    @Suppress("TooGenericExceptionCaught")
     private inline fun <T> stage(name: String, success: State, action: () -> T): T {
         state = State.RUNNING
         try {
