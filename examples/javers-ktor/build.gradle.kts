@@ -32,3 +32,8 @@ dependencies {
     testImplementation(libs.testcontainers.postgresql)
     testRuntimeOnly(bt4k.postgresql)
 }
+
+// 배포하지 않는 공통 행동 계약이며 각 예제의 실제 도메인 구현에 실행합니다.
+kotlin.sourceSets.named("test") {
+    kotlin.srcDir(rootProject.file("examples/shared-test-contracts"))
+}

@@ -293,3 +293,9 @@ while update is outside that append-only benchmark scope.
 - [JaVers Feature Overview](https://javers.org/features)
 - [JaVers VS Envers Comparison](https://javers.org/blog/2017/12/javers-vs-envers-comparision.html)
 - [Using JaVers for Data Model Auditing in Spring Data](https://www.baeldung.com/spring-data-javers-audit)
+
+## Example behavior contracts
+
+`examples/shared-test-contracts` is shared only by the three example test source sets. It exercises each
+real order model and repository for validation, state transitions, audit history, and failure rollback.
+Benchmark schema and workload remain independent of these contracts.

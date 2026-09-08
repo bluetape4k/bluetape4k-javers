@@ -283,3 +283,9 @@ index는 별도 결정으로 보수적으로 유지해야 합니다. 이번 smok
 - [JaVers VS Envers Comparison](https://javers.org/blog/2017/12/javers-vs-envers-comparision.html)
 - [Using JaVers for Data Model Auditing in Spring Data](https://www.baeldung.com/spring-data-javers-audit)
 - [Spring Data에서 데이터 모델 감사를 위해 JaVers 사용](https://recordsoflife.tistory.com/486)
+
+## 예제 행동 계약
+
+`examples/shared-test-contracts`는 세 예제의 test source에서만 사용합니다. 각 예제의 실제
+주문 검증·상태 전이·저장 및 감사 이력·실패 rollback을 같은 테스트로 검증합니다.
+benchmark의 schema와 workload는 이 계약에 의존하지 않습니다.
