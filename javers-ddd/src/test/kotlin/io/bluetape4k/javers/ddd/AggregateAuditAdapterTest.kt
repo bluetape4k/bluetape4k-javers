@@ -177,7 +177,11 @@ class AggregateAuditAdapterTest {
         var mappingCount = 0
         var published = 0
         val registration = adapter(mapper = { mappingCount++; mapped(it) }).capture(order)
-        registration.audit(javers(), "adapter")
+        val commit = registration.audit(javers(), "adapter")
+        commit.properties["events.0.aggregateId"] shouldBeEqualTo "42"
+        commit.properties["events.99.occurredOn"] shouldBeEqualTo "2026-09-08T00:00:00Z"
+        commit.properties["events.0.domainEventType"] shouldBeEqualTo Placed::class.java.name
+        commit.properties["events.99.event.tenant"] shouldBeEqualTo "blue"
         registration.publish { published++ }
         registration.complete(AuditCompletion.COMMITTED)
         mappingCount shouldBeEqualTo 100

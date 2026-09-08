@@ -14,3 +14,7 @@ RED에서는 API가 없어서 컴파일 실패했고 구현 후 원본 Exposed a
 참여와 at-least-once 소비자 멱등성은 계속 호출자 책임으로 남긴다.
 
 통합 Detekt가 callback 경계의 Throwable catch를 검출했다. 취소와 Error까지 registration을 종료하고 동일 객체를 재전파해야 하므로 해당 helper 한 곳만 이유를 적어 suppress한다. 일반 catch 확대나 baseline 추가로 숨기지 않는다.
+
+PR 리뷰에서 별도 통합 worktree 증거와 개별 HEAD 증거를 혼동할 여지를 발견했다. 다른 PR의 기능이
+완료 조건이면 branch ancestry로 선행 의존성을 연결하고 통합 단언도 실제 테스트에 포함한다.
+독립 기능 검증과 전체 train 검증의 source SHA를 각각 명시한다.

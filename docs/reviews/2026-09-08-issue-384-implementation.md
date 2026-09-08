@@ -16,3 +16,7 @@ worktree에서 ddd38 테스트가 통과했다. `issue-384-integration-probe.pat
 동일 Throwable 재전파를 위해 이유가 있는 좁은 suppression으로 해결했다. 전체 train 테스트와 PR CI는
 별도 최종 완료 조건으로 계속 검증한다.
 리뷰 lane은 별도 빌드를 실행하지 않고 main의 결과와 source를 대조했다.
+
+최종 PR 검토 보완: #381 e344bd8을 실제 branch ancestry에 연결하고 위 probe를 실제 adapter test에
+적용했다. 이제 #393 단독 HEAD에서도 indexed metadata 검증이 실행된다. 병합 순서는 #389 → #393이며
+#389가 병합되면 해당 변경은 #393의 base diff에서 빠진다. 재사용한 encoder를 복제 구현하지 않는다.
