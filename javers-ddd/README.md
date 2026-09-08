@@ -8,6 +8,61 @@ publication. It does not replace your source-of-truth repository. Your
 repository subclass still owns persistence and lookup; this module adds the
 JaVers commit and event-publisher step around that workflow.
 
+
+## Optional auditing adapter for external aggregates
+
+`AggregateAuditAdapter` audits the original Exposed aggregate through extractor functions. Consumers do not
+implement a second marker, and javers-ddd gains no required Exposed dependency. This example is for consumers
+already using Exposed; `order`, `persist`, and `eventPublisher` belong to the application.
+
+```kotlin
+import io.bluetape4k.exposed.core.ddd.AggregateRoot as ExposedAggregate
+import io.bluetape4k.exposed.core.ddd.DomainEvent as ExposedEvent
+import io.bluetape4k.javers.ddd.AggregateAuditAdapter
+import io.bluetape4k.javers.ddd.AuditCompletion
+import io.bluetape4k.javers.ddd.DomainEvent
+
+val adapter = AggregateAuditAdapter<ExposedAggregate<Long>, ExposedEvent<Long>>(
+    eventsOf = { it.domainEvents() },
+    clearEvents = { it.clearDomainEvents() },
+    eventMapper = { original ->
+        object : DomainEvent {
+            override val aggregateId = original.aggregateId
+            override val occurredOn = original.occurredAt
+            override val eventType = original.javaClass.name
+            override val attributes = emptyMap<String, String>()
+        }
+    },
+)
+val registration = adapter.capture(order)
+try {
+    transaction(database) {
+        persist(order)
+        registration.audit(javers, author)
+    }
+} catch (failure: Exception) {
+    registration.complete(AuditCompletion.UNKNOWN)
+    throw failure
+}
+registration.publish { eventPublisher(it) }
+registration.complete(AuditCompletion.COMMITTED)
+```
+
+The mapper preserves the original ID, occurrence time, type, and required attributes. This example assumes
+events without additional attributes. Multiple events reuse the existing collection metadata encoder.
+
+Call capture, audit inside the source transaction, confirm its successful return, publish, then complete with
+COMMITTED. ROLLED_BACK/UNKNOWN terminate without clearing the buffer. Whether the JaVers backend joins the source
+transaction depends on its configuration; distributed atomicity is not guaranteed. A fresh registration after
+publication failure can deliver duplicates, so consumers must be idempotent.
+
+Events must be deeply immutable; one caller keeps the aggregate and buffer stable until completion. Callbacks
+must not mutate state, and clear must atomically remove all events or fail without changing the buffer. Reference
+order checks cannot detect internal object mutations, and partial clear recovery is unsupported. Captured references
+remain available through `events`. All callbacks execute synchronously with O(N) capture/mapping costs. The caller
+sets execution thread, I/O timeouts, event-count and retry limits. No automatic retry, transaction, outbox, or dispatcher
+is created.
+
 ## Class Diagram
 
 ![javers-ddd class diagram](../docs/images/readme-diagrams/javers-ddd-class-diagram-01.png)

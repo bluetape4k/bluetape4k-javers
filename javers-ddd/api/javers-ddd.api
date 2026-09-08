@@ -1,3 +1,15 @@
+public final class io/bluetape4k/javers/ddd/AggregateAuditAdapter {
+	public fun <init> (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public final fun capture (Ljava/lang/Object;)Lio/bluetape4k/javers/ddd/AggregateAuditRegistration;
+}
+
+public final class io/bluetape4k/javers/ddd/AggregateAuditRegistration {
+	public final fun audit (Lorg/javers/core/Javers;Ljava/lang/String;)Lorg/javers/core/commit/Commit;
+	public final fun complete (Lio/bluetape4k/javers/ddd/AuditCompletion;)V
+	public final fun getEvents ()Ljava/util/List;
+	public final fun publish (Lkotlin/jvm/functions/Function1;)V
+}
+
 public abstract class io/bluetape4k/javers/ddd/AggregateRepository {
 	public fun <init> (Ljava/lang/Class;Lorg/javers/core/Javers;Lio/bluetape4k/javers/ddd/DomainEventPublisher;)V
 	public synthetic fun <init> (Ljava/lang/Class;Lorg/javers/core/Javers;Lio/bluetape4k/javers/ddd/DomainEventPublisher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -16,6 +28,15 @@ public abstract interface class io/bluetape4k/javers/ddd/AggregateRoot {
 	public abstract fun getId ()Ljava/lang/Object;
 }
 
+public final class io/bluetape4k/javers/ddd/AuditCompletion : java/lang/Enum {
+	public static final field COMMITTED Lio/bluetape4k/javers/ddd/AuditCompletion;
+	public static final field ROLLED_BACK Lio/bluetape4k/javers/ddd/AuditCompletion;
+	public static final field UNKNOWN Lio/bluetape4k/javers/ddd/AuditCompletion;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/bluetape4k/javers/ddd/AuditCompletion;
+	public static fun values ()[Lio/bluetape4k/javers/ddd/AuditCompletion;
+}
+
 public final class io/bluetape4k/javers/ddd/CompositeDomainEventPublisher : io/bluetape4k/javers/ddd/DomainEventPublisher {
 	public fun <init> (Ljava/util/List;)V
 	public fun <init> ([Lio/bluetape4k/javers/ddd/DomainEventPublisher;)V
@@ -26,11 +47,13 @@ public final class io/bluetape4k/javers/ddd/CompositeDomainEventPublisher : io/b
 public abstract interface class io/bluetape4k/javers/ddd/DomainEvent {
 	public abstract fun getAggregateId ()Ljava/lang/Object;
 	public fun getAttributes ()Ljava/util/Map;
+	public fun getEventType ()Ljava/lang/String;
 	public abstract fun getOccurredOn ()Ljava/time/Instant;
 }
 
 public final class io/bluetape4k/javers/ddd/DomainEvent$DefaultImpls {
 	public static fun getAttributes (Lio/bluetape4k/javers/ddd/DomainEvent;)Ljava/util/Map;
+	public static fun getEventType (Lio/bluetape4k/javers/ddd/DomainEvent;)Ljava/lang/String;
 }
 
 public final class io/bluetape4k/javers/ddd/DomainEventKt {
