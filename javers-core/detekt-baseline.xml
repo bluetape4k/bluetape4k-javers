@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:AbstractCdoSnapshotRepository.kt:AbstractCdoSnapshotRepository$10_000</ID>
+    <ID>MaxLineLength:AbstractCdoSnapshotRepository.kt:AbstractCdoSnapshotRepository$log.warn { "getAll() is loading ${keys.size} keys — this may cause OutOfMemoryError for large repositories. Use query-based JQL instead." }</ID>
+    <ID>ReturnCount:JaversGsonElementConverter.kt:JaversGsonElementConverter$@Suppress("UNCHECKED_CAST") private fun createJsonElement: JsonElement</ID>
+    <ID>ReturnCount:JaversGsonElementConverter.kt:JaversGsonElementConverter$private fun extractValue: Any?</ID>
+    <ID>ReturnCount:QueryParamsExtensions.kt:fun QueryParams.isDateInRange: Boolean</ID>
+    <ID>SerialVersionUIDInSerializableClass:Category.kt:AbstractCategory : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Category.kt:PhoneWithShallowCategory : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:ConcreteWithActualType.kt:AbstractGeneric&lt;ID, V> : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:CustomPropertyComparatorExamples.kt:CustomPropertyComparatorExamples$CurrentDocument : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:CustomPropertyComparatorExamples.kt:CustomPropertyComparatorExamples$LegacyDocument : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:CustomPropertyComparatorExamples.kt:CustomPropertyComparatorExamples$StringPropertyComparator : CustomPropertyComparatorSerializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:DummyAddress.kt:AbstractDummyAddress : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:DummyAddress.kt:DummyNetworkAddress : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:DummyUser.kt:AbstractDummyUser : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:DummyUser.kt:DummyUserDetails : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Ignored.kt:DummyIgnoredType : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:MappingExamples.kt:MappingExamples$Entity : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:MappingExamples.kt:MappingExamples$Person : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:MappingExamples.kt:MappingExamples$PointComparator : CustomValueComparatorSerializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Models.kt:Address : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Models.kt:Boss : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Models.kt:Employee : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:Models.kt:Person : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:NewEntity.kt:NewEntity : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:NewEntity.kt:NewEntityWithTypeAlias : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:NewEntity.kt:NewValueObjectWithTypeAlias : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:OldEntity.kt:OldEntity : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:OldEntity.kt:OldEntityWithTypeAlias : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:PrimitiveEntity.kt:PrimitiveEntity : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:SnapshotEntity.kt:ShallowPhone : Serializable</ID>
+    <ID>SerialVersionUIDInSerializableClass:SnapshotEntity.kt:SnapshotEntity : Serializable</ID>
+    <ID>SwallowedException:JaversGsonElementConverter.kt:JaversGsonElementConverter$e: ArithmeticException</ID>
+    <ID>TooGenericExceptionCaught:CompositeCdoSnapshotRepository.kt:CompositeCdoSnapshotRepository$e: Exception</ID>
+    <ID>TooManyFunctions:AbstractCdoSnapshotRepository.kt:AbstractCdoSnapshotRepository&lt;T: Any> : CdoSnapshotRepository</ID>
+    <ID>TooManyFunctions:CdoSnapshotSupport.kt:io.bluetape4k.javers.metamodel.CdoSnapshotSupport.kt</ID>
+    <ID>TooManyFunctions:CompositeCdoSnapshotRepository.kt:CompositeCdoSnapshotRepository : CdoSnapshotRepositoryAutoCloseable</ID>
+    <ID>VariableNaming:DummyUser.kt:DummyUser$var _char: Char = 0.toChar()</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var BooleanField: Boolean? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var ByteField: Byte? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var CharField: Char? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var DoubleField: Double? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var FloatField: Float? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var IntegerField: Int? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var LongField: Long? = null</ID>
+    <ID>VariableNaming:PrimitiveEntity.kt:PrimitiveEntity$var ShortField: Short? = null</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MaxLineLength:AggregateRepositoryTest.kt:AggregateRepositoryTest$repository.loadHistory(aggregate.id).single().commitMetadata.properties[DOMAIN_EVENT_TYPE_PROPERTY]</ID>
+    <ID>ThrowsCount:KafkaDomainEventPublisher.kt:KafkaDomainEventPublisher$override fun publish</ID>
+    <ID>TooGenericExceptionCaught:KafkaDomainEventPublisher.kt:KafkaDomainEventPublisher$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:KafkaDomainEventPublisher.kt:KafkaDomainEventPublisher$throw RuntimeException("Kafka domain event publish failed. topic=$topic", cause)</ID>
+    <ID>TooGenericExceptionThrown:KafkaDomainEventPublisher.kt:KafkaDomainEventPublisher$throw RuntimeException("Kafka domain event publish failed. topic=$topic", e)</ID>
+    <ID>TooGenericExceptionThrown:KafkaDomainEventPublisher.kt:KafkaDomainEventPublisher$throw RuntimeException("Kafka domain event publish interrupted. topic=$topic", e)</ID>
+    <ID>TooGenericExceptionThrown:KafkaDomainEventPublisher.kt:KafkaDomainEventPublisher$throw RuntimeException("Kafka domain event publish timed out. topic=$topic", e)</ID>
+  </CurrentIssues>
+</SmellBaseline>

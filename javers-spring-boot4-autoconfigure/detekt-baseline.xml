@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:JaversAutoConfigurationProperties.kt:JaversKafkaProperties$30</ID>
+    <ID>MaxLineLength:JaversAutoConfigurationTest.kt:JaversAutoConfigurationTest$context.getBean(JaversRepository::class.java) shouldBeInstanceOf VanillaKafkaCdoSnapshotRepository::class</ID>
+  </CurrentIssues>
+</SmellBaseline>
