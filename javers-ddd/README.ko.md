@@ -116,3 +116,56 @@ Spring, Kafka, NATS adapter는 optional surface입니다. 해당 adapter를 사�
 ```bash
 ./gradlew :javers-ddd:test
 ```
+
+## 외부 aggregate 선택적 감사 adapter
+
+`AggregateAuditAdapter`는 추출 함수로 Exposed aggregate를 그대로 감사합니다. 두 marker를
+구현하거나 Exposed 의존성을 javers-ddd production에 추가할 필요가 없습니다. 다음 코드는
+Exposed를 이미 사용하는 소비자에서 적용합니다. `order`, `persist`, `eventPublisher`는 애플리케이션 소유입니다.
+
+```kotlin
+import io.bluetape4k.exposed.core.ddd.AggregateRoot as ExposedAggregate
+import io.bluetape4k.exposed.core.ddd.DomainEvent as ExposedEvent
+import io.bluetape4k.javers.ddd.AggregateAuditAdapter
+import io.bluetape4k.javers.ddd.AuditCompletion
+import io.bluetape4k.javers.ddd.DomainEvent
+
+val adapter = AggregateAuditAdapter<ExposedAggregate<Long>, ExposedEvent<Long>>(
+    eventsOf = { it.domainEvents() },
+    clearEvents = { it.clearDomainEvents() },
+    eventMapper = { original ->
+        object : DomainEvent {
+            override val aggregateId = original.aggregateId
+            override val occurredOn = original.occurredAt
+            override val eventType = original.javaClass.name
+            override val attributes = emptyMap<String, String>()
+        }
+    },
+)
+val registration = adapter.capture(order)
+try {
+    transaction(database) {
+        persist(order)
+        registration.audit(javers, author)
+    }
+} catch (failure: Exception) {
+    registration.complete(AuditCompletion.UNKNOWN)
+    throw failure
+}
+registration.publish { eventPublisher(it) }
+registration.complete(AuditCompletion.COMMITTED)
+```
+
+Mapper는 원래 ID/발생 시각/type과 필요한 attributes를 보존해야 합니다. 예제는 추가 attributes가 없는
+이벤트를 가정합니다. 다중 이벤트 속성은 기존 collection encoder를 재사용합니다.
+
+호출 순서는 capture → source transaction 안의 audit → transaction 성공 반환 → publish →
+complete(COMMITTED)입니다. rollback/결과 불명은 ROLLED_BACK/UNKNOWN으로 종료하며 buffer를 유지합니다.
+JaVers backend의 source transaction 참여 여부는 설정에 달려 있고 분산 원자성을 보장하지 않습니다.
+발행 실패 후 새 등록 재시도는 중복 전달할 수 있으므로 소비자가 멱등성을 보장해야 합니다.
+
+이벤트는 깊은 불변 값이며 aggregate와 buffer는 완료까지 한 호출자가 고정해야 합니다. callback은
+상태를 변경하지 않고 clear는 원자적으로 전체 제거하거나 변경 없이 실패해야 합니다. 참조 순서 검사는
+객체 내부 변경을 탐지하지 않으며 부분 clear 복구는 지원하지 않습니다. 캡처 참조는 `events`에 남습니다.
+모든 callback은 동기 실행하고 O(N) 캡처/변환 비용이 듭니다. 호출자가 실행 스레드, I/O timeout, 최대 이벤트
+수와 재시도 횟수를 정합니다. 자동 재시도, transaction, outbox, dispatcher를 생성하지 않습니다.

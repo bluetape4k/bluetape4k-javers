@@ -24,6 +24,10 @@ interface DomainEvent {
      */
     val aggregateId: Any
 
+    /** 외부 adapter가 원래 이벤트 타입을 보존할 때 재정의합니다. */
+    val eventType: String
+        get() = this::class.qualifiedName ?: this::class.java.name
+
     /**
      * domain event가 발생한 시간입니다.
      */
@@ -65,7 +69,7 @@ internal fun Collection<DomainEvent>.toJaversProperties(): Map<String, String> =
 }
 
 internal fun DomainEvent.eventTypeName(): String {
-    return this::class.qualifiedName ?: this::class.java.name
+    return eventType
 }
 
 const val DOMAIN_EVENT_TYPE_PROPERTY: String = "domainEventType"
