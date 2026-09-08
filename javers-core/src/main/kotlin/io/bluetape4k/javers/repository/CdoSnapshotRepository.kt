@@ -39,6 +39,17 @@ interface CdoSnapshotRepository: JaversRepository {
     }
 
     /**
+     * 이미 저장된 [snapshot]을 replay에서 건너뛰기 전에 metadata를 검증합니다.
+     *
+     * 기본 구현은 metadata를 소유하지 않는 snapshot-only 저장소를 위한 no-op입니다.
+     * commit sequence와 head를 관리하는 구현은 불완전한 상태에서 예외를 발생시켜야 합니다.
+     * 이 검증은 snapshot row를 다시 저장하지 않습니다.
+     *
+     * @throws IllegalStateException 저장된 metadata로 안전한 replay를 보장할 수 없는 경우
+     */
+    fun validateSnapshotMetadata(snapshot: CdoSnapshot) = Unit
+
+    /**
      * 지정한 GlobalId 값의 snapshot을 반환합니다.
      */
     fun loadSnapshots(globalIdValue: String): List<CdoSnapshot>

@@ -252,6 +252,18 @@ abstract class AbstractCdoSnapshotRepository<T: Any>(
         updateCommitId(snapshot.commitMetadata.id, sequence)
     }
 
+    override fun validateSnapshotMetadata(snapshot: CdoSnapshot) {
+        lock.withLock {
+            val commitId = snapshot.commitMetadata.id
+            val sequence = getSeq(commitId)
+            check(sequence > 0L) {
+                "Existing snapshot has incomplete commit metadata; rebuild the projection before replay."
+            }
+            // 이미 저장된 sequence만 사용합니다. 새 sequence를 추정하면 과거 commit이 head가 될 수 있습니다.
+            restoreHeadAfterProjection(commitId, sequence)
+        }
+    }
+
     private fun restoreHeadAfterProjection(commitId: CommitId, sequence: Long) {
         val currentHead = when {
             headLoaded -> head

@@ -269,3 +269,13 @@ dependencies {
 
 - [JaVers](https://javers.org)
 - [Apache Kafka](https://kafka.apache.org/)
+
+### Existing snapshot metadata
+
+Before skipping an existing snapshot, the projector calls `validateSnapshotMetadata()`.
+Repositories derived from `AbstractCdoSnapshotRepository` reject a missing commit sequence
+with `IllegalStateException` before offset commit. Rebuild an incomplete projection into a
+new repository and replay the ordered stream; assigning a new sequence to an old row could
+move the head backwards. Complete duplicates keep the existing sequence and do not add rows.
+Snapshot-only custom repositories may use the default no-op; implementations that own
+metadata must override validation. Concurrent external writers are outside this replay contract.
