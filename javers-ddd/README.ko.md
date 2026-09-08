@@ -170,3 +170,14 @@ Spring, Kafka, NATS adapter는 optional surface입니다. 해당 adapter를 사�
 ```bash
 ./gradlew :javers-ddd:test
 ```
+
+### 다중 이벤트 commit properties
+
+빈 이벤트 컬렉션은 properties를 만들지 않습니다. 단일 이벤트는 기존
+`domainEventType`, `aggregateId`, `occurredOn`, `event.<attribute>` 키를 유지합니다.
+다중 이벤트는 `domainEventCount`, `domainEventTypes`를 유지하고 각 이벤트의 properties를
+`events.<0부터 시작하는 index>.` 아래에 저장합니다. index는 입력 컬렉션의 순회 순서입니다.
+`events.0.event.tenant`는 `events.0.aggregateId`나 다른 이벤트의 tenant를 덮어쓰지 않습니다.
+자동 절단이나 크기 제한은 적용하지 않으므로 호출자는 backend 제한에 맞게 metadata를
+제한해야 합니다. Commit properties는 완전한 event store가 아닙니다. 이전 요약 데이터는
+계속 읽을 수 있지만 과거 writer가 누락한 attributes는 복구할 수 없습니다.

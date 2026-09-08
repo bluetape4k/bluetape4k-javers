@@ -172,3 +172,14 @@ dependency only when using the adapter.
 ```bash
 ./gradlew :javers-ddd:test
 ```
+
+### Multiple-event commit properties
+
+An empty event collection produces no properties. A single event retains the existing
+`domainEventType`, `aggregateId`, `occurredOn`, and `event.<attribute>` keys. Multiple
+events retain `domainEventCount` and `domainEventTypes` and add each event's properties
+under `events.<zero-based-index>.`, in collection iteration order. For example,
+`events.0.event.tenant` cannot overwrite `events.0.aggregateId` or another event's tenant.
+No truncation or size cap is applied: callers must bound metadata to their backend limits.
+Commit properties are audit metadata, not a full event store. Existing stored summaries
+remain readable but cannot recover attributes omitted by older writers.

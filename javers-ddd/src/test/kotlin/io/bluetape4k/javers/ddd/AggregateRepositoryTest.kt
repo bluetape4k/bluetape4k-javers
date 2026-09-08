@@ -63,6 +63,27 @@ class AggregateRepositoryTest {
     }
 
     @Test
+    fun `다중 이벤트 metadata가 실제 JaVers commit에 저장된다`() {
+        val repository = OrderRepository(javers, FunctionDomainEventPublisher { publishedEvents += it })
+        val order = Order(id = 9L, status = "PLACED")
+        val time = Instant.parse("2026-09-08T00:00:00Z")
+        val events = listOf("blue", "green").map { tenant ->
+            object: DomainEvent {
+                override val aggregateId = order.id
+                override val occurredOn = time
+                override val attributes = mapOf("tenant" to tenant)
+            }
+        }
+        repository.save(order, "tester", events)
+
+        val properties = repository.loadHistory(order.id).single().commitMetadata.properties
+        properties["events.0.event.tenant"] shouldBeEqualTo "blue"
+        properties["events.1.event.tenant"] shouldBeEqualTo "green"
+        properties["events.1.aggregateId"] shouldBeEqualTo "9"
+        publishedEvents shouldBeEqualTo events
+    }
+
+    @Test
     fun `load falls back to latest JaVers shadow when store misses`() {
         val repository = OrderRepository(javers)
         val aggregate = Order(id = 2L, status = "PLACED")
