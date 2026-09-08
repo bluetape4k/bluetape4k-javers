@@ -124,3 +124,10 @@ dependencies {
 ```bash
 ./gradlew :javers-core:test
 ```
+
+### Decimal 정밀도
+
+Map 및 binary codec은 중첩 array·object를 포함한 `BigDecimal`의 수치와 scale을
+보존합니다. Fory/Kryo 및 압축 변형은 기존 ecosystem serializer를 사용합니다.
+이전에 저장한 Long/Double payload는 계속 읽을 수 있지만, 이전 writer가 이미 잃은
+정밀도는 복구할 수 없습니다. JSON 숫자를 문자열로 변경하지 않습니다.

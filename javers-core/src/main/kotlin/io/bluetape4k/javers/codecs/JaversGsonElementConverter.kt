@@ -5,7 +5,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import java.math.BigDecimal
 
 internal object JaversGsonElementConverter {
 
@@ -34,14 +33,6 @@ internal object JaversGsonElementConverter {
         if (element is JsonPrimitive) {
             if (element.isString) {
                 return element.asString
-            }
-            if (element.isNumber && element.asNumber is BigDecimal) {
-                val value = element.asNumber as BigDecimal
-                return try {
-                    value.longValueExact()
-                } catch (e: ArithmeticException) {
-                    value.toDouble()
-                }
             }
             if (element.isNumber) {
                 return element.asNumber
