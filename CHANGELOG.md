@@ -11,6 +11,13 @@
 
 - `1.0.0` 정식 배포 후 다음 minor 개발선을 `1.1.0-SNAPSHOT`으로 열었다.
 
+## [1.1.0] - 2026-11-21
+
+### 변경
+
+- 중앙 catalog와 최신 stable dependency line에 맞춰 JaVers repository,
+  codec lifecycle, Kotlin ABI 및 Spring Boot 4 publication 계약을 정렬했습니다.
+
 ## [1.0.0] - 2026-09-02
 
 ### 추가
