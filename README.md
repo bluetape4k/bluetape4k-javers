@@ -7,9 +7,9 @@
 
 English | [한국어](./README.ko.md)
 
-Current stable version: `1.0.0`
+Current stable version: `1.1.0`
 
-Current development line: `1.1.0-SNAPSHOT` on `develop`
+Current development line: `1.2.0-SNAPSHOT` on `develop`
 
 ![Bluetape4k JaVers audit workbench](./docs/assets/javers-workbench.png)
 
@@ -85,9 +85,9 @@ not be treated as interchangeable stores.
 
 ## Manuals
 
-- [Current 1.1.0 development manual](https://github.com/bluetape4k/bluetape4k.github.io/blob/develop/docs/manual/bluetape4k-javers/current/en/index.md) covers every module
+- [Current 1.2.0 development manual](https://github.com/bluetape4k/bluetape4k.github.io/blob/develop/docs/manual/bluetape4k-javers/current/en/index.md) covers every module
   registered in `settings.gradle.kts`, including examples and benchmark evidence.
-- The [release-pinned 1.0.0 manual](https://bluetape4k.github.io/manual/bluetape4k-javers/1.0/) remains immutable
+- The [release-pinned 1.1.0 manual](https://bluetape4k.github.io/manual/bluetape4k-javers/1.1/) remains immutable
   and documents only the modules available at that release.
 
 ## Boundary with bluetape4k-exposed
@@ -116,7 +116,7 @@ Use the BOM when consuming more than one module:
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.0.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.1.0"))
     implementation("io.github.bluetape4k.javers:javers-core")
     implementation("io.github.bluetape4k.javers:javers-exposed")
     implementation("io.github.bluetape4k.javers:javers-ddd")
