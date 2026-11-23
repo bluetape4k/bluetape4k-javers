@@ -35,7 +35,7 @@ aligned with the stable release train.
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.0.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.1.0"))
     implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
 
     // Add only the backend module and client stack your application uses.

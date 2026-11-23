@@ -34,7 +34,7 @@ README가 안정 release train과 계속 정렬되도록 문서 계약 테스트
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.0.0"))
+    implementation(platform("io.github.bluetape4k.javers:bluetape4k-javers-bom:1.1.0"))
     implementation("io.github.bluetape4k.javers:javers-spring-boot4-autoconfigure")
 
     // 애플리케이션이 실제로 쓰는 backend module과 client stack만 추가하세요.
