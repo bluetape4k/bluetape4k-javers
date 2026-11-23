@@ -1,6 +1,6 @@
 # WIP - bluetape4k-javers
 
-- 기준일: 2026-09-02 KST
+- 기준일: 2026-11-23 KST
 - 최신 안정 버전: `1.1.0`
 - 안정 tag commit: `d33022de11a6de9704334adb6b37f735f98d7d24`
 - 현재 개발선: `1.2.0-SNAPSHOT`
